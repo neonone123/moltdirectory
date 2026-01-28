@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Create Excalidraw flowcharts from descriptions">
+  <title>Excalidraw Flowchart - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Image & Video Generation</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Image & Video Generation</a>
+                <span class="skill-page-author">by @swiftlysingh</span>
+              </div>
+              <h1 class="skill-page-title">Excalidraw Flowchart</h1>
+              <p class="skill-page-desc">Create Excalidraw flowcharts from descriptions</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Excalidraw Flowchart Skill</h1>
+<p>Create professional flowcharts and diagrams as Excalidraw files that can be opened in Excalidraw.</p>
+<h2>When to Use This Skill</h2>
+<ul>
+<li>User asks to create a flowchart or diagram</li>
+<li>User wants to visualize a process or workflow</li>
+<li>User needs an architecture diagram</li>
+<li>User mentions &quot;excalidraw&quot; or &quot;flow diagram&quot;</li>
+<li>User wants to document decision trees</li>
+</ul>
+<h2>Prerequisites</h2>
+<p>The <code>@swiftlysingh/excalidraw-cli</code> tool must be installed:</p>
+<pre><code class="language-bash">npm install -g @swiftlysingh/excalidraw-cli
+</code></pre>
+<p>Or use via npx (no installation needed):</p>
+<pre><code class="language-bash">npx @swiftlysingh/excalidraw-cli create --inline &quot;DSL&quot; -o output.excalidraw
+</code></pre>
+<h2>How to Create a Flowchart</h2>
+<h3>Step 1: Analyze the Request</h3>
+<p>Identify from the user&#39;s description:</p>
+<ul>
+<li>What are the main steps/nodes?</li>
+<li>What are the decision points?</li>
+<li>What is the flow direction?</li>
+<li>Are there any loops or branches?</li>
+</ul>
+<h3>Step 2: Write the DSL</h3>
+<p>Use this DSL syntax to describe the flowchart:</p>
+<table>
+<thead>
+<tr>
+<th>Syntax</th>
+<th>Element</th>
+<th>Use For</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>[Label]</code></td>
+<td>Rectangle</td>
+<td>Process steps, actions</td>
+</tr>
+<tr>
+<td><code>{Label?}</code></td>
+<td>Diamond</td>
+<td>Decisions, conditionals</td>
+</tr>
+<tr>
+<td><code>(Label)</code></td>
+<td>Ellipse</td>
+<td>Start/End points</td>
+</tr>
+<tr>
+<td><code>[[Label]]</code></td>
+<td>Database</td>
+<td>Data storage</td>
+</tr>
+<tr>
+<td><code>![path]</code></td>
+<td>Image</td>
+<td>Inline images</td>
+</tr>
+<tr>
+<td><code>![path](WxH)</code></td>
+<td>Sized Image</td>
+<td>Images with explicit dimensions</td>
+</tr>
+<tr>
+<td><code>-&gt;</code></td>
+<td>Arrow</td>
+<td>Connections</td>
+</tr>
+<tr>
+<td><code>-&gt; &quot;text&quot; -&gt;</code></td>
+<td>Labeled Arrow</td>
+<td>Connections with labels</td>
+</tr>
+<tr>
+<td><code>--&gt;</code></td>
+<td>Dashed Arrow</td>
+<td>Optional/alternative paths</td>
+</tr>
+</tbody></table>
+<h3>DSL Directives</h3>
+<table>
+<thead>
+<tr>
+<th>Directive</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@direction</code></td>
+<td>Set flow direction</td>
+<td><code>@direction LR</code></td>
+</tr>
+<tr>
+<td><code>@spacing</code></td>
+<td>Set node spacing</td>
+<td><code>@spacing 60</code></td>
+</tr>
+<tr>
+<td><code>@image</code></td>
+<td>Position image</td>
+<td><code>@image logo.png at 100,50</code></td>
+</tr>
+<tr>
+<td><code>@decorate</code></td>
+<td>Attach decoration to node</td>
+<td><code>@decorate icon.png top-right</code></td>
+</tr>
+<tr>
+<td><code>@sticker</code></td>
+<td>Add sticker from library</td>
+<td><code>@sticker checkmark at 200,100</code></td>
+</tr>
+<tr>
+<td><code>@library</code></td>
+<td>Set sticker library path</td>
+<td><code>@library ./assets/stickers</code></td>
+</tr>
+<tr>
+<td><code>@scatter</code></td>
+<td>Scatter images on canvas</td>
+<td><code>@scatter star.png count:5</code></td>
+</tr>
+</tbody></table>
+<h3>Step 3: Generate the File</h3>
+<p>Run the CLI to create the .excalidraw file:</p>
+<pre><code class="language-bash">npx @swiftlysingh/excalidraw-cli create --inline &quot;YOUR_DSL_HERE&quot; -o flowchart.excalidraw
+</code></pre>
+<p>Or for multi-line DSL, use a heredoc:</p>
+<pre><code class="language-bash">npx @swiftlysingh/excalidraw-cli create --inline &quot;$(cat &lt;&lt;&#39;EOF&#39;
+(Start) -&gt; [Step 1] -&gt; {Decision?}
+{Decision?} -&gt; &quot;yes&quot; -&gt; [Step 2] -&gt; (End)
+{Decision?} -&gt; &quot;no&quot; -&gt; [Step 3] -&gt; [Step 1]
+EOF
+)&quot; -o flowchart.excalidraw
+</code></pre>
+<h3>Step 4: Inform the User</h3>
+<p>Tell the user:</p>
+<ol>
+<li>The file was created at the specified path</li>
+<li>They can open it in Excalidraw (<a href="https://excalidraw.com">https://excalidraw.com</a>) via File &gt; Open</li>
+<li>They can edit it further in Excalidraw if needed</li>
+</ol>
+<h2>DSL Examples</h2>
+<h3>Simple Linear Flow</h3>
+<pre><code>(Start) -&gt; [Initialize] -&gt; [Process Data] -&gt; [Save Results] -&gt; (End)
+</code></pre>
+<h3>Decision Tree</h3>
+<pre><code>(Start) -&gt; [Receive Request] -&gt; {Authenticated?}
+{Authenticated?} -&gt; &quot;yes&quot; -&gt; [Process Request] -&gt; (Success)
+{Authenticated?} -&gt; &quot;no&quot; -&gt; [Return 401] -&gt; (End)
+</code></pre>
+<h3>Loop/Retry Pattern</h3>
+<pre><code>(Start) -&gt; [Attempt Operation] -&gt; {Success?}
+{Success?} -&gt; &quot;yes&quot; -&gt; [Continue] -&gt; (End)
+{Success?} -&gt; &quot;no&quot; -&gt; {Retry Count &lt; 3?}
+{Retry Count &lt; 3?} -&gt; &quot;yes&quot; -&gt; [Increment Counter] -&gt; [Attempt Operation]
+{Retry Count &lt; 3?} -&gt; &quot;no&quot; -&gt; [Log Failure] -&gt; (Error)
+</code></pre>
+<h3>Multi-Branch Flow</h3>
+<pre><code>(User Input) -&gt; {Input Type?}
+{Input Type?} -&gt; &quot;text&quot; -&gt; [Parse Text] -&gt; [Process]
+{Input Type?} -&gt; &quot;file&quot; -&gt; [Read File] -&gt; [Process]
+{Input Type?} -&gt; &quot;url&quot; -&gt; [Fetch URL] -&gt; [Process]
+[Process] -&gt; [Output Result] -&gt; (Done)
+</code></pre>
+<h3>With Database</h3>
+<pre><code>[API Request] -&gt; {Cache Hit?}
+{Cache Hit?} -&gt; &quot;yes&quot; -&gt; [[Read Cache]] -&gt; [Return Data]
+{Cache Hit?} -&gt; &quot;no&quot; -&gt; [[Query Database]] -&gt; [[Update Cache]] -&gt; [Return Data]
+</code></pre>
+<h2>CLI Options</h2>
+<ul>
+<li><code>-o, --output &lt;file&gt;</code> - Output file path (default: flowchart.excalidraw)</li>
+<li><code>-f, --format &lt;type&gt;</code> - Input format: dsl, json, dot (default: auto-detected)</li>
+<li><code>-d, --direction &lt;TB|BT|LR|RL&gt;</code> - Flow direction (default: TB = top to bottom)</li>
+<li><code>-s, --spacing &lt;number&gt;</code> - Node spacing in pixels (default: 50)</li>
+<li><code>--inline &lt;dsl&gt;</code> - Inline DSL/DOT string</li>
+<li><code>--stdin</code> - Read input from stdin</li>
+<li><code>--verbose</code> - Verbose output</li>
+</ul>
+<p>Example with options:</p>
+<pre><code class="language-bash">npx @swiftlysingh/excalidraw-cli create --inline &quot;[A] -&gt; [B] -&gt; [C]&quot; --direction LR --spacing 80 -o horizontal-flow.excalidraw
+</code></pre>
+<h2>DOT/Graphviz Format (New in v1.1.0)</h2>
+<p>The CLI now supports DOT/Graphviz format for creating diagrams. This is useful when working with existing DOT files or when you prefer the DOT syntax.</p>
+<h3>DOT Syntax</h3>
+<pre><code class="language-dot">digraph {
+    rankdir=LR
+
+    start [shape=ellipse label=&quot;Start&quot;]
+    process [shape=box label=&quot;Process Data&quot;]
+    decision [shape=diamond label=&quot;Valid?&quot;]
+    end [shape=ellipse label=&quot;End&quot;]
+
+    start -&gt; process
+    process -&gt; decision
+    decision -&gt; end [label=&quot;yes&quot;]
+    decision -&gt; process [label=&quot;no&quot; style=dashed]
+}
+</code></pre>
+<h3>Supported DOT Features</h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>DOT Syntax</th>
+<th>Maps To</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Rectangle</td>
+<td><code>shape=box</code> or <code>shape=rect</code></td>
+<td><code>[Label]</code></td>
+</tr>
+<tr>
+<td>Diamond</td>
+<td><code>shape=diamond</code></td>
+<td><code>{Label}</code></td>
+</tr>
+<tr>
+<td>Ellipse</td>
+<td><code>shape=ellipse</code> or <code>shape=circle</code></td>
+<td><code>(Label)</code></td>
+</tr>
+<tr>
+<td>Database</td>
+<td><code>shape=cylinder</code></td>
+<td><code>[[Label]]</code></td>
+</tr>
+<tr>
+<td>Direction</td>
+<td><code>rankdir=TB|BT|LR|RL</code></td>
+<td><code>@direction</code></td>
+</tr>
+<tr>
+<td>Edge labels</td>
+<td><code>[label=&quot;text&quot;]</code></td>
+<td><code>-&gt; &quot;text&quot; -&gt;</code></td>
+</tr>
+<tr>
+<td>Dashed edges</td>
+<td><code>[style=dashed]</code></td>
+<td><code>--&gt;</code></td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><code>[fillcolor=&quot;...&quot; color=&quot;...&quot;]</code></td>
+<td>Node styling</td>
+</tr>
+</tbody></table>
+<h3>Using DOT Files</h3>
+<pre><code class="language-bash"># From file (auto-detected by .dot or .gv extension)
+npx @swiftlysingh/excalidraw-cli create diagram.dot -o output.excalidraw
+
+# Inline DOT
+npx @swiftlysingh/excalidraw-cli create --format dot --inline &quot;digraph { A -&gt; B -&gt; C }&quot; -o output.excalidraw
+</code></pre>
+<h2>Images and Decorations (New in v1.1.0)</h2>
+<h3>Image Nodes</h3>
+<p>Include images as flow elements:</p>
+<pre><code>(Start) -&gt; ![logo.png](100x50) -&gt; [Process] -&gt; (End)
+</code></pre>
+<h3>Positioned Images</h3>
+<p>Place images at specific positions:</p>
+<pre><code>@image background.png at 0,0
+@image logo.png near (Start) top-right
+
+(Start) -&gt; [Process] -&gt; (End)
+</code></pre>
+<h3>Node Decorations</h3>
+<p>Attach small icons/badges to nodes:</p>
+<pre><code>[Deploy to Production]
+@decorate checkmark.png top-right
+
+[Review Required]
+@decorate warning.png top-left
+</code></pre>
+<p>Decoration anchors: <code>top</code>, <code>bottom</code>, <code>left</code>, <code>right</code>, <code>top-left</code>, <code>top-right</code>, <code>bottom-left</code>, <code>bottom-right</code></p>
+<h3>Sticker Library</h3>
+<p>Use a library of reusable stickers:</p>
+<pre><code>@library ./assets/stickers
+@sticker success at 100,100
+@sticker warning near (Error) top-right
+</code></pre>
+<h3>Scatter Images</h3>
+<p>Distribute images randomly across the canvas:</p>
+<pre><code>@scatter confetti.png count:10
+@scatter star.png count:5 width:20 height:20
+</code></pre>
+<h2>Common Patterns</h2>
+<h3>API Request Flow</h3>
+<pre><code>[Client Request] -&gt; [API Gateway] -&gt; {Auth Valid?}
+{Auth Valid?} -&gt; &quot;yes&quot; -&gt; [Route to Service] -&gt; [[Database]] -&gt; [Response]
+{Auth Valid?} -&gt; &quot;no&quot; -&gt; [401 Unauthorized]
+</code></pre>
+<h3>CI/CD Pipeline</h3>
+<pre><code>(Push) -&gt; [Build] -&gt; [Test] -&gt; {Tests Pass?}
+{Tests Pass?} -&gt; &quot;yes&quot; -&gt; [Deploy Staging] -&gt; {Manual Approval?}
+{Manual Approval?} -&gt; &quot;yes&quot; -&gt; [Deploy Production] -&gt; (Done)
+{Manual Approval?} -&gt; &quot;no&quot; -&gt; (Cancelled)
+{Tests Pass?} -&gt; &quot;no&quot; -&gt; [Notify Team] -&gt; (Failed)
+</code></pre>
+<h3>User Registration</h3>
+<pre><code>(Start) -&gt; [Enter Details] -&gt; {Email Valid?}
+{Email Valid?} -&gt; &quot;no&quot; -&gt; [Show Error] -&gt; [Enter Details]
+{Email Valid?} -&gt; &quot;yes&quot; -&gt; {Password Strong?}
+{Password Strong?} -&gt; &quot;no&quot; -&gt; [Show Password Requirements] -&gt; [Enter Details]
+{Password Strong?} -&gt; &quot;yes&quot; -&gt; [[Save to Database]] -&gt; [Send Verification Email] -&gt; (Success)
+</code></pre>
+<h2>Tips</h2>
+<ol>
+<li><strong>Keep labels concise</strong> - Use short, action-oriented text</li>
+<li><strong>End decisions with ?</strong> - Makes it clear it&#39;s a conditional</li>
+<li><strong>Use consistent naming</strong> - Helps with node deduplication</li>
+<li><strong>Start with (Start)</strong> - Makes the entry point clear</li>
+<li><strong>Test complex flows</strong> - Break into smaller parts if needed</li>
+</ol>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/swiftlysingh/excalidraw-flowchart/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/swiftlysingh/excalidraw-flowchart" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/swiftlysingh/excalidraw-flowchart/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@swiftlysingh</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Image & Video Generation</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Transform YouTube videos into Telegraph Instant View articles with visual slides">
+  <title>youtube-instant-article - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Media & Streaming</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Media & Streaming</a>
+                <span class="skill-page-author">by @viticci</span>
+              </div>
+              <h1 class="skill-page-title">youtube-instant-article</h1>
+              <p class="skill-page-desc">Transform YouTube videos into Telegraph Instant View articles with visual slides</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>YouTube Instant Article</h1>
+<p>Transform YouTube videos into Telegraph Instant View articles with visual slides and timestamped summaries.</p>
+<h2>When to Use</h2>
+<p><strong>ALWAYS use this skill when:</strong></p>
+<ul>
+<li>User shares a YouTube URL (any youtube.com or youtu.be link)</li>
+<li>&quot;Summarize this video&quot;</li>
+<li>&quot;What&#39;s this video about?&quot;</li>
+<li>&quot;Turn this into an article&quot;</li>
+<li>&quot;Give me the gist of this video&quot;</li>
+</ul>
+<p><strong>Only use generic <code>summarize</code> for:</strong></p>
+<ul>
+<li>Non-YouTube URLs (articles, websites, PDFs)</li>
+<li>Explicit &quot;just give me the transcript&quot; requests</li>
+</ul>
+<h2>Quick Start</h2>
+<pre><code class="language-bash">source /Users/viticci/clawd/.env &amp;&amp; {baseDir}/scripts/generate.sh &quot;$ARGUMENTS&quot;
+</code></pre>
+<h2>Options</h2>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>--slides-max N</code></td>
+<td>6</td>
+<td>Maximum slides to extract</td>
+</tr>
+<tr>
+<td><code>--debug</code></td>
+<td>off</td>
+<td>Keep temp files for debugging</td>
+</tr>
+</tbody></table>
+<h2>Environment Variables</h2>
+<p>Required environment variables are loaded from <code>/Users/viticci/clawd/.env</code>:</p>
+<ul>
+<li><code>TELEGRAPH_TOKEN</code> - Telegraph API access token</li>
+<li><code>OPENAI_API_KEY</code> - For GPT-5.2 summarization</li>
+</ul>
+<h2>Output</h2>
+<p>Telegraph Instant View article with:</p>
+<ul>
+<li>📺 Video link at top</li>
+<li>🖼️ Slides interleaved with timestamped sections</li>
+<li>⏱️ Key moments with timestamps</li>
+<li>💬 Notable quotes as blockquotes</li>
+<li>✨ Proper title from YouTube</li>
+</ul>
+<h2>Architecture</h2>
+<pre><code>YouTube URL
+    │
+    ├─► summarize --extract (get video title)
+    │
+    ├─► summarize --slides (extract key frames)
+    │
+    ├─► summarize --timestamps (GPT-5.2 summary)
+    │
+    ├─► catbox.moe (upload images)
+    │
+    └─► Telegraph API (create article)
+</code></pre>
+<h2>Key Features</h2>
+<h3>Image Hosting: catbox.moe</h3>
+<ul>
+<li>No API key required</li>
+<li>No expiration</li>
+<li>Reliable CDN</li>
+<li>Direct URL embedding</li>
+</ul>
+<h3>LLM: OpenAI GPT-5.2</h3>
+<ul>
+<li>Fast (~4-5 seconds)</li>
+<li>High quality summaries</li>
+<li>Automatic timestamp extraction</li>
+</ul>
+<h3>Layout: Interleaved Images</h3>
+<ul>
+<li>Images distributed across timestamp sections</li>
+<li>Not grouped at top</li>
+<li>Each major section gets a relevant slide</li>
+</ul>
+<h2>⚠️ Important Notes</h2>
+<h3>Instant View Timing</h3>
+<p>Telegram needs <strong>1-2 minutes</strong> to generate Instant View for new pages. If the ⚡ button doesn&#39;t appear immediately, wait and try again.</p>
+<h3>Script Requirements</h3>
+<ul>
+<li>Uses <strong>zsh</strong> (not bash) for associative array support</li>
+<li>Requires: <code>summarize</code>, <code>jq</code>, <code>curl</code></li>
+<li>Optional: <code>ffmpeg</code> (for local video processing)</li>
+</ul>
+<h3>Always Use the Script</h3>
+<p><strong>NEVER manually create Telegraph content.</strong> Always use <code>generate.sh</code>:</p>
+<ul>
+<li>Ensures proper h4 headers (required for Instant View)</li>
+<li>Distributes images correctly</li>
+<li>Extracts video title automatically</li>
+</ul>
+<h2>Dependencies</h2>
+<ul>
+<li><code>summarize</code> v0.10.0+ (<code>brew install steipete/tap/summarize</code>)</li>
+<li><code>jq</code> (<code>brew install jq</code>)</li>
+<li><code>curl</code> (pre-installed on macOS)</li>
+<li>OpenAI API key with GPT-5.2 access</li>
+</ul>
+<h2>Processing Time</h2>
+<table>
+<thead>
+<tr>
+<th>Video Length</th>
+<th>Approx. Time</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&lt; 15 min</td>
+<td>20-30s</td>
+</tr>
+<tr>
+<td>15-30 min</td>
+<td>30-45s</td>
+</tr>
+<tr>
+<td>30+ min</td>
+<td>45-60s+</td>
+</tr>
+</tbody></table>
+<h2>Troubleshooting</h2>
+<h3>&quot;Failed to get summary&quot;</h3>
+<ul>
+<li>Check <code>OPENAI_API_KEY</code> is set</li>
+<li>Verify API key has GPT-5.2 access</li>
+<li>Try with <code>--debug</code> flag</li>
+</ul>
+<h3>No Instant View button</h3>
+<ul>
+<li>Wait 1-2 minutes for Telegram to process</li>
+<li>Verify article has content (not empty)</li>
+<li>Check images loaded (visit Telegraph URL directly)</li>
+</ul>
+<h3>Images not showing</h3>
+<ul>
+<li>catbox.moe might be temporarily down</li>
+<li>Check upload succeeded in debug output</li>
+<li>Verify URLs are HTTPS</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/viticci/youtube-instant-article/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/viticci/youtube-instant-article" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/viticci/youtube-instant-article/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@viticci</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Media & Streaming</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

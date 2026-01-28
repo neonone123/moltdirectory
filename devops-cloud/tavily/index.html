@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AI-optimized web search using Tavily Search API">
+  <title>tavily - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to DevOps & Cloud</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">DevOps & Cloud</a>
+                <span class="skill-page-author">by @bert-builder</span>
+              </div>
+              <h1 class="skill-page-title">tavily</h1>
+              <p class="skill-page-desc">AI-optimized web search using Tavily Search API</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Tavily AI Search</h1>
+<h2>Overview</h2>
+<p>Tavily is a search engine specifically optimized for Large Language Models and AI applications. Unlike traditional search APIs, Tavily provides AI-ready results with optional answer generation, clean content extraction, and domain filtering capabilities.</p>
+<p><strong>Key capabilities:</strong></p>
+<ul>
+<li>AI-generated answer summaries from search results</li>
+<li>Clean, structured results optimized for LLM processing</li>
+<li>Fast (<code>basic</code>) and comprehensive (<code>advanced</code>) search modes</li>
+<li>Domain filtering (include/exclude specific sources)</li>
+<li>News-focused search for current events</li>
+<li>Image search with relevant visual content</li>
+<li>Raw content extraction for deeper analysis</li>
+</ul>
+<h2>Architecture</h2>
+<pre><code class="language-mermaid">graph TB
+    A[User Query] --&gt; B{Search Mode}
+    B --&gt;|basic| C[Fast Search&lt;br/&gt;1-2s response]
+    B --&gt;|advanced| D[Comprehensive Search&lt;br/&gt;5-10s response]
+    
+    C --&gt; E[Tavily API]
+    D --&gt; E
+    
+    E --&gt; F{Topic Filter}
+    F --&gt;|general| G[Broad Web Search]
+    F --&gt;|news| H[News Sources&lt;br/&gt;Last 7 days]
+    
+    G --&gt; I[Domain Filtering]
+    H --&gt; I
+    
+    I --&gt; J{Include Domains?}
+    J --&gt;|yes| K[Filter to Specific Domains]
+    J --&gt;|no| L{Exclude Domains?}
+    K --&gt; M[Search Results]
+    L --&gt;|yes| N[Remove Unwanted Domains]
+    L --&gt;|no| M
+    N --&gt; M
+    
+    M --&gt; O{Response Options}
+    O --&gt; P[AI Answer&lt;br/&gt;Summary]
+    O --&gt; Q[Structured Results&lt;br/&gt;Title, URL, Content, Score]
+    O --&gt; R[Images&lt;br/&gt;if requested]
+    O --&gt; S[Raw HTML Content&lt;br/&gt;if requested]
+    
+    P --&gt; T[Return to Agent]
+    Q --&gt; T
+    R --&gt; T
+    S --&gt; T
+    
+    style E fill:#4A90E2
+    style P fill:#7ED321
+    style Q fill:#7ED321
+    style R fill:#F5A623
+    style S fill:#F5A623
+</code></pre>
+<h2>Quick Start</h2>
+<h3>Basic Search</h3>
+<pre><code class="language-bash"># Simple query with AI answer
+scripts/tavily_search.py &quot;What is quantum computing?&quot;
+
+# Multiple results
+scripts/tavily_search.py &quot;Python best practices&quot; --max-results 10
+</code></pre>
+<h3>Advanced Search</h3>
+<pre><code class="language-bash"># Comprehensive research mode
+scripts/tavily_search.py &quot;Climate change solutions&quot; --depth advanced
+
+# News-focused search
+scripts/tavily_search.py &quot;AI developments 2026&quot; --topic news
+</code></pre>
+<h3>Domain Filtering</h3>
+<pre><code class="language-bash"># Search only trusted domains
+scripts/tavily_search.py &quot;Python tutorials&quot; \
+  --include-domains python.org docs.python.org realpython.com
+
+# Exclude low-quality sources
+scripts/tavily_search.py &quot;How to code&quot; \
+  --exclude-domains w3schools.com geeksforgeeks.org
+</code></pre>
+<h3>With Images</h3>
+<pre><code class="language-bash"># Include relevant images
+scripts/tavily_search.py &quot;Eiffel Tower architecture&quot; --images
+</code></pre>
+<h2>Search Modes</h2>
+<h3>Basic vs Advanced</h3>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Speed</th>
+<th>Coverage</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>basic</strong></td>
+<td>1-2s</td>
+<td>Good</td>
+<td>Quick facts, simple queries</td>
+</tr>
+<tr>
+<td><strong>advanced</strong></td>
+<td>5-10s</td>
+<td>Excellent</td>
+<td>Research, complex topics, comprehensive analysis</td>
+</tr>
+</tbody></table>
+<p><strong>Decision tree:</strong></p>
+<ol>
+<li>Need a quick fact or definition? → Use <code>basic</code></li>
+<li>Researching a complex topic? → Use <code>advanced</code></li>
+<li>Need multiple perspectives? → Use <code>advanced</code></li>
+<li>Time-sensitive query? → Use <code>basic</code></li>
+</ol>
+<h3>General vs News</h3>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>Time Range</th>
+<th>Sources</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>general</strong></td>
+<td>All time</td>
+<td>Broad web</td>
+<td>Evergreen content, tutorials, documentation</td>
+</tr>
+<tr>
+<td><strong>news</strong></td>
+<td>Last 7 days</td>
+<td>News sites</td>
+<td>Current events, recent developments, breaking news</td>
+</tr>
+</tbody></table>
+<p><strong>Decision tree:</strong></p>
+<ol>
+<li>Query contains &quot;latest&quot;, &quot;recent&quot;, &quot;current&quot;, &quot;today&quot;? → Use <code>news</code></li>
+<li>Looking for historical or evergreen content? → Use <code>general</code></li>
+<li>Need up-to-date information? → Use <code>news</code></li>
+</ol>
+<h2>API Key Setup</h2>
+<h3>Option 1: Clawdbot Config (Recommended)</h3>
+<p>Add to your Clawdbot config:</p>
+<pre><code class="language-json">{
+  &quot;skills&quot;: {
+    &quot;entries&quot;: {
+      &quot;tavily&quot;: {
+        &quot;enabled&quot;: true,
+        &quot;apiKey&quot;: &quot;tvly-YOUR_API_KEY_HERE&quot;
+      }
+    }
+  }
+}
+</code></pre>
+<p>Access in scripts via Clawdbot&#39;s config system.</p>
+<h3>Option 2: Environment Variable</h3>
+<pre><code class="language-bash">export TAVILY_API_KEY=&quot;tvly-YOUR_API_KEY_HERE&quot;
+</code></pre>
+<p>Add to <code>~/.clawdbot/.env</code> or your shell profile.</p>
+<h3>Getting an API Key</h3>
+<ol>
+<li>Visit <a href="https://tavily.com">https://tavily.com</a></li>
+<li>Sign up for an account</li>
+<li>Navigate to your dashboard</li>
+<li>Generate an API key (starts with <code>tvly-</code>)</li>
+<li>Note your plan&#39;s rate limits and credit allocation</li>
+</ol>
+<h2>Common Use Cases</h2>
+<h3>1. Research &amp; Fact-Finding</h3>
+<pre><code class="language-bash"># Comprehensive research with answer
+scripts/tavily_search.py &quot;Explain quantum entanglement&quot; --depth advanced
+
+# Multiple authoritative sources
+scripts/tavily_search.py &quot;Best practices for REST API design&quot; \
+  --max-results 10 \
+  --include-domains github.com microsoft.com google.com
+</code></pre>
+<h3>2. Current Events</h3>
+<pre><code class="language-bash"># Latest news
+scripts/tavily_search.py &quot;AI policy updates&quot; --topic news
+
+# Recent developments in a field
+scripts/tavily_search.py &quot;quantum computing breakthroughs&quot; \
+  --topic news \
+  --depth advanced
+</code></pre>
+<h3>3. Domain-Specific Research</h3>
+<pre><code class="language-bash"># Academic sources only
+scripts/tavily_search.py &quot;machine learning algorithms&quot; \
+  --include-domains arxiv.org scholar.google.com ieee.org
+
+# Technical documentation
+scripts/tavily_search.py &quot;React hooks guide&quot; \
+  --include-domains react.dev
+</code></pre>
+<h3>4. Visual Research</h3>
+<pre><code class="language-bash"># Gather visual references
+scripts/tavily_search.py &quot;modern web design trends&quot; \
+  --images \
+  --max-results 10
+</code></pre>
+<h3>5. Content Extraction</h3>
+<pre><code class="language-bash"># Get raw HTML content for deeper analysis
+scripts/tavily_search.py &quot;Python async/await&quot; \
+  --raw-content \
+  --max-results 5
+</code></pre>
+<h2>Response Handling</h2>
+<h3>AI Answer</h3>
+<p>The AI-generated answer provides a concise summary synthesized from search results:</p>
+<pre><code class="language-python">{
+  &quot;answer&quot;: &quot;Quantum computing is a type of computing that uses quantum-mechanical phenomena...&quot;
+}
+</code></pre>
+<p><strong>Use when:</strong></p>
+<ul>
+<li>Need a quick summary</li>
+<li>Want synthesized information from multiple sources</li>
+<li>Looking for a direct answer to a question</li>
+</ul>
+<p><strong>Skip when</strong> (<code>--no-answer</code>):</p>
+<ul>
+<li>Only need source URLs</li>
+<li>Want to form your own synthesis</li>
+<li>Conserving API credits</li>
+</ul>
+<h3>Structured Results</h3>
+<p>Each result includes:</p>
+<ul>
+<li><code>title</code>: Page title</li>
+<li><code>url</code>: Source URL</li>
+<li><code>content</code>: Extracted text snippet</li>
+<li><code>score</code>: Relevance score (0-1)</li>
+<li><code>raw_content</code>: Full HTML (if <code>--raw-content</code> enabled)</li>
+</ul>
+<h3>Images</h3>
+<p>When <code>--images</code> is enabled, returns URLs of relevant images found during search.</p>
+<h2>Best Practices</h2>
+<h3>1. Choose the Right Search Depth</h3>
+<ul>
+<li>Start with <code>basic</code> for most queries (faster, cheaper)</li>
+<li>Escalate to <code>advanced</code> only when:<ul>
+<li>Initial results are insufficient</li>
+<li>Topic is complex or nuanced</li>
+<li>Need comprehensive coverage</li>
+</ul>
+</li>
+</ul>
+<h3>2. Use Domain Filtering Strategically</h3>
+<p><strong>Include domains for:</strong></p>
+<ul>
+<li>Academic research (<code>.edu</code> domains)</li>
+<li>Official documentation (official project sites)</li>
+<li>Trusted news sources</li>
+<li>Known authoritative sources</li>
+</ul>
+<p><strong>Exclude domains for:</strong></p>
+<ul>
+<li>Known low-quality content farms</li>
+<li>Irrelevant content types (Pinterest for non-visual queries)</li>
+<li>Sites with paywalls or access restrictions</li>
+</ul>
+<h3>3. Optimize for Cost</h3>
+<ul>
+<li>Use <code>basic</code> depth as default</li>
+<li>Limit <code>max_results</code> to what you&#39;ll actually use</li>
+<li>Disable <code>include_raw_content</code> unless needed</li>
+<li>Cache results locally for repeated queries</li>
+</ul>
+<h3>4. Handle Errors Gracefully</h3>
+<p>The script provides helpful error messages:</p>
+<pre><code class="language-bash"># Missing API key
+Error: Tavily API key required
+Setup: Set TAVILY_API_KEY environment variable or pass --api-key
+
+# Package not installed
+Error: tavily-python package not installed
+To install: pip install tavily-python
+</code></pre>
+<h2>Integration Patterns</h2>
+<h3>Programmatic Usage</h3>
+<pre><code class="language-python">from tavily_search import search
+
+result = search(
+    query=&quot;What is machine learning?&quot;,
+    api_key=&quot;tvly-...&quot;,
+    search_depth=&quot;advanced&quot;,
+    max_results=10
+)
+
+if result.get(&quot;success&quot;):
+    print(result[&quot;answer&quot;])
+    for item in result[&quot;results&quot;]:
+        print(f&quot;{item[&#39;title&#39;]}: {item[&#39;url&#39;]}&quot;)
+</code></pre>
+<h3>JSON Output for Parsing</h3>
+<pre><code class="language-bash">scripts/tavily_search.py &quot;Python tutorials&quot; --json &gt; results.json
+</code></pre>
+<h3>Chaining with Other Tools</h3>
+<pre><code class="language-bash"># Search and extract content
+scripts/tavily_search.py &quot;React documentation&quot; --json | \
+  jq -r &#39;.results[].url&#39; | \
+  xargs -I {} curl -s {}
+</code></pre>
+<h2>Comparison with Other Search APIs</h2>
+<p><strong>vs Brave Search:</strong></p>
+<ul>
+<li>✅ AI answer generation</li>
+<li>✅ Raw content extraction</li>
+<li>✅ Better domain filtering</li>
+<li>❌ Slower than Brave</li>
+<li>❌ Costs credits</li>
+</ul>
+<p><strong>vs Perplexity:</strong></p>
+<ul>
+<li>✅ More control over sources</li>
+<li>✅ Raw content available</li>
+<li>✅ Dedicated news mode</li>
+<li>≈ Similar answer quality</li>
+<li>≈ Similar speed</li>
+</ul>
+<p><strong>vs Google Custom Search:</strong></p>
+<ul>
+<li>✅ LLM-optimized results</li>
+<li>✅ Answer generation</li>
+<li>✅ Simpler API</li>
+<li>❌ Smaller index</li>
+<li>≈ Similar cost structure</li>
+</ul>
+<h2>Troubleshooting</h2>
+<h3>Script Won&#39;t Run</h3>
+<pre><code class="language-bash"># Make executable
+chmod +x scripts/tavily_search.py
+
+# Check Python version (requires 3.6+)
+python3 --version
+
+# Install dependencies
+pip install tavily-python
+</code></pre>
+<h3>API Key Issues</h3>
+<pre><code class="language-bash"># Verify API key format (should start with tvly-)
+echo $TAVILY_API_KEY
+
+# Test with explicit key
+scripts/tavily_search.py &quot;test&quot; --api-key &quot;tvly-...&quot;
+</code></pre>
+<h3>Rate Limit Errors</h3>
+<ul>
+<li>Check your plan&#39;s credit allocation at <a href="https://tavily.com">https://tavily.com</a></li>
+<li>Reduce <code>max_results</code> to conserve credits</li>
+<li>Use <code>basic</code> depth instead of <code>advanced</code></li>
+<li>Implement local caching for repeated queries</li>
+</ul>
+<h2>Resources</h2>
+<p>See <a href="references/api-reference.md">api-reference.md</a> for:</p>
+<ul>
+<li>Complete API parameter documentation</li>
+<li>Response format specifications</li>
+<li>Error handling details</li>
+<li>Cost and rate limit information</li>
+<li>Advanced usage examples</li>
+</ul>
+<h2>Dependencies</h2>
+<ul>
+<li>Python 3.6+</li>
+<li><code>tavily-python</code> package (install: <code>pip install tavily-python</code>)</li>
+<li>Valid Tavily API key</li>
+</ul>
+<h2>Credits &amp; Attribution</h2>
+<ul>
+<li>Tavily API: <a href="https://tavily.com">https://tavily.com</a></li>
+<li>Python SDK: <a href="https://github.com/tavily-ai/tavily-python">https://github.com/tavily-ai/tavily-python</a></li>
+<li>Documentation: <a href="https://docs.tavily.com">https://docs.tavily.com</a></li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/bert-builder/tavily/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/bert-builder/tavily" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/bert-builder/tavily/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@bert-builder</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">DevOps & Cloud</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

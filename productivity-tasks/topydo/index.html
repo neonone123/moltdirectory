@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage todo.txt tasks using topydo CLI. Add, list, complete, prioritize, tag">
+  <title>topydo - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Productivity & Tasks</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Productivity & Tasks</a>
+                <span class="skill-page-author">by @bastos</span>
+              </div>
+              <h1 class="skill-page-title">topydo</h1>
+              <p class="skill-page-desc">Manage todo.txt tasks using topydo CLI. Add, list, complete, prioritize, tag</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>topydo - Todo.txt Task Manager</h1>
+<p>topydo is a powerful CLI for managing tasks in the todo.txt format. It supports dependencies, due dates, start dates, recurrence, priorities, projects, and contexts.</p>
+<h2>Task Format Reference</h2>
+<pre><code>(A) 2025-01-11 Task text +Project @Context due:2025-01-15 t:2025-01-10 rec:1w star:1
+│   │          │         │        │        │             │            │      │
+│   │          │         │        │        │             │            │      └─ Star marker
+│   │          │         │        │        │             │            └─ Recurrence
+│   │          │         │        │        │             └─ Start/threshold date
+│   │          │         │        │        └─ Due date
+│   │          │         │        └─ Context
+│   │          │         └─ Project
+│   │          └─ Task description
+│   └─ Creation date
+└─ Priority (A-Z)
+</code></pre>
+<h2>Installation</h2>
+<h3>Homebrew (macOS, preferred)</h3>
+<pre><code class="language-bash">brew install topydo
+</code></pre>
+<h3>pip (all platforms)</h3>
+<pre><code class="language-bash">pip3 install topydo
+</code></pre>
+<p>With optional features:</p>
+<pre><code class="language-bash">pip3 install &#39;topydo[columns,prompt,ical]&#39;
+</code></pre>
+<h3>apt (Ubuntu/Debian)</h3>
+<pre><code class="language-bash">sudo apt install python3-pip &amp;&amp; pip3 install topydo
+</code></pre>
+<h2>Configuration</h2>
+<p>Config file locations (in order of precedence):</p>
+<ul>
+<li><code>topydo.conf</code> or <code>.topydo</code> (current directory)</li>
+<li><code>~/.topydo</code> or <code>~/.config/topydo/config</code></li>
+<li><code>/etc/topydo.conf</code></li>
+</ul>
+<p>Example <code>~/.topydo</code>:</p>
+<pre><code class="language-ini">[topydo]
+filename = ~/todo.txt
+archive_filename = ~/done.txt
+colors = 1
+identifiers = text
+
+[add]
+auto_creation_date = 1
+
+[sort]
+sort_string = desc:importance,due,desc:priority
+ignore_weekends = 1
+</code></pre>
+<h2>Adding Tasks</h2>
+<p>Basic task:</p>
+<pre><code class="language-bash">topydo add &quot;Buy groceries&quot;
+</code></pre>
+<p>With priority (A is highest):</p>
+<pre><code class="language-bash">topydo add &quot;(A) Urgent task&quot;
+</code></pre>
+<p>With project and context:</p>
+<pre><code class="language-bash">topydo add &quot;Write report +ProjectX @office&quot;
+</code></pre>
+<p>With due date (absolute):</p>
+<pre><code class="language-bash">topydo add &quot;Submit proposal due:2025-01-15&quot;
+</code></pre>
+<p>With due date (relative):</p>
+<pre><code class="language-bash">topydo add &quot;Call mom due:tomorrow&quot;
+</code></pre>
+<p>With due date (weekday):</p>
+<pre><code class="language-bash">topydo add &quot;Weekly review due:fri&quot;
+</code></pre>
+<p>With start/threshold date:</p>
+<pre><code class="language-bash">topydo add &quot;Future task t:2025-02-01&quot;
+</code></pre>
+<p>With recurrence (weekly):</p>
+<pre><code class="language-bash">topydo add &quot;Water plants due:sat rec:1w&quot;
+</code></pre>
+<p>With strict recurrence (always on 1st of month):</p>
+<pre><code class="language-bash">topydo add &quot;Pay rent due:2025-02-01 rec:+1m&quot;
+</code></pre>
+<p>With dependency (must complete before task 1):</p>
+<pre><code class="language-bash">topydo add &quot;Write tests before:1&quot;
+</code></pre>
+<p>As subtask of task 1:</p>
+<pre><code class="language-bash">topydo add &quot;Review code partof:1&quot;
+</code></pre>
+<h2>Listing Tasks</h2>
+<p>List all relevant tasks:</p>
+<pre><code class="language-bash">topydo ls
+</code></pre>
+<p>Include hidden/blocked tasks:</p>
+<pre><code class="language-bash">topydo ls -x
+</code></pre>
+<p>Filter by project:</p>
+<pre><code class="language-bash">topydo ls +ProjectX
+</code></pre>
+<p>Filter by context:</p>
+<pre><code class="language-bash">topydo ls @office
+</code></pre>
+<p>Filter by priority:</p>
+<pre><code class="language-bash">topydo ls &quot;(A)&quot;
+</code></pre>
+<p>Filter by priority range:</p>
+<pre><code class="language-bash">topydo ls &quot;(&gt;C)&quot;
+</code></pre>
+<p>Filter tasks due today:</p>
+<pre><code class="language-bash">topydo ls due:today
+</code></pre>
+<p>Filter overdue tasks:</p>
+<pre><code class="language-bash">topydo ls &quot;due:&lt;today&quot;
+</code></pre>
+<p>Filter tasks due by Friday:</p>
+<pre><code class="language-bash">topydo ls &quot;due:&lt;=fri&quot;
+</code></pre>
+<p>Combine multiple filters:</p>
+<pre><code class="language-bash">topydo ls +ProjectX @office due:today
+</code></pre>
+<p>Exclude context:</p>
+<pre><code class="language-bash">topydo ls -- -@waiting
+</code></pre>
+<p>Sort by priority:</p>
+<pre><code class="language-bash">topydo ls -s priority
+</code></pre>
+<p>Sort descending by due date, then priority:</p>
+<pre><code class="language-bash">topydo ls -s desc:due,priority
+</code></pre>
+<p>Group by project:</p>
+<pre><code class="language-bash">topydo ls -g project
+</code></pre>
+<p>Limit to 5 results:</p>
+<pre><code class="language-bash">topydo ls -n 5
+</code></pre>
+<p>Custom output format:</p>
+<pre><code class="language-bash">topydo ls -F &quot;%I %p %s %{due:}d&quot;
+</code></pre>
+<p>Output as JSON:</p>
+<pre><code class="language-bash">topydo ls -f json
+</code></pre>
+<h2>Completing Tasks</h2>
+<p>Complete task by ID:</p>
+<pre><code class="language-bash">topydo do 1
+</code></pre>
+<p>Complete multiple tasks:</p>
+<pre><code class="language-bash">topydo do 1 2 3
+</code></pre>
+<p>Complete all tasks due today:</p>
+<pre><code class="language-bash">topydo do -e due:today
+</code></pre>
+<p>Complete with custom date:</p>
+<pre><code class="language-bash">topydo do -d yesterday 1
+</code></pre>
+<h2>Priority Management</h2>
+<p>Set priority A:</p>
+<pre><code class="language-bash">topydo pri 1 A
+</code></pre>
+<p>Set priority for multiple tasks:</p>
+<pre><code class="language-bash">topydo pri 1 2 3 B
+</code></pre>
+<p>Remove priority:</p>
+<pre><code class="language-bash">topydo depri 1
+</code></pre>
+<h2>Tagging Tasks</h2>
+<p>Set due date:</p>
+<pre><code class="language-bash">topydo tag 1 due tomorrow
+</code></pre>
+<p>Star a task:</p>
+<pre><code class="language-bash">topydo tag 1 star 1
+</code></pre>
+<p>Remove a tag:</p>
+<pre><code class="language-bash">topydo tag 1 due
+</code></pre>
+<p>Set custom tag with relative date:</p>
+<pre><code class="language-bash">topydo tag -r 1 review 2w
+</code></pre>
+<h2>Modifying Tasks</h2>
+<p>Append text to task:</p>
+<pre><code class="language-bash">topydo append 1 &quot;additional notes&quot;
+</code></pre>
+<p>Append due date:</p>
+<pre><code class="language-bash">topydo append 1 due:friday
+</code></pre>
+<p>Edit task in text editor:</p>
+<pre><code class="language-bash">topydo edit 1
+</code></pre>
+<p>Edit all tasks in project:</p>
+<pre><code class="language-bash">topydo edit -e +ProjectX
+</code></pre>
+<h2>Deleting Tasks</h2>
+<p>Delete by ID:</p>
+<pre><code class="language-bash">topydo del 1
+</code></pre>
+<p>Delete multiple:</p>
+<pre><code class="language-bash">topydo del 1 2 3
+</code></pre>
+<p>Delete by expression:</p>
+<pre><code class="language-bash">topydo del -e completed:today
+</code></pre>
+<h2>Dependencies</h2>
+<p>Add dependency (task 2 depends on task 1):</p>
+<pre><code class="language-bash">topydo dep add 2 to 1
+</code></pre>
+<p>Task 2 is part of task 1:</p>
+<pre><code class="language-bash">topydo dep add 2 partof 1
+</code></pre>
+<p>List what depends on task 1:</p>
+<pre><code class="language-bash">topydo dep ls 1 to
+</code></pre>
+<p>List what task 1 depends on:</p>
+<pre><code class="language-bash">topydo dep ls to 1
+</code></pre>
+<p>Remove dependency:</p>
+<pre><code class="language-bash">topydo dep rm 2 to 1
+</code></pre>
+<p>Visualize dependencies (requires graphviz):</p>
+<pre><code class="language-bash">topydo dep dot 1 | dot -Tpng -o deps.png
+</code></pre>
+<h2>Postponing Tasks</h2>
+<p>Postpone by 1 week:</p>
+<pre><code class="language-bash">topydo postpone 1 1w
+</code></pre>
+<p>Postpone by 3 days:</p>
+<pre><code class="language-bash">topydo postpone 1 3d
+</code></pre>
+<p>Postpone including start date:</p>
+<pre><code class="language-bash">topydo postpone -s 1 1w
+</code></pre>
+<h2>Other Commands</h2>
+<p>Sort the todo.txt file:</p>
+<pre><code class="language-bash">topydo sort
+</code></pre>
+<p>Revert last command:</p>
+<pre><code class="language-bash">topydo revert
+</code></pre>
+<p>Show revert history:</p>
+<pre><code class="language-bash">topydo revert ls
+</code></pre>
+<p>List all projects:</p>
+<pre><code class="language-bash">topydo lsprj
+</code></pre>
+<p>List all contexts:</p>
+<pre><code class="language-bash">topydo lscon
+</code></pre>
+<p>Archive completed tasks:</p>
+<pre><code class="language-bash">topydo archive
+</code></pre>
+<h2>Relative Dates</h2>
+<ul>
+<li><code>today</code>, <code>tomorrow</code>, <code>yesterday</code></li>
+<li>Weekdays: <code>mon</code>, <code>tue</code>, <code>wed</code>, <code>thu</code>, <code>fri</code>, <code>sat</code>, <code>sun</code></li>
+<li>Periods: <code>1d</code> (days), <code>2w</code> (weeks), <code>3m</code> (months), <code>1y</code> (years)</li>
+<li>Business days: <code>5b</code> (excludes weekends)</li>
+</ul>
+<h2>Sort/Group Fields</h2>
+<ul>
+<li><code>priority</code>, <code>due</code>, <code>creation</code>, <code>completed</code></li>
+<li><code>importance</code>, <code>importance-avg</code></li>
+<li><code>project</code>, <code>context</code>, <code>text</code>, <code>length</code></li>
+</ul>
+<p>Prefix with <code>desc:</code> for descending. Example: <code>desc:importance,due</code></p>
+<h2>Tips</h2>
+<ul>
+<li>Use a clean, human-readable format to present results to the user</li>
+<li>Enable stable text IDs: set <code>identifiers = text</code> in config</li>
+<li>Star important tasks: add <code>star:1</code> tag</li>
+<li>Hidden tags by default: <code>id</code>, <code>p</code>, <code>ical</code></li>
+<li>Importance = priority + due date proximity + star status</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/bastos/topydo/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/bastos/topydo" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/bastos/topydo/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@bastos</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Productivity & Tasks</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

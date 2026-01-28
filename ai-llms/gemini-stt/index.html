@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Transcribe audio files using Google's Gemini API or Vertex AI">
+  <title>gemini-stt - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to AI & LLMs</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">AI & LLMs</a>
+                <span class="skill-page-author">by @araa47</span>
+              </div>
+              <h1 class="skill-page-title">gemini-stt</h1>
+              <p class="skill-page-desc">Transcribe audio files using Google's Gemini API or Vertex AI</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Gemini Speech-to-Text Skill</h1>
+<p>Transcribe audio files using Google&#39;s Gemini API or Vertex AI. Default model is <code>gemini-2.0-flash-lite</code> for fastest transcription.</p>
+<h2>Authentication (choose one)</h2>
+<h3>Option 1: Vertex AI with Application Default Credentials (Recommended)</h3>
+<pre><code class="language-bash">gcloud auth application-default login
+gcloud config set project YOUR_PROJECT_ID
+</code></pre>
+<p>The script will automatically detect and use ADC when available.</p>
+<h3>Option 2: Direct Gemini API Key</h3>
+<p>Set <code>GEMINI_API_KEY</code> in environment (e.g., <code>~/.env</code> or <code>~/.clawdbot/.env</code>)</p>
+<h2>Requirements</h2>
+<ul>
+<li>Python 3.10+ (no external dependencies)</li>
+<li>Either GEMINI_API_KEY or gcloud CLI with ADC configured</li>
+</ul>
+<h2>Supported Formats</h2>
+<ul>
+<li><code>.ogg</code> / <code>.opus</code> (Telegram voice messages)</li>
+<li><code>.mp3</code></li>
+<li><code>.wav</code></li>
+<li><code>.m4a</code></li>
+</ul>
+<h2>Usage</h2>
+<pre><code class="language-bash"># Auto-detect auth (tries ADC first, then GEMINI_API_KEY)
+python ~/.claude/skills/gemini-stt/transcribe.py /path/to/audio.ogg
+
+# Force Vertex AI
+python ~/.claude/skills/gemini-stt/transcribe.py /path/to/audio.ogg --vertex
+
+# With a specific model
+python ~/.claude/skills/gemini-stt/transcribe.py /path/to/audio.ogg --model gemini-2.5-pro
+
+# Vertex AI with specific project and region
+python ~/.claude/skills/gemini-stt/transcribe.py /path/to/audio.ogg --vertex --project my-project --region us-central1
+
+# With Clawdbot media
+python ~/.claude/skills/gemini-stt/transcribe.py ~/.clawdbot/media/inbound/voice-message.ogg
+</code></pre>
+<h2>Options</h2>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>&lt;audio_file&gt;</code></td>
+<td>Path to the audio file (required)</td>
+</tr>
+<tr>
+<td><code>--model</code>, <code>-m</code></td>
+<td>Gemini model to use (default: <code>gemini-2.0-flash-lite</code>)</td>
+</tr>
+<tr>
+<td><code>--vertex</code>, <code>-v</code></td>
+<td>Force use of Vertex AI with ADC</td>
+</tr>
+<tr>
+<td><code>--project</code>, <code>-p</code></td>
+<td>GCP project ID (for Vertex, defaults to gcloud config)</td>
+</tr>
+<tr>
+<td><code>--region</code>, <code>-r</code></td>
+<td>GCP region (for Vertex, default: <code>us-central1</code>)</td>
+</tr>
+</tbody></table>
+<h2>Supported Models</h2>
+<p>Any Gemini model that supports audio input can be used. Recommended models:</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>gemini-2.0-flash-lite</code></td>
+<td><strong>Default.</strong> Fastest transcription speed.</td>
+</tr>
+<tr>
+<td><code>gemini-2.0-flash</code></td>
+<td>Fast and cost-effective.</td>
+</tr>
+<tr>
+<td><code>gemini-2.5-flash-lite</code></td>
+<td>Lightweight 2.5 model.</td>
+</tr>
+<tr>
+<td><code>gemini-2.5-flash</code></td>
+<td>Balanced speed and quality.</td>
+</tr>
+<tr>
+<td><code>gemini-2.5-pro</code></td>
+<td>Higher quality, slower.</td>
+</tr>
+<tr>
+<td><code>gemini-3-flash-preview</code></td>
+<td>Latest flash model.</td>
+</tr>
+<tr>
+<td><code>gemini-3-pro-preview</code></td>
+<td>Latest pro model, best quality.</td>
+</tr>
+</tbody></table>
+<p>See <a href="https://ai.google.dev/gemini-api/docs/models">Gemini API Models</a> for the latest list.</p>
+<h2>How It Works</h2>
+<ol>
+<li>Reads the audio file and base64 encodes it</li>
+<li>Auto-detects authentication:<ul>
+<li>If ADC is available (gcloud), uses Vertex AI endpoint</li>
+<li>Otherwise, uses GEMINI_API_KEY with direct Gemini API</li>
+</ul>
+</li>
+<li>Sends to the selected Gemini model with transcription prompt</li>
+<li>Returns the transcribed text</li>
+</ol>
+<h2>Example Integration</h2>
+<p>For Clawdbot voice message handling:</p>
+<pre><code class="language-bash"># Transcribe incoming voice message
+TRANSCRIPT=$(python ~/.claude/skills/gemini-stt/transcribe.py &quot;$AUDIO_PATH&quot;)
+echo &quot;User said: $TRANSCRIPT&quot;
+</code></pre>
+<h2>Error Handling</h2>
+<p>The script exits with code 1 and prints to stderr on:</p>
+<ul>
+<li>No authentication available (neither ADC nor GEMINI_API_KEY)</li>
+<li>File not found</li>
+<li>API errors</li>
+<li>Missing GCP project (when using Vertex)</li>
+</ul>
+<h2>Notes</h2>
+<ul>
+<li>Uses Gemini 2.0 Flash Lite by default for fastest transcription</li>
+<li>No external Python dependencies (uses stdlib only)</li>
+<li>Automatically detects MIME type from file extension</li>
+<li>Prefers Vertex AI with ADC when available (no API key management needed)</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/araa47/gemini-stt/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/araa47/gemini-stt" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/araa47/gemini-stt/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@araa47</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">AI & LLMs</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

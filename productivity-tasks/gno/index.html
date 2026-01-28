@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Search local documents, files, notes, and knowledge bases">
+  <title>gno - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Productivity & Tasks</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Productivity & Tasks</a>
+                <span class="skill-page-author">by @gmickel</span>
+              </div>
+              <h1 class="skill-page-title">gno</h1>
+              <p class="skill-page-desc">Search local documents, files, notes, and knowledge bases</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>GNO - Local Knowledge Engine</h1>
+<p>Fast local semantic search. Index once, search instantly. No cloud, no API keys.</p>
+<h2>When to Use This Skill</h2>
+<ul>
+<li>User asks to <strong>search files, documents, or notes</strong></li>
+<li>User wants to <strong>find information</strong> in local folders</li>
+<li>User needs to <strong>index a directory</strong> for searching</li>
+<li>User mentions <strong>PDFs, markdown, Word docs, code</strong> to search</li>
+<li>User asks about <strong>knowledge base</strong> or <strong>RAG</strong> setup</li>
+<li>User wants <strong>semantic/vector search</strong> over their files</li>
+<li>User needs to <strong>set up MCP</strong> for document access</li>
+<li>User wants a <strong>web UI</strong> to browse/search documents</li>
+<li>User asks to <strong>get AI answers</strong> from their documents</li>
+<li>User wants to <strong>tag, categorize, or filter</strong> documents</li>
+<li>User asks about <strong>backlinks, wiki links, or related notes</strong></li>
+<li>User wants to <strong>visualize document connections</strong> or see a <strong>knowledge graph</strong></li>
+</ul>
+<h2>Quick Start</h2>
+<pre><code class="language-bash">gno init                              # Initialize in current directory
+gno collection add ~/docs --name docs # Add folder to index
+gno index                             # Build index (ingest + embed)
+gno search &quot;your query&quot;               # BM25 keyword search
+</code></pre>
+<h2>Command Overview</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Commands</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Search</strong></td>
+<td><code>search</code>, <code>vsearch</code>, <code>query</code>, <code>ask</code></td>
+<td>Find documents by keywords, meaning, or get AI answers</td>
+</tr>
+<tr>
+<td><strong>Links</strong></td>
+<td><code>links</code>, <code>backlinks</code>, <code>similar</code>, <code>graph</code></td>
+<td>Navigate document relationships and visualize connections</td>
+</tr>
+<tr>
+<td><strong>Retrieve</strong></td>
+<td><code>get</code>, <code>multi-get</code>, <code>ls</code></td>
+<td>Fetch document content by URI or ID</td>
+</tr>
+<tr>
+<td><strong>Index</strong></td>
+<td><code>init</code>, <code>collection add/list/remove</code>, <code>index</code>, <code>update</code>, <code>embed</code></td>
+<td>Set up and maintain document index</td>
+</tr>
+<tr>
+<td><strong>Tags</strong></td>
+<td><code>tags</code>, <code>tags add</code>, <code>tags rm</code></td>
+<td>Organize and filter documents</td>
+</tr>
+<tr>
+<td><strong>Context</strong></td>
+<td><code>context add/list/rm/check</code></td>
+<td>Add hints to improve search relevance</td>
+</tr>
+<tr>
+<td><strong>Models</strong></td>
+<td><code>models list/use/pull/clear/path</code></td>
+<td>Manage local AI models</td>
+</tr>
+<tr>
+<td><strong>Serve</strong></td>
+<td><code>serve</code></td>
+<td>Web UI for browsing and searching</td>
+</tr>
+<tr>
+<td><strong>MCP</strong></td>
+<td><code>mcp</code>, <code>mcp install/uninstall/status</code></td>
+<td>AI assistant integration</td>
+</tr>
+<tr>
+<td><strong>Skill</strong></td>
+<td><code>skill install/uninstall/show/paths</code></td>
+<td>Install skill for AI agents</td>
+</tr>
+<tr>
+<td><strong>Admin</strong></td>
+<td><code>status</code>, <code>doctor</code>, <code>cleanup</code>, <code>reset</code>, <code>vec</code>, <code>completion</code></td>
+<td>Maintenance and diagnostics</td>
+</tr>
+</tbody></table>
+<h2>Search Modes</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Speed</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>gno search</code></td>
+<td>instant</td>
+<td>Exact keyword matching</td>
+</tr>
+<tr>
+<td><code>gno vsearch</code></td>
+<td>~0.5s</td>
+<td>Finding similar concepts</td>
+</tr>
+<tr>
+<td><code>gno query --fast</code></td>
+<td>~0.7s</td>
+<td>Quick lookups</td>
+</tr>
+<tr>
+<td><code>gno query</code></td>
+<td>~2-3s</td>
+<td>Balanced (default)</td>
+</tr>
+<tr>
+<td><code>gno query --thorough</code></td>
+<td>~5-8s</td>
+<td>Best recall, complex queries</td>
+</tr>
+<tr>
+<td><code>gno ask --answer</code></td>
+<td>~3-5s</td>
+<td>AI-generated answer with citations</td>
+</tr>
+</tbody></table>
+<p><strong>Retry strategy</strong>: Use default first. If no results: rephrase query, then try <code>--thorough</code>.</p>
+<h2>Common Flags</h2>
+<pre><code>-n &lt;num&gt;              Max results (default: 5)
+-c, --collection      Filter to collection
+--tags-any &lt;t1,t2&gt;    Has ANY of these tags
+--tags-all &lt;t1,t2&gt;    Has ALL of these tags
+--json                JSON output
+--files               URI list output
+--line-numbers        Include line numbers
+</code></pre>
+<h2>Global Flags</h2>
+<pre><code>--index &lt;name&gt;    Alternate index (default: &quot;default&quot;)
+--config &lt;path&gt;   Override config file
+--verbose         Verbose logging
+--json            JSON output
+--yes             Non-interactive mode
+--offline         Use cached models only
+--no-color        Disable colors
+--no-pager        Disable paging
+</code></pre>
+<h2>Important: Embedding After Changes</h2>
+<p>If you edit/create files that should be searchable via vector search:</p>
+<pre><code class="language-bash">gno index              # Full re-index (sync + embed)
+# or
+gno embed              # Embed only (if already synced)
+</code></pre>
+<p>MCP <code>gno.sync</code> and <code>gno.capture</code> do NOT auto-embed. Use CLI for embedding.</p>
+<h2>Reference Documentation</h2>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Complete CLI reference (all commands, options, flags)</td>
+<td><a href="cli-reference.md">cli-reference.md</a></td>
+</tr>
+<tr>
+<td>MCP server setup and tools</td>
+<td><a href="mcp-reference.md">mcp-reference.md</a></td>
+</tr>
+<tr>
+<td>Usage examples and patterns</td>
+<td><a href="examples.md">examples.md</a></td>
+</tr>
+</tbody></table>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/gmickel/gno/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/gmickel/gno" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/gmickel/gno/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@gmickel</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Productivity & Tasks</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

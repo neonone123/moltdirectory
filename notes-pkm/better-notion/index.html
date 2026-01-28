@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Full CRUD for Notion pages, databases, and blocks. Create, read, update, delete, search, and query">
+  <title>better-notion - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Notes & PKM</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Notes & PKM</a>
+                <span class="skill-page-author">by @tyler6204</span>
+              </div>
+              <h1 class="skill-page-title">better-notion</h1>
+              <p class="skill-page-desc">Full CRUD for Notion pages, databases, and blocks. Create, read, update, delete, search, and query</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Notion</h1>
+<p>Use the Notion API for pages, data sources (databases), and blocks.</p>
+<h2>Setup</h2>
+<pre><code class="language-bash">mkdir -p ~/.config/notion
+echo &quot;ntn_your_key_here&quot; &gt; ~/.config/notion/api_key
+</code></pre>
+<p>Share target pages/databases with your integration in Notion UI.</p>
+<h2>API Basics</h2>
+<pre><code class="language-bash">NOTION_KEY=$(cat ~/.config/notion/api_key)
+curl -X POST &quot;https://api.notion.com/v1/...&quot; \
+  -H &quot;Authorization: Bearer $NOTION_KEY&quot; \
+  -H &quot;Notion-Version: 2025-09-03&quot; \
+  -H &quot;Content-Type: application/json&quot;
+</code></pre>
+<h2>Common Operations</h2>
+<pre><code class="language-bash"># Search
+curl -X POST &quot;https://api.notion.com/v1/search&quot; -d &#39;{&quot;query&quot;: &quot;title&quot;}&#39;
+
+# Get page
+curl &quot;https://api.notion.com/v1/pages/{page_id}&quot;
+
+# Get page blocks
+curl &quot;https://api.notion.com/v1/blocks/{page_id}/children&quot;
+
+# Create page in database
+curl -X POST &quot;https://api.notion.com/v1/pages&quot; -d &#39;{
+  &quot;parent&quot;: {&quot;data_source_id&quot;: &quot;xxx&quot;},
+  &quot;properties&quot;: {&quot;Name&quot;: {&quot;title&quot;: [{&quot;text&quot;: {&quot;content&quot;: &quot;Item&quot;}}]}}
+}&#39;
+
+# Query database
+curl -X POST &quot;https://api.notion.com/v1/data_sources/{id}/query&quot; -d &#39;{
+  &quot;filter&quot;: {&quot;property&quot;: &quot;Status&quot;, &quot;select&quot;: {&quot;equals&quot;: &quot;Active&quot;}}
+}&#39;
+
+# Update page
+curl -X PATCH &quot;https://api.notion.com/v1/pages/{page_id}&quot; -d &#39;{
+  &quot;properties&quot;: {&quot;Status&quot;: {&quot;select&quot;: {&quot;name&quot;: &quot;Done&quot;}}}
+}&#39;
+
+# Add blocks
+curl -X PATCH &quot;https://api.notion.com/v1/blocks/{page_id}/children&quot; -d &#39;{
+  &quot;children&quot;: [{&quot;type&quot;: &quot;paragraph&quot;, &quot;paragraph&quot;: {&quot;rich_text&quot;: [{&quot;text&quot;: {&quot;content&quot;: &quot;Text&quot;}}]}}]
+}&#39;
+
+# Delete page or block (moves to trash)
+curl -X DELETE &quot;https://api.notion.com/v1/blocks/{block_id}&quot;
+
+# Restore from trash (set archived to false)
+curl -X PATCH &quot;https://api.notion.com/v1/blocks/{block_id}&quot; -d &#39;{&quot;archived&quot;: false}&#39;
+</code></pre>
+<h2>Property Types</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Format</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Title</td>
+<td><code>{&quot;title&quot;: [{&quot;text&quot;: {&quot;content&quot;: &quot;...&quot;}}]}</code></td>
+</tr>
+<tr>
+<td>Text</td>
+<td><code>{&quot;rich_text&quot;: [{&quot;text&quot;: {&quot;content&quot;: &quot;...&quot;}}]}</code></td>
+</tr>
+<tr>
+<td>Select</td>
+<td><code>{&quot;select&quot;: {&quot;name&quot;: &quot;Option&quot;}}</code></td>
+</tr>
+<tr>
+<td>Multi-select</td>
+<td><code>{&quot;multi_select&quot;: [{&quot;name&quot;: &quot;A&quot;}]}</code></td>
+</tr>
+<tr>
+<td>Date</td>
+<td><code>{&quot;date&quot;: {&quot;start&quot;: &quot;2024-01-15&quot;}}</code></td>
+</tr>
+<tr>
+<td>Checkbox</td>
+<td><code>{&quot;checkbox&quot;: true}</code></td>
+</tr>
+<tr>
+<td>Number</td>
+<td><code>{&quot;number&quot;: 42}</code></td>
+</tr>
+<tr>
+<td>URL</td>
+<td><code>{&quot;url&quot;: &quot;https://...&quot;}</code></td>
+</tr>
+</tbody></table>
+<h2>2025-09-03 API Notes</h2>
+<ul>
+<li>Databases = &quot;data sources&quot; in API</li>
+<li>Use <code>data_source_id</code> for both creating pages and querying</li>
+<li>Get <code>data_source_id</code> from search results (the <code>id</code> field)</li>
+<li>Rate limit: ~3 req/sec</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/tyler6204/better-notion/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/tyler6204/better-notion" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/tyler6204/better-notion/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@tyler6204</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Notes & PKM</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

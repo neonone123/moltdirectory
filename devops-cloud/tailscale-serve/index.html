@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="tailscale-serve">
+  <title>tailscale-serve - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to DevOps & Cloud</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">DevOps & Cloud</a>
+                <span class="skill-page-author">by @snopoke</span>
+              </div>
+              <h1 class="skill-page-title">tailscale-serve</h1>
+              <p class="skill-page-desc">tailscale-serve</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Tailscale Serve Skill</h1>
+<p>Manage multiple paths with <code>tailscale serve</code> without conflicts.</p>
+<h2>Key Commands</h2>
+<h3>Check what&#39;s currently served</h3>
+<pre><code class="language-bash">tailscale serve status
+</code></pre>
+<h3>Serve a directory or file at a specific path</h3>
+<pre><code class="language-bash"># Directory
+tailscale serve --bg --set-path /slides /path/to/directory
+
+# Single file
+tailscale serve --bg --set-path /presentation /path/to/file.html
+
+# Port (for running services)
+tailscale serve --bg --set-path /api http://localhost:8080
+</code></pre>
+<h3>Serve from a port at root (replaces everything)</h3>
+<pre><code class="language-bash">tailscale serve --bg 8888
+</code></pre>
+<h3>Remove a specific path</h3>
+<pre><code class="language-bash">tailscale serve --https=443 /slides off
+</code></pre>
+<h3>Reset all serving</h3>
+<pre><code class="language-bash">tailscale serve reset
+</code></pre>
+<h2>Important Notes</h2>
+<ul>
+<li><strong>Path conflicts:</strong> Serving at <code>/</code> will override all other paths</li>
+<li><strong>Background mode:</strong> Use <code>--bg</code> to keep it running</li>
+<li><strong>Multiple paths:</strong> You can serve multiple things simultaneously with different paths</li>
+<li><strong>Status first:</strong> Always check <code>tailscale serve status</code> before adding new paths</li>
+</ul>
+<h2>Common Patterns</h2>
+<h3>Serve presentation alongside control UI</h3>
+<pre><code class="language-bash"># If control UI is at /, serve presentation at a subpath
+tailscale serve --bg --set-path /slides ~/clawd/personal-agents-presentation.html
+
+# Access at: https://[hostname].ts.net/slides
+</code></pre>
+<h3>Serve multiple directories</h3>
+<pre><code class="language-bash">tailscale serve --bg --set-path /docs ~/documents
+tailscale serve --bg --set-path /slides ~/presentations
+tailscale serve --bg --set-path /files ~/files
+</code></pre>
+<h3>Serve a local dev server</h3>
+<pre><code class="language-bash">tailscale serve --bg --set-path /app http://localhost:3000
+</code></pre>
+<h2>Workflow</h2>
+<ol>
+<li>Check current status: <code>tailscale serve status</code></li>
+<li>Choose an unused path (e.g., <code>/slides</code>, <code>/docs</code>, <code>/api</code>)</li>
+<li>Serve with <code>--set-path /your-path /source</code></li>
+<li>Verify with <code>tailscale serve status</code> again</li>
+<li>Share the full URL: <code>https://[hostname].ts.net/your-path</code></li>
+</ol>
+<h2>Troubleshooting</h2>
+<p><strong>&quot;Can&#39;t access my served content&quot;</strong></p>
+<ul>
+<li>Check <code>tailscale serve status</code> - is it at the path you expect?</li>
+<li>Did something else overwrite the root <code>/</code>?</li>
+</ul>
+<p><strong>&quot;Want to replace everything with a port&quot;</strong></p>
+<pre><code class="language-bash">tailscale serve reset
+tailscale serve --bg 8888
+</code></pre>
+<p><strong>&quot;Want to add to existing setup&quot;</strong></p>
+<pre><code class="language-bash"># Don&#39;t use reset! Just add with --set-path
+tailscale serve --bg --set-path /newpath /source
+</code></pre>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/snopoke/tailscale-serve/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/snopoke/tailscale-serve" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/snopoke/tailscale-serve/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@snopoke</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">DevOps & Cloud</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

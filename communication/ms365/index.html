@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ms365">
+  <title>ms365 - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Communication</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Communication</a>
+                <span class="skill-page-author">by @cvsloane</span>
+              </div>
+              <h1 class="skill-page-title">ms365</h1>
+              <p class="skill-page-desc">ms365</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Microsoft 365 Integration</h1>
+<h2>Description</h2>
+<p>Access Microsoft 365 services - Email (Outlook), Calendar, OneDrive, To Do tasks, and Contacts via MS Graph API.</p>
+<h2>Activation</h2>
+<p>Activated when user mentions: outlook, email, calendar, onedrive, microsoft, office 365, o365, ms365, my meetings, my emails, schedule meeting, send email, check calendar, to do, microsoft tasks</p>
+<h2>Configuration</h2>
+<p>Authentication is cached after first login. No environment variables required for device code flow.</p>
+<p>For headless/automated operation, set these environment variables:</p>
+<ul>
+<li>MS365_MCP_CLIENT_ID - Azure AD app client ID</li>
+<li>MS365_MCP_CLIENT_SECRET - Azure AD app secret</li>
+<li>MS365_MCP_TENANT_ID - Tenant ID (use &quot;consumers&quot; for personal accounts)</li>
+</ul>
+<h2>Available Commands</h2>
+<h3>Authentication</h3>
+<pre><code class="language-bash"># Login via device code (interactive)
+python3 /root/clawd/skills/ms365/ms365_cli.py login
+
+# Check authentication status
+python3 /root/clawd/skills/ms365/ms365_cli.py status
+
+# List cached accounts
+python3 /root/clawd/skills/ms365/ms365_cli.py accounts
+
+# Get current user info
+python3 /root/clawd/skills/ms365/ms365_cli.py user
+</code></pre>
+<h3>Email (Outlook)</h3>
+<pre><code class="language-bash"># List recent emails
+python3 /root/clawd/skills/ms365/ms365_cli.py mail list [--top N]
+
+# Read specific email
+python3 /root/clawd/skills/ms365/ms365_cli.py mail read MESSAGE_ID
+
+# Send email
+python3 /root/clawd/skills/ms365/ms365_cli.py mail send --to &quot;recipient@example.com&quot; --subject &quot;Subject&quot; --body &quot;Message body&quot;
+</code></pre>
+<h3>Calendar</h3>
+<pre><code class="language-bash"># List upcoming events
+python3 /root/clawd/skills/ms365/ms365_cli.py calendar list [--top N]
+
+# Create event
+python3 /root/clawd/skills/ms365/ms365_cli.py calendar create --subject &quot;Meeting&quot; --start &quot;2026-01-15T10:00:00&quot; --end &quot;2026-01-15T11:00:00&quot; [--body &quot;Description&quot;] [--timezone &quot;America/Chicago&quot;]
+</code></pre>
+<h3>OneDrive Files</h3>
+<pre><code class="language-bash"># List files in root
+python3 /root/clawd/skills/ms365/ms365_cli.py files list
+
+# List files in folder
+python3 /root/clawd/skills/ms365/ms365_cli.py files list --path &quot;Documents&quot;
+</code></pre>
+<h3>To Do Tasks</h3>
+<pre><code class="language-bash"># List task lists
+python3 /root/clawd/skills/ms365/ms365_cli.py tasks lists
+
+# Get tasks from a list
+python3 /root/clawd/skills/ms365/ms365_cli.py tasks get LIST_ID
+
+# Create task
+python3 /root/clawd/skills/ms365/ms365_cli.py tasks create LIST_ID --title &quot;Task title&quot; [--due &quot;2026-01-20&quot;]
+</code></pre>
+<h3>Contacts</h3>
+<pre><code class="language-bash"># List contacts
+python3 /root/clawd/skills/ms365/ms365_cli.py contacts list [--top N]
+
+# Search contacts
+python3 /root/clawd/skills/ms365/ms365_cli.py contacts search &quot;John&quot;
+</code></pre>
+<h2>Usage Examples</h2>
+<p>User: &quot;Check my outlook email&quot;
+Agent: Runs <code>mail list --top 10</code> command</p>
+<p>User: &quot;What meetings do I have today?&quot;
+Agent: Runs <code>calendar list</code> command</p>
+<p>User: &quot;Send an email to <a href="mailto:john@company.com">john@company.com</a> about the project update&quot;
+Agent: Runs <code>mail send</code> with appropriate parameters</p>
+<p>User: &quot;Show my OneDrive files&quot;
+Agent: Runs <code>files list</code> command</p>
+<p>User: &quot;Add a task to review the budget&quot;
+Agent: Lists task lists first, then creates task in appropriate list</p>
+<h2>Prompts</h2>
+<p>When helping with Microsoft 365:</p>
+<ul>
+<li>Use the ms365_cli.py script for all operations</li>
+<li>Check authentication status first if commands fail</li>
+<li>If not logged in, guide user through device code login</li>
+<li>For calendar events, use ISO 8601 datetime format</li>
+<li>Default timezone is America/Chicago</li>
+<li>When sending email, confirm recipient and content before sending</li>
+<li>For tasks, list available task lists first so user can choose</li>
+</ul>
+<h2>Attribution</h2>
+<p>This skill uses the <strong>ms-365-mcp-server</strong> by Softeria.</p>
+<ul>
+<li><strong>NPM Package</strong>: <a href="https://www.npmjs.com/package/@softeria/ms-365-mcp-server">@softeria/ms-365-mcp-server</a></li>
+<li><strong>GitHub</strong>: <a href="https://github.com/Softeria/ms-365-mcp-server">https://github.com/Softeria/ms-365-mcp-server</a></li>
+<li><strong>License</strong>: MIT</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/cvsloane/ms365/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/cvsloane/ms365" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/cvsloane/ms365/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@cvsloane</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Communication</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

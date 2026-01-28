@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Generate contextual follow-up suggestions after AI responses">
+  <title>smart-followups - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to AI & LLMs</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">AI & LLMs</a>
+                <span class="skill-page-author">by @robbyczgw-cla</span>
+              </div>
+              <h1 class="skill-page-title">smart-followups</h1>
+              <p class="skill-page-desc">Generate contextual follow-up suggestions after AI responses</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Smart Follow-ups Skill</h1>
+<p>Generate contextual follow-up suggestions for Clawdbot conversations.</p>
+<h2>How to Trigger</h2>
+<p>Say any of these to get follow-up suggestions:</p>
+<table>
+<thead>
+<tr>
+<th>Trigger</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>followups</code></td>
+<td>&quot;followups&quot;</td>
+</tr>
+<tr>
+<td><code>follow-ups</code></td>
+<td>&quot;give me follow-ups&quot;</td>
+</tr>
+<tr>
+<td><code>suggestions</code></td>
+<td>&quot;any suggestions?&quot;</td>
+</tr>
+<tr>
+<td><code>what next</code></td>
+<td>&quot;what should I ask next?&quot;</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>Note:</strong> This is a keyword the agent recognizes, not a registered <code>/slash</code> command. Clawdbot skills are guidance docs that tell the agent how to respond.</p>
+</blockquote>
+<h2>Usage</h2>
+<p>Say &quot;followups&quot; in any conversation:</p>
+<pre><code>You: What is Docker?
+Bot: Docker is a containerization platform...
+
+You: /followups
+
+Bot: 💡 What would you like to explore next?
+[⚡ How do I install Docker?]
+[🧠 Explain container architecture]
+[🔗 Docker vs Kubernetes?]
+</code></pre>
+<p><strong>On button channels (Telegram/Discord/Slack):</strong> Tap a button to ask that question.</p>
+<p><strong>On text channels (Signal/WhatsApp/iMessage/SMS):</strong> Reply with 1, 2, or 3.</p>
+<h2>Categories</h2>
+<p>Each generation produces 3 suggestions:</p>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Emoji</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Quick</strong></td>
+<td>⚡</td>
+<td>Clarifications, definitions, immediate next steps</td>
+</tr>
+<tr>
+<td><strong>Deep Dive</strong></td>
+<td>🧠</td>
+<td>Technical depth, advanced concepts, thorough exploration</td>
+</tr>
+<tr>
+<td><strong>Related</strong></td>
+<td>🔗</td>
+<td>Connected topics, broader context, alternatives</td>
+</tr>
+</tbody></table>
+<h2>Authentication</h2>
+<p><strong>Default:</strong> Uses Clawdbot&#39;s existing auth — same login and model as your current chat.</p>
+<p><strong>Optional providers:</strong></p>
+<ul>
+<li><code>openrouter</code> — Requires <code>OPENROUTER_API_KEY</code></li>
+<li><code>anthropic</code> — Requires <code>ANTHROPIC_API_KEY</code></li>
+</ul>
+<h2>Configuration</h2>
+<pre><code class="language-json">{
+  &quot;skills&quot;: {
+    &quot;smart-followups&quot;: {
+      &quot;enabled&quot;: true,
+      &quot;provider&quot;: &quot;clawdbot&quot;,
+      &quot;model&quot;: null
+    }
+  }
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>provider</code></td>
+<td><code>&quot;clawdbot&quot;</code></td>
+<td>Auth provider: <code>clawdbot</code>, <code>openrouter</code>, <code>anthropic</code></td>
+</tr>
+<tr>
+<td><code>model</code></td>
+<td><code>null</code></td>
+<td>Model override (null = inherit from session)</td>
+</tr>
+<tr>
+<td><code>apiKey</code></td>
+<td>—</td>
+<td>API key for non-clawdbot providers</td>
+</tr>
+</tbody></table>
+<h2>Channel Support</h2>
+<table>
+<thead>
+<tr>
+<th>Channel</th>
+<th>Mode</th>
+<th>Interaction</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Telegram</td>
+<td>Buttons</td>
+<td>Tap to ask</td>
+</tr>
+<tr>
+<td>Discord</td>
+<td>Buttons</td>
+<td>Click to ask</td>
+</tr>
+<tr>
+<td>Slack</td>
+<td>Buttons</td>
+<td>Click to ask</td>
+</tr>
+<tr>
+<td>Signal</td>
+<td>Text</td>
+<td>Reply 1-3</td>
+</tr>
+<tr>
+<td>WhatsApp</td>
+<td>Text</td>
+<td>Reply 1-3</td>
+</tr>
+<tr>
+<td>iMessage</td>
+<td>Text</td>
+<td>Reply 1-3</td>
+</tr>
+<tr>
+<td>SMS</td>
+<td>Text</td>
+<td>Reply 1-3</td>
+</tr>
+<tr>
+<td>Matrix</td>
+<td>Text</td>
+<td>Reply 1-3</td>
+</tr>
+<tr>
+<td>Email</td>
+<td>Text</td>
+<td>Reply with number</td>
+</tr>
+</tbody></table>
+<p>See <a href="CHANNELS.md">CHANNELS.md</a> for detailed channel documentation.</p>
+<h2>How It Works</h2>
+<ol>
+<li>User types <code>/followups</code></li>
+<li>Handler captures recent conversation context</li>
+<li>Clawdbot generates 3 contextual questions (using current model/auth)</li>
+<li>Formatted as buttons or text based on channel</li>
+<li>User clicks button or replies with number</li>
+<li>Clawdbot answers that question</li>
+</ol>
+<h2>Files</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>handler.js</code></td>
+<td>Command handler and channel formatting</td>
+</tr>
+<tr>
+<td><code>cli/followups-cli.js</code></td>
+<td>Standalone CLI for testing/scripting</td>
+</tr>
+<tr>
+<td><code>README.md</code></td>
+<td>Full documentation</td>
+</tr>
+<tr>
+<td><code>CHANNELS.md</code></td>
+<td>Channel-specific guide</td>
+</tr>
+<tr>
+<td><code>FAQ.md</code></td>
+<td>Common questions</td>
+</tr>
+</tbody></table>
+<h2>Credits</h2>
+<p>Inspired by <a href="https://github.com/robbyczgw-cla/Chameleon-AI-Chat">Chameleon AI Chat</a>&#39;s smart follow-up feature.</p>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/robbyczgw-cla/smart-followups/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/robbyczgw-cla/smart-followups" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/robbyczgw-cla/smart-followups/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@robbyczgw-cla</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">AI & LLMs</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

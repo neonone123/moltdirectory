@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Find nearby takeaways in Ireland and browse menus via Deliveroo/Just Eat">
+  <title>irish-takeaway - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Shopping & E-commerce</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Shopping & E-commerce</a>
+                <span class="skill-page-author">by @cotyledonlab</span>
+              </div>
+              <h1 class="skill-page-title">irish-takeaway</h1>
+              <p class="skill-page-desc">Find nearby takeaways in Ireland and browse menus via Deliveroo/Just Eat</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Irish Takeaway Finder 🍕🇮🇪</h1>
+<p>Find nearby takeaways and get their menus from Deliveroo or Just Eat.</p>
+<h2>Prerequisites</h2>
+<ul>
+<li><code>goplaces</code> CLI installed (<code>brew install steipete/tap/goplaces</code>)</li>
+<li><code>GOOGLE_PLACES_API_KEY</code> environment variable set</li>
+<li>Browser tool available</li>
+</ul>
+<h2>Workflow</h2>
+<h3>Step 1: Find Nearby Takeaways</h3>
+<p>Use goplaces to search for restaurants near a location:</p>
+<pre><code class="language-bash"># Search by coordinates (negative longitude needs = syntax)
+goplaces search &quot;takeaway&quot; --lat=53.7179 --lng=-6.3561 --radius-m=3000 --limit=10
+
+# Search by cuisine
+goplaces search &quot;chinese takeaway&quot; --lat=53.7179 --lng=-6.3561 --radius-m=2000
+
+# Filter by rating
+goplaces search &quot;pizza&quot; --lat=53.7179 --lng=-6.3561 --min-rating=4 --open-now
+</code></pre>
+<p>Common location coordinates for Ireland:</p>
+<ul>
+<li><strong>Drogheda</strong>: 53.7179, -6.3561</li>
+<li><strong>Dublin City</strong>: 53.3498, -6.2603</li>
+<li><strong>Cork</strong>: 51.8985, -8.4756</li>
+<li><strong>Galway</strong>: 53.2707, -9.0568</li>
+</ul>
+<h3>Step 2: Get Deliveroo Menu (Browser Automation)</h3>
+<ol>
+<li>Start browser and navigate to Deliveroo:</li>
+</ol>
+<pre><code>browser action=start target=host
+browser action=navigate targetUrl=&quot;https://deliveroo.ie/&quot; target=host
+</code></pre>
+<ol start="2">
+<li><p>Accept cookies if prompted (look for &quot;Accept all&quot; button)</p>
+</li>
+<li><p>Enter location in address search box:</p>
+</li>
+</ol>
+<pre><code>browser action=act request={&quot;kind&quot;: &quot;type&quot;, &quot;ref&quot;: &quot;&lt;textbox-ref&gt;&quot;, &quot;text&quot;: &quot;Drogheda, Co. Louth&quot;}
+</code></pre>
+<ol start="4">
+<li><p>Select location from autocomplete dropdown</p>
+</li>
+<li><p>Find and click on restaurant from list</p>
+</li>
+<li><p>Take snapshot to extract menu items - look for:</p>
+<ul>
+<li>Category headings (h2)</li>
+<li>Item buttons with name, description, price</li>
+<li>Allergen info in item descriptions</li>
+</ul>
+</li>
+</ol>
+<h3>Step 3: Parse Menu Data</h3>
+<p>Menu items typically appear as buttons with structure:</p>
+<ul>
+<li><strong>Name</strong>: In paragraph element</li>
+<li><strong>Description</strong>: In text content</li>
+<li><strong>Price</strong>: Usually &quot;€X.XX&quot; format</li>
+<li><strong>Allergens</strong>: Listed after description (Gluten, Milk, etc.)</li>
+</ul>
+<h3>Example Conversation Flow</h3>
+<p>User: &quot;What takeaways are near me in Drogheda?&quot;
+→ Run goplaces search, present top 5-10 results with ratings</p>
+<p>User: &quot;Show me the menu for Mizzoni&#39;s&quot;
+→ Browser to Deliveroo → search → click restaurant → snapshot → parse menu</p>
+<p>User: &quot;What pizzas do they have?&quot;
+→ Filter menu items by category, present pizza options with prices</p>
+<h3>Just Eat Alternative</h3>
+<p>If restaurant not on Deliveroo, try Just Eat:</p>
+<pre><code>browser action=navigate targetUrl=&quot;https://www.just-eat.ie/&quot; target=host
+</code></pre>
+<p>Similar flow: enter postcode/address → browse restaurants → click for menu</p>
+<h3>Tips</h3>
+<ul>
+<li>Always dismiss cookie banners first</li>
+<li>Wait for autocomplete suggestions before clicking</li>
+<li>Some restaurants have &quot;Limited order tracking&quot; - still works for menu viewing</li>
+<li>Prices include allergen info in descriptions</li>
+<li>Use snapshot with compact=true for cleaner output</li>
+</ul>
+<h3>Menu Categories to Look For</h3>
+<ul>
+<li>Meal Deals &amp; Special Offers</li>
+<li>Pizzas (by size: Small/Medium/Large/XL/Wagon Wheel)</li>
+<li>Starters</li>
+<li>Pasta</li>
+<li>Burgers</li>
+<li>Sides</li>
+<li>Desserts</li>
+<li>Drinks</li>
+</ul>
+<h2>Future Enhancements</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Twilio voice integration for phone ordering</li>
+<li><input disabled="" type="checkbox"> Price comparison across platforms</li>
+<li><input disabled="" type="checkbox"> Favorite restaurants memory</li>
+<li><input disabled="" type="checkbox"> Order history tracking</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/cotyledonlab/irish-takeaway/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/cotyledonlab/irish-takeaway" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/cotyledonlab/irish-takeaway/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@cotyledonlab</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Shopping & E-commerce</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

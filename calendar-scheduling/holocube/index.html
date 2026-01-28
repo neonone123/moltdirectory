@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Control GeekMagic HelloCubic-Lite holographic cube display with HoloClawd firmware">
+  <title>holocube - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Calendar & Scheduling</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Calendar & Scheduling</a>
+                <span class="skill-page-author">by @andrewjiang</span>
+              </div>
+              <h1 class="skill-page-title">holocube</h1>
+              <p class="skill-page-desc">Control GeekMagic HelloCubic-Lite holographic cube display with HoloClawd firmware</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>HoloCube Controller</h1>
+<p>Control the GeekMagic HelloCubic-Lite with HoloClawd firmware via REST API.</p>
+<p><strong>Firmware:</strong> <a href="https://github.com/andrewjiang/HoloClawd-Open-Firmware">https://github.com/andrewjiang/HoloClawd-Open-Firmware</a></p>
+<h2>Device Info</h2>
+<ul>
+<li><strong>Model:</strong> HelloCubic-Lite with HoloClawd Firmware</li>
+<li><strong>Display:</strong> 240x240px ST7789 TFT</li>
+<li><strong>Default IP:</strong> 192.168.7.80 (configurable)</li>
+</ul>
+<h2>Quick Start</h2>
+<p><strong>Pomodoro Timer</strong> (Andrew&#39;s local version with Spotify integration):</p>
+<pre><code class="language-bash"># Run pomodoro timer with lobster mascot (25 min work, 5 min break)
+# Uses hardcoded Spotify URIs for focus/break music
+cd ~/Bao/clawd &amp;&amp; uv run --script pomodoro.py
+
+# With custom task label (max 20 chars)
+cd ~/Bao/clawd &amp;&amp; uv run --script pomodoro.py --task &quot;BUILD NETWORK&quot;
+
+# Custom timings
+cd ~/Bao/clawd &amp;&amp; uv run --script pomodoro.py --work 50 --short 10 --long 20
+
+# Disable Spotify
+cd ~/Bao/clawd &amp;&amp; uv run --script pomodoro.py --no-spotify
+</code></pre>
+<p><strong>Drawing API</strong> (requires holocube_client.py from repo):</p>
+<pre><code class="language-bash"># Draw something on the display
+python3 -c &quot;
+from holocube_client import HoloCube, Color, draw_lobster
+cube = HoloCube(&#39;192.168.7.80&#39;)
+cube.clear(Color.BLACK)
+draw_lobster(cube, 120, 120)  # Draw lobster in center
+&quot;
+</code></pre>
+<h2>Python Client Library</h2>
+<p>The <code>holocube_client.py</code> module provides full programmatic control:</p>
+<pre><code class="language-python">from holocube_client import HoloCube, Color, draw_lobster, draw_confetti
+
+cube = HoloCube(&quot;192.168.7.80&quot;)
+
+# Drawing primitives
+cube.clear(&quot;#000000&quot;)                              # Clear screen
+cube.pixel(x, y, color)                            # Single pixel
+cube.line(x0, y0, x1, y1, color)                   # Line
+cube.rect(x, y, w, h, color, fill=True)            # Rectangle
+cube.circle(x, y, r, color, fill=True)             # Circle
+cube.triangle(x0, y0, x1, y1, x2, y2, color)       # Triangle
+cube.ellipse(x, y, rx, ry, color, fill=True)       # Ellipse
+cube.roundrect(x, y, w, h, r, color, fill=True)    # Rounded rectangle
+cube.text(x, y, &quot;Hello&quot;, size=3, color=&quot;#00ffff&quot;)  # Text
+
+# High-level helpers
+cube.centered_text(y, &quot;Centered&quot;, size=2)
+cube.show_message([&quot;Line 1&quot;, &quot;Line 2&quot;], colors=[Color.CYAN, Color.WHITE])
+cube.show_timer(seconds, label=&quot;FOCUS&quot;)
+cube.show_progress(0.75, label=&quot;Loading&quot;)
+
+# Lobster mascot
+draw_lobster(cube, 120, 120)                       # Normal lobster
+draw_lobster(cube, 120, 120, happy=True, frame=0)  # Party mode with confetti
+draw_confetti(cube, 120, 120, frame=1)             # Animate confetti
+</code></pre>
+<h2>Pomodoro Timer</h2>
+<p>Full pomodoro timer with cute lobster buddy. <strong>Use Andrew&#39;s local version</strong> at <code>~/Bao/clawd/pomodoro.py</code>:</p>
+<pre><code class="language-bash"># Always run from local directory
+cd ~/Bao/clawd
+
+# Default: 25 min work, 5 min break (with Spotify)
+uv run --script pomodoro.py
+
+# With custom task label
+uv run --script pomodoro.py --task &quot;CODE REVIEW&quot;
+uv run --script pomodoro.py -t &quot;BUILD NETWORK&quot;
+
+# Custom timings
+uv run --script pomodoro.py --work 50 --short 10 --long 20
+
+# Disable Spotify
+uv run --script pomodoro.py --no-spotify
+</code></pre>
+<p><strong>Andrew&#39;s Version</strong> (~/Bao/clawd/pomodoro.py):</p>
+<ul>
+<li>Hardcoded Spotify URIs:<ul>
+<li>Focus: <code>spotify:episode:5yJKH11UlF3sS3gcKKaUYx</code></li>
+<li>Break: <code>spotify:episode:4U4OloHPFBNHWt0GOKENVF</code></li>
+</ul>
+</li>
+<li>Uses <code>~/clawd/skills/spotify-applescript/spotify.sh</code> for playback</li>
+</ul>
+<p>Options:</p>
+<ul>
+<li><code>--task</code>, <code>-t</code>: Task label displayed during work (max 20 chars, auto-uppercased)</li>
+<li><code>--work</code>: Work duration in minutes (default: 25)</li>
+<li><code>--short</code>: Short break in minutes (default: 5)</li>
+<li><code>--long</code>: Long break in minutes (default: 15)</li>
+<li><code>--sessions</code>: Sessions before long break (default: 4)</li>
+<li><code>--no-spotify</code>: Disable automatic music playback</li>
+</ul>
+<p>Features:</p>
+<ul>
+<li>Lobster mascot watches you work (focused expression)</li>
+<li>During breaks: happy lobster with twinkling confetti</li>
+<li>Flashing alerts between sessions</li>
+<li>Tracks completed sessions</li>
+<li>Automatic Spotify playback via AppleScript (macOS)</li>
+<li>Water tracker in top-left corner (shared with water.py)</li>
+</ul>
+<h2>Water Tracking</h2>
+<p>Track daily water consumption with a cute water drop icon in the top-left corner:</p>
+<pre><code class="language-bash"># Show current count
+uv run --script {baseDir}/water.py
+
+# Add a glass (+1)
+uv run --script {baseDir}/water.py add
+
+# Add multiple glasses
+uv run --script {baseDir}/water.py add 2
+
+# Set to specific count
+uv run --script {baseDir}/water.py set 5
+
+# Reset to 0
+uv run --script {baseDir}/water.py reset
+
+# Change daily goal
+uv run --script {baseDir}/water.py goal 10
+</code></pre>
+<p>State persists to <code>~/.holocube_water.json</code> and auto-resets each day. The water tracker appears in the top-left corner during pomodoro sessions too.</p>
+<h2>Stock Firmware Tools</h2>
+<h3>holocube.py - GIF Upload (Stock Firmware)</h3>
+<pre><code class="language-bash">uv run --script holocube.py upload animation.gif
+uv run --script holocube.py show animation.gif
+uv run --script holocube.py list
+</code></pre>
+<h3>gifgen.py - Procedural Animation Generator</h3>
+<pre><code class="language-bash">uv run --script gifgen.py fire output.gif
+uv run --script gifgen.py plasma output.gif
+uv run --script gifgen.py matrix output.gif
+uv run --script gifgen.py sparkle output.gif
+</code></pre>
+<h2>Drawing API Endpoints</h2>
+<p>HoloClawd firmware exposes these REST endpoints:</p>
+<pre><code class="language-bash"># Clear screen
+curl -X POST http://192.168.7.80/api/v1/draw/clear -d &#39;{&quot;color&quot;:&quot;#000000&quot;}&#39;
+
+# Draw shapes
+curl -X POST http://192.168.7.80/api/v1/draw/circle -d &#39;{&quot;x&quot;:120,&quot;y&quot;:120,&quot;r&quot;:50,&quot;color&quot;:&quot;#ff0000&quot;,&quot;fill&quot;:true}&#39;
+curl -X POST http://192.168.7.80/api/v1/draw/rect -d &#39;{&quot;x&quot;:10,&quot;y&quot;:10,&quot;w&quot;:100,&quot;h&quot;:50,&quot;color&quot;:&quot;#00ff00&quot;}&#39;
+curl -X POST http://192.168.7.80/api/v1/draw/triangle -d &#39;{&quot;x0&quot;:120,&quot;y0&quot;:50,&quot;x1&quot;:80,&quot;y1&quot;:150,&quot;x2&quot;:160,&quot;y2&quot;:150,&quot;color&quot;:&quot;#0000ff&quot;}&#39;
+curl -X POST http://192.168.7.80/api/v1/draw/ellipse -d &#39;{&quot;x&quot;:120,&quot;y&quot;:120,&quot;rx&quot;:60,&quot;ry&quot;:30,&quot;color&quot;:&quot;#ffff00&quot;}&#39;
+curl -X POST http://192.168.7.80/api/v1/draw/line -d &#39;{&quot;x0&quot;:0,&quot;y0&quot;:0,&quot;x1&quot;:240,&quot;y1&quot;:240,&quot;color&quot;:&quot;#ffffff&quot;}&#39;
+curl -X POST http://192.168.7.80/api/v1/draw/text -d &#39;{&quot;x&quot;:60,&quot;y&quot;:100,&quot;text&quot;:&quot;Hello&quot;,&quot;size&quot;:3,&quot;color&quot;:&quot;#00ffff&quot;}&#39;
+
+# Batch multiple commands
+curl -X POST http://192.168.7.80/api/v1/draw/batch -d &#39;{&quot;commands&quot;:[...]}&#39;
+</code></pre>
+<h2>Firmware</h2>
+<p><strong>Source:</strong> <a href="https://github.com/andrewjiang/HoloClawd-Open-Firmware">https://github.com/andrewjiang/HoloClawd-Open-Firmware</a></p>
+<p>Build and flash:</p>
+<pre><code class="language-bash">git clone https://github.com/andrewjiang/HoloClawd-Open-Firmware.git
+cd HoloClawd-Open-Firmware
+pio run                    # Build
+curl -X POST -F &quot;file=@.pio/build/esp12e/firmware.bin&quot; http://192.168.7.80/api/v1/ota/fw
+</code></pre>
+<h2>Color Reference</h2>
+<pre><code class="language-python">Color.BLACK   = &quot;#000000&quot;
+Color.WHITE   = &quot;#ffffff&quot;
+Color.RED     = &quot;#ff0000&quot;
+Color.GREEN   = &quot;#00ff00&quot;
+Color.BLUE    = &quot;#0000ff&quot;
+Color.CYAN    = &quot;#00ffff&quot;
+Color.MAGENTA = &quot;#ff00ff&quot;
+Color.YELLOW  = &quot;#ffff00&quot;
+Color.ORANGE  = &quot;#ff6600&quot;
+Color.PURPLE  = &quot;#9900ff&quot;
+</code></pre>
+<h2>Troubleshooting</h2>
+<ul>
+<li><strong>Can&#39;t connect</strong>: Check WiFi, device should be at 192.168.7.80</li>
+<li><strong>Drawing slow</strong>: Each HTTP call takes ~50ms, use batch API for complex drawings</li>
+<li><strong>Screen flickers</strong>: Only clear screen on first frame, use background colors for text updates</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/andrewjiang/holocube/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/andrewjiang/holocube" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/andrewjiang/holocube/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@andrewjiang</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Calendar & Scheduling</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

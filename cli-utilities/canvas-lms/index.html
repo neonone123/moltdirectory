@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Access Canvas LMS (Instructure) for course data, assignments, grades, and submissions">
+  <title>canvas-lms - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to CLI Utilities</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">CLI Utilities</a>
+                <span class="skill-page-author">by @pranavkarthik10</span>
+              </div>
+              <h1 class="skill-page-title">canvas-lms</h1>
+              <p class="skill-page-desc">Access Canvas LMS (Instructure) for course data, assignments, grades, and submissions</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Canvas LMS Skill</h1>
+<p>Access Canvas LMS data via the REST API.</p>
+<h2>Setup</h2>
+<ol>
+<li>Generate an API token in Canvas: Account → Settings → New Access Token</li>
+<li>Store token in environment or <code>.env</code> file:<pre><code class="language-bash">export CANVAS_TOKEN=&quot;your_token_here&quot;
+export CANVAS_URL=&quot;https://your-school.instructure.com&quot;  # or canvas.yourschool.edu
+</code></pre>
+</li>
+</ol>
+<h2>Authentication</h2>
+<p>Include token in all requests:</p>
+<pre><code class="language-bash">curl -s -H &quot;Authorization: Bearer $CANVAS_TOKEN&quot; &quot;$CANVAS_URL/api/v1/...&quot;
+</code></pre>
+<h2>Common Endpoints</h2>
+<h3>Courses &amp; Profile</h3>
+<pre><code class="language-bash"># User profile
+curl -s -H &quot;Authorization: Bearer $CANVAS_TOKEN&quot; &quot;$CANVAS_URL/api/v1/users/self/profile&quot;
+
+# Active courses
+curl -s -H &quot;Authorization: Bearer $CANVAS_TOKEN&quot; &quot;$CANVAS_URL/api/v1/courses?enrollment_state=active&amp;per_page=50&quot;
+
+# Dashboard cards (quick overview)
+curl -s -H &quot;Authorization: Bearer $CANVAS_TOKEN&quot; &quot;$CANVAS_URL/api/v1/dashboard/dashboard_cards&quot;
+</code></pre>
+<h3>Assignments &amp; Due Dates</h3>
+<pre><code class="language-bash"># To-do items (upcoming work)
+curl -s -H &quot;Authorization: Bearer $CANVAS_TOKEN&quot; &quot;$CANVAS_URL/api/v1/users/self/todo&quot;
+
+# Upcoming events
+curl -s -H &quot;Authorization: Bearer $CANVAS_TOKEN&quot; &quot;$CANVAS_URL/api/v1/users/self/upcoming_events&quot;
+
+# Missing/overdue submissions
+curl -s -H &quot;Authorization: Bearer $CANVAS_TOKEN&quot; &quot;$CANVAS_URL/api/v1/users/self/missing_submissions&quot;
+
+# Course assignments
+curl -s -H &quot;Authorization: Bearer $CANVAS_TOKEN&quot; &quot;$CANVAS_URL/api/v1/courses/{course_id}/assignments?per_page=50&quot;
+
+# Assignment details
+curl -s -H &quot;Authorization: Bearer $CANVAS_TOKEN&quot; &quot;$CANVAS_URL/api/v1/courses/{course_id}/assignments/{id}&quot;
+
+# Submission status
+curl -s -H &quot;Authorization: Bearer $CANVAS_TOKEN&quot; &quot;$CANVAS_URL/api/v1/courses/{course_id}/assignments/{id}/submissions/self&quot;
+</code></pre>
+<h3>Grades</h3>
+<pre><code class="language-bash"># Enrollments with scores
+curl -s -H &quot;Authorization: Bearer $CANVAS_TOKEN&quot; &quot;$CANVAS_URL/api/v1/users/self/enrollments?include[]=current_grading_period_scores&amp;per_page=50&quot;
+</code></pre>
+<p>Extract grade: <code>.grades.current_score</code></p>
+<h3>Course Content</h3>
+<pre><code class="language-bash"># Announcements
+curl -s -H &quot;Authorization: Bearer $CANVAS_TOKEN&quot; &quot;$CANVAS_URL/api/v1/announcements?context_codes[]=course_{course_id}&amp;per_page=20&quot;
+
+# Modules
+curl -s -H &quot;Authorization: Bearer $CANVAS_TOKEN&quot; &quot;$CANVAS_URL/api/v1/courses/{course_id}/modules?include[]=items&amp;per_page=50&quot;
+
+# Files
+curl -s -H &quot;Authorization: Bearer $CANVAS_TOKEN&quot; &quot;$CANVAS_URL/api/v1/courses/{course_id}/files?per_page=50&quot;
+
+# Discussion topics
+curl -s -H &quot;Authorization: Bearer $CANVAS_TOKEN&quot; &quot;$CANVAS_URL/api/v1/courses/{course_id}/discussion_topics?per_page=50&quot;
+
+# Inbox
+curl -s -H &quot;Authorization: Bearer $CANVAS_TOKEN&quot; &quot;$CANVAS_URL/api/v1/conversations?per_page=20&quot;
+</code></pre>
+<h2>Response Handling</h2>
+<ul>
+<li>List endpoints return arrays</li>
+<li>Pagination: check <code>Link</code> header for <code>rel=&quot;next&quot;</code></li>
+<li>Dates are ISO 8601 (UTC)</li>
+<li>Use <code>--max-time 30</code> for slow endpoints</li>
+</ul>
+<p>Parse with jq:</p>
+<pre><code class="language-bash">curl -s ... | jq &#39;.[] | {name: .name, due: .due_at}&#39;
+</code></pre>
+<p>Or Python if jq unavailable:</p>
+<pre><code class="language-bash">curl -s ... | python3 -c &quot;import sys,json; data=json.load(sys.stdin); print(json.dumps(data, indent=2))&quot;
+</code></pre>
+<h2>Tips</h2>
+<ul>
+<li>Course IDs appear in todo/assignment responses</li>
+<li>File download URLs are in the <code>url</code> field of file objects</li>
+<li>Always include <code>per_page=50</code> to get more results (default is often 10)</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/pranavkarthik10/canvas-lms/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/pranavkarthik10/canvas-lms" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/pranavkarthik10/canvas-lms/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@pranavkarthik10</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">CLI Utilities</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

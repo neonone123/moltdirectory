@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Beeper Desktop CLI for chats, messages, search, and reminders">
+  <title>roadrunner - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Calendar & Scheduling</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Calendar & Scheduling</a>
+                <span class="skill-page-author">by @johntheyoung</span>
+              </div>
+              <h1 class="skill-page-title">roadrunner</h1>
+              <p class="skill-page-desc">Beeper Desktop CLI for chats, messages, search, and reminders</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>roadrunner (rr)</h1>
+<p>Use <code>rr</code> when the user explicitly wants to operate Beeper Desktop via the local API (send, search, list chats/messages, reminders, focus).
+Prefer <code>--agent</code> for agent use (forces JSON, envelope, no-input, readonly).</p>
+<p>Safety</p>
+<ul>
+<li>Require explicit recipient (chat ID) and message text before sending.</li>
+<li>Confirm or ask a clarifying question if the chat ID is ambiguous.</li>
+<li>Use <code>--agent</code> for safe agent defaults: <code>rr --agent --enable-commands=chats,messages,status chats list</code></li>
+<li>Use <code>--readonly</code> to block writes: <code>rr --readonly chats list --json</code></li>
+<li>Use <code>--enable-commands</code> to allowlist: <code>rr --enable-commands=chats,messages chats list --json</code></li>
+<li>Use <code>--envelope</code> for structured errors: <code>rr --json --envelope chats get &quot;!chatid&quot;</code></li>
+</ul>
+<p>Setup (once)</p>
+<ul>
+<li><code>rr auth set &lt;token&gt;</code></li>
+<li><code>rr auth status --check</code></li>
+<li><code>rr doctor</code></li>
+</ul>
+<p>Common commands</p>
+<ul>
+<li>List accounts: <code>rr accounts list --json</code></li>
+<li>Capabilities: <code>rr capabilities --json</code></li>
+<li>Search contacts: <code>rr contacts search &quot;&lt;account-id&gt;&quot; &quot;Alice&quot; --json</code></li>
+<li>Search contacts (flag): <code>rr contacts search &quot;Alice&quot; --account-id=&quot;&lt;account-id&gt;&quot; --json</code></li>
+<li>Resolve contact: <code>rr contacts resolve &quot;&lt;account-id&gt;&quot; &quot;Alice&quot; --json</code></li>
+<li>Resolve contact (flag): <code>rr contacts resolve &quot;Alice&quot; --account-id=&quot;&lt;account-id&gt;&quot; --json</code></li>
+<li>List chats: <code>rr chats list --json</code></li>
+<li>Search chats: <code>rr chats search &quot;John&quot; --json</code></li>
+<li>Search chats (filters): <code>rr chats search --inbox=primary --unread-only --json</code></li>
+<li>Search chats (activity): <code>rr chats search --last-activity-after=&quot;2024-07-01T00:00:00Z&quot; --json</code></li>
+<li>Search by participant name: <code>rr chats search &quot;Jamie&quot; --scope=participants --json</code></li>
+<li>Resolve chat: <code>rr chats resolve &quot;Jamie&quot; --json</code></li>
+<li>Get chat: <code>rr chats get &quot;!chatid:beeper.com&quot; --json</code></li>
+<li>Create chat (single): <code>rr chats create &quot;&lt;account-id&gt;&quot; --participant &quot;&lt;user-id&gt;&quot;</code></li>
+<li>Create chat (group): <code>rr chats create &quot;&lt;account-id&gt;&quot; --participant &quot;&lt;user-a&gt;&quot; --participant &quot;&lt;user-b&gt;&quot; --type group --title &quot;Project Chat&quot; --message &quot;Welcome!&quot;</code></li>
+<li>Default account for commands: <code>rr --account=&quot;imessage:+123&quot; chats list --json</code></li>
+<li>Account aliases: <code>rr accounts alias set work &quot;slack:T123&quot;</code></li>
+<li>List messages: <code>rr messages list &quot;!chatid:beeper.com&quot; --json</code></li>
+<li>List messages (download media): <code>rr messages list &quot;!chatid:beeper.com&quot; --download-media --download-dir ./media --json</code></li>
+<li>Search messages: <code>rr messages search &quot;dinner&quot; --json</code></li>
+<li>Search messages (filters): <code>rr messages search --sender=me --date-after=&quot;2024-07-01T00:00:00Z&quot; --media-types=image --json</code></li>
+<li>Send message: <code>rr messages send &quot;!chatid:beeper.com&quot; &quot;Hello!&quot;</code></li>
+<li>Reply to message: <code>rr messages send &quot;!chatid:beeper.com&quot; &quot;Thanks!&quot; --reply-to &quot;&lt;message-id&gt;&quot;</code></li>
+<li>Send message from file: <code>rr messages send &quot;!chatid:beeper.com&quot; --text-file ./message.txt</code></li>
+<li>Send message from stdin: <code>cat message.txt | rr messages send &quot;!chatid:beeper.com&quot; --stdin</code></li>
+<li>Tail messages (polling): <code>rr messages tail &quot;!chatid:beeper.com&quot; --interval 2s --stop-after 30s --json</code></li>
+<li>Wait for message: <code>rr messages wait --chat-id=&quot;!chatid:beeper.com&quot; --contains &quot;deploy&quot; --wait-timeout 2m --json</code></li>
+<li>Message context: <code>rr messages context &quot;!chatid:beeper.com&quot; &quot;&lt;sortKey&gt;&quot; --before 5 --after 2 --json</code></li>
+<li>Draft message (pre-fill without sending): <code>rr focus --chat-id=&quot;!chatid:beeper.com&quot; --draft-text=&quot;Hello!&quot;</code></li>
+<li>Draft message from file: <code>rr focus --chat-id=&quot;!chatid:beeper.com&quot; --draft-text-file ./draft.txt</code></li>
+<li>Draft with attachment: <code>rr focus --chat-id=&quot;!chatid:beeper.com&quot; --draft-attachment=&quot;/path/to/file.jpg&quot;</code></li>
+<li>Download attachment: <code>rr assets download &quot;mxc://example.org/abc123&quot; --dest &quot;./attachment.jpg&quot;</code></li>
+<li>Reminders: <code>rr reminders set &quot;!chatid:beeper.com&quot; &quot;2h&quot;</code> / <code>rr reminders clear &quot;!chatid:beeper.com&quot;</code></li>
+<li>Archive chat: <code>rr chats archive &quot;!chatid:beeper.com&quot;</code> / <code>rr chats archive &quot;!chatid:beeper.com&quot; --unarchive</code></li>
+<li>Focus app: <code>rr focus</code></li>
+<li>Global search: <code>rr search &quot;dinner&quot; --json</code></li>
+<li>Status summary: <code>rr status --json</code></li>
+<li>Status by account: <code>rr status --by-account --json</code></li>
+<li>Unread rollup: <code>rr unread --json</code></li>
+<li>Global search includes <code>in_groups</code> for participant matches.</li>
+</ul>
+<p>Pagination</p>
+<ul>
+<li>Chats: <code>rr chats list --cursor=&quot;&lt;oldestCursor&gt;&quot; --direction=before --json</code></li>
+<li>Messages list: <code>rr messages list &quot;!chatid:beeper.com&quot; --cursor=&quot;&lt;sortKey&gt;&quot; --direction=before --json</code></li>
+<li>Messages search (max 20): <code>rr messages search &quot;project&quot; --limit=20 --json</code></li>
+<li>Messages search page: <code>rr messages search &quot;project&quot; --cursor=&quot;&lt;cursor&gt;&quot; --direction=before --json</code></li>
+<li>Global search message paging (max 20): <code>rr search &quot;dinner&quot; --messages-limit=20 --json</code></li>
+<li>Global search message page: <code>rr search &quot;dinner&quot; --messages-cursor=&quot;&lt;cursor&gt;&quot; --messages-direction=before --json</code></li>
+</ul>
+<p>Notes</p>
+<ul>
+<li>Requires Beeper Desktop running; token from app settings.</li>
+<li>Token stored at <code>~/.config/beeper/config.json</code>. <code>BEEPER_TOKEN</code> overrides.</li>
+<li><code>BEEPER_ACCOUNT</code> sets the default account ID (aliases supported).</li>
+<li>Message search is literal word match (not semantic).</li>
+<li><code>rr contacts resolve</code> is strict and fails on ambiguous names; resolve by ID after <code>contacts search</code> when needed.</li>
+<li>If a DM title shows your own Matrix ID, use <code>--scope=participants</code> to find by name.</li>
+<li>JSON output includes <code>display_name</code> for single chats (derived from participants).</li>
+<li>Message JSON includes <code>is_sender</code>, <code>is_unread</code>, <code>attachments</code>, and <code>reactions</code>.</li>
+<li><code>downloaded_attachments</code> is only populated when <code>--download-media</code> is used.</li>
+<li><code>rr messages send</code> returns <code>pending_message_id</code> (temporary ID).</li>
+<li>Prefer <code>--json</code> (and <code>--no-input</code>) for automation.</li>
+<li><code>BEEPER_URL</code> overrides API base URL; <code>BEEPER_TIMEOUT</code> sets timeout in seconds.</li>
+<li>JSON/Plain output goes to stdout; errors/hints go to stderr.</li>
+<li>Destructive commands prompt unless <code>--force</code>; <code>--no-input</code>/<code>BEEPER_NO_INPUT</code> fails without <code>--force</code>.</li>
+<li>Use <code>--fail-if-empty</code> on list/search commands to exit with code 1 if no results.</li>
+<li>Use <code>--fields</code> with <code>--plain</code> to select columns (comma-separated).</li>
+<li>In bash/zsh, <code>!</code> triggers history expansion. Prefer single quotes, or disable history expansion (<code>set +H</code> in bash, <code>setopt NO_HIST_EXPAND</code> in zsh).</li>
+<li><code>rr version --json</code> returns <code>features</code> array for capability discovery.</li>
+<li><code>rr capabilities --json</code> returns full CLI capability metadata.</li>
+<li>Envelope error codes: <code>AUTH_ERROR</code>, <code>NOT_FOUND</code>, <code>VALIDATION_ERROR</code>, <code>CONNECTION_ERROR</code>, <code>INTERNAL_ERROR</code>.</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/johntheyoung/roadrunner/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/johntheyoung/roadrunner" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/johntheyoung/roadrunner/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@johntheyoung</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Calendar & Scheduling</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

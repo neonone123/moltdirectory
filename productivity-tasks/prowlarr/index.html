@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Search indexers and manage Prowlarr. Use when the user asks to "search">
+  <title>prowlarr - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Productivity & Tasks</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Productivity & Tasks</a>
+                <span class="skill-page-author">by @jmagar</span>
+              </div>
+              <h1 class="skill-page-title">prowlarr</h1>
+              <p class="skill-page-desc">Search indexers and manage Prowlarr. Use when the user asks to "search</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Prowlarr Skill</h1>
+<p>Search across all your indexers and manage Prowlarr via API.</p>
+<h2>Setup</h2>
+<p>Config: <code>~/.clawdbot/credentials/prowlarr/config.json</code></p>
+<pre><code class="language-json">{
+  &quot;url&quot;: &quot;https://prowlarr.example.com&quot;,
+  &quot;apiKey&quot;: &quot;your-api-key&quot;
+}
+</code></pre>
+<p>Get your API key from: Prowlarr → Settings → General → Security → API Key</p>
+<hr>
+<h2>Quick Reference</h2>
+<h3>Search Releases</h3>
+<pre><code class="language-bash"># Basic search across all indexers
+./scripts/prowlarr-api.sh search &quot;ubuntu 22.04&quot;
+
+# Search torrents only
+./scripts/prowlarr-api.sh search &quot;ubuntu&quot; --torrents
+
+# Search usenet only
+./scripts/prowlarr-api.sh search &quot;ubuntu&quot; --usenet
+
+# Search specific categories (2000=Movies, 5000=TV, 3000=Audio, 7000=Books)
+./scripts/prowlarr-api.sh search &quot;inception&quot; --category 2000
+
+# TV search with TVDB ID
+./scripts/prowlarr-api.sh tv-search --tvdb 71663 --season 1 --episode 1
+
+# Movie search with IMDB ID
+./scripts/prowlarr-api.sh movie-search --imdb tt0111161
+</code></pre>
+<h3>List Indexers</h3>
+<pre><code class="language-bash"># All indexers
+./scripts/prowlarr-api.sh indexers
+
+# With status details
+./scripts/prowlarr-api.sh indexers --verbose
+</code></pre>
+<h3>Indexer Health &amp; Stats</h3>
+<pre><code class="language-bash"># Usage stats per indexer
+./scripts/prowlarr-api.sh stats
+
+# Test all indexers
+./scripts/prowlarr-api.sh test-all
+
+# Test specific indexer
+./scripts/prowlarr-api.sh test &lt;indexer-id&gt;
+</code></pre>
+<h3>Indexer Management</h3>
+<pre><code class="language-bash"># Enable/disable an indexer
+./scripts/prowlarr-api.sh enable &lt;indexer-id&gt;
+./scripts/prowlarr-api.sh disable &lt;indexer-id&gt;
+
+# Delete an indexer
+./scripts/prowlarr-api.sh delete &lt;indexer-id&gt;
+</code></pre>
+<h3>App Sync</h3>
+<pre><code class="language-bash"># Sync indexers to Sonarr/Radarr/etc
+./scripts/prowlarr-api.sh sync
+
+# List connected apps
+./scripts/prowlarr-api.sh apps
+</code></pre>
+<h3>System</h3>
+<pre><code class="language-bash"># System status
+./scripts/prowlarr-api.sh status
+
+# Health check
+./scripts/prowlarr-api.sh health
+</code></pre>
+<hr>
+<h2>Search Categories</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Category</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2000</td>
+<td>Movies</td>
+</tr>
+<tr>
+<td>5000</td>
+<td>TV</td>
+</tr>
+<tr>
+<td>3000</td>
+<td>Audio</td>
+</tr>
+<tr>
+<td>7000</td>
+<td>Books</td>
+</tr>
+<tr>
+<td>1000</td>
+<td>Console</td>
+</tr>
+<tr>
+<td>4000</td>
+<td>PC</td>
+</tr>
+<tr>
+<td>6000</td>
+<td>XXX</td>
+</tr>
+</tbody></table>
+<p>Sub-categories: 2010 (Movies/Foreign), 2020 (Movies/Other), 2030 (Movies/SD), 2040 (Movies/HD), 2045 (Movies/UHD), 2050 (Movies/BluRay), 2060 (Movies/3D), 5010 (TV/WEB-DL), 5020 (TV/Foreign), 5030 (TV/SD), 5040 (TV/HD), 5045 (TV/UHD), etc.</p>
+<hr>
+<h2>Common Use Cases</h2>
+<p><strong>&quot;Search for the latest Ubuntu ISO&quot;</strong></p>
+<pre><code class="language-bash">./scripts/prowlarr-api.sh search &quot;ubuntu 24.04&quot;
+</code></pre>
+<p><strong>&quot;Find Game of Thrones S01E01&quot;</strong></p>
+<pre><code class="language-bash">./scripts/prowlarr-api.sh tv-search --tvdb 121361 --season 1 --episode 1
+</code></pre>
+<p><strong>&quot;Search for Inception in 4K&quot;</strong></p>
+<pre><code class="language-bash">./scripts/prowlarr-api.sh search &quot;inception 2160p&quot; --category 2045
+</code></pre>
+<p><strong>&quot;Check if my indexers are healthy&quot;</strong></p>
+<pre><code class="language-bash">./scripts/prowlarr-api.sh stats
+./scripts/prowlarr-api.sh test-all
+</code></pre>
+<p><strong>&quot;Push indexer changes to Sonarr/Radarr&quot;</strong></p>
+<pre><code class="language-bash">./scripts/prowlarr-api.sh sync
+</code></pre>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/jmagar/prowlarr/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/jmagar/prowlarr" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/jmagar/prowlarr/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@jmagar</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Productivity & Tasks</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

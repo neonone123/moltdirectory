@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Control Anova Precision Ovens and Precision Cookers (sous vide) via WiFi WebSocket API">
+  <title>anova-oven - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Smart Home & IoT</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Smart Home & IoT</a>
+                <span class="skill-page-author">by @dodeja</span>
+              </div>
+              <h1 class="skill-page-title">anova-oven</h1>
+              <p class="skill-page-desc">Control Anova Precision Ovens and Precision Cookers (sous vide) via WiFi WebSocket API</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Anova Oven &amp; Precision Cooker Control</h1>
+<p>Control Anova WiFi devices including Precision Ovens (APO) and Precision Cookers (APC) via WebSocket API.</p>
+<h2>Prerequisites</h2>
+<ol>
+<li><p><strong>Personal Access Token</strong> from Anova app</p>
+<ul>
+<li>Download Anova Oven app (iOS/Android)</li>
+<li>Go to: More → Developer → Personal Access Tokens</li>
+<li>Create token (starts with <code>anova-</code>)</li>
+<li>Store in <code>~/.config/anova/token</code></li>
+</ul>
+</li>
+<li><p><strong>Python dependencies</strong></p>
+<pre><code class="language-bash">pip3 install websockets
+</code></pre>
+</li>
+<li><p><strong>Device Setup</strong></p>
+<ul>
+<li>Anova device connected to WiFi</li>
+<li>Paired with your Anova account</li>
+</ul>
+</li>
+</ol>
+<h2>Installation</h2>
+<pre><code class="language-bash"># Install Python dependency
+pip3 install websockets
+
+# Store your token
+mkdir -p ~/.config/anova
+echo &quot;anova-YOUR_TOKEN_HERE&quot; &gt; ~/.config/anova/token
+chmod 600 ~/.config/anova/token
+</code></pre>
+<h2>Usage</h2>
+<h3>List Devices</h3>
+<pre><code class="language-bash">python3 scripts/anova.py list
+</code></pre>
+<h3>Basic Cooking</h3>
+<pre><code class="language-bash"># Simple cook at 350°F for 30 minutes
+python3 scripts/anova.py cook --temp 350 --duration 30
+
+# Cook at 175°C for 45 minutes
+python3 scripts/anova.py cook --temp 175 --unit C --duration 45
+</code></pre>
+<h3>Advanced Controls</h3>
+<p><strong>Custom Elements:</strong></p>
+<pre><code class="language-bash"># Rear element only (low-temp slow cook)
+python3 scripts/anova.py cook --temp 225 --elements rear --duration 180
+
+# Bottom + rear (standard roasting)
+python3 scripts/anova.py cook --temp 375 --elements bottom,rear --duration 45
+
+# All elements (maximum heat)
+python3 scripts/anova.py cook --temp 450 --elements top,bottom,rear --duration 20
+</code></pre>
+<p><strong>Custom Fan Speed:</strong></p>
+<pre><code class="language-bash"># Low fan (gentle cooking)
+python3 scripts/anova.py cook --temp 250 --fan-speed 25 --duration 120
+
+# High fan (fast heat circulation)
+python3 scripts/anova.py cook --temp 400 --fan-speed 100 --duration 30
+</code></pre>
+<p><strong>Probe Cooking:</strong></p>
+<pre><code class="language-bash"># Cook to internal temperature (not time-based)
+python3 scripts/anova.py cook --temp 350 --probe-temp 165
+
+# Low-temp probe cook
+python3 scripts/anova.py cook --temp 225 --elements rear --fan-speed 25 --probe-temp 135
+</code></pre>
+<p><strong>Combined Advanced Settings:</strong></p>
+<pre><code class="language-bash"># Precision low-temp cook
+python3 scripts/anova.py cook --temp 225 --elements rear --fan-speed 25 --duration 180
+
+# High-heat sear
+python3 scripts/anova.py cook --temp 500 --elements top,bottom,rear --fan-speed 100 --duration 5
+</code></pre>
+<h3>Stop Cooking</h3>
+<pre><code class="language-bash">python3 scripts/anova.py stop
+</code></pre>
+<h3>Monitor (Real-time Stream)</h3>
+<pre><code class="language-bash">python3 scripts/anova.py monitor --monitor-duration 60
+</code></pre>
+<h2>Natural Language Examples</h2>
+<p><strong>Agent prompts:</strong></p>
+<ul>
+<li>&quot;Preheat the oven to 375°F for roasting&quot;</li>
+<li>&quot;Start sous vide at 135°F for 2 hours&quot;</li>
+<li>&quot;What&#39;s the current oven temperature?&quot;</li>
+<li>&quot;Stop cooking&quot;</li>
+<li>&quot;Steam vegetables at 212°F for 15 minutes&quot;</li>
+</ul>
+<h2>Features</h2>
+<h3>Anova Precision Oven (APO)</h3>
+<ul>
+<li>Sous vide cooking (wet bulb mode)</li>
+<li>Roasting (dry bulb mode)</li>
+<li>Steam cooking with humidity control</li>
+<li>Temperature control (C/F)</li>
+<li>Real-time status monitoring</li>
+<li>Telemetry export</li>
+</ul>
+<h3>Anova Precision Cooker (APC)</h3>
+<ul>
+<li>Sous vide cooking</li>
+<li>Temperature control</li>
+<li>Timer management</li>
+<li>Real-time status</li>
+</ul>
+<h2>API Reference</h2>
+<p><strong>WebSocket Endpoint:</strong> Via Anova cloud service
+<strong>Authentication:</strong> Personal Access Token (Bearer token)
+<strong>Protocol:</strong> WebSocket with JSON messages</p>
+<h2>Configuration</h2>
+<p><strong>Token file:</strong> <code>~/.config/anova/token</code>
+<strong>Default device:</strong> First device found (or specify with <code>--device-id</code>)</p>
+<h2>Troubleshooting</h2>
+<p><strong>&quot;No token found&quot;:</strong></p>
+<pre><code class="language-bash">echo &quot;anova-YOUR_TOKEN&quot; &gt; ~/.config/anova/token
+</code></pre>
+<p><strong>&quot;No devices found&quot;:</strong></p>
+<ul>
+<li>Check device is online in Anova app</li>
+<li>Verify WiFi connection</li>
+<li>Generate new token</li>
+</ul>
+<p><strong>&quot;Connection failed&quot;:</strong></p>
+<ul>
+<li>Check internet connection</li>
+<li>Verify token is valid</li>
+<li>Ensure device is paired with account</li>
+</ul>
+<h2>Safety Notes</h2>
+<ul>
+<li>Always verify temperature before starting long cooks</li>
+<li>Use timers to prevent overcooking</li>
+<li>Monitor remotely but check in-person for safety</li>
+<li>Default timeout: 4 hours max</li>
+</ul>
+<h2>References</h2>
+<ul>
+<li><a href="https://developer.anovaculinary.com">Anova Developer Portal</a></li>
+<li><a href="https://github.com/anova-culinary/developer-project-wifi">GitHub: anova-wifi-device-controller</a></li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/dodeja/anova-skill/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/dodeja/anova-oven" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/dodeja/anova-skill/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@dodeja</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Smart Home & IoT</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

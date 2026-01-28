@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Fitbit health and fitness data integration">
+  <title>fitbit-analytics - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Health & Fitness</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Health & Fitness</a>
+                <span class="skill-page-author">by @kesslerio</span>
+              </div>
+              <h1 class="skill-page-title">fitbit-analytics</h1>
+              <p class="skill-page-desc">Fitbit health and fitness data integration</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Fitbit Analytics</h1>
+<h2>Quick Start</h2>
+<pre><code class="language-bash"># Set Fitbit API credentials
+export FITBIT_CLIENT_ID=&quot;your_client_id&quot;
+export FITBIT_CLIENT_SECRET=&quot;your_client_secret&quot;
+export FITBIT_ACCESS_TOKEN=&quot;your_access_token&quot;
+export FITBIT_REFRESH_TOKEN=&quot;your_refresh_token&quot;
+
+# Generate morning briefing with Active Zone Minutes
+python scripts/fitbit_briefing.py
+
+# Fetch daily steps
+python scripts/fitbit_api.py steps --days 7
+
+# Get heart rate data
+python scripts/fitbit_api.py heartrate --days 7
+
+# Sleep summary
+python scripts/fitbit_api.py sleep --days 7
+
+# Generate weekly health report
+python scripts/fitbit_api.py report --type weekly
+
+# Get activity summary
+python scripts/fitbit_api.py summary --days 7
+</code></pre>
+<h2>When to Use</h2>
+<p>Use this skill when:</p>
+<ul>
+<li>Fetching Fitbit metrics (steps, calories, heart rate, sleep)</li>
+<li>Analyzing activity trends over time</li>
+<li>Setting up alerts for inactivity or abnormal heart rate</li>
+<li>Generating daily/weekly health reports</li>
+</ul>
+<h2>Core Workflows</h2>
+<h3>1. Daily Briefing</h3>
+<pre><code class="language-bash"># Generate morning health briefing (includes Active Zone Minutes)
+python scripts/fitbit_briefing.py                    # Today&#39;s briefing
+python scripts/fitbit_briefing.py --date 2026-01-20  # Specific date
+python scripts/fitbit_briefing.py --format brief     # 3-line summary
+python scripts/fitbit_briefing.py --format json      # JSON output
+
+# Example output includes:
+# - Yesterday&#39;s activities (logged exercises)
+# - Yesterday&#39;s Active Zone Minutes (total, Fat Burn, Cardio, Peak)
+# - Today&#39;s activity summary (steps, calories, floors, distance)
+# - Heart rate (resting, average, zones)
+# - Sleep (duration, efficiency, awake episodes)
+# - Trends vs 7-day average
+</code></pre>
+<p><strong>Example JSON output:</strong></p>
+<pre><code class="language-json">{
+  &quot;date&quot;: &quot;2026-01-21&quot;,
+  &quot;steps_today&quot;: 8543,
+  &quot;calories_today&quot;: 2340,
+  &quot;distance_today&quot;: 6.8,
+  &quot;floors_today&quot;: 12,
+  &quot;active_minutes&quot;: 47,
+  &quot;resting_hr&quot;: 58,
+  &quot;avg_hr&quot;: 72,
+  &quot;sleep_hours&quot;: 7.2,
+  &quot;sleep_efficiency&quot;: 89,
+  &quot;awake_minutes&quot;: 12,
+  &quot;yesterday_activities&quot;: [
+    {&quot;name&quot;: &quot;Run&quot;, &quot;duration&quot;: 35, &quot;calories&quot;: 320}
+  ],
+  &quot;yesterday_azm&quot;: {
+    &quot;activeZoneMinutes&quot;: 61,
+    &quot;fatBurnActiveZoneMinutes&quot;: 39,
+    &quot;cardioActiveZoneMinutes&quot;: 22
+  }
+}
+</code></pre>
+<p><strong>Note:</strong> Cardio Load is NOT available via Fitbit API - it&#39;s a Fitbit Premium feature only visible in the mobile app.</p>
+<h3>2. Data Fetching (CLI)</h3>
+<pre><code class="language-bash"># Available commands:
+python scripts/fitbit_api.py steps --days 7
+python scripts/fitbit_api.py calories --days 7
+python scripts/fitbit_api.py heartrate --days 7
+python scripts/fitbit_api.py sleep --days 7
+python scripts/fitbit_api.py summary --days 7
+python scripts/fitbit_api.py report --type weekly
+</code></pre>
+<h3>3. Data Fetching (Python API)</h3>
+<pre><code class="language-bash">export PYTHONPATH=&quot;{baseDir}/scripts&quot;
+python - &lt;&lt;&#39;PY&#39;
+from fitbit_api import FitbitClient
+
+client = FitbitClient()  # Uses env vars for credentials
+
+# Fetch data (requires start_date and end_date)
+steps_data = client.get_steps(start_date=&quot;2026-01-01&quot;, end_date=&quot;2026-01-16&quot;)
+hr_data = client.get_heartrate(start_date=&quot;2026-01-01&quot;, end_date=&quot;2026-01-16&quot;)
+sleep_data = client.get_sleep(start_date=&quot;2026-01-01&quot;, end_date=&quot;2026-01-16&quot;)
+activity_summary = client.get_activity_summary(start_date=&quot;2026-01-01&quot;, end_date=&quot;2026-01-16&quot;)
+PY
+</code></pre>
+<h3>4. Analysis</h3>
+<pre><code class="language-bash">export PYTHONPATH=&quot;{baseDir}/scripts&quot;
+python - &lt;&lt;&#39;PY&#39;
+from fitbit_api import FitbitAnalyzer
+
+analyzer = FitbitAnalyzer(steps_data, hr_data)
+summary = analyzer.summary()
+print(summary)  # Returns: avg_steps, avg_resting_hr, step_trend
+PY
+</code></pre>
+<h3>5. Alerts</h3>
+<pre><code class="language-bash">python {baseDir}/scripts/alerts.py --days 7 --steps 8000 --sleep 7
+</code></pre>
+<h2>Scripts</h2>
+<ul>
+<li><code>scripts/fitbit_api.py</code> - Fitbit Web API wrapper, CLI, and analysis</li>
+<li><code>scripts/fitbit_briefing.py</code> - Morning briefing CLI (text/brief/json output)</li>
+<li><code>scripts/alerts.py</code> - Threshold-based notifications</li>
+</ul>
+<h2>Available API Methods</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>get_steps(start, end)</code></td>
+<td>Daily step counts</td>
+</tr>
+<tr>
+<td><code>get_calories(start, end)</code></td>
+<td>Daily calories burned</td>
+</tr>
+<tr>
+<td><code>get_distance(start, end)</code></td>
+<td>Daily distance</td>
+</tr>
+<tr>
+<td><code>get_activity_summary(start, end)</code></td>
+<td>Activity summary</td>
+</tr>
+<tr>
+<td><code>get_heartrate(start, end)</code></td>
+<td>Heart rate data</td>
+</tr>
+<tr>
+<td><code>get_sleep(start, end)</code></td>
+<td>Sleep data</td>
+</tr>
+<tr>
+<td><code>get_sleep_stages(start, end)</code></td>
+<td>Detailed sleep stages</td>
+</tr>
+<tr>
+<td><code>get_spo2(start, end)</code></td>
+<td>Blood oxygen levels</td>
+</tr>
+<tr>
+<td><code>get_weight(start, end)</code></td>
+<td>Weight measurements</td>
+</tr>
+<tr>
+<td><code>get_active_zone_minutes(start, end)</code></td>
+<td>Active Zone Minutes (AZM) breakdown</td>
+</tr>
+</tbody></table>
+<h2>References</h2>
+<ul>
+<li><code>references/api.md</code> - Fitbit Web API documentation</li>
+<li><code>references/metrics.md</code> - Metric definitions and interpretations</li>
+</ul>
+<h2>Authentication</h2>
+<p>Fitbit API requires OAuth 2.0 authentication:</p>
+<ol>
+<li>Create app at: <a href="https://dev.fitbit.com/apps">https://dev.fitbit.com/apps</a></li>
+<li>Get client_id and client_secret</li>
+<li>Complete OAuth flow to get access_token and refresh_token</li>
+<li>Set environment variables or pass to scripts</li>
+</ol>
+<h2>Environment</h2>
+<p>Required:</p>
+<ul>
+<li><code>FITBIT_CLIENT_ID</code></li>
+<li><code>FITBIT_CLIENT_SECRET</code></li>
+<li><code>FITBIT_ACCESS_TOKEN</code></li>
+<li><code>FITBIT_REFRESH_TOKEN</code></li>
+</ul>
+<h2>Automation (Cron Jobs)</h2>
+<p>Cron jobs are configured in Clawdbot&#39;s gateway, not in this repo. Add these to your Clawdbot setup:</p>
+<h3>Daily Morning Briefing (8:00 AM)</h3>
+<pre><code class="language-bash">clawdbot cron add \
+  --name &quot;Morning Fitbit Health Report&quot; \
+  --cron &quot;0 8 * * *&quot; \
+  --tz &quot;America/Los_Angeles&quot; \
+  --session isolated \
+  --wake next-heartbeat \
+  --deliver \
+  --channel telegram \
+  --target &quot;&lt;YOUR_TELEGRAM_CHAT_ID&gt;&quot; \
+  --message &quot;python3 /path/to/your/scripts/fitbit_briefing.py --format text&quot;
+</code></pre>
+<p><strong>Note:</strong> Replace <code>/path/to/your/</code> with your actual path and <code>&lt;YOUR_TELEGRAM_CHAT_ID&gt;</code> with your Telegram channel/group ID.</p>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/kesslerio/fitbit-analytics/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/kesslerio/fitbit-analytics" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/kesslerio/fitbit-analytics/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@kesslerio</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Health & Fitness</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

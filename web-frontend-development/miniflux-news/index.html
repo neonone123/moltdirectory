@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Fetch and triage the latest unread RSS/news entries from a Miniflux instance">
+  <title>miniflux-news - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Web & Frontend Development</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Web & Frontend Development</a>
+                <span class="skill-page-author">by @hartlco</span>
+              </div>
+              <h1 class="skill-page-title">miniflux-news</h1>
+              <p class="skill-page-desc">Fetch and triage the latest unread RSS/news entries from a Miniflux instance</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Miniflux News</h1>
+<p>Use the bundled script to fetch entries, then format a clean list and optionally write summaries.</p>
+<h2>Setup (credentials)</h2>
+<p>This skill reads Miniflux credentials from a local config file by default.</p>
+<h3>Config file (recommended)</h3>
+<p>Path:</p>
+<ul>
+<li><code>~/.config/clawdbot/miniflux-news.json</code></li>
+</ul>
+<p>Format:</p>
+<pre><code class="language-json">{
+  &quot;url&quot;: &quot;https://your-miniflux.example&quot;,
+  &quot;token&quot;: &quot;&lt;api-token&gt;&quot;
+}
+</code></pre>
+<p>Create/update it using the script:</p>
+<pre><code class="language-bash">python3 skills/miniflux-news/scripts/miniflux.py configure \
+  --url &quot;https://your-miniflux.example&quot; \
+  --token &quot;&lt;api-token&gt;&quot;
+</code></pre>
+<h3>Environment variables (override)</h3>
+<p>You can override the config file (useful for CI):</p>
+<pre><code class="language-bash">export MINIFLUX_URL=&quot;https://your-miniflux.example&quot;
+export MINIFLUX_TOKEN=&quot;&lt;api-token&gt;&quot;
+</code></pre>
+<p>Token scope: Miniflux API token with read access.</p>
+<h2>Fetch latest entries</h2>
+<p>List latest unread items (default):</p>
+<pre><code class="language-bash">python3 skills/miniflux-news/scripts/miniflux.py entries --limit 20
+</code></pre>
+<p>Filter by category (by name):</p>
+<pre><code class="language-bash">python3 skills/miniflux-news/scripts/miniflux.py entries --category &quot;News&quot; --limit 20
+</code></pre>
+<p>If you need machine-readable output:</p>
+<pre><code class="language-bash">python3 skills/miniflux-news/scripts/miniflux.py entries --limit 50 --json
+</code></pre>
+<h3>Response formatting</h3>
+<ul>
+<li>Return a tight bullet list: <strong>[id] title — feed</strong> + link.</li>
+<li>Ask how many the user wants summarized (e.g., “summarize 3” or “summarize ids 123,124”).</li>
+</ul>
+<h2>View full content</h2>
+<p>Show the full article content stored in Miniflux (useful for reading or for better summaries):</p>
+<pre><code class="language-bash">python3 skills/miniflux-news/scripts/miniflux.py entry 123 --full --format text
+</code></pre>
+<p>If you want the raw HTML as stored by Miniflux:</p>
+<pre><code class="language-bash">python3 skills/miniflux-news/scripts/miniflux.py entry 123 --full --format html
+</code></pre>
+<h2>Categories</h2>
+<p>List categories:</p>
+<pre><code class="language-bash">python3 skills/miniflux-news/scripts/miniflux.py categories
+</code></pre>
+<h2>Mark entries as read (explicit only)</h2>
+<p>This skill <strong>must never</strong> mark anything as read implicitly. Only do it when the user explicitly asks to mark specific ids as read.</p>
+<p>Mark specific ids as read:</p>
+<pre><code class="language-bash">python3 skills/miniflux-news/scripts/miniflux.py mark-read 123 124 --confirm
+</code></pre>
+<p>Mark all unread entries in a category as read (still explicit, requires <code>--confirm</code>; includes a safety <code>--limit</code>):</p>
+<pre><code class="language-bash">python3 skills/miniflux-news/scripts/miniflux.py mark-read-category &quot;News&quot; --confirm --limit 500
+</code></pre>
+<h2>Summarize entries</h2>
+<p>Fetch full content for a specific entry id (machine-readable):</p>
+<pre><code class="language-bash">python3 skills/miniflux-news/scripts/miniflux.py entry 123 --json
+</code></pre>
+<p>Summarization rules:</p>
+<ul>
+<li>Prefer 3–6 bullets max.</li>
+<li>Lead with the “so what” in 1 sentence.</li>
+<li>If content is empty or truncated, say so and summarize from title + available snippet.</li>
+<li>Don’t invent facts; quote key numbers/names if present.</li>
+</ul>
+<h2>Troubleshooting</h2>
+<ul>
+<li>If the script says missing credentials: set <code>MINIFLUX_URL</code>/<code>MINIFLUX_TOKEN</code> or create <code>~/.config/clawdbot/miniflux-news.json</code>.</li>
+<li>If you get HTTP 401: token is wrong/expired.</li>
+<li>If you get HTTP 404: base URL is wrong (should be the Miniflux web root).</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/hartlco/miniflux-news/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/hartlco/miniflux-news" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/hartlco/miniflux-news/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@hartlco</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Web & Frontend Development</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

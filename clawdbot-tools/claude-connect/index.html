@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Connect Claude to Clawdbot instantly and keep it connected 24/7">
+  <title>claude-connect - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Clawdbot Tools</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Clawdbot Tools</a>
+                <span class="skill-page-author">by @tunaissacoding</span>
+              </div>
+              <h1 class="skill-page-title">claude-connect</h1>
+              <p class="skill-page-desc">Connect Claude to Clawdbot instantly and keep it connected 24/7</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>claude-connect</h1>
+<p><strong>Connect your Claude subscription to Clawdbot in one step.</strong></p>
+<p>Automatically:</p>
+<ul>
+<li>✅ Reads Claude OAuth tokens from Keychain</li>
+<li>✅ Writes them to Clawdbot in proper OAuth format</li>
+<li>✅ Auto-refreshes every 2 hours (before expiry)</li>
+<li>✅ Notifies you on success/failure</li>
+<li>✅ Works with <code>clawdbot onboard</code> (fixes OAuth auth-profiles bug)</li>
+</ul>
+<hr>
+<h2>Quick Start</h2>
+<p><strong>1. Install the skill:</strong></p>
+<pre><code class="language-bash">clawdhub install claude-connect
+cd ~/clawd/skills/claude-connect
+</code></pre>
+<p><strong>2. Ensure Claude CLI is logged in:</strong></p>
+<pre><code class="language-bash">claude auth
+# Follow the browser login flow
+</code></pre>
+<p><strong>3. Run installer:</strong></p>
+<pre><code class="language-bash">./install.sh
+</code></pre>
+<p>That&#39;s it! Tokens will refresh automatically every 2 hours.</p>
+<hr>
+<h2>What It Does</h2>
+<h3>Fixes <code>clawdbot onboard</code> OAuth Bug</h3>
+<p>When you run <code>clawdbot onboard --auth-choice claude-cli</code>, it sometimes doesn&#39;t properly write OAuth tokens to <code>auth-profiles.json</code>.</p>
+<p>This skill:</p>
+<ol>
+<li>Reads OAuth tokens from macOS Keychain (where Claude CLI stores them)</li>
+<li>Writes them to <code>~/.clawdbot/agents/main/agent/auth-profiles.json</code> in <strong>proper OAuth format</strong>:<pre><code class="language-json">{
+  &quot;profiles&quot;: {
+    &quot;anthropic:claude-cli&quot;: {
+      &quot;type&quot;: &quot;oauth&quot;,
+      &quot;provider&quot;: &quot;anthropic&quot;,
+      &quot;access&quot;: &quot;sk-ant-...&quot;,
+      &quot;refresh&quot;: &quot;sk-ant-ort...&quot;,
+      &quot;expires&quot;: 1234567890
+    }
+  }
+}
+</code></pre>
+</li>
+<li>Sets up auto-refresh (runs every 2 hours via launchd)</li>
+<li>Keeps your connection alive 24/7</li>
+</ol>
+<hr>
+<h2>Installation</h2>
+<h3>Automatic (Recommended)</h3>
+<pre><code class="language-bash">cd ~/clawd/skills/claude-connect
+./install.sh
+</code></pre>
+<p>The installer will:</p>
+<ul>
+<li>✅ Verify Claude CLI is set up</li>
+<li>✅ Create config file</li>
+<li>✅ Set up auto-refresh job (launchd)</li>
+<li>✅ Run first refresh to test</li>
+</ul>
+<h3>Manual</h3>
+<ol>
+<li><p>Copy example config:</p>
+<pre><code class="language-bash">cp claude-oauth-refresh-config.example.json claude-oauth-refresh-config.json
+</code></pre>
+</li>
+<li><p>Edit config (optional):</p>
+<pre><code class="language-bash">nano claude-oauth-refresh-config.json
+</code></pre>
+</li>
+<li><p>Test refresh:</p>
+<pre><code class="language-bash">./refresh-token.sh --force
+</code></pre>
+</li>
+<li><p>Install launchd job (optional - for auto-refresh):</p>
+<pre><code class="language-bash">cp com.clawdbot.claude-oauth-refresher.plist ~/Library/LaunchAgents/
+launchctl load ~/Library/LaunchAgents/com.clawdbot.claude-oauth-refresher.plist
+</code></pre>
+</li>
+</ol>
+<hr>
+<h2>Configuration</h2>
+<p>Edit <code>claude-oauth-refresh-config.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;refresh_buffer_minutes&quot;: 30,
+  &quot;log_file&quot;: &quot;~/clawd/logs/claude-oauth-refresh.log&quot;,
+  &quot;notifications&quot;: {
+    &quot;on_success&quot;: true,
+    &quot;on_failure&quot;: true
+  },
+  &quot;notification_target&quot;: &quot;YOUR_CHAT_ID&quot;
+}
+</code></pre>
+<p><strong>Options:</strong></p>
+<ul>
+<li><code>refresh_buffer_minutes</code>: Refresh when token has this many minutes left (default: 30)</li>
+<li><code>log_file</code>: Where to log refresh activity</li>
+<li><code>notifications.on_success</code>: Notify on successful refresh (default: true)</li>
+<li><code>notifications.on_failure</code>: Notify on failure (default: true)</li>
+<li><code>notification_target</code>: Your Telegram chat ID (or leave empty to disable)</li>
+</ul>
+<hr>
+<h2>Usage</h2>
+<h3>Manual Refresh</h3>
+<pre><code class="language-bash"># Refresh now (even if not expired)
+./refresh-token.sh --force
+
+# Refresh only if needed
+./refresh-token.sh
+</code></pre>
+<h3>Check Status</h3>
+<pre><code class="language-bash"># View recent logs
+tail ~/clawd/logs/claude-oauth-refresh.log
+
+# Check auth profile
+cat ~/.clawdbot/agents/main/agent/auth-profiles.json | jq &#39;.profiles.&quot;anthropic:claude-cli&quot;&#39;
+
+# Check Clawdbot status
+clawdbot models status
+</code></pre>
+<h3>Disable Notifications</h3>
+<p>Ask Clawdbot:</p>
+<pre><code>Disable Claude refresh success notifications
+</code></pre>
+<p>Or edit config:</p>
+<pre><code class="language-json">{
+  &quot;notifications&quot;: {
+    &quot;on_success&quot;: false,
+    &quot;on_failure&quot;: true
+  }
+}
+</code></pre>
+<hr>
+<h2>How It Works</h2>
+<h3>Refresh Process</h3>
+<ol>
+<li><strong>Read from Keychain:</strong> Gets OAuth tokens from <code>Claude Code-credentials</code></li>
+<li><strong>Check Expiry:</strong> Only refreshes if &lt; 30 minutes left (or <code>--force</code>)</li>
+<li><strong>Call OAuth API:</strong> Gets new access + refresh tokens</li>
+<li><strong>Update auth-profiles.json:</strong> Writes proper OAuth format</li>
+<li><strong>Update Keychain:</strong> Syncs new tokens back</li>
+<li><strong>Restart Gateway:</strong> Picks up new tokens</li>
+<li><strong>Notify:</strong> Sends success/failure message (optional)</li>
+</ol>
+<h3>Auto-Refresh (launchd)</h3>
+<p>Runs every 2 hours via <code>~/Library/LaunchAgents/com.clawdbot.claude-oauth-refresher.plist</code></p>
+<p><strong>Controls:</strong></p>
+<pre><code class="language-bash"># Stop auto-refresh
+launchctl unload ~/Library/LaunchAgents/com.clawdbot.claude-oauth-refresher.plist
+
+# Start auto-refresh
+launchctl load ~/Library/LaunchAgents/com.clawdbot.claude-oauth-refresher.plist
+
+# Check if running
+launchctl list | grep claude
+</code></pre>
+<hr>
+<h2>Troubleshooting</h2>
+<h3>OAuth not working after onboard</h3>
+<p><strong>Symptom:</strong> <code>clawdbot onboard --auth-choice claude-cli</code> completes but Clawdbot can&#39;t use tokens</p>
+<p><strong>Fix:</strong></p>
+<pre><code class="language-bash">cd ~/clawd/skills/claude-connect
+./refresh-token.sh --force
+</code></pre>
+<p>This will write tokens in proper OAuth format.</p>
+<h3>Tokens keep expiring</h3>
+<p><strong>Symptom:</strong> Auth keeps failing after 8 hours</p>
+<p><strong>Fix:</strong> Ensure launchd job is running:</p>
+<pre><code class="language-bash">launchctl load ~/Library/LaunchAgents/com.clawdbot.claude-oauth-refresher.plist
+launchctl list | grep claude
+</code></pre>
+<h3>No tokens in Keychain</h3>
+<p><strong>Symptom:</strong> <code>No &#39;Claude Code-credentials&#39; entries found</code></p>
+<p><strong>Fix:</strong> Log in with Claude CLI:</p>
+<pre><code class="language-bash">claude auth
+# Follow browser flow
+</code></pre>
+<p>Then run refresh again:</p>
+<pre><code class="language-bash">./refresh-token.sh --force
+</code></pre>
+<hr>
+<h2>Uninstall</h2>
+<pre><code class="language-bash">cd ~/clawd/skills/claude-connect
+./uninstall.sh
+</code></pre>
+<p>Or manually:</p>
+<pre><code class="language-bash"># Stop auto-refresh
+launchctl unload ~/Library/LaunchAgents/com.clawdbot.claude-oauth-refresher.plist
+rm ~/Library/LaunchAgents/com.clawdbot.claude-oauth-refresher.plist
+
+# Remove skill
+rm -rf ~/clawd/skills/claude-connect
+</code></pre>
+<hr>
+<h2>Upgrade</h2>
+<p>If you previously installed an older version:</p>
+<pre><code class="language-bash">cd ~/clawd/skills/claude-connect
+./validate-update.sh  # Check what changed
+clawdhub update claude-connect  # Update to latest
+./install.sh  # Re-run installer if needed
+</code></pre>
+<hr>
+<h2>See Also</h2>
+<ul>
+<li><a href="QUICKSTART.md">QUICKSTART.md</a> - 60-second setup guide</li>
+<li><a href="UPGRADE.md">UPGRADE.md</a> - Upgrading from older versions</li>
+<li><a href="https://docs.clawd.bot">Clawdbot docs</a> - Model authentication</li>
+</ul>
+<hr>
+<p><strong>Version:</strong> 1.1.0<br><strong>Author:</strong> TunaIssaCoding<br><strong>License:</strong> MIT<br><strong>Repo:</strong> <a href="https://github.com/TunaIssaCoding/claude-connect">https://github.com/TunaIssaCoding/claude-connect</a></p>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/tunaissacoding/claude-connect/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/tunaissacoding/claude-connect" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/tunaissacoding/claude-connect/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@tunaissacoding</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Clawdbot Tools</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

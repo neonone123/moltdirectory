@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage ClickUp tasks, docs, time tracking, comments, chat, and search via official MCP">
+  <title>clickup-mcp - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Productivity & Tasks</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Productivity & Tasks</a>
+                <span class="skill-page-author">by @pvoo</span>
+              </div>
+              <h1 class="skill-page-title">clickup-mcp</h1>
+              <p class="skill-page-desc">Manage ClickUp tasks, docs, time tracking, comments, chat, and search via official MCP</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>ClickUp MCP (Official)</h1>
+<p>Access ClickUp via the official MCP server. Full workspace search, task management, time tracking, comments, chat, and docs.</p>
+<h2>Setup</h2>
+<h3>Option 1: Direct OAuth (Supported Clients Only)</h3>
+<p>ClickUp MCP only allows OAuth from <strong>allowlisted clients</strong>:</p>
+<ul>
+<li>Claude Desktop, Claude Code, Cursor, VS Code, Windsurf, ChatGPT</li>
+</ul>
+<pre><code class="language-bash"># Claude Code
+claude mcp add clickup --transport http https://mcp.clickup.com/mcp
+# Then /mcp in session to authorize
+</code></pre>
+<h3>Option 2: Claude Code → mcporter (Recommended)</h3>
+<p>Use Claude Code to OAuth, then extract token for mcporter:</p>
+<p><strong>Step 1: Authorize via Claude Code</strong></p>
+<pre><code class="language-bash">claude mcp add clickup --transport http https://mcp.clickup.com/mcp
+claude
+# In Claude Code, run: /mcp
+# Complete OAuth in browser
+</code></pre>
+<p><strong>Step 2: Extract token</strong></p>
+<pre><code class="language-bash">jq -r &#39;.mcpOAuth | to_entries | .[] | select(.key | startswith(&quot;clickup&quot;)) | .value.accessToken&#39; ~/.claude/.credentials.json
+</code></pre>
+<p><strong>Step 3: Add to environment</strong></p>
+<pre><code class="language-bash"># Add to ~/.clawdbot/.env
+CLICKUP_TOKEN=eyJhbGciOiJkaXIi...
+</code></pre>
+<p><strong>Step 4: Configure mcporter</strong></p>
+<p>Add to <code>config/mcporter.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;mcpServers&quot;: {
+    &quot;clickup&quot;: {
+      &quot;baseUrl&quot;: &quot;https://mcp.clickup.com/mcp&quot;,
+      &quot;description&quot;: &quot;Official ClickUp MCP&quot;,
+      &quot;headers&quot;: {
+        &quot;Authorization&quot;: &quot;Bearer ${CLICKUP_TOKEN}&quot;
+      }
+    }
+  }
+}
+</code></pre>
+<p><strong>Step 5: Test</strong></p>
+<pre><code class="language-bash">mcporter list clickup
+mcporter call &#39;clickup.clickup_search(keywords: &quot;test&quot;, count: 3)&#39;
+</code></pre>
+<h3>Token Refresh</h3>
+<p>Tokens are long-lived (~10 years). If expired:</p>
+<ol>
+<li>Re-run <code>/mcp</code> in Claude Code</li>
+<li>Re-extract token from <code>~/.claude/.credentials.json</code></li>
+<li>Update <code>CLICKUP_TOKEN</code> in <code>.env</code></li>
+</ol>
+<h2>Available Tools (32)</h2>
+<h3>Search</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>clickup_search</code></td>
+<td>Universal search across tasks, docs, dashboards, chat, files</td>
+</tr>
+</tbody></table>
+<h3>Tasks</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>clickup_create_task</code></td>
+<td>Create task with name, description, status, assignees, due date, priority</td>
+</tr>
+<tr>
+<td><code>clickup_get_task</code></td>
+<td>Get task details (with optional subtasks)</td>
+</tr>
+<tr>
+<td><code>clickup_update_task</code></td>
+<td>Update any task field</td>
+</tr>
+<tr>
+<td><code>clickup_attach_task_file</code></td>
+<td>Attach file to task (URL or base64)</td>
+</tr>
+<tr>
+<td><code>clickup_add_tag_to_task</code></td>
+<td>Add tag to task</td>
+</tr>
+<tr>
+<td><code>clickup_remove_tag_from_task</code></td>
+<td>Remove tag from task</td>
+</tr>
+</tbody></table>
+<h3>Comments</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>clickup_get_task_comments</code></td>
+<td>Get all comments on task</td>
+</tr>
+<tr>
+<td><code>clickup_create_task_comment</code></td>
+<td>Add comment (supports @mentions)</td>
+</tr>
+</tbody></table>
+<h3>Time Tracking</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>clickup_start_time_tracking</code></td>
+<td>Start timer on task</td>
+</tr>
+<tr>
+<td><code>clickup_stop_time_tracking</code></td>
+<td>Stop active timer</td>
+</tr>
+<tr>
+<td><code>clickup_add_time_entry</code></td>
+<td>Log time manually</td>
+</tr>
+<tr>
+<td><code>clickup_get_task_time_entries</code></td>
+<td>Get time entries for task</td>
+</tr>
+<tr>
+<td><code>clickup_get_current_time_entry</code></td>
+<td>Check active timer</td>
+</tr>
+</tbody></table>
+<h3>Workspace &amp; Hierarchy</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>clickup_get_workspace_hierarchy</code></td>
+<td>Get full structure (Spaces, Folders, Lists)</td>
+</tr>
+<tr>
+<td><code>clickup_create_list</code></td>
+<td>Create list in Space</td>
+</tr>
+<tr>
+<td><code>clickup_create_list_in_folder</code></td>
+<td>Create list in Folder</td>
+</tr>
+<tr>
+<td><code>clickup_get_list</code></td>
+<td>Get list details</td>
+</tr>
+<tr>
+<td><code>clickup_update_list</code></td>
+<td>Update list settings</td>
+</tr>
+<tr>
+<td><code>clickup_create_folder</code></td>
+<td>Create folder in Space</td>
+</tr>
+<tr>
+<td><code>clickup_get_folder</code></td>
+<td>Get folder details</td>
+</tr>
+<tr>
+<td><code>clickup_update_folder</code></td>
+<td>Update folder settings</td>
+</tr>
+</tbody></table>
+<h3>Members</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>clickup_get_workspace_members</code></td>
+<td>List all workspace members</td>
+</tr>
+<tr>
+<td><code>clickup_find_member_by_name</code></td>
+<td>Find member by name/email</td>
+</tr>
+<tr>
+<td><code>clickup_resolve_assignees</code></td>
+<td>Get user IDs from names</td>
+</tr>
+</tbody></table>
+<h3>Chat</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>clickup_get_chat_channels</code></td>
+<td>List all Chat channels</td>
+</tr>
+<tr>
+<td><code>clickup_send_chat_message</code></td>
+<td>Send message to channel</td>
+</tr>
+</tbody></table>
+<h3>Docs</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>clickup_create_document</code></td>
+<td>Create new Doc</td>
+</tr>
+<tr>
+<td><code>clickup_list_document_pages</code></td>
+<td>Get Doc structure</td>
+</tr>
+<tr>
+<td><code>clickup_get_document_pages</code></td>
+<td>Get page content</td>
+</tr>
+<tr>
+<td><code>clickup_create_document_page</code></td>
+<td>Add page to Doc</td>
+</tr>
+<tr>
+<td><code>clickup_update_document_page</code></td>
+<td>Edit page content</td>
+</tr>
+</tbody></table>
+<h2>Usage Examples</h2>
+<h3>Search Workspace</h3>
+<pre><code class="language-bash">mcporter call &#39;clickup.clickup_search(
+  keywords: &quot;Q4 marketing&quot;,
+  count: 10
+)&#39;
+</code></pre>
+<h3>Create Task</h3>
+<pre><code class="language-bash">mcporter call &#39;clickup.clickup_create_task(
+  name: &quot;Review PR #42&quot;,
+  list_id: &quot;901506994423&quot;,
+  description: &quot;Check the new feature&quot;,
+  status: &quot;to do&quot;
+)&#39;
+</code></pre>
+<h3>Update Task</h3>
+<pre><code class="language-bash">mcporter call &#39;clickup.clickup_update_task(
+  task_id: &quot;abc123&quot;,
+  status: &quot;in progress&quot;
+)&#39;
+</code></pre>
+<h3>Add Comment</h3>
+<pre><code class="language-bash">mcporter call &#39;clickup.clickup_create_task_comment(
+  task_id: &quot;abc123&quot;,
+  comment_text: &quot;@Mark can you review this?&quot;
+)&#39;
+</code></pre>
+<h3>Time Tracking</h3>
+<pre><code class="language-bash"># Start timer
+mcporter call &#39;clickup.clickup_start_time_tracking(
+  task_id: &quot;abc123&quot;,
+  description: &quot;Working on feature&quot;
+)&#39;
+
+# Stop timer
+mcporter call &#39;clickup.clickup_stop_time_tracking()&#39;
+
+# Log time manually (duration in ms, e.g., 2h = 7200000)
+mcporter call &#39;clickup.clickup_add_time_entry(
+  task_id: &quot;abc123&quot;,
+  start: &quot;2026-01-06 10:00&quot;,
+  duration: &quot;2h&quot;,
+  description: &quot;Code review&quot;
+)&#39;
+</code></pre>
+<h3>Get Workspace Structure</h3>
+<pre><code class="language-bash">mcporter call &#39;clickup.clickup_get_workspace_hierarchy(limit: 10)&#39;
+</code></pre>
+<h3>Chat</h3>
+<pre><code class="language-bash"># List channels
+mcporter call &#39;clickup.clickup_get_chat_channels()&#39;
+
+# Send message
+mcporter call &#39;clickup.clickup_send_chat_message(
+  channel_id: &quot;channel-123&quot;,
+  content: &quot;Team standup in 5 minutes!&quot;
+)&#39;
+</code></pre>
+<h2>Limitations</h2>
+<ul>
+<li><strong>No delete operations</strong> — Safety measure; use ClickUp UI</li>
+<li><strong>No custom fields</strong> — Not exposed in official MCP</li>
+<li><strong>No views management</strong> — Not available</li>
+<li><strong>OAuth required</strong> — Must use allowlisted client (Claude Code workaround available)</li>
+<li><strong>Rate limits</strong> — Same as ClickUp API (~100 req/min)</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://developer.clickup.com/docs/connect-an-ai-assistant-to-clickups-mcp-server">ClickUp MCP Documentation</a></li>
+<li><a href="https://developer.clickup.com/docs/mcp-tools">Supported Tools</a></li>
+<li><a href="https://clickup.com/api">ClickUp API Reference</a></li>
+<li><a href="https://feedback.clickup.com">Feedback / Allowlist Request</a></li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/pvoo/clickup-mcp/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/pvoo/clickup-mcp" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/pvoo/clickup-mcp/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@pvoo</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Productivity & Tasks</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

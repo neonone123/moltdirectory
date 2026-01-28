@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Search Apple Music, add songs to library, manage playlists, control playback and AirPlay">
+  <title>apple-music - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Apple Apps & Services</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Apple Apps & Services</a>
+                <span class="skill-page-author">by @tyler6204</span>
+              </div>
+              <h1 class="skill-page-title">apple-music</h1>
+              <p class="skill-page-desc">Search Apple Music, add songs to library, manage playlists, control playback and AirPlay</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Apple Music</h1>
+<p>Control Apple Music via MusicKit API and AppleScript. Path: <code>~/.clawdbot/skills/apple-music/</code></p>
+<h2>Local (No Setup)</h2>
+<p><strong>Playback:</strong> <code>./apple-music.sh player [now|play|pause|toggle|next|prev|shuffle|repeat|volume N|song &quot;name&quot;]</code><br><strong>AirPlay:</strong> <code>./apple-music.sh airplay [list|select N|add N|remove N]</code></p>
+<h2>API (Setup Required)</h2>
+<p>Requires Apple Developer account ($99/yr) + MusicKit key.</p>
+<h3>Setup</h3>
+<p><strong>Portal steps first:</strong></p>
+<ol>
+<li>developer.apple.com → Keys → Create MusicKit key → Download .p8</li>
+<li>Note your Key ID and Team ID</li>
+</ol>
+<p><strong>Then run setup:</strong></p>
+<pre><code class="language-bash">./launch-setup.sh  # Opens Terminal for interactive setup
+</code></pre>
+<p>The launcher opens Terminal.app and runs the setup script there. Enter your .p8 path, Key ID, Team ID, then authorize in browser and paste the token.</p>
+<p><strong>⚠️ Agents:</strong> Always use <code>./launch-setup.sh</code> to open Terminal. Don&#39;t run setup.sh through chat (requires interactive input).</p>
+<h3>Commands</h3>
+<ul>
+<li><code>search &quot;query&quot; [--type songs|albums|artists] [--limit N]</code></li>
+<li><code>library add &lt;song-id&gt;</code></li>
+<li><code>playlists [list|create &quot;Name&quot;|add &lt;playlist-id&gt; &lt;song-id&gt;]</code></li>
+</ul>
+<h3>Config</h3>
+<p><code>config.json</code> stores tokens (valid ~6 months). Re-run <code>./setup.sh</code> if auth fails.</p>
+<h3>Errors</h3>
+<ul>
+<li>401: Token expired, re-run setup</li>
+<li>403: Check Apple Music subscription</li>
+<li>404: Invalid ID or region-locked</li>
+</ul>
+<h3>Setup Issues</h3>
+<ul>
+<li><strong>404 on auth page:</strong> Setup script auto-fixes with HTTP server verification</li>
+<li><strong>No token in browser:</strong> Restart setup.sh</li>
+<li><strong>Browser won&#39;t open:</strong> Manually open printed URL (Chrome recommended)</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/tyler6204/apple-music/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/tyler6204/apple-music" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/tyler6204/apple-music/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@tyler6204</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Apple Apps & Services</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

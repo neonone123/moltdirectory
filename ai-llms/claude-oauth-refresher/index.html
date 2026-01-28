@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Keep your Claude access token fresh 24/7">
+  <title>claude-oauth-refresher - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to AI & LLMs</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">AI & LLMs</a>
+                <span class="skill-page-author">by @tunaissacoding</span>
+              </div>
+              <h1 class="skill-page-title">claude-oauth-refresher</h1>
+              <p class="skill-page-desc">Keep your Claude access token fresh 24/7</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>claude-oauth-refresher</h1>
+<p><strong>Automatic OAuth token refresh for Claude Code CLI on macOS</strong></p>
+<p>Keep your Claude account logged in 24/7 by automatically refreshing OAuth tokens before they expire.</p>
+<hr>
+<h2>⚠️ Requirements</h2>
+<p>This skill is <strong>macOS-only</strong> and requires:</p>
+<ol>
+<li><strong>macOS</strong> (uses Keychain for secure credential storage)</li>
+<li><strong>Claude Code CLI</strong> already installed (<code>claude</code> command available)</li>
+<li><strong>Already logged into your Claude account</strong> (run <code>claude</code> then <code>login</code> - stores tokens in Keychain)</li>
+<li><strong>Clawdbot</strong> installed and running</li>
+</ol>
+<p><strong>Not sure if you&#39;re set up?</strong> Run the verification script:</p>
+<pre><code class="language-bash">./verify-setup.sh
+</code></pre>
+<hr>
+<h2>What It Does</h2>
+<ul>
+<li><strong>Monitors</strong> your Claude CLI token expiration</li>
+<li><strong>Refreshes</strong> tokens automatically before they expire (default: 30 min buffer)</li>
+<li><strong>Notifies</strong> you with three notification types:<ul>
+<li>🔄 Start: &quot;Refreshing Claude token...&quot; </li>
+<li>✅ Success: &quot;Claude token refreshed!&quot;</li>
+<li>❌ Failure: Detailed error with troubleshooting steps</li>
+</ul>
+</li>
+<li><strong>Logs</strong> all refresh attempts for debugging</li>
+</ul>
+<hr>
+<h2>Installation</h2>
+<h3>Quick Setup (Recommended)</h3>
+<pre><code class="language-bash">cd ~/clawd/skills/claude-oauth-refresher
+./install.sh
+</code></pre>
+<p><strong>This installer runs ONCE</strong> and sets up automatic token refresh that runs every 2 hours.</p>
+<p>The installer will:</p>
+<ol>
+<li>Verify your system meets requirements</li>
+<li><strong>Interactively configure</strong> notification preferences</li>
+<li>Auto-detect your notification target (Telegram, Slack, etc.)</li>
+<li>Set up launchd for automatic refresh</li>
+<li>Test the refresh immediately</li>
+</ol>
+<p><strong>After installation:</strong></p>
+<ul>
+<li>Config changes apply automatically (refresh script reads config each run)</li>
+<li>Edit <code>claude-oauth-refresh-config.json</code> to change settings</li>
+<li>Ask Clawdbot to modify settings for you</li>
+<li><strong>Only re-run installer</strong> if you need to reinstall or fix the job</li>
+</ul>
+<h3>Interactive Notification Setup</h3>
+<p>During installation, you&#39;ll be prompted:</p>
+<pre><code>Configure Notifications:
+💡 Recommendation: Keep all enabled for the first run to verify it works.
+   You can disable them later by:
+   1. Editing ~/clawd/claude-oauth-refresh-config.json
+   2. Asking Clawdbot: &quot;disable Claude refresh notifications&quot;
+
+Enable &quot;🔄 Refreshing token...&quot; notification? [Y/n]: 
+Enable &quot;✅ Token refreshed!&quot; notification? [Y/n]: 
+Enable &quot;❌ Refresh failed&quot; notification? [Y/n]: 
+</code></pre>
+<p><strong>Recommendation:</strong> Keep all enabled initially to verify everything works, then disable start/success notifications once you&#39;re confident.</p>
+<hr>
+<h2>Managing Notifications with Clawdbot</h2>
+<p><strong>You can ask Clawdbot to change notification settings for you!</strong> No need to edit JSON manually.</p>
+<h3>Examples</h3>
+<p><strong>Disable specific notification types:</strong></p>
+<pre><code>&quot;disable Claude refresh start notifications&quot;
+&quot;disable Claude refresh success notifications&quot;
+&quot;turn off Claude token refresh start messages&quot;
+</code></pre>
+<p><strong>Enable notification types:</strong></p>
+<pre><code>&quot;enable Claude refresh start notifications&quot;
+&quot;enable all Claude refresh notifications&quot;
+&quot;turn on Claude token refresh success messages&quot;
+</code></pre>
+<p><strong>Check current settings:</strong></p>
+<pre><code>&quot;show Claude refresh notification settings&quot;
+&quot;what are my Claude token refresh notification settings?&quot;
+</code></pre>
+<p><strong>Disable all notifications:</strong></p>
+<pre><code>&quot;disable all Claude refresh notifications&quot;
+&quot;turn off all Claude token notifications&quot;
+</code></pre>
+<p><strong>Reset to defaults:</strong></p>
+<pre><code>&quot;reset Claude refresh notifications to defaults&quot;
+</code></pre>
+<h3>How It Works</h3>
+<p>Clawdbot will:</p>
+<ol>
+<li>Read your <code>~/clawd/claude-oauth-refresh-config.json</code></li>
+<li>Update the appropriate notification flags</li>
+<li>Save the file</li>
+<li>Confirm the changes</li>
+</ol>
+<p><strong>Changes apply immediately</strong> on the next refresh (no need to restart anything).</p>
+<hr>
+<h2>Auto-Detection (Smart Defaults)</h2>
+<p><strong>The install script automatically detects your notification settings!</strong></p>
+<p>It reads <code>~/.clawdbot/clawdbot.json</code> to find:</p>
+<ul>
+<li>Which messaging channels you have enabled</li>
+<li>Your chat ID, phone number, or user ID</li>
+<li>Automatically populates <code>claude-oauth-refresh-config.json</code> with these values</li>
+</ul>
+<p><strong>Example:</strong> If you have Telegram enabled with chat ID <code>123456789</code>, the installer creates:</p>
+<pre><code class="language-json">{
+  &quot;notification_channel&quot;: &quot;telegram&quot;,
+  &quot;notification_target&quot;: &quot;123456789&quot;
+}
+</code></pre>
+<p><strong>To override:</strong> Simply edit <code>claude-oauth-refresh-config.json</code> after installation to use a different channel or target.</p>
+<p><strong>If auto-detection fails:</strong> The installer will prompt you to configure manually (see &quot;Finding Your Target ID&quot; below).</p>
+<p><strong>Test detection before installing:</strong></p>
+<pre><code class="language-bash">./test-detection.sh
+# Shows what would be auto-detected without modifying anything
+</code></pre>
+<hr>
+<h2>Finding Your Target ID</h2>
+<p>To receive notifications, you need to configure your <code>notification_target</code> in <code>claude-oauth-refresh-config.json</code>. Here&#39;s how to find it for each channel:</p>
+<h3>Telegram</h3>
+<p><strong>Format:</strong> Numeric chat ID (e.g., <code>123456789</code>)</p>
+<p><strong>How to find:</strong></p>
+<pre><code class="language-bash"># Option 1: Use Clawdbot CLI
+clawdbot message telegram account list
+
+# Option 2: Message @userinfobot on Telegram
+# Send any message, it will reply with your ID
+
+# Option 3: Check recent messages
+clawdbot message telegram message search --limit 1 --from-me true
+</code></pre>
+<p><strong>Example config:</strong></p>
+<pre><code class="language-json">{
+  &quot;notification_channel&quot;: &quot;telegram&quot;,
+  &quot;notification_target&quot;: &quot;123456789&quot;
+}
+</code></pre>
+<h3>Slack</h3>
+<p><strong>Format:</strong> </p>
+<ul>
+<li>Direct messages: <code>user:U01234ABCD</code></li>
+<li>Channels: <code>channel:C01234ABCD</code></li>
+</ul>
+<p><strong>How to find:</strong></p>
+<pre><code class="language-bash"># List channels
+clawdbot message slack channel list
+
+# Find user ID
+clawdbot message slack user list | grep &quot;your.email@company.com&quot;
+
+# Or click on your profile in Slack → More → Copy member ID
+</code></pre>
+<p><strong>Example config:</strong></p>
+<pre><code class="language-json">{
+  &quot;notification_channel&quot;: &quot;slack&quot;,
+  &quot;notification_target&quot;: &quot;user:U01234ABCD&quot;
+}
+</code></pre>
+<h3>Discord</h3>
+<p><strong>Format:</strong></p>
+<ul>
+<li>Direct messages: <code>user:123456789012345678</code></li>
+<li>Channels: <code>channel:123456789012345678</code></li>
+</ul>
+<p><strong>How to find:</strong></p>
+<pre><code class="language-bash"># Enable Developer Mode in Discord (Settings → Advanced → Developer Mode)
+# Then right-click your username → Copy ID
+
+# Or list channels
+clawdbot message discord channel list
+</code></pre>
+<p><strong>Example config:</strong></p>
+<pre><code class="language-json">{
+  &quot;notification_channel&quot;: &quot;discord&quot;,
+  &quot;notification_target&quot;: &quot;user:123456789012345678&quot;
+}
+</code></pre>
+<h3>WhatsApp</h3>
+<p><strong>Format:</strong> E.164 phone number (e.g., <code>+15551234567</code>)</p>
+<p><strong>How to find:</strong></p>
+<ul>
+<li>Use your full phone number with country code</li>
+<li>Format: <code>+[country code][number]</code> (no spaces, dashes, or parentheses)</li>
+</ul>
+<p><strong>Examples:</strong></p>
+<ul>
+<li>US: <code>+15551234567</code></li>
+<li>UK: <code>+447911123456</code></li>
+<li>Australia: <code>+61412345678</code></li>
+</ul>
+<p><strong>Example config:</strong></p>
+<pre><code class="language-json">{
+  &quot;notification_channel&quot;: &quot;whatsapp&quot;,
+  &quot;notification_target&quot;: &quot;+15551234567&quot;
+}
+</code></pre>
+<h3>iMessage</h3>
+<p><strong>Format (preferred):</strong> <code>chat_id:123</code></p>
+<p><strong>How to find:</strong></p>
+<pre><code class="language-bash"># List recent chats to find your chat_id
+clawdbot message imessage thread list --limit 10
+
+# Find the chat with yourself or your preferred device
+</code></pre>
+<p><strong>Alternative formats:</strong></p>
+<ul>
+<li>Phone: <code>+15551234567</code> (E.164 format)</li>
+<li>Email: <code>your.email@icloud.com</code></li>
+</ul>
+<p><strong>Example config:</strong></p>
+<pre><code class="language-json">{
+  &quot;notification_channel&quot;: &quot;imessage&quot;,
+  &quot;notification_target&quot;: &quot;chat_id:123&quot;
+}
+</code></pre>
+<h3>Signal</h3>
+<p><strong>Format:</strong> E.164 phone number (e.g., <code>+15551234567</code>)</p>
+<p><strong>How to find:</strong></p>
+<ul>
+<li>Use your Signal-registered phone number</li>
+<li>Format: <code>+[country code][number]</code> (no spaces, dashes, or parentheses)</li>
+</ul>
+<p><strong>Example config:</strong></p>
+<pre><code class="language-json">{
+  &quot;notification_channel&quot;: &quot;signal&quot;,
+  &quot;notification_target&quot;: &quot;+15551234567&quot;
+}
+</code></pre>
+<hr>
+<h2>Configuration</h2>
+<p><strong>File:</strong> <code>claude-oauth-refresh-config.json</code></p>
+<pre><code class="language-json">{
+  &quot;refresh_buffer_minutes&quot;: 30,
+  &quot;log_file&quot;: &quot;~/clawd/logs/claude-oauth-refresh.log&quot;,
+  &quot;notifications&quot;: {
+    &quot;on_start&quot;: true,
+    &quot;on_success&quot;: true,
+    &quot;on_failure&quot;: true
+  },
+  &quot;notification_channel&quot;: &quot;telegram&quot;,
+  &quot;notification_target&quot;: &quot;YOUR_CHAT_ID&quot;
+}
+</code></pre>
+<h3>Options</h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>refresh_buffer_minutes</code></td>
+<td>number</td>
+<td><code>30</code></td>
+<td>Refresh tokens this many minutes before expiry</td>
+</tr>
+<tr>
+<td><code>log_file</code></td>
+<td>string</td>
+<td><code>~/clawd/logs/claude-oauth-refresh.log</code></td>
+<td>Where to write logs</td>
+</tr>
+<tr>
+<td><code>notifications.on_start</code></td>
+<td>boolean</td>
+<td><code>true</code></td>
+<td>Send &quot;🔄 Refreshing token...&quot; notification</td>
+</tr>
+<tr>
+<td><code>notifications.on_success</code></td>
+<td>boolean</td>
+<td><code>true</code></td>
+<td>Send &quot;✅ Token refreshed!&quot; notification</td>
+</tr>
+<tr>
+<td><code>notifications.on_failure</code></td>
+<td>boolean</td>
+<td><code>true</code></td>
+<td>Send &quot;❌ Refresh failed&quot; notification with details</td>
+</tr>
+<tr>
+<td><code>notification_channel</code></td>
+<td>string</td>
+<td><code>telegram</code></td>
+<td>Channel to use (see above for options)</td>
+</tr>
+<tr>
+<td><code>notification_target</code></td>
+<td>string</td>
+<td><code>YOUR_CHAT_ID</code></td>
+<td>Target ID (see &quot;Finding Your Target ID&quot;)</td>
+</tr>
+</tbody></table>
+<h3>Notification Types Explained</h3>
+<p><strong>🔄 Start (<code>on_start</code>)</strong></p>
+<ul>
+<li>Sent when refresh process begins</li>
+<li>Useful for debugging or knowing when refresh runs</li>
+<li><strong>Recommendation:</strong> Disable once you verify it works (can be noisy)</li>
+</ul>
+<p><strong>✅ Success (<code>on_success</code>)</strong></p>
+<ul>
+<li>Sent when token successfully refreshed</li>
+<li>Includes validity duration (e.g., &quot;valid for 24h&quot;)</li>
+<li><strong>Recommendation:</strong> Disable once you trust the setup (can be noisy)</li>
+</ul>
+<p><strong>❌ Failure (<code>on_failure</code>)</strong></p>
+<ul>
+<li>Sent when refresh fails with detailed error info</li>
+<li>Includes troubleshooting steps based on error type</li>
+<li><strong>Recommendation:</strong> Keep enabled! You want to know about failures.</li>
+</ul>
+<h3>Example Configurations</h3>
+<p><strong>Minimal (failures only):</strong></p>
+<pre><code class="language-json">{
+  &quot;notifications&quot;: {
+    &quot;on_start&quot;: false,
+    &quot;on_success&quot;: false,
+    &quot;on_failure&quot;: true
+  }
+}
+</code></pre>
+<p><strong>Verbose (all notifications):</strong></p>
+<pre><code class="language-json">{
+  &quot;notifications&quot;: {
+    &quot;on_start&quot;: true,
+    &quot;on_success&quot;: true,
+    &quot;on_failure&quot;: true
+  }
+}
+</code></pre>
+<p><strong>Silent (no notifications):</strong></p>
+<pre><code class="language-json">{
+  &quot;notifications&quot;: {
+    &quot;on_start&quot;: false,
+    &quot;on_success&quot;: false,
+    &quot;on_failure&quot;: false
+  }
+}
+</code></pre>
+<hr>
+<h2>Detailed Failure Messages</h2>
+<p>When a refresh fails, you&#39;ll receive a detailed notification with:</p>
+<ol>
+<li><strong>Error message</strong> - What went wrong</li>
+<li><strong>Details</strong> - Additional context (HTTP codes, error responses, etc.)</li>
+<li><strong>Troubleshooting</strong> - Specific steps based on the error type</li>
+<li><strong>Help</strong> - Where to find logs and get support</li>
+</ol>
+<h3>Example Failure Notification</h3>
+<pre><code>❌ Claude token refresh failed
+
+Error: Network timeout connecting to auth.anthropic.com
+Details: Connection timed out after 30s
+
+Troubleshooting:
+- Check your internet connection
+- Verify you can reach auth.anthropic.com
+- Try running manually: ~/clawd/skills/claude-oauth-refresher/refresh-token.sh
+
+Need help? Message Clawdbot or check logs:
+~/clawd/logs/claude-oauth-refresh.log
+</code></pre>
+<h3>Common Errors and Solutions</h3>
+<p><strong>Network/Timeout Errors</strong></p>
+<pre><code>Troubleshooting:
+- Check your internet connection
+- Verify you can reach auth.anthropic.com
+- Try running manually: ./refresh-token.sh
+</code></pre>
+<p><strong>Invalid Refresh Token</strong></p>
+<pre><code>Troubleshooting:
+- Your refresh token may have expired
+- Re-authenticate: claude auth logout &amp;&amp; claude auth
+- Verify Keychain access: security find-generic-password -s &#39;claude-cli-auth&#39; -a &#39;default&#39;
+</code></pre>
+<p><strong>Keychain Access Denied</strong></p>
+<pre><code>Troubleshooting:
+- Check Keychain permissions
+- Re-run authentication: claude auth
+- Verify setup: ./verify-setup.sh
+</code></pre>
+<p><strong>Missing Auth Profile</strong></p>
+<pre><code>Troubleshooting:
+- Run: claude auth
+- Verify file exists: ~/.config/claude/auth-profiles.json
+- Check file permissions: chmod 600 ~/.config/claude/auth-profiles.json
+</code></pre>
+<hr>
+<h2>Usage</h2>
+<h3>Check Status</h3>
+<pre><code class="language-bash"># View recent logs
+tail -f ~/clawd/logs/claude-oauth-refresh.log
+
+# Check launchd status
+launchctl list | grep claude-oauth-refresher
+
+# Manual refresh (for testing)
+cd ~/clawd/skills/claude-oauth-refresher
+./refresh-token.sh
+</code></pre>
+<h3>Modify Settings</h3>
+<p><strong>Option 1: Ask Clawdbot (easiest)</strong></p>
+<pre><code>&quot;disable Claude refresh start notifications&quot;
+&quot;show Claude refresh notification settings&quot;
+</code></pre>
+<p><strong>Option 2: Edit config file</strong></p>
+<pre><code class="language-bash">nano ~/clawd/skills/claude-oauth-refresher/claude-oauth-refresh-config.json
+</code></pre>
+<p>Changes apply automatically on next refresh (every 2 hours, or when you run manually).</p>
+<p><strong>No need to restart anything!</strong> The refresh script reads the config file each time it runs.</p>
+<hr>
+<h2>Troubleshooting</h2>
+<h3>Problem: <code>verify-setup.sh</code> says Claude CLI not found</h3>
+<p><strong>Solution:</strong></p>
+<pre><code class="language-bash"># Install Claude CLI
+brew install claude
+
+# Or download from https://github.com/anthropics/claude-cli
+</code></pre>
+<hr>
+<h3>Problem: <code>verify-setup.sh</code> says no refresh token found</h3>
+<p><strong>Solution:</strong></p>
+<pre><code class="language-bash"># Authenticate with Claude
+claude auth
+
+# Follow the prompts to log in
+</code></pre>
+<hr>
+<h3>Problem: Notifications not arriving</h3>
+<p><strong>Solution:</strong></p>
+<ol>
+<li>Check your <code>notification_target</code> format matches the examples above</li>
+<li>Test manually:<pre><code class="language-bash">clawdbot message [channel] send --target &quot;[your_target]&quot; --message &quot;Test&quot;
+</code></pre>
+</li>
+<li>Check Clawdbot is running: <code>clawdbot gateway status</code></li>
+<li>Verify notification settings:<pre><code class="language-bash">cat ~/clawd/skills/claude-oauth-refresher/claude-oauth-refresh-config.json | jq .notifications
+</code></pre>
+</li>
+</ol>
+<hr>
+<h3>Problem: Token refresh fails with &quot;invalid_grant&quot;</h3>
+<p><strong>Solution:</strong></p>
+<pre><code class="language-bash"># Re-authenticate from scratch
+claude auth logout
+claude auth
+
+# Test refresh again
+cd ~/clawd/skills/claude-oauth-refresher
+./refresh-token.sh
+</code></pre>
+<hr>
+<h3>Problem: &quot;Config file not found&quot; after upgrade</h3>
+<p><strong>Solution:</strong>
+The config file was renamed from <code>config.json</code> to <code>claude-oauth-refresh-config.json</code>.</p>
+<pre><code class="language-bash"># If you have an old config.json, run the installer to migrate:
+cd ~/clawd/skills/claude-oauth-refresher
+./install.sh
+# Choose to keep existing config when prompted
+</code></pre>
+<hr>
+<h3>Problem: Want to reinstall or fix the job</h3>
+<p><strong>Solution:</strong></p>
+<pre><code class="language-bash"># Re-run the installer (safe to run multiple times)
+cd ~/clawd/skills/claude-oauth-refresher
+./install.sh
+</code></pre>
+<p>The installer will:</p>
+<ul>
+<li>Detect existing config and ask if you want to keep it</li>
+<li>Update the launchd job</li>
+<li>Test the refresh</li>
+</ul>
+<hr>
+<h2>Uninstall</h2>
+<pre><code class="language-bash">cd ~/clawd/skills/claude-oauth-refresher
+./uninstall.sh
+</code></pre>
+<p>This will:</p>
+<ul>
+<li>Stop and unload the launchd service</li>
+<li>Remove the plist file</li>
+<li>Optionally delete logs and config</li>
+</ul>
+<hr>
+<h2>How It Works</h2>
+<ol>
+<li><p><strong>Installer (<code>install.sh</code>)</strong> - Run ONCE to set up:</p>
+<ul>
+<li>Auto-detects notification target</li>
+<li>Interactively configures notification types</li>
+<li>Creates launchd job</li>
+<li>Tests refresh immediately</li>
+</ul>
+</li>
+<li><p><strong>Launchd</strong> - Runs <code>refresh-token.sh</code> every 2 hours automatically</p>
+</li>
+<li><p><strong>Refresh Script (<code>refresh-token.sh</code>)</strong> - Each run:</p>
+<ul>
+<li>Reads config file (changes apply automatically!)</li>
+<li>Checks token expiration from <code>~/.config/claude/auth-profiles.json</code></li>
+<li>If token expires within buffer window (default 30 min):<ul>
+<li>Sends start notification (if enabled)</li>
+<li>Retrieves refresh token from Keychain</li>
+<li>Calls OAuth endpoint to get new tokens</li>
+<li>Updates auth profile and Keychain</li>
+<li>Sends success notification (if enabled)</li>
+</ul>
+</li>
+<li>If refresh fails:<ul>
+<li>Sends detailed failure notification with troubleshooting</li>
+</ul>
+</li>
+<li>All activity logged to <code>~/clawd/logs/claude-oauth-refresh.log</code></li>
+</ul>
+</li>
+<li><p><strong>Config Changes</strong> - Applied automatically:</p>
+<ul>
+<li>Edit <code>claude-oauth-refresh-config.json</code> anytime</li>
+<li>Ask Clawdbot to edit for you</li>
+<li>Changes take effect on next refresh</li>
+<li>No restart needed!</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2>Security</h2>
+<ul>
+<li><strong>Tokens are never written to logs or config files</strong></li>
+<li>Refresh tokens stored securely in macOS Keychain</li>
+<li>Access tokens cached in <code>~/.config/claude/auth-profiles.json</code> (permissions: 600)</li>
+<li>All HTTP requests use Claude&#39;s official OAuth endpoints</li>
+<li>Config file is world-readable (contains no secrets)</li>
+</ul>
+<hr>
+<h2>Support</h2>
+<p><strong>Logs:</strong> <code>~/clawd/logs/claude-oauth-refresh.log</code></p>
+<p><strong>Issues:</strong></p>
+<ol>
+<li>Run <code>./verify-setup.sh</code> to diagnose</li>
+<li>Check logs for detailed error messages</li>
+<li>Test manual refresh: <code>./refresh-token.sh</code></li>
+<li>Check notification settings: <code>cat claude-oauth-refresh-config.json | jq .notifications</code></li>
+</ol>
+<p><strong>Need help?</strong> Open an issue with:</p>
+<ul>
+<li>Output of <code>./verify-setup.sh</code></li>
+<li>Last 20 lines of logs: <code>tail -20 ~/clawd/logs/claude-oauth-refresh.log</code></li>
+<li>macOS version: <code>sw_vers</code></li>
+<li>Config (redacted): <code>cat claude-oauth-refresh-config.json | jq &#39;del(.notification_target)&#39;</code></li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/tunaissacoding/claude-oauth-refresher/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/tunaissacoding/claude-oauth-refresher" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/tunaissacoding/claude-oauth-refresher/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@tunaissacoding</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">AI & LLMs</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Send messages to Google Chat spaces and users via webhooks or OAuth">
+  <title>google-chat - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Communication</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Communication</a>
+                <span class="skill-page-author">by @darconada</span>
+              </div>
+              <h1 class="skill-page-title">google-chat</h1>
+              <p class="skill-page-desc">Send messages to Google Chat spaces and users via webhooks or OAuth</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Google Chat Messaging</h1>
+<p>Send messages to Google Chat using two methods:</p>
+<ol>
+<li><strong>Webhooks</strong> - Fast, pre-configured channels (messages appear as a bot)</li>
+<li><strong>OAuth</strong> - Dynamic messaging to any space or user (requires authentication)</li>
+</ol>
+<h2>Quick Start</h2>
+<h3>Method 1: Webhooks (Recommended for Known Channels)</h3>
+<p>Send to a pre-configured channel:</p>
+<pre><code class="language-bash">python3 scripts/send_webhook.py &quot;$WEBHOOK_URL&quot; &quot;Your message here&quot;
+</code></pre>
+<p>Example with threading:</p>
+<pre><code class="language-bash">python3 scripts/send_webhook.py &quot;$WEBHOOK_URL&quot; &quot;Reply message&quot; --thread_key &quot;unique-thread-id&quot;
+</code></pre>
+<p><strong>Configuration:</strong> Store webhooks in <code>google-chat-config.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;webhooks&quot;: {
+    &quot;acs_engineering_network&quot;: &quot;https://chat.googleapis.com/v1/spaces/...&quot;,
+    &quot;general&quot;: &quot;https://chat.googleapis.com/v1/spaces/...&quot;
+  }
+}
+</code></pre>
+<p>Read config and send:</p>
+<pre><code class="language-bash">WEBHOOK_URL=$(jq -r &#39;.webhooks.acs_engineering_network&#39; google-chat-config.json)
+python3 scripts/send_webhook.py &quot;$WEBHOOK_URL&quot; &quot;Deploy completed ✅&quot;
+</code></pre>
+<h3>Method 2: OAuth (For Dynamic Messaging)</h3>
+<p><strong>First-time setup:</strong></p>
+<ol>
+<li>Save OAuth credentials to a file (e.g., <code>google-chat-oauth-credentials.json</code>)</li>
+<li>Run initial authentication (opens browser, saves token):</li>
+</ol>
+<pre><code class="language-bash">python3 scripts/send_oauth.py \
+  --credentials google-chat-oauth-credentials.json \
+  --token google-chat-token.json \
+  --space &quot;General&quot; \
+  &quot;Test message&quot;
+</code></pre>
+<p><strong>Send to a space by name:</strong></p>
+<pre><code class="language-bash">python3 scripts/send_oauth.py \
+  --credentials google-chat-oauth-credentials.json \
+  --token google-chat-token.json \
+  --space &quot;Engineering Network&quot; \
+  &quot;Deploy completed&quot;
+</code></pre>
+<p><strong>Note:</strong> OAuth messages automatically include <code>🤖</code> emoji prefix. Use <code>--no-emoji</code> to disable this:</p>
+<pre><code class="language-bash">python3 scripts/send_oauth.py \
+  --credentials google-chat-oauth-credentials.json \
+  --token google-chat-token.json \
+  --space &quot;Engineering Network&quot; \
+  &quot;Message without emoji&quot; \
+  --no-emoji
+</code></pre>
+<p><strong>List available spaces:</strong></p>
+<pre><code class="language-bash">python3 scripts/send_oauth.py \
+  --credentials google-chat-oauth-credentials.json \
+  --token google-chat-token.json \
+  --list-spaces
+</code></pre>
+<p><strong>Send to a DM (requires existing space ID):</strong></p>
+<pre><code class="language-bash"># Note: Google Chat API doesn&#39;t support creating new DMs by email
+# You need the space ID of an existing DM conversation
+python3 scripts/send_oauth.py \
+  --credentials google-chat-oauth-credentials.json \
+  --token google-chat-token.json \
+  --space-id &quot;spaces/xxxxx&quot; \
+  &quot;The report is ready&quot;
+</code></pre>
+<p><strong>Send to space by ID (faster):</strong></p>
+<pre><code class="language-bash">python3 scripts/send_oauth.py \
+  --credentials google-chat-oauth-credentials.json \
+  --token google-chat-token.json \
+  --space-id &quot;spaces/AAAALtlqgVA&quot; \
+  &quot;Direct message to space&quot;
+</code></pre>
+<h2>Dependencies</h2>
+<p>Install required Python packages:</p>
+<pre><code class="language-bash">pip install google-auth-oauthlib google-auth-httplib2 google-api-python-client
+</code></pre>
+<p><strong>Required OAuth Scopes:</strong></p>
+<ul>
+<li><code>https://www.googleapis.com/auth/chat.messages</code> - Send messages</li>
+<li><code>https://www.googleapis.com/auth/chat.spaces</code> - Access space information</li>
+<li><code>https://www.googleapis.com/auth/chat.memberships.readonly</code> - List space members (for DM identification)</li>
+</ul>
+<h2>OAuth Setup Guide</h2>
+<p>If OAuth credentials don&#39;t exist yet:</p>
+<ol>
+<li>Go to <a href="https://console.cloud.google.com">Google Cloud Console</a></li>
+<li>Select your project or create one</li>
+<li>Enable <strong>Google Chat API</strong></li>
+<li>Go to <strong>APIs &amp; Services → Credentials</strong></li>
+<li>Create <strong>OAuth 2.0 Client ID</strong> (Desktop app type)</li>
+<li>Download JSON and save as <code>google-chat-oauth-credentials.json</code></li>
+</ol>
+<p>The credentials JSON should look like:</p>
+<pre><code class="language-json">{
+  &quot;installed&quot;: {
+    &quot;client_id&quot;: &quot;...apps.googleusercontent.com&quot;,
+    &quot;client_secret&quot;: &quot;GOCSPX-...&quot;,
+    &quot;redirect_uris&quot;: [&quot;http://localhost&quot;],
+    ...
+  }
+}
+</code></pre>
+<h2>Webhook Setup Guide</h2>
+<p>To create a webhook for a Google Chat space:</p>
+<ol>
+<li>Open Google Chat in browser</li>
+<li>Go to the space</li>
+<li>Click space name → <strong>Apps &amp; integrations</strong></li>
+<li>Click <strong>Manage webhooks</strong> → <strong>Add webhook</strong></li>
+<li>Give it a name (e.g., &quot;Agustin Networks&quot;)</li>
+<li>Copy the webhook URL</li>
+<li>Add to <code>google-chat-config.json</code></li>
+</ol>
+<h2>Choosing the Right Method</h2>
+<p><strong>Use Webhooks when:</strong></p>
+<ul>
+<li>Sending to the same channels repeatedly</li>
+<li>Messages should appear as a bot/service</li>
+<li>Speed is important (no OAuth handshake)</li>
+<li>Configuration is static</li>
+</ul>
+<p><strong>Use OAuth when:</strong></p>
+<ul>
+<li>Sending to different spaces dynamically</li>
+<li>Messages should appear from your configured Google Chat App</li>
+<li>Space names are determined at runtime</li>
+<li>Need to list and discover available spaces</li>
+</ul>
+<p><strong>OAuth Limitations:</strong></p>
+<ul>
+<li>Cannot create new DMs by email address (Google Chat API restriction)</li>
+<li>To send DMs, you need the space ID of an existing conversation</li>
+<li>Use <code>--list-spaces</code> to find available DM space IDs</li>
+</ul>
+<h2>Message Formatting</h2>
+<p>Both methods support simple text. For advanced formatting (cards, buttons), construct JSON payloads:</p>
+<p><strong>Webhook with card:</strong></p>
+<pre><code class="language-python">import json
+import urllib.request
+
+payload = {
+    &quot;cardsV2&quot;: [{
+        &quot;cardId&quot;: &quot;unique-card-id&quot;,
+        &quot;card&quot;: {
+            &quot;header&quot;: {&quot;title&quot;: &quot;Deploy Status&quot;},
+            &quot;sections&quot;: [{
+                &quot;widgets&quot;: [{
+                    &quot;textParagraph&quot;: {&quot;text&quot;: &quot;Production deploy completed successfully&quot;}
+                }]
+            }]
+        }
+    }]
+}
+
+data = json.dumps(payload).encode(&quot;utf-8&quot;)
+req = urllib.request.Request(webhook_url, data=data, headers={&quot;Content-Type&quot;: &quot;application/json&quot;})
+urllib.request.urlopen(req)
+</code></pre>
+<h2>Troubleshooting</h2>
+<p><strong>Webhook errors:</strong></p>
+<ul>
+<li>Verify webhook URL is correct and active</li>
+<li>Check space still exists and webhook wasn&#39;t deleted</li>
+<li>Ensure message isn&#39;t empty</li>
+</ul>
+<p><strong>OAuth errors:</strong></p>
+<ul>
+<li>Run authentication flow again if token expired</li>
+<li>Verify Google Chat API is enabled in Cloud Console</li>
+<li>Check user has access to the target space</li>
+<li>For DMs, ensure user email is correct and in same workspace</li>
+</ul>
+<p><strong>Permission errors:</strong></p>
+<ul>
+<li>Webhooks: Must be member of the space</li>
+<li>OAuth: Must have access to target space or user</li>
+<li>Corporate Workspace: Some features may be restricted by admin policies</li>
+</ul>
+<h2>Examples</h2>
+<p><strong>Deploy notification to engineering channel:</strong></p>
+<pre><code class="language-bash">WEBHOOK=$(jq -r &#39;.webhooks.acs_engineering_network&#39; google-chat-config.json)
+python3 scripts/send_webhook.py &quot;$WEBHOOK&quot; &quot;🚀 Production deploy v2.1.0 completed&quot;
+</code></pre>
+<p><strong>Alert specific user about task:</strong></p>
+<pre><code class="language-bash">python3 scripts/send_oauth.py \
+  --credentials google-chat-oauth-credentials.json \
+  --token google-chat-token.json \
+  --dm juan@empresa.com \
+  &quot;Your report is ready for review: https://docs.company.com/report&quot;
+</code></pre>
+<p><strong>Thread multiple messages together (webhook):</strong></p>
+<pre><code class="language-bash">WEBHOOK=$(jq -r &#39;.webhooks.general&#39; google-chat-config.json)
+THREAD_KEY=&quot;deploy-$(date +%s)&quot;
+
+python3 scripts/send_webhook.py &quot;$WEBHOOK&quot; &quot;Starting deploy...&quot; --thread_key &quot;$THREAD_KEY&quot;
+# ... deployment happens ...
+python3 scripts/send_webhook.py &quot;$WEBHOOK&quot; &quot;Deploy completed ✅&quot; --thread_key &quot;$THREAD_KEY&quot;
+</code></pre>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/darconada/google-chat/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/darconada/google-chat" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/darconada/google-chat/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@darconada</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Communication</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

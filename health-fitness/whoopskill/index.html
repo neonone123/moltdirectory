@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="WHOOP CLI with health insights, trends analysis, and data fetching (sleep, recovery, HRV, strain)">
+  <title>whoopskill - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Health & Fitness</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Health & Fitness</a>
+                <span class="skill-page-author">by @koala73</span>
+              </div>
+              <h1 class="skill-page-title">whoopskill</h1>
+              <p class="skill-page-desc">WHOOP CLI with health insights, trends analysis, and data fetching (sleep, recovery, HRV, strain)</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>whoopskill</h1>
+<p>Use <code>whoopskill</code> to fetch WHOOP health metrics (sleep, recovery, HRV, strain, workouts).</p>
+<p>Install: <code>npm install -g whoopskill</code> | <a href="https://github.com/koala73/whoopskill">GitHub</a></p>
+<p>Quick start</p>
+<ul>
+<li><code>whoopskill summary</code> — one-liner: Recovery: 52% | HRV: 39ms | Sleep: 40% | Strain: 6.7</li>
+<li><code>whoopskill summary --color</code> — color-coded summary with 🟢🟡🔴 status indicators</li>
+<li><code>whoopskill trends</code> — 7-day trends with averages and direction arrows</li>
+<li><code>whoopskill trends --days 30 --pretty</code> — 30-day trend analysis</li>
+<li><code>whoopskill insights --pretty</code> — AI-style health recommendations</li>
+<li><code>whoopskill --pretty</code> — human-readable output with emojis</li>
+<li><code>whoopskill recovery</code> — recovery score, HRV, RHR</li>
+<li><code>whoopskill sleep</code> — sleep performance, stages</li>
+<li><code>whoopskill workout</code> — workouts with strain</li>
+<li><code>whoopskill --date 2025-01-03</code> — specific date</li>
+</ul>
+<p>Analysis commands</p>
+<ul>
+<li><code>summary</code> — quick health snapshot (add <code>--color</code> for status indicators)</li>
+<li><code>trends</code> — multi-day averages with trend arrows (↑↓→)</li>
+<li><code>insights</code> — personalized recommendations based on your data</li>
+</ul>
+<p>Data types</p>
+<ul>
+<li><code>profile</code> — user info (name, email)</li>
+<li><code>body</code> — height, weight, max HR</li>
+<li><code>sleep</code> — sleep stages, efficiency, respiratory rate</li>
+<li><code>recovery</code> — recovery %, HRV, RHR, SpO2, skin temp</li>
+<li><code>workout</code> — strain, HR zones, calories</li>
+<li><code>cycle</code> — daily strain, calories</li>
+</ul>
+<p>Combine types</p>
+<ul>
+<li><code>whoopskill --sleep --recovery --body</code></li>
+</ul>
+<p>Auth</p>
+<ul>
+<li><code>whoopskill auth login</code> — OAuth flow (opens browser)</li>
+<li><code>whoopskill auth status</code> — check token status</li>
+<li><code>whoopskill auth logout</code> — clear tokens</li>
+</ul>
+<p>Notes</p>
+<ul>
+<li>Output is JSON to stdout (use <code>--pretty</code> for human-readable)</li>
+<li>Tokens stored in <code>~/.whoop-cli/tokens.json</code> (auto-refresh)</li>
+<li>Uses WHOOP API v2</li>
+<li>Date follows WHOOP day boundary (4am cutoff)</li>
+<li>WHOOP apps with &lt;10 users don&#39;t need review (immediate use)</li>
+</ul>
+<p>Sample: <code>whoopskill summary --color</code></p>
+<pre><code>📅 2026-01-25
+🟢 Recovery: 85% | HRV: 39ms | RHR: 63bpm
+🟡 Sleep: 79% | 6.9h | Efficiency: 97%
+🔴 Strain: 0.1 (optimal: ~14) | 579 cal
+</code></pre>
+<p>Sample: <code>whoopskill trends</code></p>
+<pre><code>📊 7-Day Trends
+
+💚 Recovery: 62.1% avg (34-86) →
+💓 HRV: 33.8ms avg (26-42) →
+❤️ RHR: 63.8bpm avg (60-68) →
+😴 Sleep: 75.4% avg (69-79) →
+🛏️ Hours: 6.5h avg (5.7-7.8) ↓
+🔥 Strain: 5.9 avg (0.1-9.0) ↓
+</code></pre>
+<p>Sample: <code>whoopskill insights</code></p>
+<pre><code>💡 Insights &amp; Recommendations
+
+✅ Green Recovery
+   Recovery at 85% — body is primed for high strain.
+   → Great day for intense training or competition.
+
+✅ HRV Above Baseline
+   Today&#39;s HRV (39ms) is 21% above your 7-day average.
+   → Excellent recovery. Good day for peak performance.
+
+⚠️ Mild Sleep Debt
+   You have 2.0 hours of sleep debt.
+   → Consider an earlier bedtime tonight.
+
+✅ Strain Capacity Available
+   Current strain: 0.1. Optimal target: ~14.
+   → Room for 13.9 more strain today.
+</code></pre>
+<p>Sample: <code>whoopskill --sleep --recovery</code> (JSON)</p>
+<pre><code class="language-json">{
+  &quot;date&quot;: &quot;2026-01-05&quot;,
+  &quot;fetched_at&quot;: &quot;2026-01-05T13:49:22.782Z&quot;,
+  &quot;body&quot;: {
+    &quot;height_meter&quot;: 1.83,
+    &quot;weight_kilogram&quot;: 82.5,
+    &quot;max_heart_rate&quot;: 182
+  },
+  &quot;sleep&quot;: [
+    {
+      &quot;id&quot;: &quot;4c311bd4-370f-49ff-b58c-0578d543e9d2&quot;,
+      &quot;cycle_id&quot;: 1236731435,
+      &quot;user_id&quot;: 245199,
+      &quot;created_at&quot;: &quot;2026-01-05T00:23:34.264Z&quot;,
+      &quot;updated_at&quot;: &quot;2026-01-05T02:23:54.686Z&quot;,
+      &quot;start&quot;: &quot;2026-01-04T19:51:57.280Z&quot;,
+      &quot;end&quot;: &quot;2026-01-05T01:30:48.660Z&quot;,
+      &quot;timezone_offset&quot;: &quot;+04:00&quot;,
+      &quot;nap&quot;: false,
+      &quot;score_state&quot;: &quot;SCORED&quot;,
+      &quot;score&quot;: {
+        &quot;stage_summary&quot;: {
+          &quot;total_in_bed_time_milli&quot;: 20331380,
+          &quot;total_awake_time_milli&quot;: 4416000,
+          &quot;total_light_sleep_time_milli&quot;: 6968320,
+          &quot;total_slow_wave_sleep_time_milli&quot;: 4953060,
+          &quot;total_rem_sleep_time_milli&quot;: 3994000,
+          &quot;sleep_cycle_count&quot;: 4,
+          &quot;disturbance_count&quot;: 4
+        },
+        &quot;sleep_needed&quot;: {
+          &quot;baseline_milli&quot;: 26783239,
+          &quot;need_from_sleep_debt_milli&quot;: 6637715,
+          &quot;need_from_recent_strain_milli&quot;: 148919
+        },
+        &quot;respiratory_rate&quot;: 14.12,
+        &quot;sleep_performance_percentage&quot;: 40,
+        &quot;sleep_consistency_percentage&quot;: 60,
+        &quot;sleep_efficiency_percentage&quot;: 78.28
+      }
+    }
+  ],
+  &quot;workout&quot;: [
+    {
+      &quot;id&quot;: &quot;4279883e-3d23-45cd-848c-3afa28dca3f8&quot;,
+      &quot;user_id&quot;: 245199,
+      &quot;start&quot;: &quot;2026-01-05T03:14:13.417Z&quot;,
+      &quot;end&quot;: &quot;2026-01-05T04:06:45.532Z&quot;,
+      &quot;sport_name&quot;: &quot;hiit&quot;,
+      &quot;score_state&quot;: &quot;SCORED&quot;,
+      &quot;score&quot;: {
+        &quot;strain&quot;: 6.19,
+        &quot;average_heart_rate&quot;: 108,
+        &quot;max_heart_rate&quot;: 144,
+        &quot;kilojoule&quot;: 819.38,
+        &quot;zone_durations&quot;: {
+          &quot;zone_zero_milli&quot;: 167000,
+          &quot;zone_one_milli&quot;: 1420000,
+          &quot;zone_two_milli&quot;: 1234980,
+          &quot;zone_three_milli&quot;: 330000,
+          &quot;zone_four_milli&quot;: 0,
+          &quot;zone_five_milli&quot;: 0
+        }
+      }
+    }
+  ],
+  &quot;profile&quot;: {
+    &quot;user_id&quot;: 245199,
+    &quot;email&quot;: &quot;user@example.com&quot;,
+    &quot;first_name&quot;: &quot;John&quot;,
+    &quot;last_name&quot;: &quot;Doe&quot;
+  },
+  &quot;recovery&quot;: [
+    {
+      &quot;cycle_id&quot;: 1236731435,
+      &quot;sleep_id&quot;: &quot;4c311bd4-370f-49ff-b58c-0578d543e9d2&quot;,
+      &quot;user_id&quot;: 245199,
+      &quot;score_state&quot;: &quot;SCORED&quot;,
+      &quot;score&quot;: {
+        &quot;recovery_score&quot;: 52,
+        &quot;resting_heart_rate&quot;: 60,
+        &quot;hrv_rmssd_milli&quot;: 38.87,
+        &quot;spo2_percentage&quot;: 96.4,
+        &quot;skin_temp_celsius&quot;: 33.19
+      }
+    }
+  ],
+  &quot;cycle&quot;: [
+    {
+      &quot;id&quot;: 1236731435,
+      &quot;user_id&quot;: 245199,
+      &quot;start&quot;: &quot;2026-01-04T19:51:57.280Z&quot;,
+      &quot;end&quot;: null,
+      &quot;score_state&quot;: &quot;SCORED&quot;,
+      &quot;score&quot;: {
+        &quot;strain&quot;: 6.66,
+        &quot;kilojoule&quot;: 6172.94,
+        &quot;average_heart_rate&quot;: 71,
+        &quot;max_heart_rate&quot;: 144
+      }
+    }
+  ]
+}
+</code></pre>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/koala73/whoopskill/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/koala73/whoopskill" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/koala73/whoopskill/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@koala73</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Health & Fitness</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="|">
+  <title>typefully - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Marketing & Sales</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Marketing & Sales</a>
+                <span class="skill-page-author">by @thesethrose</span>
+              </div>
+              <h1 class="skill-page-title">typefully</h1>
+              <p class="skill-page-desc">|</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Typefully Skill</h1>
+<p>Schedule and publish content to X, LinkedIn, Mastodon, Threads, and Bluesky through the Typefully API.</p>
+<h2>Setup</h2>
+<ul>
+<li>Create a Typefully account at <a href="https://typefully.com">https://typefully.com</a></li>
+<li>Connect social media accounts in Typefully</li>
+<li>Generate an API key in Typefully settings</li>
+<li>Set the environment variable</li>
+</ul>
+<pre><code class="language-bash">export TYPEFULLY_API_KEY=&quot;your-typefully-api-key&quot;
+</code></pre>
+<h2>Environment Variables</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TYPEFULLY_API_KEY</td>
+<td>Yes</td>
+<td>Your Typefully API key</td>
+</tr>
+</tbody></table>
+<h2>Commands</h2>
+<h3>User and Accounts</h3>
+<pre><code class="language-bash">typefully me                    # Get current user info
+typefully social-sets           # List connected social accounts
+typefully social-set &lt;id&gt;       # Get details for a specific account
+</code></pre>
+<h3>Drafts</h3>
+<pre><code class="language-bash">typefully drafts                     # List all drafts for an account
+typefully draft &lt;id&gt;                 # Get a specific draft
+typefully create-draft &quot;content&quot;     # Create a new draft
+typefully update-draft &lt;id&gt; &quot;text&quot;   # Update a draft
+typefully delete-draft &lt;id&gt;          # Delete a draft
+</code></pre>
+<h3>Draft Options</h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>--social-set-id <id></td>
+<td>Account ID required for drafts</td>
+</tr>
+<tr>
+<td>--schedule <time></td>
+<td>ISO 8601 datetime</td>
+</tr>
+<tr>
+<td>--now</td>
+<td>Publish immediately after creating</td>
+</tr>
+<tr>
+<td>--next-free-slot</td>
+<td>Schedule for optimal posting time</td>
+</tr>
+<tr>
+<td>--title <text></td>
+<td>Internal draft title</td>
+</tr>
+<tr>
+<td>--share</td>
+<td>Generate public share URL</td>
+</tr>
+<tr>
+<td>--thread</td>
+<td>Treat content as multi-line thread</td>
+</tr>
+<tr>
+<td>--reply-to <url></td>
+<td>Reply to an existing post URL</td>
+</tr>
+<tr>
+<td>--community <id></td>
+<td>Post to a community</td>
+</tr>
+</tbody></table>
+<h3>Filtering Drafts</h3>
+<pre><code class="language-bash">typefully drafts                  # Default 10 drafts sorted by updated
+typefully drafts --status draft   # Only draft status
+typefully drafts --status scheduled  # Only scheduled
+typefully drafts --status published  # Only published
+typefully drafts --limit 25       # More results per page
+typefully drafts --offset 10      # Skip first 10 results
+typefully drafts --order-by created_at  # Sort by date
+</code></pre>
+<h3>Tags</h3>
+<pre><code class="language-bash">typefully tags                  # List tags for an account
+typefully create-tag &quot;name&quot;     # Create a new tag
+typefully delete-tag &quot;slug&quot;     # Delete a tag
+</code></pre>
+<h3>Media</h3>
+<pre><code class="language-bash">typefully upload-media &lt;filename&gt;    # Get upload URL for media
+typefully media-status &lt;id&gt;          # Check media processing status
+</code></pre>
+<h2>Examples</h2>
+<h3>Create a Simple Post</h3>
+<pre><code class="language-bash"># Get your account ID
+typefully social-sets
+
+# Create a draft
+typefully create-draft &quot;Hello world! This is my first post.&quot; \
+  --social-set-id 12345
+
+# Create and publish immediately
+typefully create-draft &quot;Breaking news!&quot; \
+  --social-set-id 12345 --now
+</code></pre>
+<h3>Create a Thread</h3>
+<pre><code class="language-bash">typefully create-draft &quot;1/ I am excited to share some updates...
+2/ We have been working hard on new features...
+3/ Here is what we have been building...
+4/ Stay tuned for more!&quot; \
+  --social-set-id 12345 --thread
+</code></pre>
+<h3>Schedule for Later</h3>
+<pre><code class="language-bash"># Schedule for specific time
+typefully create-draft &quot;Mark your calendars! Launching next week.&quot; \
+  --social-set-id 12345 \
+  --schedule &quot;2025-01-25T09:00:00Z&quot;
+
+# Schedule for optimal posting time
+typefully create-draft &quot;Best time to post...&quot; \
+  --social-set-id 12345 \
+  --next-free-slot
+</code></pre>
+<h3>Reply to a Post</h3>
+<pre><code class="language-bash">typefully create-draft &quot;Great thread! I completely agree.&quot; \
+  --social-set-id 12345 \
+  --reply-to &quot;https://x.com/username/status/1234567890&quot;
+</code></pre>
+<h3>Post to a Community</h3>
+<pre><code class="language-bash">typefully create-draft &quot;Sharing with the community...&quot; \
+  --social-set-id 12345 \
+  --community 1493446837214187523
+</code></pre>
+<h3>Work with Tags</h3>
+<pre><code class="language-bash"># List available tags
+typefully tags --social-set-id 12345
+
+# Create a tag
+typefully create-tag &quot;announcements&quot; --social-set-id 12345
+
+# Create draft with tag
+typefully create-draft &quot;Big announcement!&quot; \
+  --social-set-id 12345 \
+  --tags announcements
+</code></pre>
+<h3>Upload Media</h3>
+<pre><code class="language-bash"># Get upload URL
+typefully upload-media screenshot.png --social-set-id 12345
+
+# Check status
+typefully media-status &lt;media-id&gt; --social-set-id 12345
+</code></pre>
+<h2>API Endpoints</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET</td>
+<td>/v2/me</td>
+<td>Get current user</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/v2/social-sets</td>
+<td>List social sets</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/v2/social-sets/{id}</td>
+<td>Get social set details</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/v2/social-sets/{id}/drafts</td>
+<td>List drafts</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/v2/social-sets/{id}/drafts</td>
+<td>Create draft</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/v2/social-sets/{id}/drafts/{id}</td>
+<td>Get draft</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td>/v2/social-sets/{id}/drafts/{id}</td>
+<td>Update draft</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>/v2/social-sets/{id}/drafts/{id}</td>
+<td>Delete draft</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/v2/social-sets/{id}/tags</td>
+<td>List tags</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/v2/social-sets/{id}/tags</td>
+<td>Create tag</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>/v2/social-sets/{id}/tags/{slug}</td>
+<td>Delete tag</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/v2/social-sets/{id}/media/upload</td>
+<td>Get upload URL</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/v2/social-sets/{id}/media/{id}</td>
+<td>Check media status</td>
+</tr>
+</tbody></table>
+<h2>Supported Platforms</h2>
+<ul>
+<li>X</li>
+<li>LinkedIn</li>
+<li>Mastodon</li>
+<li>Threads</li>
+<li>Bluesky</li>
+</ul>
+<h2>X Automation Compliance</h2>
+<p>Adhere to the X Automation Rules when using this skill with X:</p>
+<ul>
+<li>Do not post similar content across multiple accounts.</li>
+<li>Do not use automation to manipulate trending topics.</li>
+<li>Send automated replies only to users who have opted in.</li>
+<li>Send only one automated response per user interaction.</li>
+<li>Automated likes and bulk following are prohibited.</li>
+<li>Automated bulk adding to lists is prohibited.</li>
+<li>Follow the X media policy for all automated content.</li>
+<li>Mark accounts as sensitive if posting graphic media.</li>
+<li>Do not use automation to impersonate others.</li>
+<li>Do not post misleading links.</li>
+</ul>
+<h2>Notes</h2>
+<ul>
+<li>All requests require the TYPEFULLY_API_KEY environment variable.</li>
+<li>Drafts are private by default.</li>
+<li>Use --share for a public URL.</li>
+<li>The --now flag publishes immediately without saving a draft.</li>
+<li>Drafts are saved for review when you do not use --now.</li>
+<li>Rate limits apply per user and per social set.</li>
+<li>Do not attempt to bypass rate limits.</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li>Typefully at <a href="https://typefully.com">https://typefully.com</a></li>
+<li>Typefully API Docs at <a href="https://docs.typefully.com">https://docs.typefully.com</a></li>
+<li>X Automation Rules at <a href="https://help.x.com/en/rules-and-policies/x-automation">https://help.x.com/en/rules-and-policies/x-automation</a></li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/thesethrose/typefully/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/thesethrose/typefully" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/thesethrose/typefully/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@thesethrose</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Marketing & Sales</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

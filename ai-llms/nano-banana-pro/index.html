@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Generate/edit images with Nano Banana Pro (Gemini 3 Pro Image)">
+  <title>nano-banana-pro - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to AI & LLMs</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">AI & LLMs</a>
+                <span class="skill-page-author">by @steipete</span>
+              </div>
+              <h1 class="skill-page-title">nano-banana-pro</h1>
+              <p class="skill-page-desc">Generate/edit images with Nano Banana Pro (Gemini 3 Pro Image)</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Nano Banana Pro Image Generation &amp; Editing</h1>
+<p>Generate new images or edit existing ones using Google&#39;s Nano Banana Pro API (Gemini 3 Pro Image).</p>
+<h2>Usage</h2>
+<p>Run the script using absolute path (do NOT cd to skill directory first):</p>
+<p><strong>Generate new image:</strong></p>
+<pre><code class="language-bash">uv run ~/.codex/skills/nano-banana-pro/scripts/generate_image.py --prompt &quot;your image description&quot; --filename &quot;output-name.png&quot; [--resolution 1K|2K|4K] [--api-key KEY]
+</code></pre>
+<p><strong>Edit existing image:</strong></p>
+<pre><code class="language-bash">uv run ~/.codex/skills/nano-banana-pro/scripts/generate_image.py --prompt &quot;editing instructions&quot; --filename &quot;output-name.png&quot; --input-image &quot;path/to/input.png&quot; [--resolution 1K|2K|4K] [--api-key KEY]
+</code></pre>
+<p><strong>Important:</strong> Always run from the user&#39;s current working directory so images are saved where the user is working, not in the skill directory.</p>
+<h2>Default Workflow (draft → iterate → final)</h2>
+<p>Goal: fast iteration without burning time on 4K until the prompt is correct.</p>
+<ul>
+<li>Draft (1K): quick feedback loop<ul>
+<li><code>uv run ~/.codex/skills/nano-banana-pro/scripts/generate_image.py --prompt &quot;&lt;draft prompt&gt;&quot; --filename &quot;yyyy-mm-dd-hh-mm-ss-draft.png&quot; --resolution 1K</code></li>
+</ul>
+</li>
+<li>Iterate: adjust prompt in small diffs; keep filename new per run<ul>
+<li>If editing: keep the same <code>--input-image</code> for every iteration until you’re happy.</li>
+</ul>
+</li>
+<li>Final (4K): only when prompt is locked<ul>
+<li><code>uv run ~/.codex/skills/nano-banana-pro/scripts/generate_image.py --prompt &quot;&lt;final prompt&gt;&quot; --filename &quot;yyyy-mm-dd-hh-mm-ss-final.png&quot; --resolution 4K</code></li>
+</ul>
+</li>
+</ul>
+<h2>Resolution Options</h2>
+<p>The Gemini 3 Pro Image API supports three resolutions (uppercase K required):</p>
+<ul>
+<li><strong>1K</strong> (default) - ~1024px resolution</li>
+<li><strong>2K</strong> - ~2048px resolution</li>
+<li><strong>4K</strong> - ~4096px resolution</li>
+</ul>
+<p>Map user requests to API parameters:</p>
+<ul>
+<li>No mention of resolution → <code>1K</code></li>
+<li>&quot;low resolution&quot;, &quot;1080&quot;, &quot;1080p&quot;, &quot;1K&quot; → <code>1K</code></li>
+<li>&quot;2K&quot;, &quot;2048&quot;, &quot;normal&quot;, &quot;medium resolution&quot; → <code>2K</code></li>
+<li>&quot;high resolution&quot;, &quot;high-res&quot;, &quot;hi-res&quot;, &quot;4K&quot;, &quot;ultra&quot; → <code>4K</code></li>
+</ul>
+<h2>API Key</h2>
+<p>The script checks for API key in this order:</p>
+<ol>
+<li><code>--api-key</code> argument (use if user provided key in chat)</li>
+<li><code>GEMINI_API_KEY</code> environment variable</li>
+</ol>
+<p>If neither is available, the script exits with an error message.</p>
+<h2>Preflight + Common Failures (fast fixes)</h2>
+<ul>
+<li><p>Preflight:</p>
+<ul>
+<li><code>command -v uv</code> (must exist)</li>
+<li><code>test -n \&quot;$GEMINI_API_KEY\&quot;</code> (or pass <code>--api-key</code>)</li>
+<li>If editing: <code>test -f \&quot;path/to/input.png\&quot;</code></li>
+</ul>
+</li>
+<li><p>Common failures:</p>
+<ul>
+<li><code>Error: No API key provided.</code> → set <code>GEMINI_API_KEY</code> or pass <code>--api-key</code></li>
+<li><code>Error loading input image:</code> → wrong path / unreadable file; verify <code>--input-image</code> points to a real image</li>
+<li>“quota/permission/403” style API errors → wrong key, no access, or quota exceeded; try a different key/account</li>
+</ul>
+</li>
+</ul>
+<h2>Filename Generation</h2>
+<p>Generate filenames with the pattern: <code>yyyy-mm-dd-hh-mm-ss-name.png</code></p>
+<p><strong>Format:</strong> <code>{timestamp}-{descriptive-name}.png</code></p>
+<ul>
+<li>Timestamp: Current date/time in format <code>yyyy-mm-dd-hh-mm-ss</code> (24-hour format)</li>
+<li>Name: Descriptive lowercase text with hyphens</li>
+<li>Keep the descriptive part concise (1-5 words typically)</li>
+<li>Use context from user&#39;s prompt or conversation</li>
+<li>If unclear, use random identifier (e.g., <code>x9k2</code>, <code>a7b3</code>)</li>
+</ul>
+<p>Examples:</p>
+<ul>
+<li>Prompt &quot;A serene Japanese garden&quot; → <code>2025-11-23-14-23-05-japanese-garden.png</code></li>
+<li>Prompt &quot;sunset over mountains&quot; → <code>2025-11-23-15-30-12-sunset-mountains.png</code></li>
+<li>Prompt &quot;create an image of a robot&quot; → <code>2025-11-23-16-45-33-robot.png</code></li>
+<li>Unclear context → <code>2025-11-23-17-12-48-x9k2.png</code></li>
+</ul>
+<h2>Image Editing</h2>
+<p>When the user wants to modify an existing image:</p>
+<ol>
+<li>Check if they provide an image path or reference an image in the current directory</li>
+<li>Use <code>--input-image</code> parameter with the path to the image</li>
+<li>The prompt should contain editing instructions (e.g., &quot;make the sky more dramatic&quot;, &quot;remove the person&quot;, &quot;change to cartoon style&quot;)</li>
+<li>Common editing tasks: add/remove elements, change style, adjust colors, blur background, etc.</li>
+</ol>
+<h2>Prompt Handling</h2>
+<p><strong>For generation:</strong> Pass user&#39;s image description as-is to <code>--prompt</code>. Only rework if clearly insufficient.</p>
+<p><strong>For editing:</strong> Pass editing instructions in <code>--prompt</code> (e.g., &quot;add a rainbow in the sky&quot;, &quot;make it look like a watercolor painting&quot;)</p>
+<p>Preserve user&#39;s creative intent in both cases.</p>
+<h2>Prompt Templates (high hit-rate)</h2>
+<p>Use templates when the user is vague or when edits must be precise.</p>
+<ul>
+<li><p>Generation template:</p>
+<ul>
+<li>“Create an image of: <subject>. Style: <style>. Composition: &lt;camera/shot&gt;. Lighting: <lighting>. Background: <background>. Color palette: <palette>. Avoid: <list>.”</li>
+</ul>
+</li>
+<li><p>Editing template (preserve everything else):</p>
+<ul>
+<li>“Change ONLY: <single change>. Keep identical: subject, composition/crop, pose, lighting, color palette, background, text, and overall style. Do not add new objects. If text exists, keep it unchanged.”</li>
+</ul>
+</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li>Saves PNG to current directory (or specified path if filename includes directory)</li>
+<li>Script outputs the full path to the generated image</li>
+<li><strong>Do not read the image back</strong> - just inform the user of the saved path</li>
+</ul>
+<h2>Examples</h2>
+<p><strong>Generate new image:</strong></p>
+<pre><code class="language-bash">uv run ~/.codex/skills/nano-banana-pro/scripts/generate_image.py --prompt &quot;A serene Japanese garden with cherry blossoms&quot; --filename &quot;2025-11-23-14-23-05-japanese-garden.png&quot; --resolution 4K
+</code></pre>
+<p><strong>Edit existing image:</strong></p>
+<pre><code class="language-bash">uv run ~/.codex/skills/nano-banana-pro/scripts/generate_image.py --prompt &quot;make the sky more dramatic with storm clouds&quot; --filename &quot;2025-11-23-14-25-30-dramatic-sky.png&quot; --input-image &quot;original-photo.jpg&quot; --resolution 2K
+</code></pre>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/steipete/nano-banana-pro/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/steipete/nano-banana-pro" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/steipete/nano-banana-pro/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@steipete</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">AI & LLMs</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

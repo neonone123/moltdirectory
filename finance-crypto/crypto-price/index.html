@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Get cryptocurrency token price and generate candlestick charts via CoinGecko API">
+  <title>crypto-price - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Finance & Crypto</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Finance & Crypto</a>
+                <span class="skill-page-author">by @evgyur</span>
+              </div>
+              <h1 class="skill-page-title">crypto-price</h1>
+              <p class="skill-page-desc">Get cryptocurrency token price and generate candlestick charts via CoinGecko API</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Crypto Price &amp; Chart</h1>
+<p>Get cryptocurrency token price and generate candlestick charts.</p>
+<h2>Usage</h2>
+<p>Execute the script with token symbol and optional duration:</p>
+<pre><code class="language-bash">python3 {baseDir}/scripts/get_price_chart.py &lt;SYMBOL&gt; [duration]
+</code></pre>
+<p><strong>Examples:</strong></p>
+<ul>
+<li><code>python3 {baseDir}/scripts/get_price_chart.py HYPE</code></li>
+<li><code>python3 {baseDir}/scripts/get_price_chart.py HYPE 12h</code></li>
+<li><code>python3 {baseDir}/scripts/get_price_chart.py BTC 3h</code></li>
+<li><code>python3 {baseDir}/scripts/get_price_chart.py ETH 30m</code></li>
+<li><code>python3 {baseDir}/scripts/get_price_chart.py SOL 2d</code></li>
+</ul>
+<p><strong>Duration format:</strong> <code>30m</code>, <code>3h</code>, <code>12h</code>, <code>24h</code> (default), <code>2d</code></p>
+<h2>Output</h2>
+<p>Returns JSON with:</p>
+<ul>
+<li><code>price</code> - Current price in USD/USDT</li>
+<li><code>change_period_percent</code> - Price change percentage for the period</li>
+<li><code>chart_path</code> - Path to generated PNG chart (if available)</li>
+<li><code>text_plain</code> - Formatted text description</li>
+</ul>
+<p><strong>Chart as image (always when chart_path is present):</strong><br>You must send the chart as a <strong>photo</strong>, not as text. In your reply, output <code>text_plain</code> and on a new line: <code>MEDIA: </code> followed by the exact <code>chart_path</code> value (e.g. <code>MEDIA: /tmp/crypto_chart_HYPE_1769204734.png</code>). Clawdbot will attach that file as an image. Do <strong>not</strong> write <code>[chart: path]</code> or any other text placeholder — only the <code>MEDIA: &lt;chart_path&gt;</code> line makes the image appear.</p>
+<h2>Chart Details</h2>
+<ul>
+<li>Format: Candlestick chart (8x8 square)</li>
+<li>Theme: Dark (#0f141c background)</li>
+<li>Output: <code>/tmp/crypto_chart_{SYMBOL}_{timestamp}.png</code></li>
+</ul>
+<h2>Data Sources</h2>
+<ol>
+<li><strong>Hyperliquid API</strong> - For HYPE and other Hyperliquid tokens (preferred)</li>
+<li><strong>CoinGecko API</strong> - Fallback for other tokens</li>
+</ol>
+<p>Price data cached for 300 seconds (5 minutes) in <code>/tmp/crypto_price_*.json</code>.</p>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/evgyur/crypto-price/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/evgyur/crypto-price" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/evgyur/crypto-price/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@evgyur</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Finance & Crypto</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

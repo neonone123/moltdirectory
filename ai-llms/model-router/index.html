@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A comprehensive AI model routing system that automatically selects the optimal model for any task">
+  <title>model-router - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to AI & LLMs</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">AI & LLMs</a>
+                <span class="skill-page-author">by @digitaladaption</span>
+              </div>
+              <h1 class="skill-page-title">model-router</h1>
+              <p class="skill-page-desc">A comprehensive AI model routing system that automatically selects the optimal model for any task</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Model Router</h1>
+<p><strong>Intelligent AI model routing across multiple providers for optimal cost-performance balance.</strong></p>
+<p>Automatically select the best model for any task based on complexity, type, and your preferences. Support for 6 major AI providers with secure API key management and interactive configuration.</p>
+<h2>🎯 What It Does</h2>
+<ul>
+<li><strong>Analyzes tasks</strong> and classifies them by type (coding, research, creative, simple, etc.)</li>
+<li><strong>Routes to optimal models</strong> from your configured providers</li>
+<li><strong>Optimizes costs</strong> by using cheaper models for simple tasks</li>
+<li><strong>Secures API keys</strong> with file permissions (600) and isolated storage</li>
+<li><strong>Provides recommendations</strong> with confidence scoring and reasoning</li>
+</ul>
+<h2>🚀 Quick Start</h2>
+<h3>Step 1: Run the Setup Wizard</h3>
+<pre><code class="language-bash">cd skills/model-router
+python3 scripts/setup-wizard.py
+</code></pre>
+<p>The wizard will guide you through:</p>
+<ol>
+<li><strong>Provider setup</strong> - Add your API keys (Anthropic, OpenAI, Gemini, etc.)</li>
+<li><strong>Task mappings</strong> - Choose which model for each task type</li>
+<li><strong>Preferences</strong> - Set cost optimization level</li>
+</ol>
+<h3>Step 2: Use the Classifier</h3>
+<pre><code class="language-bash"># Get model recommendation for a task
+python3 scripts/classify_task.py &quot;Build a React authentication system&quot;
+
+# Output:
+# Recommended Model: claude-sonnet
+# Confidence: 85%
+# Cost Level: medium
+# Reasoning: Matched 2 keywords: build, system
+</code></pre>
+<h3>Step 3: Route Tasks with Sessions</h3>
+<pre><code class="language-bash"># Spawn with recommended model
+sessions_spawn --task &quot;Debug this memory leak&quot; --model claude-sonnet
+
+# Use aliases for quick access
+sessions_spawn --task &quot;What&#39;s the weather?&quot; --model haiku
+</code></pre>
+<h2>📊 Supported Providers</h2>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>Models</th>
+<th>Best For</th>
+<th>Key Format</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Anthropic</strong></td>
+<td>claude-opus-4-5, claude-sonnet-4-5, claude-haiku-4-5</td>
+<td>Coding, reasoning, creative</td>
+<td><code>sk-ant-...</code></td>
+</tr>
+<tr>
+<td><strong>OpenAI</strong></td>
+<td>gpt-4o, gpt-4o-mini, o1-mini, o1-preview</td>
+<td>Tools, deep reasoning</td>
+<td><code>sk-proj-...</code></td>
+</tr>
+<tr>
+<td><strong>Gemini</strong></td>
+<td>gemini-2.0-flash, gemini-1.5-pro, gemini-1.5-flash</td>
+<td>Multimodal, huge context (2M)</td>
+<td><code>AIza...</code></td>
+</tr>
+<tr>
+<td><strong>Moonshot</strong></td>
+<td>moonshot-v1-8k/32k/128k</td>
+<td>Chinese language</td>
+<td><code>sk-...</code></td>
+</tr>
+<tr>
+<td><strong>Z.ai</strong></td>
+<td>glm-4.5-air, glm-4.7</td>
+<td>Cheapest, fast</td>
+<td>Various</td>
+</tr>
+<tr>
+<td><strong>GLM</strong></td>
+<td>glm-4-flash, glm-4-plus, glm-4-0520</td>
+<td>Chinese, coding</td>
+<td><code>ID.secret</code></td>
+</tr>
+</tbody></table>
+<h2>🎛️ Task Type Mappings</h2>
+<p>Default routing (customizable via wizard):</p>
+<table>
+<thead>
+<tr>
+<th>Task Type</th>
+<th>Default Model</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>simple</code></td>
+<td>glm-4.5-air</td>
+<td>Fastest, cheapest for quick queries</td>
+</tr>
+<tr>
+<td><code>coding</code></td>
+<td>claude-sonnet-4-5</td>
+<td>Excellent code understanding</td>
+</tr>
+<tr>
+<td><code>research</code></td>
+<td>claude-sonnet-4-5</td>
+<td>Balanced depth and speed</td>
+</tr>
+<tr>
+<td><code>creative</code></td>
+<td>claude-opus-4-5</td>
+<td>Maximum creativity</td>
+</tr>
+<tr>
+<td><code>math</code></td>
+<td>o1-mini</td>
+<td>Specialized reasoning</td>
+</tr>
+<tr>
+<td><code>vision</code></td>
+<td>gemini-1.5-flash</td>
+<td>Fast multimodal</td>
+</tr>
+<tr>
+<td><code>chinese</code></td>
+<td>glm-4.7</td>
+<td>Optimized for Chinese</td>
+</tr>
+<tr>
+<td><code>long_context</code></td>
+<td>gemini-1.5-pro</td>
+<td>Up to 2M tokens</td>
+</tr>
+</tbody></table>
+<h2>💰 Cost Optimization</h2>
+<h3>Aggressive Mode</h3>
+<p>Always uses the cheapest capable model:</p>
+<ul>
+<li>Simple → glm-4.5-air (~10% cost)</li>
+<li>Coding → claude-haiku-4-5 (~25% cost)</li>
+<li>Research → claude-sonnet-4-5 (~50% cost)</li>
+</ul>
+<p><strong>Savings:</strong> 50-90% compared to always using premium models</p>
+<h3>Balanced Mode (Default)</h3>
+<p>Considers cost vs quality:</p>
+<ul>
+<li>Simple tasks → Cheap models</li>
+<li>Critical tasks → Premium models</li>
+<li>Automatic escalation if cheap model fails</li>
+</ul>
+<h3>Quality Mode</h3>
+<p>Always uses the best model regardless of cost</p>
+<h2>🔒 Security</h2>
+<h3>API Key Storage</h3>
+<pre><code>~/.model-router/
+├── config.json       # Model mappings (chmod 600)
+└── .api-keys         # API keys (chmod 600)
+</code></pre>
+<p><strong>Features:</strong></p>
+<ul>
+<li>File permissions restricted to owner (600)</li>
+<li>Isolated from version control</li>
+<li>Encrypted at rest (via OS filesystem encryption)</li>
+<li>Never logged or printed</li>
+</ul>
+<h3>Best Practices</h3>
+<ol>
+<li><strong>Never commit</strong> <code>.api-keys</code> to version control</li>
+<li><strong>Use environment variables</strong> for production deployments</li>
+<li><strong>Rotate keys</strong> regularly via the wizard</li>
+<li><strong>Audit access</strong> with <code>ls -la ~/.model-router/</code></li>
+</ol>
+<h2>📖 Usage Examples</h2>
+<h3>Example 1: Cost-Optimized Workflow</h3>
+<pre><code class="language-bash"># Classify task first
+python3 scripts/classify_task.py &quot;Extract prices from this CSV&quot;
+
+# Result: simple task → use glm-4.5-air
+sessions_spawn --task &quot;Extract prices&quot; --model glm-4.5-air
+
+# Then analyze with better model if needed
+sessions_spawn --task &quot;Analyze price trends&quot; --model claude-sonnet
+</code></pre>
+<h3>Example 2: Progressive Escalation</h3>
+<pre><code class="language-bash"># Try cheap model first (60s timeout)
+sessions_spawn --task &quot;Fix this bug&quot; --model glm-4.5-air --runTimeoutSeconds 60
+
+# If fails, escalate to premium
+sessions_spawn --task &quot;Fix complex architecture bug&quot; --model claude-opus
+</code></pre>
+<h3>Example 3: Parallel Processing</h3>
+<pre><code class="language-bash"># Batch simple tasks in parallel with cheap model
+sessions_spawn --task &quot;Summarize doc A&quot; --model glm-4.5-air &amp;
+sessions_spawn --task &quot;Summarize doc B&quot; --model glm-4.5-air &amp;
+sessions_spawn --task &quot;Summarize doc C&quot; --model glm-4.5-air &amp;
+wait
+</code></pre>
+<h3>Example 4: Multimodal with Gemini</h3>
+<pre><code class="language-bash"># Vision task with 2M token context
+sessions_spawn --task &quot;Analyze these 100 images&quot; --model gemini-1.5-pro
+</code></pre>
+<h2>🛠️ Configuration Files</h2>
+<h3><code>~/.model-router/config.json</code></h3>
+<pre><code class="language-json">{
+  &quot;version&quot;: &quot;1.1.0&quot;,
+  &quot;providers&quot;: {
+    &quot;anthropic&quot;: {
+      &quot;configured&quot;: true,
+      &quot;models&quot;: [&quot;claude-opus-4-5&quot;, &quot;claude-sonnet-4-5&quot;, &quot;claude-haiku-4-5&quot;]
+    },
+    &quot;openai&quot;: {
+      &quot;configured&quot;: true,
+      &quot;models&quot;: [&quot;gpt-4o&quot;, &quot;gpt-4o-mini&quot;, &quot;o1-mini&quot;, &quot;o1-preview&quot;]
+    }
+  },
+  &quot;task_mappings&quot;: {
+    &quot;simple&quot;: &quot;glm-4.5-air&quot;,
+    &quot;coding&quot;: &quot;claude-sonnet-4-5&quot;,
+    &quot;research&quot;: &quot;claude-sonnet-4-5&quot;,
+    &quot;creative&quot;: &quot;claude-opus-4-5&quot;
+  },
+  &quot;preferences&quot;: {
+    &quot;cost_optimization&quot;: &quot;balanced&quot;,
+    &quot;default_provider&quot;: &quot;anthropic&quot;
+  }
+}
+</code></pre>
+<h3><code>~/.model-router/.api-keys</code></h3>
+<pre><code class="language-bash"># Generated by setup wizard - DO NOT edit manually
+ANTHROPIC_API_KEY=sk-ant-...
+OPENAI_API_KEY=sk-proj-...
+GEMINI_API_KEY=AIza...
+</code></pre>
+<h2>🔄 Version 1.1 Changes</h2>
+<h3>New Features</h3>
+<ul>
+<li>✅ <strong>Interactive setup wizard</strong> for guided configuration</li>
+<li>✅ <strong>Secure API key storage</strong> with file permissions</li>
+<li>✅ <strong>Task-to-model mapping</strong> customization</li>
+<li>✅ <strong>Multi-provider support</strong> (6 providers)</li>
+<li>✅ <strong>Cost optimization levels</strong> (aggressive/balanced/quality)</li>
+</ul>
+<h3>Improvements</h3>
+<ul>
+<li>✅ Better task classification with confidence scores</li>
+<li>✅ Provider-specific model recommendations</li>
+<li>✅ Enhanced security with isolated storage</li>
+<li>✅ Comprehensive documentation</li>
+</ul>
+<h3>Migration from 1.0</h3>
+<p>Run the setup wizard to reconfigure:</p>
+<pre><code class="language-bash">python3 scripts/setup-wizard.py
+</code></pre>
+<h2>📚 Command Reference</h2>
+<h3>Setup Wizard</h3>
+<pre><code class="language-bash">python3 scripts/setup-wizard.py
+</code></pre>
+<p>Interactive configuration of providers, mappings, and preferences.</p>
+<h3>Task Classifier</h3>
+<pre><code class="language-bash">python3 scripts/classify_task.py &quot;your task description&quot;
+python3 scripts/classify_task.py &quot;your task&quot; --format json
+</code></pre>
+<p>Get model recommendation with reasoning.</p>
+<h3>List Models</h3>
+<pre><code class="language-bash">python3 scripts/setup-wizard.py --list
+</code></pre>
+<p>Show all available models and their status.</p>
+<h2>🤝 Integration with Other Skills</h2>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Integration</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>model-usage</strong></td>
+<td>Track cost per provider to optimize routing</td>
+</tr>
+<tr>
+<td><strong>sessions_spawn</strong></td>
+<td>Primary tool for model delegation</td>
+</tr>
+<tr>
+<td><strong>session_status</strong></td>
+<td>Check current model and usage</td>
+</tr>
+</tbody></table>
+<h2>⚡ Performance Tips</h2>
+<ol>
+<li><strong>Start simple</strong> - Try cheap models first</li>
+<li><strong>Batch tasks</strong> - Combine multiple simple tasks</li>
+<li><strong>Use cleanup</strong> - Delete sessions after one-off tasks</li>
+<li><strong>Set timeouts</strong> - Prevent runaway sub-agents</li>
+<li><strong>Monitor usage</strong> - Track costs per provider</li>
+</ol>
+<h2>🐛 Troubleshooting</h2>
+<h3>&quot;No suitable model found&quot;</h3>
+<ul>
+<li>Run setup wizard to configure providers</li>
+<li>Check API keys are valid</li>
+<li>Verify permissions on <code>.api-keys</code> file</li>
+</ul>
+<h3>&quot;Module not found&quot;</h3>
+<pre><code class="language-bash">pip3 install -r requirements.txt  # if needed
+</code></pre>
+<h3>Wrong model selected</h3>
+<ol>
+<li>Customize task mappings via wizard</li>
+<li>Use explicit model in <code>sessions_spawn --model</code></li>
+<li>Adjust cost optimization preference</li>
+</ol>
+<h2>📖 Additional Resources</h2>
+<ul>
+<li><p><strong>Provider Docs:</strong></p>
+<ul>
+<li><a href="https://docs.anthropic.com">Anthropic</a></li>
+<li><a href="https://platform.openai.com/docs">OpenAI</a></li>
+<li><a href="https://ai.google.dev/docs">Gemini</a></li>
+<li><a href="https://platform.moonshot.cn/docs">Moonshot</a></li>
+<li><a href="https://api.z.ai/docs">Z.ai</a></li>
+<li><a href="https://open.bigmodel.cn/dev/api">GLM</a></li>
+</ul>
+</li>
+<li><p><strong>Setup:</strong> Run <code>python3 scripts/setup-wizard.py</code></p>
+</li>
+<li><p><strong>Support:</strong> Check <code>references/</code> folder for detailed guides</p>
+</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/digitaladaption/model-router/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/digitaladaption/model-router" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/digitaladaption/model-router/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@digitaladaption</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">AI & LLMs</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

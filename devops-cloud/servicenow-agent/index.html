@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Read-only CLI access to ServiceNow Table, Attachment, Aggregate">
+  <title>servicenow-agent - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to DevOps & Cloud</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">DevOps & Cloud</a>
+                <span class="skill-page-author">by @thesethrose</span>
+              </div>
+              <h1 class="skill-page-title">servicenow-agent</h1>
+              <p class="skill-page-desc">Read-only CLI access to ServiceNow Table, Attachment, Aggregate</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>ServiceNow Table API Read Only</h1>
+<p>Use this skill to read data from ServiceNow via the Table API. Do not create or update or delete records.</p>
+<h2>Configuration</h2>
+<p>Set these environment variables in the .env file in this folder.</p>
+<ul>
+<li>SERVICENOW_DOMAIN instance domain such as myinstance.service-now.com</li>
+<li>SERVICENOW_USERNAME username for basic auth</li>
+<li>SERVICENOW_PASSWORD password for basic auth</li>
+</ul>
+<p>If your domain already includes https:// then use it as is. Otherwise requests should be made to:</p>
+<pre><code>https://$SERVICENOW_DOMAIN
+</code></pre>
+<h2>Allowed Operations GET only</h2>
+<p>Use only the GET endpoints from these files.</p>
+<ul>
+<li>openapi.yaml for Table API</li>
+<li>references/attachment.yaml for Attachment API</li>
+<li>references/aggregate-api.yaml for Aggregate API</li>
+<li>references/service-catalog-api.yaml for Service Catalog API</li>
+</ul>
+<h3>List records</h3>
+<ul>
+<li>GET /api/now/table/{tableName}</li>
+</ul>
+<h3>Get a record by sys_id</h3>
+<ul>
+<li>GET /api/now/table/{tableName}/{sys_id}</li>
+</ul>
+<p>Never use POST or PUT or PATCH or DELETE.</p>
+<h2>Common Query Params Table API</h2>
+<ul>
+<li>sysparm_query encoded query such as active=true^priority=1</li>
+<li>sysparm_fields comma separated fields to return</li>
+<li>sysparm_limit limit record count to keep small for safety</li>
+<li>sysparm_display_value true or false or all</li>
+<li>sysparm_exclude_reference_link true to reduce clutter</li>
+</ul>
+<p>See openapi.yaml for the full list of parameters.</p>
+<h2>CLI</h2>
+<p>Use the bundled CLI for all reads. It pulls auth from .env by default. You can override with flags.</p>
+<h3>Command overview</h3>
+<ul>
+<li>list table lists records from a table</li>
+<li>get table sys_id fetches one record by sys_id</li>
+<li>batch file.json runs multiple read requests in one call</li>
+<li>attach reads attachments and file content</li>
+<li>stats table aggregates stats</li>
+<li>schema table lists valid field names and types</li>
+<li>history table sys_id reads full comment and work note timeline</li>
+<li>sc endpoint Service Catalog GET endpoints</li>
+</ul>
+<h3>Auth flags</h3>
+<ul>
+<li>--domain domain instance domain</li>
+<li>--username user</li>
+<li>--password pass</li>
+</ul>
+<h3>Query flags</h3>
+<p>Use any of these as --sysparm_* flags.</p>
+<ul>
+<li>--sysparm_query</li>
+<li>--sysparm_fields</li>
+<li>--sysparm_limit</li>
+<li>--sysparm_display_value</li>
+<li>--sysparm_exclude_reference_link</li>
+<li>--sysparm_suppress_pagination_header</li>
+<li>--sysparm_view</li>
+<li>--sysparm_query_category</li>
+<li>--sysparm_query_no_domain</li>
+<li>--sysparm_no_count</li>
+</ul>
+<h3>Attachment API params</h3>
+<ul>
+<li>--sysparm_query</li>
+<li>--sysparm_suppress_pagination_header</li>
+<li>--sysparm_limit</li>
+<li>--sysparm_query_category</li>
+</ul>
+<h3>Aggregate API params</h3>
+<ul>
+<li>--sysparm_query</li>
+<li>--sysparm_avg_fields</li>
+<li>--sysparm_count</li>
+<li>--sysparm_min_fields</li>
+<li>--sysparm_max_fields</li>
+<li>--sysparm_sum_fields</li>
+<li>--sysparm_group_by</li>
+<li>--sysparm_order_by</li>
+<li>--sysparm_having</li>
+<li>--sysparm_display_value</li>
+<li>--sysparm_query_category</li>
+</ul>
+<h3>Service Catalog params</h3>
+<ul>
+<li>--sysparm_view</li>
+<li>--sysparm_limit</li>
+<li>--sysparm_text</li>
+<li>--sysparm_offset</li>
+<li>--sysparm_category</li>
+<li>--sysparm_type</li>
+<li>--sysparm_catalog</li>
+<li>--sysparm_top_level_only</li>
+<li>--record_id</li>
+<li>--template_id</li>
+<li>--mode</li>
+</ul>
+<h3>Output</h3>
+<ul>
+<li>--pretty pretty print JSON output</li>
+<li>--out path save binary attachment content to a file</li>
+</ul>
+<h3>Examples</h3>
+<p>List recent incidents.</p>
+<pre><code class="language-bash">node cli.mjs list incident --sysparm_limit 5 --sysparm_fields number,short_description,priority,sys_id
+</code></pre>
+<p>Query with a filter.</p>
+<pre><code class="language-bash">node cli.mjs list cmdb_ci --sysparm_query &quot;operational_status=1^install_status=1&quot; --sysparm_limit 10
+</code></pre>
+<p>Fetch a single record.</p>
+<pre><code class="language-bash">node cli.mjs get incident &lt;sys_id&gt; --sysparm_fields number,short_description,opened_at
+</code></pre>
+<p>Override auth on the fly.</p>
+<pre><code class="language-bash">node cli.mjs list incident --domain myinstance.service-now.com --username admin --password &quot;***&quot; --sysparm_limit 3
+</code></pre>
+<p>Attachment metadata and file download.</p>
+<pre><code class="language-bash">node cli.mjs attach list --sysparm_query &quot;table_name=incident&quot; --sysparm_limit 5
+node cli.mjs attach file &lt;sys_id&gt; --out /tmp/attachment.bin
+</code></pre>
+<p>Aggregate stats.</p>
+<pre><code class="language-bash">node cli.mjs stats incident --sysparm_query &quot;active=true^priority=1&quot; --sysparm_count true
+</code></pre>
+<p>Service Catalog read only GETs.</p>
+<pre><code class="language-bash">node cli.mjs sc catalogs --sysparm_text &quot;laptop&quot; --sysparm_limit 5
+node cli.mjs sc items --sysparm_text &quot;mac&quot; --sysparm_limit 5
+node cli.mjs sc item &lt;sys_id&gt;
+node cli.mjs sc item-variables &lt;sys_id&gt;
+</code></pre>
+<h3>Service Catalog endpoints GET only</h3>
+<ul>
+<li>cart</li>
+<li>delivery-address user_id</li>
+<li>validate-categories</li>
+<li>on-change-choices entity_id</li>
+<li>catalogs</li>
+<li>catalog sys_id</li>
+<li>catalog-categories sys_id</li>
+<li>category sys_id</li>
+<li>items</li>
+<li>item sys_id</li>
+<li>item-variables sys_id</li>
+<li>item-delegation item_sys_id user_sys_id</li>
+<li>producer-record producer_id record_id</li>
+<li>record-wizard record_id wizard_id</li>
+<li>generate-stage-pool quantity</li>
+<li>step-configs</li>
+<li>wishlist</li>
+<li>wishlist-item cart_item_id</li>
+<li>wizard sys_id</li>
+</ul>
+<h3>Schema Inspection</h3>
+<p>Use this if you are unsure of a field name.</p>
+<pre><code class="language-bash">node cli.mjs schema incident
+</code></pre>
+<h3>Reading Ticket History</h3>
+<p>Use this to read the full conversation instead of just the current state.</p>
+<pre><code class="language-bash">node cli.mjs history incident &lt;sys_id&gt;
+</code></pre>
+<h3>Specialist presets</h3>
+<p>Create JSON batch files under specialists/ to run multiple reads at once.</p>
+<ul>
+<li>specialists/incidents.json</li>
+</ul>
+<p>Each entry supports sysparm_* fields plus these items.</p>
+<ul>
+<li>name label in the batch output</li>
+<li>table target table</li>
+<li>sys_id optional single record fetch</li>
+</ul>
+<p>Run a batch preset.</p>
+<pre><code class="language-bash">node cli.mjs batch specialists/incidents.json --pretty
+</code></pre>
+<h2>Output</h2>
+<p>The Table API returns JSON by default. Results appear under result.</p>
+<h2>Notes</h2>
+<ul>
+<li>Keep result sizes small with sysparm_limit.</li>
+<li>Use sysparm_fields to avoid large payloads.</li>
+<li>This skill is read only by design.</li>
+</ul>
+<h2>Summary of the Agent Toolkit</h2>
+<ul>
+<li>list and get show the current state of records.</li>
+<li>attach shows files and screenshots.</li>
+<li>stats shows analytics and aggregates.</li>
+<li>sc shows requested item variables.</li>
+<li>schema shows the database map to correct errors.</li>
+<li>history shows the timeline of human conversations.</li>
+</ul>
+<h2>Observations &amp; Notes (important)</h2>
+<ul>
+<li>Service Catalog endpoints may return empty arrays depending on catalog content and search text — try more specific <code>--sysparm_text</code> terms or increase <code>--sysparm_limit</code>.</li>
+<li><code>sysparm_display_value</code> is enabled by default for table reads to return human-friendly values (e.g., user names instead of sys_ids). If you need raw system ids, pass <code>--sysparm_display_value false</code>.</li>
+<li>Keep <code>--sysparm_limit</code> small for agent-initiated queries to avoid large payloads and timeouts. Prefer <code>stats</code> for counts or aggregates instead of downloading many rows.</li>
+<li>Attachments: metadata is available via <code>attach list</code>/<code>attach get</code>; use <code>attach file &lt;sys_id&gt; --out &lt;path&gt;</code> to download binary content for local analysis.</li>
+<li>Schema inspection (<code>schema</code>) avoids guessing field names and is the recommended first step before reading unknown tables.</li>
+<li>History (<code>history</code>) fetches journal entries (comments/work_notes) from <code>sys_journal_field</code> and is useful to read the full conversation thread for a ticket.</li>
+<li>Use <code>--pretty</code> to make JSON outputs readable for human review and to help the agent summarize long results.</li>
+</ul>
+<h2>Recommended Batch Presets</h2>
+<p>I recommend these specialist JSON presets under <code>specialists/</code> to speed up common read workflows. They are safe (read-only) and demonstrate how to combine related reads.</p>
+<ol>
+<li><code>specialists/inspect_incident_schema.json</code> — schema inspection for <code>incident</code>:</li>
+</ol>
+<pre><code class="language-json">[
+  {
+    &quot;name&quot;: &quot;schema-incident&quot;,
+    &quot;table&quot;: &quot;sys_dictionary&quot;,
+    &quot;sysparm_query&quot;: &quot;name=incident^elementISNOTEMPTY&quot;,
+    &quot;sysparm_fields&quot;: &quot;element,column_label,internal_type,reference&quot;,
+    &quot;sysparm_limit&quot;: 500
+  }
+]
+</code></pre>
+<ol start="2">
+<li><code>specialists/incident_history_template.json</code> — history template (replace <code>&lt;SYS_ID&gt;</code> with the target sys_id before running):</li>
+</ol>
+<pre><code class="language-json">[
+  {
+    &quot;name&quot;: &quot;incident-history&quot;,
+    &quot;table&quot;: &quot;sys_journal_field&quot;,
+    &quot;sysparm_query&quot;: &quot;name=incident^element_id=&lt;SYS_ID&gt;&quot;,
+    &quot;sysparm_fields&quot;: &quot;value,element,sys_created_on,sys_created_by&quot;,
+    &quot;sysparm_order_by&quot;: &quot;sys_created_on&quot;,
+    &quot;sysparm_limit&quot;: 500
+  }
+]
+</code></pre>
+<ol start="3">
+<li><code>specialists/attachments_incident.json</code> — recent attachments for incident table:</li>
+</ol>
+<pre><code class="language-json">[
+  {
+    &quot;name&quot;: &quot;recent-incident-attachments&quot;,
+    &quot;table&quot;: &quot;attachment&quot;,
+    &quot;sysparm_query&quot;: &quot;table_name=incident&quot;,
+    &quot;sysparm_fields&quot;: &quot;sys_id,file_name,content_type,table_sys_id,sys_created_on&quot;,
+    &quot;sysparm_limit&quot;: 20
+  }
+]
+</code></pre>
+<p>How to use these:</p>
+<ul>
+<li>For schema: <code>node cli.mjs batch specialists/inspect_incident_schema.json --pretty</code></li>
+<li>For history: replace <code>&lt;SYS_ID&gt;</code> then <code>node cli.mjs batch specialists/incident_history_template.json --pretty</code> (or run <code>node cli.mjs history incident &lt;SYS_ID&gt; --pretty</code>)</li>
+<li>For attachments: <code>node cli.mjs batch specialists/attachments_incident.json --pretty</code>, then <code>node cli.mjs attach file &lt;sys_id&gt; --out /tmp/file</code> to download a file.</li>
+</ul>
+<p>These presets are intentionally read-only and conservative (limits set small). Feel free to ask for additional presets (P1 dashboards, recent changes, escalations).</p>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/thesethrose/servicenow-agent/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/thesethrose/servicenow-agent" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/thesethrose/servicenow-agent/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@thesethrose</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">DevOps & Cloud</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

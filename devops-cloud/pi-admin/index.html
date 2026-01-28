@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Raspberry Pi system administration. Monitor resources, manage services, perform updates">
+  <title>pi-admin - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to DevOps & Cloud</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">DevOps & Cloud</a>
+                <span class="skill-page-author">by @thesethrose</span>
+              </div>
+              <h1 class="skill-page-title">pi-admin</h1>
+              <p class="skill-page-desc">Raspberry Pi system administration. Monitor resources, manage services, perform updates</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Raspberry Pi Administration</h1>
+<p>Complete system monitoring and introspection for the Raspberry Pi host. Access network details, system resources, storage, services, and more.</p>
+<h2>When to Use</h2>
+<ul>
+<li>Checking Pi network configuration (IP, Tailscale)</li>
+<li>Monitoring system resources (CPU, memory, storage)</li>
+<li>Viewing running services and their status</li>
+<li>Checking temperature and hardware info</li>
+<li>Troubleshooting system issues</li>
+<li>Getting system overview for debugging</li>
+</ul>
+<h2>Usage</h2>
+<pre><code class="language-bash"># Information Commands
+cd /home/srose/clawd/skills/pi-admin
+./skill.sh overview
+./skill.sh network
+./skill.sh tailscale
+./skill.sh resources
+./skill.sh storage
+./skill.sh services
+./skill.sh hardware
+
+# Maintenance Commands
+./skill.sh update       # Update system packages
+./skill.sh clean        # Clean unused packages, logs, Docker
+./skill.sh reboot       # Reboot with countdown
+./skill.sh restart-gateway  # Restart the Clawdis Gateway
+
+# Complete system info
+./skill.sh all
+</code></pre>
+<h2>Tools Available</h2>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>overview</code></td>
+<td>Quick system summary</td>
+</tr>
+<tr>
+<td><code>network</code></td>
+<td>IP addresses, hostname, network interfaces</td>
+</tr>
+<tr>
+<td><code>tailscale</code></td>
+<td>Tailscale status, IP, peers</td>
+</tr>
+<tr>
+<td><code>resources</code></td>
+<td>CPU, memory, temperature</td>
+</tr>
+<tr>
+<td><code>storage</code></td>
+<td>Disk usage, mount points</td>
+</tr>
+<tr>
+<td><code>services</code></td>
+<td>Running services, Gateway status</td>
+</tr>
+<tr>
+<td><code>hardware</code></td>
+<td>CPU info, Raspberry Pi model, GPU</td>
+</tr>
+<tr>
+<td><code>all</code></td>
+<td>Complete detailed dump</td>
+</tr>
+</tbody></table>
+<h2>Examples</h2>
+<pre><code class="language-bash"># Quick system check
+./skill.sh overview
+
+# Debug network issues
+./skill.sh network &amp;&amp; ./skill.sh tailscale
+
+# Check if Gateway is running
+./skill.sh services | grep gateway
+
+# Monitor disk space
+./skill.sh storage
+</code></pre>
+<h2>Information Collected</h2>
+<p><strong>Network:</strong></p>
+<ul>
+<li>Hostname</li>
+<li>Local IP addresses (eth0, wlan0)</li>
+<li>Network interface details</li>
+<li>DNS configuration</li>
+</ul>
+<p><strong>Tailscale:</strong></p>
+<ul>
+<li>Status (running/stopped)</li>
+<li>Tailscale IP</li>
+<li>Connected peers</li>
+<li>Exit node status</li>
+</ul>
+<p><strong>Resources:</strong></p>
+<ul>
+<li>CPU usage</li>
+<li>Memory usage (used/free/total)</li>
+<li>CPU temperature</li>
+<li>Uptime</li>
+</ul>
+<p><strong>Storage:</strong></p>
+<ul>
+<li>Disk usage by mount point</li>
+<li>Inode usage</li>
+<li>Free space</li>
+</ul>
+<p><strong>Services:</strong></p>
+<ul>
+<li>Gateway service status</li>
+<li>Docker containers</li>
+<li>Systemd services</li>
+<li>Port listeners</li>
+</ul>
+<p><strong>Hardware:</strong></p>
+<ul>
+<li>CPU model and cores</li>
+<li>Raspberry Pi model</li>
+<li>GPU memory</li>
+<li>Total RAM</li>
+</ul>
+<h2>Maintenance Commands</h2>
+<h3><code>update</code></h3>
+<p>Update system packages via apt:</p>
+<ul>
+<li>Updates package lists</li>
+<li>Shows upgradable packages</li>
+<li>Requires confirmation before upgrading</li>
+<li>Reports if reboot is needed</li>
+<li><strong>Dry run:</strong> <code>./skill.sh update --dry-run</code> shows what would be updated</li>
+</ul>
+<h3><code>clean</code></h3>
+<p>Clean up system to free disk space:</p>
+<ul>
+<li>Removes unused packages (autoremove)</li>
+<li>Clears package cache</li>
+<li>Cleans old journal logs (keeps 7 days)</li>
+<li>Optionally cleans Docker artifacts</li>
+<li>Shows space saved</li>
+<li><strong>Dry run:</strong> <code>./skill.sh clean --dry-run</code> shows what would be cleaned</li>
+</ul>
+<h3><code>reboot</code></h3>
+<p>Graceful system reboot:</p>
+<ul>
+<li>10-second countdown</li>
+<li>Ctrl+C to cancel</li>
+<li>Uses systemctl reboot</li>
+<li><strong>Dry run:</strong> <code>./skill.sh reboot --dry-run</code> shows countdown without rebooting</li>
+</ul>
+<h3><code>restart-gateway</code></h3>
+<p>Restart the Clawdis Gateway service:</p>
+<ul>
+<li>Stops all running gateway processes</li>
+<li>Starts fresh gateway on port 18789</li>
+<li>Confirms port is listening</li>
+<li>Shows access URLs</li>
+<li><strong>Dry run:</strong> <code>./skill.sh restart-gateway --dry-run</code> shows what would happen</li>
+</ul>
+<h3><code>optimize</code></h3>
+<p>Apply safe system optimizations:</p>
+<ul>
+<li>Disable Bluetooth service (~50MB RAM saved)</li>
+<li>Disable ModemManager (~30MB RAM saved)</li>
+<li>Disable Avahi/Zeroconf (~20MB RAM saved)</li>
+<li>Set swappiness to 10 (better RAM utilization)</li>
+<li><strong>Dry run:</strong> <code>./skill.sh optimize --dry-run</code> shows what would change</li>
+<li><strong>Undo:</strong> <code>./skill.sh optimize --undo</code> reverts all changes</li>
+</ul>
+<p><strong>Total RAM savings:</strong> ~100MB
+<strong>Reversibility:</strong> Yes, use <code>--undo</code> flag to revert</p>
+<p><strong>Note:</strong> All maintenance commands require sudo and ask for confirmation before making changes. Use <code>--dry-run</code> flag to preview changes without applying them.</p>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/thesethrose/pi-admin/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/thesethrose/pi-admin" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/thesethrose/pi-admin/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@thesethrose</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">DevOps & Cloud</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

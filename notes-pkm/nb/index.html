@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage notes, bookmarks, and notebooks using the nb CLI">
+  <title>nb - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Notes & PKM</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Notes & PKM</a>
+                <span class="skill-page-author">by @bjesuiter</span>
+              </div>
+              <h1 class="skill-page-title">nb</h1>
+              <p class="skill-page-desc">Manage notes, bookmarks, and notebooks using the nb CLI</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>nb - Command Line Note-Taking</h1>
+<blockquote>
+<p>⚠️ <strong>IMPORTANT:</strong> Never edit files in nb git repos (<code>~/.nb/*</code>) by hand! Always use the <code>nb</code> CLI to ensure proper indexing and Git commits.</p>
+</blockquote>
+<p>A command line and local web note-taking, bookmarking, and archiving tool with plain text data storage, Git-backed versioning, and wiki-style linking.</p>
+<h2>Quick Reference</h2>
+<h3>Notebooks</h3>
+<pre><code class="language-bash"># List all notebooks
+nb notebooks
+
+# Switch to a notebook
+nb use &lt;notebook&gt;
+
+# Create a new notebook
+nb notebooks add &lt;name&gt;
+
+# Show current notebook
+nb notebooks current
+</code></pre>
+<h3>Adding Notes</h3>
+<pre><code class="language-bash"># Add a note with title
+nb add -t &quot;Title&quot; -c &quot;Content here&quot;
+
+# Add note to specific notebook
+nb &lt;notebook&gt;: add -t &quot;Title&quot; -c &quot;Content&quot;
+
+# Add note with tags
+nb add -t &quot;Title&quot; --tags tag1,tag2
+
+# Add note from file content
+nb add &lt;notebook&gt;:filename.md
+</code></pre>
+<h3>Listing Notes</h3>
+<pre><code class="language-bash"># List notes in current notebook
+nb list
+
+# List all notes (no limit)
+nb list -a
+
+# List notes in specific notebook
+nb &lt;notebook&gt;: list
+
+# List with excerpts
+nb list -e
+
+# List with tags shown
+nb list --tags
+</code></pre>
+<h3>Showing Notes</h3>
+<pre><code class="language-bash"># Show note by ID or title
+nb show &lt;id&gt;
+nb show &quot;&lt;title&gt;&quot;
+
+# Show note from specific notebook
+nb show &lt;notebook&gt;:&lt;id&gt;
+
+# Print content (for piping)
+nb show &lt;id&gt; --print
+</code></pre>
+<h3>Searching Notes</h3>
+<pre><code class="language-bash"># Search across all notebooks
+nb search &quot;query&quot;
+
+# Search in specific notebook
+nb &lt;notebook&gt;: search &quot;query&quot;
+
+# Search with AND/OR/NOT
+nb search &quot;term1&quot; --and &quot;term2&quot;
+nb search &quot;term1&quot; --or &quot;term2&quot;
+nb search &quot;term1&quot; --not &quot;exclude&quot;
+
+# Search by tag
+nb search --tag &quot;tagname&quot;
+</code></pre>
+<h3>Editing Notes</h3>
+<pre><code class="language-bash"># Edit by ID
+nb edit &lt;id&gt;
+
+# Edit by title
+nb edit &quot;&lt;title&gt;&quot;
+
+# Append content
+nb edit &lt;id&gt; -c &quot;New content to append&quot;
+
+# Prepend content
+nb edit &lt;id&gt; -c &quot;Content at top&quot; --prepend
+
+# Overwrite content
+nb edit &lt;id&gt; -c &quot;Replace all&quot; --overwrite
+</code></pre>
+<h3>Deleting Notes</h3>
+<pre><code class="language-bash"># Delete by ID (will prompt)
+nb delete &lt;id&gt;
+
+# Force delete without prompt
+nb delete &lt;id&gt; -f
+</code></pre>
+<h3>Moving/Renaming</h3>
+<pre><code class="language-bash"># Move note to another notebook
+nb move &lt;id&gt; &lt;notebook&gt;:
+
+# Rename a note
+nb move &lt;id&gt; new-filename.md
+</code></pre>
+<h3>Todos</h3>
+<pre><code class="language-bash"># Add a todo
+nb todo add &quot;Task title&quot;
+
+# Add todo with due date
+nb todo add &quot;Task&quot; --due &quot;2026-01-15&quot;
+
+# List open todos
+nb todos open
+
+# List closed todos
+nb todos closed
+
+# Mark todo as done
+nb todo do &lt;id&gt;
+
+# Mark todo as not done
+nb todo undo &lt;id&gt;
+</code></pre>
+<h3>Bookmarks</h3>
+<pre><code class="language-bash"># Add a bookmark
+nb bookmark &lt;url&gt;
+
+# Add with comment
+nb bookmark &lt;url&gt; -c &quot;My comment&quot;
+
+# Add with tags
+nb bookmark &lt;url&gt; --tags reference,dev
+
+# List bookmarks
+nb bookmark list
+
+# Search bookmarks
+nb bookmark search &quot;query&quot;
+</code></pre>
+<h3>Git Operations</h3>
+<pre><code class="language-bash"># Sync with remote
+nb sync
+
+# Create checkpoint (commit)
+nb git checkpoint &quot;Message&quot;
+
+# Check dirty status
+nb git dirty
+
+# Run any git command
+nb git status
+nb git log --oneline -5
+</code></pre>
+<h3>Folders</h3>
+<pre><code class="language-bash"># Add folder to notebook
+nb folders add &lt;folder-name&gt;
+
+# List folders
+nb folders
+
+# Add note to folder
+nb add &lt;folder&gt;/&lt;filename&gt;.md
+</code></pre>
+<h2>Common Patterns</h2>
+<h3>Adding Note with Full Content</h3>
+<p>For longer notes, create a temp file and import:</p>
+<pre><code class="language-bash"># Write content to temp file first, then copy to nb
+cp /tmp/note.md ~/.nb/&lt;notebook&gt;/
+cd ~/.nb/&lt;notebook&gt; &amp;&amp; git add . &amp;&amp; git commit -m &quot;Add note&quot;
+nb &lt;notebook&gt;: index rebuild
+</code></pre>
+<h3>Searching Across All</h3>
+<pre><code class="language-bash"># Search everything
+nb search &quot;term&quot; --all
+
+# Search by type
+nb search &quot;term&quot; --type bookmark
+nb search &quot;term&quot; --type todo
+</code></pre>
+<h2>Data Location</h2>
+<p>Notes are stored in <code>~/.nb/&lt;notebook&gt;/</code> as markdown files with Git versioning.</p>
+<pre><code>~/.nb/
+├── notebook-name-1/ # Your first notebook
+├── notebook-name-2/ # Your second notebook
+└── ...
+</code></pre>
+<h2>Tips</h2>
+<ol>
+<li>Use <code>nb &lt;notebook&gt;:</code> prefix to work with specific notebooks</li>
+<li>IDs are numbers shown in <code>nb list</code></li>
+<li>Titles can be used instead of IDs (quoted if spaces)</li>
+<li>All changes are automatically Git-committed</li>
+<li>Use <code>nb sync</code> to push/pull from remote repos</li>
+</ol>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/bjesuiter/nb/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/bjesuiter/nb" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/bjesuiter/nb/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@bjesuiter</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Notes & PKM</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Personal task management with daily standups and weekly reviews">
+  <title>task-tracker - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Productivity & Tasks</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Productivity & Tasks</a>
+                <span class="skill-page-author">by @kesslerio</span>
+              </div>
+              <h1 class="skill-page-title">task-tracker</h1>
+              <p class="skill-page-desc">Personal task management with daily standups and weekly reviews</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <div align="center">
+
+<p><img src="https://img.shields.io/badge/Task_Tracker-Clawdbot_skill-blue?style=for-the-badge&logo=checklist" alt="Task Tracker">
+<img src="https://img.shields.io/badge/Python-3.10+-yellow?style=flat-square&logo=python" alt="Python">
+<img src="https://img.shields.io/badge/Status-Production-green?style=flat-square" alt="Status">
+<img src="https://img.shields.io/badge/Issues-0-black?style=flat-square" alt="Issues">
+<img src="https://img.shields.io/badge/Last_Updated-Jan_2026-orange?style=flat-square" alt="Last Updated"></p>
+<p><strong>Personal task management with daily standups and weekly reviews</strong></p>
+<p><a href="https://github.com/kesslerio/task-tracker-clawdbot-skill">Homepage</a> • <a href="#what-this-skill-does">Trigger Patterns</a> • <a href="#commands-reference">Commands</a></p>
+</div>
+
+<hr>
+<h1>Task Tracker</h1>
+<p>A personal task management skill for daily standups and weekly reviews. Tracks work tasks, surfaces priorities, and manages blockers.</p>
+<hr>
+<h2>What This Skill Does</h2>
+<ol>
+<li><strong>Lists tasks</strong> - Shows what&#39;s on your plate, filtered by priority, status, or deadline</li>
+<li><strong>Daily standup</strong> - Shows today&#39;s #1 priority, blockers, and what was completed</li>
+<li><strong>Weekly review</strong> - Summarizes last week, archives done items, plans this week</li>
+<li><strong>Add tasks</strong> - Create new tasks with priority and due date</li>
+<li><strong>Complete tasks</strong> - Mark tasks as done</li>
+<li><strong>Extract from notes</strong> - Pull action items from meeting notes</li>
+</ol>
+<hr>
+<h2>File Structure</h2>
+<pre><code>~/clawd/memory/work/
+├── TASKS.md              # Active tasks (source of truth)
+├── ARCHIVE-2026-Q1.md    # Completed tasks by quarter
+└── WORKFLOW.md           # Workflow documentation
+</code></pre>
+<p><strong>TASKS.md format:</strong></p>
+<pre><code class="language-markdown"># Work Tasks
+
+## 🔴 High Priority (This Week)
+- [ ] **Set up Apollo.io** — Access for Lilla
+  - Due: ASAP
+  - Blocks: Lilla (podcast outreach)
+
+## 🟡 Medium Priority (This Week)
+- [ ] **Review newsletter concept** — Figma design
+  - Due: Before Feb 1
+
+## ✅ Done
+- [x] **Set up team calendar** — Shared Google Calendar
+</code></pre>
+<hr>
+<h2>Quick Start</h2>
+<h3>View Your Tasks</h3>
+<pre><code class="language-bash">python3 ~/clawd/skills/task-tracker/scripts/tasks.py list
+</code></pre>
+<h3>Daily Standup</h3>
+<pre><code class="language-bash">python3 ~/clawd/skills/task-tracker/scripts/standup.py
+</code></pre>
+<h3>Weekly Review</h3>
+<pre><code class="language-bash">python3 ~/clawd/skills/task-tracker/scripts/weekly_review.py
+</code></pre>
+<hr>
+<h2>Commands Reference</h2>
+<h3>List Tasks</h3>
+<pre><code class="language-bash"># All tasks
+tasks.py list
+
+# Only high priority
+tasks.py list --priority high
+
+# Only blocked
+tasks.py list --status blocked
+
+# Due today or this week
+tasks.py list --due today
+tasks.py list --due this-week
+</code></pre>
+<h3>Add Task</h3>
+<pre><code class="language-bash"># Simple
+tasks.py add &quot;Draft project proposal&quot;
+
+# With details
+tasks.py add &quot;Draft project proposal&quot; \
+  --priority high \
+  --due &quot;Before Mar 15&quot; \
+  --blocks &quot;Sarah (client review)&quot;
+</code></pre>
+<h3>Complete Task</h3>
+<pre><code class="language-bash">tasks.py done &quot;proposal&quot;  # Fuzzy match - finds &quot;Draft project proposal&quot;
+</code></pre>
+<h3>Show Blockers</h3>
+<pre><code class="language-bash">tasks.py blockers              # All blocking tasks
+tasks.py blockers --person sarah  # Only blocking Sarah
+</code></pre>
+<h3>Extract from Meeting Notes</h3>
+<pre><code class="language-bash">extract_tasks.py --from-text &quot;Meeting: discuss Q1 planning, Sarah to own budget review&quot;
+# Outputs: tasks.py add &quot;Discuss Q1 planning&quot; --priority medium
+#          tasks.py add &quot;Sarah to own budget review&quot; --owner sarah
+</code></pre>
+<hr>
+<h2>Priority Levels</h2>
+<table>
+<thead>
+<tr>
+<th>Icon</th>
+<th>Meaning</th>
+<th>When to Use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>🔴 <strong>High</strong></td>
+<td>Critical, blocking, deadline-driven</td>
+<td>Revenue impact, blocking others</td>
+</tr>
+<tr>
+<td>🟡 <strong>Medium</strong></td>
+<td>Important but not urgent</td>
+<td>Reviews, feedback, planning</td>
+</tr>
+<tr>
+<td>🟢 <strong>Low</strong></td>
+<td>Monitoring, delegated</td>
+<td>Waiting on others, backlog</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Status Workflow</h2>
+<pre><code>Todo → In Progress → Done
+      ↳ Blocked (waiting on external)
+      ↳ Waiting (delegated, monitoring)
+</code></pre>
+<hr>
+<h2>Automation (Cron)</h2>
+<table>
+<thead>
+<tr>
+<th>Job</th>
+<th>When</th>
+<th>What</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Daily Standup</td>
+<td>Weekdays 8:30 AM</td>
+<td>Posts to Telegram Journaling group</td>
+</tr>
+<tr>
+<td>Weekly Review</td>
+<td>Mondays 9:00 AM</td>
+<td>Posts summary, archives done items</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Natural Language Triggers</h2>
+<table>
+<thead>
+<tr>
+<th>You Say</th>
+<th>Skill Does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&quot;daily standup&quot;</td>
+<td>Runs standup.py, posts to Journaling</td>
+</tr>
+<tr>
+<td>&quot;weekly review&quot;</td>
+<td>Runs weekly_review.py, posts summary</td>
+</tr>
+<tr>
+<td>&quot;what&#39;s on my plate?&quot;</td>
+<td>Lists all tasks</td>
+</tr>
+<tr>
+<td>&quot;what&#39;s blocking Lilla?&quot;</td>
+<td>Shows tasks blocking Lilla</td>
+</tr>
+<tr>
+<td>&quot;mark IMCAS done&quot;</td>
+<td>Completes matching task</td>
+</tr>
+<tr>
+<td>&quot;what&#39;s due this week?&quot;</td>
+<td>Lists tasks due this week</td>
+</tr>
+<tr>
+<td>&quot;add task: X&quot;</td>
+<td>Adds task X to TASKS.md</td>
+</tr>
+<tr>
+<td>&quot;extract tasks from: [notes]&quot;</td>
+<td>Parses notes, outputs add commands</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Examples</h2>
+<p><strong>Morning check-in:</strong></p>
+<pre><code>$ python3 scripts/standup.py
+
+📋 Daily Standup — Tuesday, January 21
+
+🎯 #1 Priority: Complete project proposal draft
+   ↳ Blocking: Sarah (client review)
+
+⏰ Due Today:
+  • Complete project proposal draft
+  • Schedule team sync
+
+🔴 High Priority:
+  • Review Q1 budget (due: Before Mar 15)
+  • Draft blog post (due: ASAP)
+
+✅ Recently Completed:
+  • Set up shared calendar
+  • Update team documentation
+</code></pre>
+<p><strong>Adding a task:</strong></p>
+<pre><code>$ python3 scripts/tasks.py add &quot;Draft blog post&quot; --priority high --due ASAP
+
+✅ Added task: Draft blog post
+</code></pre>
+<p><strong>Extracting from meeting notes:</strong></p>
+<pre><code>$ python3 scripts/extract_tasks.py --from-text &quot;Meeting: Sarah needs budget review, create project timeline&quot;
+
+# Extracted 2 task(s) from meeting notes
+# Run these commands to add them:
+
+tasks.py add &quot;Budget review for Sarah&quot; --priority high
+tasks.py add &quot;Create project timeline&quot; --priority medium
+</code></pre>
+<hr>
+<h2>Integration Points</h2>
+<ul>
+<li><strong>Telegram Journaling group:</strong> Standup/review summaries posted automatically</li>
+<li><strong>Obsidian:</strong> Daily standups logged to <code>01-Daily/YYYY-MM-DD.md</code></li>
+<li><strong>MEMORY.md:</strong> Patterns and recurring blockers promoted during weekly reviews</li>
+<li><strong>Cron:</strong> Automated standups and reviews</li>
+</ul>
+<hr>
+<h2>Troubleshooting</h2>
+<p><strong>&quot;Tasks file not found&quot;</strong></p>
+<pre><code class="language-bash"># Create from template
+python3 scripts/init.py
+</code></pre>
+<p><strong>Tasks not showing up</strong></p>
+<ul>
+<li>Check TASKS.md exists at <code>~/clawd/memory/work/TASKS.md</code></li>
+<li>Verify task format (checkboxes <code>- [ ]</code>, headers <code>## 🔴</code>)</li>
+<li>Run <code>tasks.py list</code> to debug</li>
+</ul>
+<p><strong>Date parsing issues</strong></p>
+<ul>
+<li>Due dates support: <code>ASAP</code>, <code>YYYY-MM-DD</code>, <code>Before Mar 15</code>, <code>Before product launch</code></li>
+<li><code>check_due_date()</code> handles common formats</li>
+</ul>
+<hr>
+<h2>Files</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>scripts/tasks.py</code></td>
+<td>Main CLI - list, add, done, blockers, archive</td>
+</tr>
+<tr>
+<td><code>scripts/standup.py</code></td>
+<td>Daily standup generator</td>
+</tr>
+<tr>
+<td><code>scripts/weekly_review.py</code></td>
+<td>Weekly review generator</td>
+</tr>
+<tr>
+<td><code>scripts/extract_tasks.py</code></td>
+<td>Extract tasks from meeting notes</td>
+</tr>
+<tr>
+<td><code>scripts/utils.py</code></td>
+<td>Shared utilities (DRY)</td>
+</tr>
+<tr>
+<td><code>scripts/init.py</code></td>
+<td>Initialize new TASKS.md from template</td>
+</tr>
+<tr>
+<td><code>references/task-format.md</code></td>
+<td>Task format specification</td>
+</tr>
+<tr>
+<td><code>assets/templates/TASKS.md</code></td>
+<td>Template for new task files</td>
+</tr>
+</tbody></table>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/kesslerio/task-tracker/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/kesslerio/task-tracker" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/kesslerio/task-tracker/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@kesslerio</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Productivity & Tasks</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

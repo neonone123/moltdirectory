@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="oura">
+  <title>oura - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Health & Fitness</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Health & Fitness</a>
+                <span class="skill-page-author">by @ruhrpotter</span>
+              </div>
+              <h1 class="skill-page-title">oura</h1>
+              <p class="skill-page-desc">oura</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Oura Ring CLI Skill</h1>
+<h2>Description</h2>
+<p>This tool allows retrieving health and biometric data from the Oura Ring API (V2) via a command-line interface. Use this to answer questions about the user&#39;s sleep, activity, readiness, and physiological stats.</p>
+<p>Repository: <a href="https://github.com/ruhrpotter/oura-cli">https://github.com/ruhrpotter/oura-cli</a></p>
+<h2>Installation</h2>
+<h3>1. Build the CLI</h3>
+<pre><code class="language-bash">cd ~
+git clone https://github.com/ruhrpotter/oura-cli.git
+cd oura-cli
+go build -o oura ./cmd/oura
+</code></pre>
+<h3>2. Create Oura OAuth App</h3>
+<ol>
+<li>Go to <a href="https://cloud.ouraring.com/oauth/developer">Oura Developer Portal</a></li>
+<li>Create a new application</li>
+<li>Set Redirect URI to: <code>http://localhost:8080/callback</code></li>
+<li>Note down your <strong>Client ID</strong> and <strong>Client Secret</strong></li>
+</ol>
+<h3>3. Authenticate</h3>
+<pre><code class="language-bash">export OURA_CLIENT_ID=&quot;your_client_id&quot;
+export OURA_CLIENT_SECRET=&quot;your_client_secret&quot;
+./oura auth login
+</code></pre>
+<p>A browser will open for OAuth authorization. Tokens are stored in <code>~/.config/oura-cli/config.json</code>.</p>
+<h2>Prerequisite</h2>
+<p>The CLI must be authenticated. If a command fails with an auth error, notify the user to run <code>./oura auth login</code>.</p>
+<h2>Syntax</h2>
+<p><code>./oura get &lt;category&gt; [flags]</code></p>
+<h2>Categories</h2>
+<ul>
+<li><code>personal</code>: User profile (age, weight, height, email).</li>
+<li><code>sleep</code>: Daily sleep scores and efficiency.</li>
+<li><code>activity</code>: Daily activity scores, steps, and movement.</li>
+<li><code>readiness</code>: Daily readiness scores indicating recovery.</li>
+<li><code>heartrate</code>: Time-series heart rate data.</li>
+<li><code>workout</code>: Detailed workout sessions.</li>
+<li><code>spo2</code>: Blood oxygen saturation levels.</li>
+<li><code>sleep-details</code>: Detailed sleep sessions including hypnograms.</li>
+<li><code>sessions</code>: Activity sessions (e.g. naps, rest).</li>
+<li><code>sleep-times</code>: Optimal bedtime guidance.</li>
+<li><code>stress</code>: Daily stress levels.</li>
+<li><code>resilience</code>: Daily resilience scores and recovery.</li>
+<li><code>cv-age</code>: Cardiovascular age estimates.</li>
+<li><code>vo2-max</code>: VO2 Max measurements.</li>
+<li><code>ring-config</code>: Ring hardware configuration (color, size, etc.).</li>
+<li><code>rest-mode</code>: Rest mode periods.</li>
+<li><code>tags</code>: Enhanced tags (notes, lifestyle choices).</li>
+</ul>
+<h2>Arguments</h2>
+<ul>
+<li><code>--start &lt;YYYY-MM-DD&gt;</code>: REQUIRED for most time-series data. The start date of the range.</li>
+<li><code>--end &lt;YYYY-MM-DD&gt;</code>: OPTIONAL. The end date of the range. If omitted, it may default to the start date or return a single day depending on context.</li>
+</ul>
+<h2>Agent Instructions</h2>
+<ol>
+<li><strong>Date Resolution</strong>: You <strong>MUST</strong> resolve all relative date terms (e.g., &quot;today&quot;, &quot;yesterday&quot;, &quot;last week&quot;, &quot;this month&quot;) into absolute <code>YYYY-MM-DD</code> string format based on the current operational date.</li>
+<li><strong>Date ranges</strong>:<ul>
+<li>For &quot;today&quot;: Set <code>--start</code> to today&#39;s date.</li>
+<li>For &quot;yesterday&quot;: Set <code>--start</code> to yesterday&#39;s date.</li>
+<li>For &quot;last 7 days&quot;: Set <code>--start</code> to 7 days ago and <code>--end</code> to today.</li>
+</ul>
+</li>
+<li><strong>Path</strong>: Assume the binary is <code>./oura</code> in the current working directory unless the user specifies otherwise.</li>
+<li><strong>Output</strong>: The CLI returns JSON. Parse the JSON <code>data</code> array to formulate a natural language response.</li>
+</ol>
+<h2>Examples</h2>
+<p><strong>User Request</strong>: &quot;How was my sleep last night?&quot;
+<strong>Context</strong>: Today is 2024-03-15. &quot;Last night&quot; usually implies the sleep session ending on the morning of today, or the previous day&#39;s data depending on how Oura dates it (Oura dates sleep by the morning it ends).
+<strong>Reasoning</strong>: Sleep for the night of the 14th to 15th is logged as <code>2024-03-15</code>.
+<strong>Command</strong>:</p>
+<pre><code class="language-bash">./oura get sleep --start 2024-03-15
+</code></pre>
+<p><strong>User Request</strong>: &quot;What is my readiness score today?&quot;
+<strong>Context</strong>: Today is 2024-03-15.
+<strong>Command</strong>:</p>
+<pre><code class="language-bash">./oura get readiness --start 2024-03-15
+</code></pre>
+<p><strong>User Request</strong>: &quot;Show my heart rate for the first week of January 2024.&quot;
+<strong>Command</strong>:</p>
+<pre><code class="language-bash">./oura get heartrate --start 2024-01-01 --end 2024-01-07
+</code></pre>
+<p><strong>User Request</strong>: &quot;Who am I?&quot;
+<strong>Command</strong>:</p>
+<pre><code class="language-bash">./oura get personal
+</code></pre>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/ruhrpotter/oura/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/ruhrpotter/oura" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/ruhrpotter/oura/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@ruhrpotter</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Health & Fitness</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

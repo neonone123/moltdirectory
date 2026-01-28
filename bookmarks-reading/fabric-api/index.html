@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Create/search Fabric resources via HTTP API (notepads, folders, bookmarks, files)">
+  <title>fabric-api - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Bookmarks & Reading</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Bookmarks & Reading</a>
+                <span class="skill-page-author">by @tristanmanchester</span>
+              </div>
+              <h1 class="skill-page-title">fabric-api</h1>
+              <p class="skill-page-desc">Create/search Fabric resources via HTTP API (notepads, folders, bookmarks, files)</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Fabric API (HTTP via curl)</h1>
+<p>Use this skill to read/write content in a user&#39;s Fabric workspace using the Fabric HTTP API (<code>https://api.fabric.so</code>).</p>
+<h2>Critical gotchas (read first)</h2>
+<ul>
+<li>&quot;Notes&quot; are created via <strong>POST <code>/v2/notepads</code></strong> (not <code>/v2/notes</code>).</li>
+<li>Most create endpoints require <strong><code>parentId</code></strong>:<ul>
+<li>A UUID <strong>or</strong> one of: <code>@alias::inbox</code>, <code>@alias::bin</code>.</li>
+</ul>
+</li>
+<li>Notepad create requires:<ul>
+<li><code>parentId</code></li>
+<li>AND either <code>text</code> (markdown string) <strong>or</strong> <code>ydoc</code> (advanced/structured).</li>
+</ul>
+</li>
+<li><code>tags</code> must be an array of objects, each <em>either</em>:<ul>
+<li><code>{ &quot;name&quot;: &quot;tag name&quot; }</code> or <code>{ &quot;id&quot;: &quot;&lt;uuid&gt;&quot; }</code></li>
+<li>Never nested arrays; never strings.</li>
+</ul>
+</li>
+</ul>
+<p>When the user doesn&#39;t specify a destination folder: default to <code>parentId: &quot;@alias::inbox&quot;</code>.</p>
+<h2>Setup (Clawdbot)</h2>
+<p>This skill expects the API key in:</p>
+<ul>
+<li><code>FABRIC_API_KEY</code></li>
+</ul>
+<p>Recommended config (use <code>apiKey</code>; Clawdbot will inject <code>FABRIC_API_KEY</code> because <code>primaryEnv</code> is set):</p>
+<pre><code class="language-json5">{
+  skills: {
+    entries: {
+      &quot;fabric-api&quot;: {
+        enabled: true,
+        apiKey: &quot;YOUR_FABRIC_API_KEY&quot;
+      }
+    }
+  }
+}
+</code></pre>
+<h2>HTTP basics</h2>
+<ul>
+<li>Base: <code>https://api.fabric.so</code></li>
+<li>Auth: <code>X-Api-Key: $FABRIC_API_KEY</code></li>
+<li>JSON: <code>Content-Type: application/json</code></li>
+</ul>
+<p>For debugging: prefer <code>--fail-with-body</code> so 4xx bodies are shown.</p>
+<h2>Canonical curl templates (use heredocs to avoid quoting bugs)</h2>
+<h3>GET</h3>
+<pre><code class="language-bash">curl -sS --fail-with-body &quot;https://api.fabric.so/v2/user/me&quot; \
+  -H &quot;X-Api-Key: $FABRIC_API_KEY&quot;
+</code></pre>
+<h3>POST (JSON)</h3>
+<pre><code class="language-bash">curl -sS --fail-with-body -X POST &quot;https://api.fabric.so/v2/ENDPOINT&quot; \
+  -H &quot;X-Api-Key: $FABRIC_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  --data-binary @- &lt;&lt;&#39;JSON&#39;
+{ &quot;replace&quot;: &quot;me&quot; }
+JSON
+</code></pre>
+<h2>Core workflows</h2>
+<h3>1) Create a notepad (note)</h3>
+<p>Endpoint: <code>POST /v2/notepads</code></p>
+<ul>
+<li>Map user-provided &quot;title&quot; → <code>name</code> in the API payload.</li>
+<li>Always include <code>parentId</code>.</li>
+<li>Use <code>text</code> for markdown content.</li>
+</ul>
+<pre><code class="language-bash">curl -sS --fail-with-body -X POST &quot;https://api.fabric.so/v2/notepads&quot; \
+  -H &quot;X-Api-Key: $FABRIC_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  --data-binary @- &lt;&lt;&#39;JSON&#39;
+{
+  &quot;name&quot;: &quot;Calendar Test Note&quot;,
+  &quot;text&quot;: &quot;Created via Clawdbot&quot;,
+  &quot;parentId&quot;: &quot;@alias::inbox&quot;,
+  &quot;tags&quot;: [{&quot;name&quot;:&quot;calendar&quot;},{&quot;name&quot;:&quot;draft&quot;}]
+}
+JSON
+</code></pre>
+<p>If tags cause validation trouble, omit them and create/assign later via <code>/v2/tags</code>.</p>
+<h3>2) Create a folder</h3>
+<p>Endpoint: <code>POST /v2/folders</code></p>
+<pre><code class="language-bash">curl -sS --fail-with-body -X POST &quot;https://api.fabric.so/v2/folders&quot; \
+  -H &quot;X-Api-Key: $FABRIC_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  --data-binary @- &lt;&lt;&#39;JSON&#39;
+{
+  &quot;name&quot;: &quot;My new folder&quot;,
+  &quot;parentId&quot;: &quot;@alias::inbox&quot;,
+  &quot;description&quot;: null
+}
+JSON
+</code></pre>
+<h3>3) Create a bookmark</h3>
+<p>Endpoint: <code>POST /v2/bookmarks</code></p>
+<pre><code class="language-bash">curl -sS --fail-with-body -X POST &quot;https://api.fabric.so/v2/bookmarks&quot; \
+  -H &quot;X-Api-Key: $FABRIC_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  --data-binary @- &lt;&lt;&#39;JSON&#39;
+{
+  &quot;url&quot;: &quot;https://example.com&quot;,
+  &quot;parentId&quot;: &quot;@alias::inbox&quot;,
+  &quot;name&quot;: &quot;Example&quot;,
+  &quot;tags&quot;: [{&quot;name&quot;:&quot;reading&quot;}]
+}
+JSON
+</code></pre>
+<h3>4) Browse resources (list children of a folder)</h3>
+<p>Endpoint: <code>POST /v2/resources/filter</code></p>
+<p>Use this to list what&#39;s inside a folder (use a folder UUID as <code>parentId</code>).</p>
+<pre><code class="language-bash">curl -sS --fail-with-body -X POST &quot;https://api.fabric.so/v2/resources/filter&quot; \
+  -H &quot;X-Api-Key: $FABRIC_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  --data-binary @- &lt;&lt;&#39;JSON&#39;
+{
+  &quot;parentId&quot;: &quot;PARENT_UUID_HERE&quot;,
+  &quot;limit&quot;: 50,
+  &quot;order&quot;: { &quot;property&quot;: &quot;modifiedAt&quot;, &quot;direction&quot;: &quot;DESC&quot; }
+}
+JSON
+</code></pre>
+<h3>5) Search</h3>
+<p>Endpoint: <code>POST /v2/search</code></p>
+<p>Use search when the user gives a fuzzy description (“the note about…”).</p>
+<pre><code class="language-bash">curl -sS --fail-with-body -X POST &quot;https://api.fabric.so/v2/search&quot; \
+  -H &quot;X-Api-Key: $FABRIC_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  --data-binary @- &lt;&lt;&#39;JSON&#39;
+{
+  &quot;queries&quot;: [
+    {
+      &quot;mode&quot;: &quot;text&quot;,
+      &quot;text&quot;: &quot;meeting notes&quot;,
+      &quot;filters&quot;: { &quot;kinds&quot;: [&quot;notepad&quot;] }
+    }
+  ],
+  &quot;pagination&quot;: { &quot;page&quot;: 1, &quot;pageSize&quot;: 20 },
+  &quot;sort&quot;: { &quot;field&quot;: &quot;modifiedAt&quot;, &quot;order&quot;: &quot;desc&quot; }
+}
+JSON
+</code></pre>
+<h2>Tags (safe patterns)</h2>
+<h3>List tags</h3>
+<p><code>GET /v2/tags?limit=100</code></p>
+<h3>Create tag</h3>
+<p><code>POST /v2/tags</code> with <code>{ &quot;name&quot;: &quot;tag name&quot;, &quot;description&quot;: null, &quot;resourceId&quot;: null }</code></p>
+<h3>Assign tags on create</h3>
+<p>Use <code>tags: [{&quot;name&quot;:&quot;x&quot;}]</code> or <code>tags: [{&quot;id&quot;:&quot;&lt;uuid&gt;&quot;}]</code> only.</p>
+<h2>Rate limiting + retries</h2>
+<p>If you get <code>429 Too Many Requests</code>:</p>
+<ul>
+<li>Back off (sleep + jitter) and retry.</li>
+<li>Avoid tight loops; do pagination slowly.</li>
+</ul>
+<p>Do not blindly retry create requests without idempotency (you may create duplicates).</p>
+<h2>Troubleshooting quick map</h2>
+<ul>
+<li><code>404 Not Found</code>: almost always wrong endpoint, wrong resourceId/parentId, or permissions.</li>
+<li><code>400 Bad Request</code>: schema validation; check required fields and tag shape.</li>
+<li><code>403 Forbidden</code>: subscription/permission limits.</li>
+<li><code>429 Too Many Requests</code>: back off + retry.</li>
+</ul>
+<h2>API reference</h2>
+<p>The OpenAPI schema lives here:</p>
+<ul>
+<li><code>{baseDir}/fabric-api.yaml</code></li>
+</ul>
+<p>When in doubt, consult it before guessing endpoint names or payload shapes.</p>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/tristanmanchester/fabric-api/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/tristanmanchester/fabric-api" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/tristanmanchester/fabric-api/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@tristanmanchester</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Bookmarks & Reading</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

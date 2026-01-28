@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interact with Paperless-NGX document management system via ppls CLI">
+  <title>paperless - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Self-Hosted & Automation</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Self-Hosted & Automation</a>
+                <span class="skill-page-author">by @nickchristensen</span>
+              </div>
+              <h1 class="skill-page-title">paperless</h1>
+              <p class="skill-page-desc">Interact with Paperless-NGX document management system via ppls CLI</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Paperless-NGX CLI</h1>
+<p>Search and manage documents in your Paperless-NGX installation using the <code>ppls</code> CLI.</p>
+<h2>What is Paperless-NGX?</h2>
+<p><a href="https://docs.paperless-ngx.com/">Paperless-NGX</a> is a document management system that scans, OCRs, and organizes your documents. The <code>ppls</code> CLI provides command-line access to search, download, upload, and manage your paperless library.</p>
+<h2>Setup</h2>
+<p>Install via npm/bun:</p>
+<pre><code class="language-bash">npm install -g @nickchristensen/ppls
+# or
+bun add -g @nickchristensen/ppls
+</code></pre>
+<p>Configure connection:</p>
+<pre><code class="language-bash">ppls config set hostname http://your-paperless-host
+ppls config set token your-api-token
+</code></pre>
+<p>Or use environment variables:</p>
+<pre><code class="language-bash">export PPLS_HOSTNAME=http://your-paperless-host
+export PPLS_TOKEN=your-api-token
+</code></pre>
+<h2>Common Commands</h2>
+<h3>Search Documents</h3>
+<pre><code class="language-bash"># Search by name/title
+ppls documents list --name-contains &quot;invoice&quot; --json
+
+# Search by specific IDs
+ppls documents list --id-in 1234,5678 --json
+
+# Paginate results
+ppls documents list --page 2 --page-size 50 --json
+
+# Sort results
+ppls documents list --sort created --json
+</code></pre>
+<h3>Get Document Details</h3>
+<pre><code class="language-bash"># Show full document metadata (including OCR&#39;d content)
+ppls documents show 1234 --json
+
+# Get just the basics
+ppls documents show 1234 --plain
+</code></pre>
+<h3>Download Documents</h3>
+<pre><code class="language-bash"># Download single file
+ppls documents download 1234
+
+# Download to path
+ppls documents download 1234 --output /tmp/document.pdf
+
+# Download multiple documents
+ppls documents download 1234,5678
+
+# Download multiple documents to path
+ppls documents download 1234,5678 --output-dir ~/tmp
+</code></pre>
+<h3>Upload Documents</h3>
+<pre><code class="language-bash"># Upload with metadata
+ppls documents add receipt.pdf \
+  --title &quot;Store Receipt&quot; \
+  --correspondent 5 \
+  --document-type 2 \
+  --tag 10
+
+# Upload without metadata (will be processed by Paperless)
+ppls documents add scan.pdf
+</code></pre>
+<h3>Manage Tags</h3>
+<pre><code class="language-bash"># List all tags
+ppls tags list --json
+
+# Create a new tag
+ppls tags add &quot;Tax Documents&quot; --color &quot;#ff0000&quot;
+
+# Search tags by name
+ppls tags list --name-contains &quot;tax&quot; --json
+</code></pre>
+<h3>Manage Correspondents</h3>
+<pre><code class="language-bash"># List all correspondents
+ppls correspondents list --json
+
+# Create new correspondent
+ppls correspondents add &quot;New Vendor&quot;
+</code></pre>
+<h2>Common Use Cases</h2>
+<h3>&quot;Find documents with &#39;tax&#39; in the name&quot;</h3>
+<pre><code class="language-bash">ppls documents list --name-contains &quot;tax&quot; --json
+</code></pre>
+<h3>&quot;Show me all invoices&quot;</h3>
+<pre><code class="language-bash">ppls documents list --name-contains &quot;invoice&quot; --json
+</code></pre>
+<h3>&quot;Download a specific document&quot;</h3>
+<pre><code class="language-bash">ppls documents show 1234 --json  # Get details first
+ppls documents download 1234 --output doc.pdf
+</code></pre>
+<h3>&quot;Add a scanned receipt with metadata&quot;</h3>
+<pre><code class="language-bash">ppls documents add receipt.pdf --title &quot;Grocery Receipt&quot; --tag 25 --correspondent 5
+</code></pre>
+<h3>&quot;Search for specific text in OCR&#39;d content&quot;</h3>
+<pre><code class="language-bash"># Get all docs, then search the content field
+ppls documents list --json | jq &#39;.[] | select(.content | contains(&quot;warranty&quot;))&#39;
+</code></pre>
+<h2>Output Formats</h2>
+<p>ppls supports multiple output formats:</p>
+<ul>
+<li><code>--json</code> - Machine-readable JSON (best for scripts/AI)</li>
+<li><code>--plain</code> - Plain text (simple, parseable)</li>
+<li><code>--table</code> - Formatted table (human-readable)</li>
+</ul>
+<p><strong>For AI/automation, always use <code>--json</code></strong></p>
+<h2>Tips</h2>
+<ul>
+<li><strong>JSON output:</strong> Parse with <code>jq</code> for complex queries</li>
+<li><strong>Date format:</strong> Customize with <code>--date-format</code> (uses date-fns tokens)</li>
+<li><strong>Pagination:</strong> Use <code>--page-size</code> and <code>--page</code> for large result sets</li>
+<li><strong>IDs:</strong> Most commands accept numeric IDs (tags, correspondents, documents)</li>
+</ul>
+<h2>Links</h2>
+<ul>
+<li><strong>ppls GitHub:</strong> <a href="https://github.com/NickChristensen/ppls">https://github.com/NickChristensen/ppls</a></li>
+<li><strong>Paperless-NGX Docs:</strong> <a href="https://docs.paperless-ngx.com/">https://docs.paperless-ngx.com/</a></li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/nickchristensen/paperless/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/nickchristensen/paperless" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/nickchristensen/paperless/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@nickchristensen</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Self-Hosted & Automation</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

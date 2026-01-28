@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="HubSpot CRM and CMS API integration for contacts, companies, deals, owners, and content management">
+  <title>hubspot - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Marketing & Sales</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Marketing & Sales</a>
+                <span class="skill-page-author">by @kwall1</span>
+              </div>
+              <h1 class="skill-page-title">hubspot</h1>
+              <p class="skill-page-desc">HubSpot CRM and CMS API integration for contacts, companies, deals, owners, and content management</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>HubSpot Skill</h1>
+<p>Interact with HubSpot CRM and CMS via the REST API.</p>
+<h2>Setup</h2>
+<p>Set your HubSpot Private App access token:</p>
+<pre><code>HUBSPOT_ACCESS_TOKEN=pat-na2-xxxxx
+</code></pre>
+<h2>API Base</h2>
+<p>All endpoints use: <code>https://api.hubapi.com</code></p>
+<p>Authorization header: <code>Bearer $HUBSPOT_ACCESS_TOKEN</code></p>
+<hr>
+<h2>CRM Objects</h2>
+<h3>Contacts</h3>
+<p><strong>Create contact:</strong></p>
+<pre><code class="language-bash">curl -s -X POST -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;properties&quot;:{&quot;email&quot;:&quot;test@example.com&quot;,&quot;firstname&quot;:&quot;Test&quot;,&quot;lastname&quot;:&quot;User&quot;,&quot;phone&quot;:&quot;555-1234&quot;,&quot;company&quot;:&quot;Acme Inc&quot;,&quot;jobtitle&quot;:&quot;Manager&quot;}}&#39; \
+  &quot;https://api.hubapi.com/crm/v3/objects/contacts&quot; | jq
+</code></pre>
+<p><strong>List contacts:</strong></p>
+<pre><code class="language-bash">curl -s -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  &quot;https://api.hubapi.com/crm/v3/objects/contacts?limit=10&quot; | jq
+</code></pre>
+<p><strong>Search contacts:</strong></p>
+<pre><code class="language-bash">curl -s -X POST -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;filterGroups&quot;:[{&quot;filters&quot;:[{&quot;propertyName&quot;:&quot;email&quot;,&quot;operator&quot;:&quot;CONTAINS_TOKEN&quot;,&quot;value&quot;:&quot;example.com&quot;}]}],&quot;limit&quot;:10}&#39; \
+  &quot;https://api.hubapi.com/crm/v3/objects/contacts/search&quot; | jq
+</code></pre>
+<p><strong>Get contact by ID:</strong></p>
+<pre><code class="language-bash">curl -s -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  &quot;https://api.hubapi.com/crm/v3/objects/contacts/{contactId}?properties=email,firstname,lastname,phone,company&quot; | jq
+</code></pre>
+<p><strong>Get contact by email:</strong></p>
+<pre><code class="language-bash">curl -s -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  &quot;https://api.hubapi.com/crm/v3/objects/contacts/{email}?idProperty=email&quot; | jq
+</code></pre>
+<h3>Companies</h3>
+<p><strong>List companies:</strong></p>
+<pre><code class="language-bash">curl -s -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  &quot;https://api.hubapi.com/crm/v3/objects/companies?limit=10&amp;properties=name,domain,industry&quot; | jq
+</code></pre>
+<p><strong>Search companies:</strong></p>
+<pre><code class="language-bash">curl -s -X POST -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;filterGroups&quot;:[{&quot;filters&quot;:[{&quot;propertyName&quot;:&quot;name&quot;,&quot;operator&quot;:&quot;CONTAINS_TOKEN&quot;,&quot;value&quot;:&quot;acme&quot;}]}],&quot;limit&quot;:10}&#39; \
+  &quot;https://api.hubapi.com/crm/v3/objects/companies/search&quot; | jq
+</code></pre>
+<p><strong>Get company by ID:</strong></p>
+<pre><code class="language-bash">curl -s -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  &quot;https://api.hubapi.com/crm/v3/objects/companies/{companyId}?properties=name,domain,industry,numberofemployees&quot; | jq
+</code></pre>
+<h3>Deals</h3>
+<p><strong>Create deal:</strong></p>
+<pre><code class="language-bash">curl -s -X POST -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;properties&quot;:{&quot;dealname&quot;:&quot;New Deal&quot;,&quot;amount&quot;:&quot;10000&quot;,&quot;closedate&quot;:&quot;2026-06-01&quot;,&quot;description&quot;:&quot;Deal notes here&quot;}}&#39; \
+  &quot;https://api.hubapi.com/crm/v3/objects/deals&quot; | jq
+</code></pre>
+<p><strong>List deals:</strong></p>
+<pre><code class="language-bash">curl -s -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  &quot;https://api.hubapi.com/crm/v3/objects/deals?limit=10&amp;properties=dealname,amount,dealstage,closedate&quot; | jq
+</code></pre>
+<p><strong>Search deals:</strong></p>
+<pre><code class="language-bash">curl -s -X POST -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;filterGroups&quot;:[{&quot;filters&quot;:[{&quot;propertyName&quot;:&quot;dealstage&quot;,&quot;operator&quot;:&quot;EQ&quot;,&quot;value&quot;:&quot;closedwon&quot;}]}],&quot;limit&quot;:10}&#39; \
+  &quot;https://api.hubapi.com/crm/v3/objects/deals/search&quot; | jq
+</code></pre>
+<p><strong>Get deal by ID:</strong></p>
+<pre><code class="language-bash">curl -s -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  &quot;https://api.hubapi.com/crm/v3/objects/deals/{dealId}?properties=dealname,amount,dealstage,closedate,pipeline&quot; | jq
+</code></pre>
+<h3>Owners</h3>
+<p><strong>List owners (users):</strong></p>
+<pre><code class="language-bash">curl -s -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  &quot;https://api.hubapi.com/crm/v3/owners&quot; | jq
+</code></pre>
+<hr>
+<h2>Update &amp; Assign Owner</h2>
+<p><strong>Update contact properties:</strong></p>
+<pre><code class="language-bash">curl -s -X PATCH -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;properties&quot;:{&quot;phone&quot;:&quot;555-9999&quot;,&quot;jobtitle&quot;:&quot;Director&quot;}}&#39; \
+  &quot;https://api.hubapi.com/crm/v3/objects/contacts/{contactId}&quot; | jq
+</code></pre>
+<p><strong>Assign owner to contact:</strong></p>
+<pre><code class="language-bash">curl -s -X PATCH -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;properties&quot;:{&quot;hubspot_owner_id&quot;:&quot;{ownerId}&quot;}}&#39; \
+  &quot;https://api.hubapi.com/crm/v3/objects/contacts/{contactId}&quot; | jq
+</code></pre>
+<p><strong>Assign owner to deal:</strong></p>
+<pre><code class="language-bash">curl -s -X PATCH -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;properties&quot;:{&quot;hubspot_owner_id&quot;:&quot;{ownerId}&quot;}}&#39; \
+  &quot;https://api.hubapi.com/crm/v3/objects/deals/{dealId}&quot; | jq
+</code></pre>
+<hr>
+<h2>Associations</h2>
+<p><strong>Get associated contacts for a company:</strong></p>
+<pre><code class="language-bash">curl -s -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  &quot;https://api.hubapi.com/crm/v4/objects/companies/{companyId}/associations/contacts&quot; | jq
+</code></pre>
+<p><strong>Get associated deals for a contact:</strong></p>
+<pre><code class="language-bash">curl -s -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  &quot;https://api.hubapi.com/crm/v4/objects/contacts/{contactId}/associations/deals&quot; | jq
+</code></pre>
+<p><strong>Create association (deal to contact):</strong></p>
+<pre><code class="language-bash">curl -s -X POST -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;inputs&quot;:[{&quot;from&quot;:{&quot;id&quot;:&quot;{dealId}&quot;},&quot;to&quot;:{&quot;id&quot;:&quot;{contactId}&quot;},&quot;types&quot;:[{&quot;associationCategory&quot;:&quot;HUBSPOT_DEFINED&quot;,&quot;associationTypeId&quot;:3}]}]}&#39; \
+  &quot;https://api.hubapi.com/crm/v4/associations/deals/contacts/batch/create&quot; | jq
+</code></pre>
+<p>Common association type IDs:</p>
+<ul>
+<li>3: Deal to Contact</li>
+<li>5: Deal to Company</li>
+<li>1: Contact to Company</li>
+</ul>
+<hr>
+<h2>Properties (Schema)</h2>
+<p><strong>List contact properties:</strong></p>
+<pre><code class="language-bash">curl -s -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  &quot;https://api.hubapi.com/crm/v3/properties/contacts&quot; | jq &#39;.results[].name&#39;
+</code></pre>
+<p><strong>List company properties:</strong></p>
+<pre><code class="language-bash">curl -s -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  &quot;https://api.hubapi.com/crm/v3/properties/companies&quot; | jq &#39;.results[].name&#39;
+</code></pre>
+<p><strong>List deal properties:</strong></p>
+<pre><code class="language-bash">curl -s -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  &quot;https://api.hubapi.com/crm/v3/properties/deals&quot; | jq &#39;.results[].name&#39;
+</code></pre>
+<hr>
+<h2>CMS</h2>
+<h3>Pages</h3>
+<p><strong>List site pages:</strong></p>
+<pre><code class="language-bash">curl -s -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  &quot;https://api.hubapi.com/cms/v3/pages/site-pages?limit=10&quot; | jq
+</code></pre>
+<p><strong>List landing pages:</strong></p>
+<pre><code class="language-bash">curl -s -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  &quot;https://api.hubapi.com/cms/v3/pages/landing-pages?limit=10&quot; | jq
+</code></pre>
+<h3>Domains</h3>
+<p><strong>List domains:</strong></p>
+<pre><code class="language-bash">curl -s -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  &quot;https://api.hubapi.com/cms/v3/domains&quot; | jq
+</code></pre>
+<hr>
+<h2>Files</h2>
+<p><strong>List files:</strong></p>
+<pre><code class="language-bash">curl -s -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  &quot;https://api.hubapi.com/files/v3/files?limit=10&quot; | jq
+</code></pre>
+<p><strong>Search files:</strong></p>
+<pre><code class="language-bash">curl -s -H &quot;Authorization: Bearer $HUBSPOT_ACCESS_TOKEN&quot; \
+  &quot;https://api.hubapi.com/files/v3/files/search?name=logo&quot; | jq
+</code></pre>
+<hr>
+<h2>Search Operators</h2>
+<p>For search endpoints, use these operators in filters:</p>
+<table>
+<thead>
+<tr>
+<th>Operator</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>EQ</code></td>
+<td>Equal to</td>
+</tr>
+<tr>
+<td><code>NEQ</code></td>
+<td>Not equal to</td>
+</tr>
+<tr>
+<td><code>LT</code></td>
+<td>Less than</td>
+</tr>
+<tr>
+<td><code>LTE</code></td>
+<td>Less than or equal</td>
+</tr>
+<tr>
+<td><code>GT</code></td>
+<td>Greater than</td>
+</tr>
+<tr>
+<td><code>GTE</code></td>
+<td>Greater than or equal</td>
+</tr>
+<tr>
+<td><code>CONTAINS_TOKEN</code></td>
+<td>Contains word</td>
+</tr>
+<tr>
+<td><code>NOT_CONTAINS_TOKEN</code></td>
+<td>Does not contain word</td>
+</tr>
+<tr>
+<td><code>HAS_PROPERTY</code></td>
+<td>Has a value</td>
+</tr>
+<tr>
+<td><code>NOT_HAS_PROPERTY</code></td>
+<td>Does not have a value</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>PowerShell Examples</h2>
+<p>For Windows/PowerShell, use Invoke-RestMethod:</p>
+<pre><code class="language-powershell">$headers = @{ 
+  &quot;Authorization&quot; = &quot;Bearer $env:HUBSPOT_ACCESS_TOKEN&quot;
+  &quot;Content-Type&quot; = &quot;application/json&quot; 
+}
+
+# List contacts
+Invoke-RestMethod -Uri &quot;https://api.hubapi.com/crm/v3/objects/contacts?limit=10&quot; -Headers $headers
+
+# Search contacts
+$body = @{
+  filterGroups = @(@{
+    filters = @(@{
+      propertyName = &quot;email&quot;
+      operator = &quot;CONTAINS_TOKEN&quot;
+      value = &quot;example.com&quot;
+    })
+  })
+  limit = 10
+} | ConvertTo-Json -Depth 5
+
+Invoke-RestMethod -Method POST -Uri &quot;https://api.hubapi.com/crm/v3/objects/contacts/search&quot; -Headers $headers -Body $body
+</code></pre>
+<hr>
+<h2>Notes</h2>
+<ul>
+<li>Full CRUD operations supported with appropriate scopes</li>
+<li>Rate limits: 100 requests per 10 seconds for private apps</li>
+<li>Pagination: Use <code>after</code> parameter from <code>paging.next.after</code> for next page</li>
+<li>Portal ID is in the record URL: <code>https://app-na2.hubspot.com/contacts/{portalId}/record/...</code></li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/kwall1/hubspot/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/kwall1/hubspot" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/kwall1/hubspot/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@kwall1</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Marketing & Sales</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

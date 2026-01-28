@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Execute and manage Kubernetes clusters via kubectl commands">
+  <title>kubectl-skill - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to DevOps & Cloud</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">DevOps & Cloud</a>
+                <span class="skill-page-author">by @ddevaal</span>
+              </div>
+              <h1 class="skill-page-title">kubectl-skill</h1>
+              <p class="skill-page-desc">Execute and manage Kubernetes clusters via kubectl commands</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>kubectl Skill</h1>
+<p>Execute Kubernetes cluster management operations using the <code>kubectl</code> command-line tool.</p>
+<h2>Overview</h2>
+<p>This skill enables agents to:</p>
+<ul>
+<li><strong>Query Resources</strong> — List and get details about pods, deployments, services, nodes, etc.</li>
+<li><strong>Deploy &amp; Update</strong> — Create, apply, patch, and update Kubernetes resources</li>
+<li><strong>Debug &amp; Troubleshoot</strong> — View logs, execute commands in containers, inspect events</li>
+<li><strong>Manage Configuration</strong> — Update kubeconfig, switch contexts, manage namespaces</li>
+<li><strong>Monitor Health</strong> — Check resource usage, rollout status, events, and pod conditions</li>
+<li><strong>Perform Operations</strong> — Scale deployments, drain nodes, manage taints and labels</li>
+</ul>
+<h2>Prerequisites</h2>
+<ol>
+<li><strong>kubectl binary</strong> installed and accessible on PATH (v1.20+)</li>
+<li><strong>kubeconfig</strong> file configured with cluster credentials (default: <code>~/.kube/config</code>)</li>
+<li><strong>Active connection</strong> to a Kubernetes cluster</li>
+</ol>
+<h2>Quick Setup</h2>
+<h3>Install kubectl</h3>
+<p><strong>macOS:</strong></p>
+<pre><code class="language-bash">brew install kubernetes-cli
+</code></pre>
+<p><strong>Linux:</strong></p>
+<pre><code class="language-bash">apt-get install -y kubectl  # Ubuntu/Debian
+yum install -y kubectl      # RHEL/CentOS
+</code></pre>
+<p><strong>Verify:</strong></p>
+<pre><code class="language-bash">kubectl version --client
+kubectl cluster-info  # Test connection
+</code></pre>
+<h2>Essential Commands</h2>
+<h3>Query Resources</h3>
+<pre><code class="language-bash">kubectl get pods                    # List all pods in current namespace
+kubectl get pods -A                 # All namespaces
+kubectl get pods -o wide            # More columns
+kubectl get nodes                   # List nodes
+kubectl describe pod POD_NAME        # Detailed info with events
+</code></pre>
+<h3>View Logs</h3>
+<pre><code class="language-bash">kubectl logs POD_NAME                # Get logs
+kubectl logs -f POD_NAME             # Follow logs (tail -f)
+kubectl logs POD_NAME -c CONTAINER   # Specific container
+kubectl logs POD_NAME --previous     # Previous container logs
+</code></pre>
+<h3>Execute Commands</h3>
+<pre><code class="language-bash">kubectl exec -it POD_NAME -- /bin/bash   # Interactive shell
+kubectl exec POD_NAME -- COMMAND         # Run single command
+</code></pre>
+<h3>Deploy Applications</h3>
+<pre><code class="language-bash">kubectl apply -f deployment.yaml         # Apply config
+kubectl create -f deployment.yaml        # Create resource
+kubectl apply -f deployment.yaml --dry-run=client  # Test
+</code></pre>
+<h3>Update Applications</h3>
+<pre><code class="language-bash">kubectl set image deployment/APP IMAGE=IMAGE:TAG  # Update image
+kubectl scale deployment/APP --replicas=3          # Scale pods
+kubectl rollout status deployment/APP              # Check status
+kubectl rollout undo deployment/APP                # Rollback
+</code></pre>
+<h3>Manage Configuration</h3>
+<pre><code class="language-bash">kubectl config view                  # Show kubeconfig
+kubectl config get-contexts          # List contexts
+kubectl config use-context CONTEXT   # Switch context
+</code></pre>
+<h2>Common Patterns</h2>
+<h3>Debugging a Pod</h3>
+<pre><code class="language-bash"># 1. Identify the issue
+kubectl describe pod POD_NAME
+
+# 2. Check logs
+kubectl logs POD_NAME
+kubectl logs POD_NAME --previous
+
+# 3. Execute debug commands
+kubectl exec -it POD_NAME -- /bin/bash
+
+# 4. Check events
+kubectl get events --sort-by=&#39;.lastTimestamp&#39;
+</code></pre>
+<h3>Deploying a New Version</h3>
+<pre><code class="language-bash"># 1. Update image
+kubectl set image deployment/MY_APP my-app=my-app:v2
+
+# 2. Monitor rollout
+kubectl rollout status deployment/MY_APP -w
+
+# 3. Verify
+kubectl get pods -l app=my-app
+
+# 4. Rollback if needed
+kubectl rollout undo deployment/MY_APP
+</code></pre>
+<h3>Preparing Node for Maintenance</h3>
+<pre><code class="language-bash"># 1. Drain node (evicts all pods)
+kubectl drain NODE_NAME --ignore-daemonsets
+
+# 2. Do maintenance
+# ...
+
+# 3. Bring back online
+kubectl uncordon NODE_NAME
+</code></pre>
+<h2>Output Formats</h2>
+<p>The <code>--output</code> (<code>-o</code>) flag supports multiple formats:</p>
+<ul>
+<li><code>table</code> — Default tabular format</li>
+<li><code>wide</code> — Extended table with additional columns</li>
+<li><code>json</code> — JSON format (useful with <code>jq</code>)</li>
+<li><code>yaml</code> — YAML format</li>
+<li><code>jsonpath</code> — JSONPath expressions</li>
+<li><code>custom-columns</code> — Define custom output columns</li>
+<li><code>name</code> — Only resource names</li>
+</ul>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-bash">kubectl get pods -o json | jq &#39;.items[0].metadata.name&#39;
+kubectl get pods -o jsonpath=&#39;{.items[*].metadata.name}&#39;
+kubectl get pods -o custom-columns=NAME:.metadata.name,STATUS:.status.phase
+</code></pre>
+<h2>Global Flags (Available to All Commands)</h2>
+<pre><code class="language-bash">-n, --namespace=&lt;ns&gt;           # Operate in specific namespace
+-A, --all-namespaces           # Operate across all namespaces
+--context=&lt;context&gt;            # Use specific kubeconfig context
+-o, --output=&lt;format&gt;          # Output format (json, yaml, table, etc.)
+--dry-run=&lt;mode&gt;               # Dry-run mode (none, client, server)
+-l, --selector=&lt;labels&gt;        # Filter by labels
+--field-selector=&lt;selector&gt;    # Filter by fields
+-v, --v=&lt;int&gt;                  # Verbosity level (0-9)
+</code></pre>
+<h2>Dry-Run Modes</h2>
+<ul>
+<li><code>--dry-run=client</code> — Fast client-side validation (test commands safely)</li>
+<li><code>--dry-run=server</code> — Server-side validation (more accurate)</li>
+<li><code>--dry-run=none</code> — Execute for real (default)</li>
+</ul>
+<p><strong>Always test with <code>--dry-run=client</code> first:</strong></p>
+<pre><code class="language-bash">kubectl apply -f manifest.yaml --dry-run=client
+</code></pre>
+<h2>Advanced Topics</h2>
+<p>For detailed reference material, command-by-command documentation, troubleshooting guides, and advanced workflows, see:</p>
+<ul>
+<li><a href="references/REFERENCE.md">references/REFERENCE.md</a> — Complete kubectl command reference</li>
+<li><a href="scripts/">scripts/</a> — Helper scripts for common tasks</li>
+</ul>
+<h2>Helpful Tips</h2>
+<ol>
+<li><p><strong>Use label selectors for bulk operations:</strong></p>
+<pre><code class="language-bash">kubectl delete pods -l app=myapp
+kubectl get pods -l env=prod,tier=backend
+</code></pre>
+</li>
+<li><p><strong>Watch resources in real-time:</strong></p>
+<pre><code class="language-bash">kubectl get pods -w  # Watch for changes
+</code></pre>
+</li>
+<li><p><strong>Use <code>-A</code> flag for all namespaces:</strong></p>
+<pre><code class="language-bash">kubectl get pods -A  # See pods everywhere
+</code></pre>
+</li>
+<li><p><strong>Save outputs for later comparison:</strong></p>
+<pre><code class="language-bash">kubectl get deployment my-app -o yaml &gt; deployment-backup.yaml
+</code></pre>
+</li>
+<li><p><strong>Check before you delete:</strong></p>
+<pre><code class="language-bash">kubectl delete pod POD_NAME --dry-run=client
+</code></pre>
+</li>
+</ol>
+<h2>Getting Help</h2>
+<pre><code class="language-bash">kubectl help                      # General help
+kubectl COMMAND --help            # Command help
+kubectl explain pods              # Resource documentation
+kubectl explain pods.spec         # Field documentation
+</code></pre>
+<h2>Environment Variables</h2>
+<ul>
+<li><code>KUBECONFIG</code> — Path to kubeconfig file (can include multiple paths separated by <code>:</code>)</li>
+<li><code>KUBECTL_CONTEXT</code> — Override default context</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://kubernetes.io/docs/reference/kubectl/">Official kubectl Docs</a></li>
+<li><a href="https://kubernetes.io/docs/reference/kubectl/cheatsheet/">kubectl Cheat Sheet</a></li>
+<li><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/">Kubernetes API Reference</a></li>
+<li><a href="https://agentskills.io/">Agent Skills Specification</a></li>
+</ul>
+<hr>
+<p><strong>Version:</strong> 1.0.0<br><strong>License:</strong> MIT<br><strong>Compatible with:</strong> kubectl v1.20+, Kubernetes v1.20+</p>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/ddevaal/kubectl/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/ddevaal/kubectl-skill" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/ddevaal/kubectl/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@ddevaal</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">DevOps & Cloud</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

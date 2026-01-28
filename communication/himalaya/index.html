@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CLI to manage emails via IMAP/SMTP. Use `himalaya` to list, read, write, reply, forward, search">
+  <title>himalaya - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Communication</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Communication</a>
+                <span class="skill-page-author">by @lamelas</span>
+              </div>
+              <h1 class="skill-page-title">himalaya</h1>
+              <p class="skill-page-desc">CLI to manage emails via IMAP/SMTP. Use `himalaya` to list, read, write, reply, forward, search</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Himalaya Email CLI</h1>
+<p>Himalaya is a CLI email client that lets you manage emails from the terminal using IMAP, SMTP, Notmuch, or Sendmail backends.</p>
+<h2>References</h2>
+<ul>
+<li><code>references/configuration.md</code> (config file setup + IMAP/SMTP authentication)</li>
+<li><code>references/message-composition.md</code> (MML syntax for composing emails)</li>
+</ul>
+<h2>Prerequisites</h2>
+<ol>
+<li>Himalaya CLI installed (<code>himalaya --version</code> to verify)</li>
+<li>A configuration file at <code>~/.config/himalaya/config.toml</code></li>
+<li>IMAP/SMTP credentials configured (password stored securely)</li>
+</ol>
+<h2>Configuration Setup</h2>
+<p>Run the interactive wizard to set up an account:</p>
+<pre><code class="language-bash">himalaya account configure
+</code></pre>
+<p>Or create <code>~/.config/himalaya/config.toml</code> manually:</p>
+<pre><code class="language-toml">[accounts.personal]
+email = &quot;you@example.com&quot;
+display-name = &quot;Your Name&quot;
+default = true
+
+backend.type = &quot;imap&quot;
+backend.host = &quot;imap.example.com&quot;
+backend.port = 993
+backend.encryption.type = &quot;tls&quot;
+backend.login = &quot;you@example.com&quot;
+backend.auth.type = &quot;password&quot;
+backend.auth.cmd = &quot;pass show email/imap&quot;  # or use keyring
+
+message.send.backend.type = &quot;smtp&quot;
+message.send.backend.host = &quot;smtp.example.com&quot;
+message.send.backend.port = 587
+message.send.backend.encryption.type = &quot;start-tls&quot;
+message.send.backend.login = &quot;you@example.com&quot;
+message.send.backend.auth.type = &quot;password&quot;
+message.send.backend.auth.cmd = &quot;pass show email/smtp&quot;
+</code></pre>
+<h2>Common Operations</h2>
+<h3>List Folders</h3>
+<pre><code class="language-bash">himalaya folder list
+</code></pre>
+<h3>List Emails</h3>
+<p>List emails in INBOX (default):</p>
+<pre><code class="language-bash">himalaya envelope list
+</code></pre>
+<p>List emails in a specific folder:</p>
+<pre><code class="language-bash">himalaya envelope list --folder &quot;Sent&quot;
+</code></pre>
+<p>List with pagination:</p>
+<pre><code class="language-bash">himalaya envelope list --page 1 --page-size 20
+</code></pre>
+<h3>Search Emails</h3>
+<pre><code class="language-bash">himalaya envelope list from john@example.com subject meeting
+</code></pre>
+<h3>Read an Email</h3>
+<p>Read email by ID (shows plain text):</p>
+<pre><code class="language-bash">himalaya message read 42
+</code></pre>
+<p>Export raw MIME:</p>
+<pre><code class="language-bash">himalaya message export 42 --full
+</code></pre>
+<h3>Reply to an Email</h3>
+<p>Interactive reply (opens $EDITOR):</p>
+<pre><code class="language-bash">himalaya message reply 42
+</code></pre>
+<p>Reply-all:</p>
+<pre><code class="language-bash">himalaya message reply 42 --all
+</code></pre>
+<h3>Forward an Email</h3>
+<pre><code class="language-bash">himalaya message forward 42
+</code></pre>
+<h3>Write a New Email</h3>
+<p>Interactive compose (opens $EDITOR):</p>
+<pre><code class="language-bash">himalaya message write
+</code></pre>
+<p>Send directly using template:</p>
+<pre><code class="language-bash">cat &lt;&lt; &#39;EOF&#39; | himalaya template send
+From: you@example.com
+To: recipient@example.com
+Subject: Test Message
+
+Hello from Himalaya!
+EOF
+</code></pre>
+<p>Or with headers flag:</p>
+<pre><code class="language-bash">himalaya message write -H &quot;To:recipient@example.com&quot; -H &quot;Subject:Test&quot; &quot;Message body here&quot;
+</code></pre>
+<h3>Move/Copy Emails</h3>
+<p>Move to folder:</p>
+<pre><code class="language-bash">himalaya message move 42 &quot;Archive&quot;
+</code></pre>
+<p>Copy to folder:</p>
+<pre><code class="language-bash">himalaya message copy 42 &quot;Important&quot;
+</code></pre>
+<h3>Delete an Email</h3>
+<pre><code class="language-bash">himalaya message delete 42
+</code></pre>
+<h3>Manage Flags</h3>
+<p>Add flag:</p>
+<pre><code class="language-bash">himalaya flag add 42 --flag seen
+</code></pre>
+<p>Remove flag:</p>
+<pre><code class="language-bash">himalaya flag remove 42 --flag seen
+</code></pre>
+<h2>Multiple Accounts</h2>
+<p>List accounts:</p>
+<pre><code class="language-bash">himalaya account list
+</code></pre>
+<p>Use a specific account:</p>
+<pre><code class="language-bash">himalaya --account work envelope list
+</code></pre>
+<h2>Attachments</h2>
+<p>Save attachments from a message:</p>
+<pre><code class="language-bash">himalaya attachment download 42
+</code></pre>
+<p>Save to specific directory:</p>
+<pre><code class="language-bash">himalaya attachment download 42 --dir ~/Downloads
+</code></pre>
+<h2>Output Formats</h2>
+<p>Most commands support <code>--output</code> for structured output:</p>
+<pre><code class="language-bash">himalaya envelope list --output json
+himalaya envelope list --output plain
+</code></pre>
+<h2>Debugging</h2>
+<p>Enable debug logging:</p>
+<pre><code class="language-bash">RUST_LOG=debug himalaya envelope list
+</code></pre>
+<p>Full trace with backtrace:</p>
+<pre><code class="language-bash">RUST_LOG=trace RUST_BACKTRACE=1 himalaya envelope list
+</code></pre>
+<h2>Tips</h2>
+<ul>
+<li>Use <code>himalaya --help</code> or <code>himalaya &lt;command&gt; --help</code> for detailed usage.</li>
+<li>Message IDs are relative to the current folder; re-list after folder changes.</li>
+<li>For composing rich emails with attachments, use MML syntax (see <code>references/message-composition.md</code>).</li>
+<li>Store passwords securely using <code>pass</code>, system keyring, or a command that outputs the password.</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/lamelas/himalaya/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/lamelas/himalaya" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/lamelas/himalaya/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@lamelas</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Communication</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

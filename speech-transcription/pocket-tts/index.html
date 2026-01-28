@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="pocket-tts">
+  <title>pocket-tts - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Speech & Transcription</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Speech & Transcription</a>
+                <span class="skill-page-author">by @sherajdev</span>
+              </div>
+              <h1 class="skill-page-title">pocket-tts</h1>
+              <p class="skill-page-desc">pocket-tts</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Pocket TTS Skill</h1>
+<p>Fully local, offline text-to-speech using Kyutai&#39;s Pocket TTS model. Generate high-quality audio from text without any API calls or internet connection. Features 8 built-in voices, voice cloning support, and runs entirely on CPU.</p>
+<h2>Features</h2>
+<ul>
+<li>🎯 <strong>Fully local</strong> - No API calls, runs completely offline</li>
+<li>🚀 <strong>CPU-only</strong> - No GPU required, works on any computer</li>
+<li>⚡ <strong>Fast generation</strong> - ~2-6x real-time on CPU</li>
+<li>🎤 <strong>8 built-in voices</strong> - alba, marius, javert, jean, fantine, cosette, eponine, azelma</li>
+<li>🎭 <strong>Voice cloning</strong> - Clone any voice from a WAV sample</li>
+<li>🔊 <strong>Low latency</strong> - ~200ms first audio chunk</li>
+<li>📚 <strong>Simple Python API</strong> - Easy integration into any project</li>
+</ul>
+<h2>Installation</h2>
+<pre><code class="language-bash"># 1. Accept the model license on Hugging Face
+# https://huggingface.co/kyutai/pocket-tts
+
+# 2. Install the package
+pip install pocket-tts
+
+# Or use uv for automatic dependency management
+uvx pocket-tts generate &quot;Hello world&quot;
+</code></pre>
+<h2>Usage</h2>
+<h3>CLI</h3>
+<pre><code class="language-bash"># Basic usage
+pocket-tts &quot;Hello, I am your AI assistant&quot;
+
+# With specific voice
+pocket-tts &quot;Hello&quot; --voice alba --output hello.wav
+
+# With custom voice file (voice cloning)
+pocket-tts &quot;Hello&quot; --voice-file myvoice.wav --output output.wav
+
+# Adjust speed
+pocket-tts &quot;Hello&quot; --speed 1.2
+
+# Start local server
+pocket-tts --serve
+
+# List available voices
+pocket-tts --list-voices
+</code></pre>
+<h3>Python API</h3>
+<pre><code class="language-python">from pocket_tts import TTSModel
+import scipy.io.wavfile
+
+# Load model
+tts_model = TTSModel.load_model()
+
+# Get voice state
+voice_state = tts_model.get_state_for_audio_prompt(
+    &quot;hf://kyutai/tts-voices/alba-mackenna/casual.wav&quot;
+)
+
+# Generate audio
+audio = tts_model.generate_audio(voice_state, &quot;Hello world!&quot;)
+
+# Save to WAV
+scipy.io.wavfile.write(&quot;output.wav&quot;, tts_model.sample_rate, audio.numpy())
+
+# Check sample rate
+print(f&quot;Sample rate: {tts_model.sample_rate} Hz&quot;)
+</code></pre>
+<h2>Available Voices</h2>
+<table>
+<thead>
+<tr>
+<th>Voice</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>alba</td>
+<td>Casual female voice</td>
+</tr>
+<tr>
+<td>marius</td>
+<td>Male voice</td>
+</tr>
+<tr>
+<td>javert</td>
+<td>Clear male voice</td>
+</tr>
+<tr>
+<td>jean</td>
+<td>Natural male voice</td>
+</tr>
+<tr>
+<td>fantine</td>
+<td>Female voice</td>
+</tr>
+<tr>
+<td>cosette</td>
+<td>Female voice</td>
+</tr>
+<tr>
+<td>eponine</td>
+<td>Female voice</td>
+</tr>
+<tr>
+<td>azelma</td>
+<td>Female voice</td>
+</tr>
+</tbody></table>
+<p>Or use <code>--voice-file /path/to/wav.wav</code> for custom voice cloning.</p>
+<h2>Options</h2>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>text</code></td>
+<td>Text to convert</td>
+<td>Required</td>
+</tr>
+<tr>
+<td><code>-o, --output</code></td>
+<td>Output WAV file</td>
+<td><code>output.wav</code></td>
+</tr>
+<tr>
+<td><code>-v, --voice</code></td>
+<td>Voice preset</td>
+<td><code>alba</code></td>
+</tr>
+<tr>
+<td><code>-s, --speed</code></td>
+<td>Speech speed (0.5-2.0)</td>
+<td><code>1.0</code></td>
+</tr>
+<tr>
+<td><code>--voice-file</code></td>
+<td>Custom WAV for cloning</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>--serve</code></td>
+<td>Start HTTP server</td>
+<td>False</td>
+</tr>
+<tr>
+<td><code>--list-voices</code></td>
+<td>List all voices</td>
+<td>False</td>
+</tr>
+</tbody></table>
+<h2>Requirements</h2>
+<ul>
+<li>Python 3.10-3.14</li>
+<li>PyTorch 2.5+ (CPU version works)</li>
+<li>Works on 2 CPU cores</li>
+</ul>
+<h2>Notes</h2>
+<ul>
+<li>⚠️ Model is gated - accept license on Hugging Face first</li>
+<li>🌍 English language only (v1)</li>
+<li>💾 First run downloads model (~100M parameters)</li>
+<li>🔊 Audio is returned as 1D torch tensor (PCM data)</li>
+</ul>
+<h2>Links</h2>
+<ul>
+<li><a href="https://kyutai.org/tts">Demo</a></li>
+<li><a href="https://github.com/kyutai-labs/pocket-tts">GitHub</a></li>
+<li><a href="https://huggingface.co/kyutai/pocket-tts">Hugging Face</a></li>
+<li><a href="https://arxiv.org/abs/2509.06926">Paper</a></li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/sherajdev/pocket-tts/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/sherajdev/pocket-tts" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/sherajdev/pocket-tts/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@sherajdev</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Speech & Transcription</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

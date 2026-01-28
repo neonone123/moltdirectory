@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Fetches health data from the Withings API including weight, body composition (fat, muscle, bone">
+  <title>withings-health - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Productivity & Tasks</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Productivity & Tasks</a>
+                <span class="skill-page-author">by @hisxo</span>
+              </div>
+              <h1 class="skill-page-title">withings-health</h1>
+              <p class="skill-page-desc">Fetches health data from the Withings API including weight, body composition (fat, muscle, bone</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <p>This skill allows you to interact with the user&#39;s Withings account to retrieve comprehensive health metrics from Withings devices (smart scales, sleep analyzers, activity trackers, etc.).</p>
+<h2>When to Use This Skill</h2>
+<p>Use this skill when the user:</p>
+<ul>
+<li>Asks about their <strong>weight</strong> or weight history</li>
+<li>Wants to see their <strong>body composition</strong> (fat %, muscle mass, bone mass, hydration)</li>
+<li>Requests their <strong>daily activity</strong> (steps, distance, calories burned)</li>
+<li>Asks about their <strong>sleep data</strong> (duration, quality, deep sleep, REM)</li>
+<li>Mentions &quot;Withings&quot; or any Withings device (Body+, Sleep Analyzer, ScanWatch, etc.)</li>
+<li>Wants to track their health progress over time</li>
+</ul>
+<h2>Setup: Creating a Withings Developer App</h2>
+<p>Before using this skill, you need to create a free Withings developer application to get your API credentials.</p>
+<h3>Step 1: Create a Withings Developer Account</h3>
+<ol>
+<li>Go to <a href="https://developer.withings.com/">Withings Developer Portal</a></li>
+<li>Click <strong>Sign Up</strong> or <strong>Log In</strong> if you already have a Withings account</li>
+<li>Accept the Developer Terms of Service</li>
+</ol>
+<h3>Step 2: Create Your Application</h3>
+<ol>
+<li>Navigate to <strong>My Apps</strong> → <strong>Create an Application</strong></li>
+<li>Fill in the application details:<ul>
+<li><strong>Application Name</strong>: Choose a name (e.g., &quot;My Clawdbot Health&quot;)</li>
+<li><strong>Description</strong>: Brief description of your use case</li>
+<li><strong>Contact Email</strong>: Your email address</li>
+<li><strong>Callback URL</strong>: <code>http://localhost:8080</code> (required for OAuth)</li>
+<li><strong>Application Type</strong>: Select &quot;Personal Use&quot; or appropriate type</li>
+</ul>
+</li>
+<li>Submit the application</li>
+</ol>
+<h3>Step 3: Get Your Credentials</h3>
+<p>Once your application is created:</p>
+<ol>
+<li>Go to <strong>My Apps</strong> and select your application</li>
+<li>You&#39;ll find:<ul>
+<li><strong>Client ID</strong> → Set as <code>WITHINGS_CLIENT_ID</code> environment variable</li>
+<li><strong>Client Secret</strong> → Set as <code>WITHINGS_CLIENT_SECRET</code> environment variable</li>
+</ul>
+</li>
+</ol>
+<h3>Step 4: Configure Environment Variables</h3>
+<p>Add these to your Clawdbot environment:</p>
+<pre><code class="language-bash">export WITHINGS_CLIENT_ID=&quot;your_client_id_here&quot;
+export WITHINGS_CLIENT_SECRET=&quot;your_client_secret_here&quot;
+</code></pre>
+<p>Or create a <code>.env</code> file in the skill directory (this file will be ignored by git):</p>
+<pre><code>WITHINGS_CLIENT_ID=your_client_id_here
+WITHINGS_CLIENT_SECRET=your_client_secret_here
+</code></pre>
+<h2>Configuration</h2>
+<p>The skill uses a <code>wrapper.js</code> script located in <code>{baseDir}</code>.</p>
+<p>Before any data retrieval, check if the user is authenticated. If an error mentions &quot;No token found&quot;, guide the user through the initial authentication process.</p>
+<h2>Available Commands</h2>
+<h3>1. Authentication</h3>
+<p>First-time setup - generates the OAuth URL:</p>
+<pre><code class="language-bash">node {baseDir}/wrapper.js auth
+</code></pre>
+<p>After the user visits the URL and gets the authorization code:</p>
+<pre><code class="language-bash">node {baseDir}/wrapper.js auth YOUR_CODE_HERE
+</code></pre>
+<h3>2. Get Weight</h3>
+<p>Retrieve the latest weight measurements:</p>
+<pre><code class="language-bash">node {baseDir}/wrapper.js weight
+</code></pre>
+<p>Returns the 5 most recent weight entries in JSON format.</p>
+<p><strong>Example output:</strong></p>
+<pre><code class="language-json">[
+  { &quot;date&quot;: &quot;2026-01-17T08:30:00.000Z&quot;, &quot;weight&quot;: &quot;75.40 kg&quot; },
+  { &quot;date&quot;: &quot;2026-01-16T08:15:00.000Z&quot;, &quot;weight&quot;: &quot;75.65 kg&quot; }
+]
+</code></pre>
+<h3>3. Get Body Composition</h3>
+<p>Retrieve comprehensive body metrics (fat, muscle, bone, water, BMI):</p>
+<pre><code class="language-bash">node {baseDir}/wrapper.js body
+</code></pre>
+<p>Returns the 5 most recent body composition measurements.</p>
+<p><strong>Example output:</strong></p>
+<pre><code class="language-json">[
+  {
+    &quot;date&quot;: &quot;2026-01-17T08:30:00.000Z&quot;,
+    &quot;weight&quot;: &quot;75.40 kg&quot;,
+    &quot;fat_percent&quot;: &quot;18.5%&quot;,
+    &quot;fat_mass&quot;: &quot;13.95 kg&quot;,
+    &quot;muscle_mass&quot;: &quot;35.20 kg&quot;,
+    &quot;bone_mass&quot;: &quot;3.10 kg&quot;,
+    &quot;hydration&quot;: &quot;55.2%&quot;
+  }
+]
+</code></pre>
+<h3>4. Get Activity</h3>
+<p>Retrieve daily activity data (steps, distance, calories):</p>
+<pre><code class="language-bash">node {baseDir}/wrapper.js activity
+</code></pre>
+<p>Optionally specify the number of days (default: 7):</p>
+<pre><code class="language-bash">node {baseDir}/wrapper.js activity 30
+</code></pre>
+<p><strong>Example output:</strong></p>
+<pre><code class="language-json">[
+  {
+    &quot;date&quot;: &quot;2026-01-17&quot;,
+    &quot;steps&quot;: 8542,
+    &quot;distance&quot;: &quot;6.23 km&quot;,
+    &quot;calories&quot;: 2150,
+    &quot;active_calories&quot;: 450,
+    &quot;soft_activity&quot;: &quot;45 min&quot;,
+    &quot;moderate_activity&quot;: &quot;22 min&quot;,
+    &quot;intense_activity&quot;: &quot;8 min&quot;
+  }
+]
+</code></pre>
+<h3>5. Get Sleep</h3>
+<p>Retrieve sleep data and quality:</p>
+<pre><code class="language-bash">node {baseDir}/wrapper.js sleep
+</code></pre>
+<p>Optionally specify the number of days (default: 7):</p>
+<pre><code class="language-bash">node {baseDir}/wrapper.js sleep 14
+</code></pre>
+<p><strong>Example output:</strong></p>
+<pre><code class="language-json">[
+  {
+    &quot;date&quot;: &quot;2026-01-17&quot;,
+    &quot;start&quot;: &quot;23:15&quot;,
+    &quot;end&quot;: &quot;07:30&quot;,
+    &quot;duration&quot;: &quot;8h 15min&quot;,
+    &quot;deep_sleep&quot;: &quot;1h 45min&quot;,
+    &quot;light_sleep&quot;: &quot;4h 30min&quot;,
+    &quot;rem_sleep&quot;: &quot;1h 30min&quot;,
+    &quot;awake&quot;: &quot;30min&quot;,
+    &quot;sleep_score&quot;: 82
+  }
+]
+</code></pre>
+<h2>Error Handling</h2>
+<p>Common errors and how to resolve them:</p>
+<table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Cause</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&quot;No token found&quot;</td>
+<td>First time use, not authenticated</td>
+<td>Run <code>node wrapper.js auth</code> and follow the OAuth flow</td>
+</tr>
+<tr>
+<td>&quot;Failed to refresh token&quot;</td>
+<td>Token expired and refresh failed</td>
+<td>Re-authenticate with <code>node wrapper.js auth</code></td>
+</tr>
+<tr>
+<td>&quot;API Error Status: 401&quot;</td>
+<td>Invalid or expired credentials</td>
+<td>Check your CLIENT_ID and CLIENT_SECRET, re-authenticate</td>
+</tr>
+<tr>
+<td>&quot;API Error Status: 503&quot;</td>
+<td>Withings API temporarily unavailable</td>
+<td>Wait and retry later</td>
+</tr>
+<tr>
+<td>Empty data</td>
+<td>No measurements in the requested period</td>
+<td>User needs to sync their Withings device</td>
+</tr>
+</tbody></table>
+<h2>Notes</h2>
+<ul>
+<li>Tokens are automatically refreshed when they expire</li>
+<li>Withings API scopes used: <code>user.metrics</code>, <code>user.activity</code></li>
+<li>Data availability depends on which Withings devices the user owns</li>
+<li>Some metrics (like body composition) require a compatible smart scale</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/hisxo/withings-health/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/hisxo/withings-health" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/hisxo/withings-health/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@hisxo</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Productivity & Tasks</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

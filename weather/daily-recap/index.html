@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Generate a daily recap image with your agent holding a posterboard of accomplishments">
+  <title>daily-recap - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Weather</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Weather</a>
+                <span class="skill-page-author">by @dbhurley</span>
+              </div>
+              <h1 class="skill-page-title">daily-recap</h1>
+              <p class="skill-page-desc">Generate a daily recap image with your agent holding a posterboard of accomplishments</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Daily Recap Skill</h1>
+<p>Generate a personalized daily recap image featuring your agent&#39;s avatar holding a posterboard with the day&#39;s accomplishments.</p>
+<h2>Summary</h2>
+<p>A cron-driven skill that reviews your agent&#39;s daily memory files and accomplishments, then generates a custom image of your agent holding a posterboard with the day&#39;s wins. Includes weather-appropriate attire and time-of-day lighting.</p>
+<h2>Features</h2>
+<ul>
+<li>Reviews the day&#39;s memory files for accomplishments</li>
+<li>Checks cron job summaries for completed tasks</li>
+<li>Generates a weather-appropriate image based on local conditions</li>
+<li>Agent holds a posterboard with 4-6 key wins written in marker</li>
+<li>Customizable to any agent identity</li>
+</ul>
+<h2>Configuration</h2>
+<p>Set these in your <code>clawdbot.json</code> under <code>skills.entries.daily-recap</code>:</p>
+<pre><code class="language-json">{
+  &quot;skills&quot;: {
+    &quot;entries&quot;: {
+      &quot;daily-recap&quot;: {
+        &quot;env&quot;: {
+          &quot;RECAP_LOCATION&quot;: &quot;Your City, ST&quot;,
+          &quot;RECAP_CHAT_ID&quot;: &quot;your-chat-id&quot;,
+          &quot;RECAP_TIME&quot;: &quot;17:00&quot;
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<h3>Environment Variables</h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>RECAP_LOCATION</code></td>
+<td>Location for weather lookup (e.g., &quot;Boston, MA&quot;)</td>
+<td>Required</td>
+</tr>
+<tr>
+<td><code>RECAP_CHAT_ID</code></td>
+<td>Chat ID for image delivery (Telegram, Discord, etc.)</td>
+<td>Required</td>
+</tr>
+<tr>
+<td><code>RECAP_TIME</code></td>
+<td>Cron time (24h format, local timezone)</td>
+<td><code>17:00</code></td>
+</tr>
+</tbody></table>
+<h2>Agent Identity</h2>
+<p>The skill reads your agent&#39;s <code>IDENTITY.md</code> for visual appearance details. Include a section like:</p>
+<pre><code class="language-markdown">## Visual Appearance (for image generation)
+
+[Your agent] is a [description] with:
+- [Physical traits]
+- [Clothing/accessories]
+- [Style notes]
+</code></pre>
+<h2>Dependencies</h2>
+<ul>
+<li><strong>nano-banana-pro</strong> skill (for Gemini image generation)</li>
+<li>A messaging provider configured (Telegram, Discord, etc.)</li>
+</ul>
+<h2>Cron Setup</h2>
+<p>The skill includes a sample cron job. After installation, create your cron:</p>
+<pre><code class="language-bash">clawdbot cron add --name &quot;daily-recap&quot; --schedule &quot;0 17 * * *&quot; --tz &quot;America/New_York&quot;
+</code></pre>
+<h2>How It Works</h2>
+<ol>
+<li><strong>Weather Check</strong>: Gets current conditions for your location</li>
+<li><strong>Review Day</strong>: Scans memory files and cron summaries for accomplishments</li>
+<li><strong>Pick Wins</strong>: Selects 4-6 key items (kept short for posterboard)</li>
+<li><strong>Generate Image</strong>: Creates agent holding posterboard with wins</li>
+<li><strong>Deliver</strong>: Sends to your configured chat</li>
+</ol>
+<h2>Tips</h2>
+<ul>
+<li>Keep accomplishments SHORT (3-5 words each) for readable posterboard text</li>
+<li>Include weather-appropriate attire in your identity description</li>
+<li>If no accomplishments found, generates a &quot;quiet day&quot; relaxation image</li>
+<li>Works best with Pixar/3D animation style prompts</li>
+</ul>
+<h2>Example Output</h2>
+<p>Your agent holding a posterboard:</p>
+<pre><code>TODAY&#39;S WINS
+✓ Fixed config bug
+✓ Merged 50 commits
+✓ Created new cron
+✓ Cleaned up data
+</code></pre>
+<h2>Credits</h2>
+<p>Created by the Clawdbot community.</p>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/dbhurley/daily-recap/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/dbhurley/daily-recap" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/dbhurley/daily-recap/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@dbhurley</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Weather</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

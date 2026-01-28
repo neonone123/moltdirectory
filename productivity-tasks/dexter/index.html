@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Autonomous financial research agent for stock analysis, financial statements, metrics, prices">
+  <title>dexter - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Productivity & Tasks</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Productivity & Tasks</a>
+                <span class="skill-page-author">by @igorhvr</span>
+              </div>
+              <h1 class="skill-page-title">dexter</h1>
+              <p class="skill-page-desc">Autonomous financial research agent for stock analysis, financial statements, metrics, prices</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Dexter Skill (Clawdbot)</h1>
+<p>Dexter is an autonomous financial research agent that plans, executes, and synthesizes financial data analysis. Use it for any financial research question involving stocks, crypto, company fundamentals, or market data.</p>
+<h2>When to Use Dexter</h2>
+<p>Use Dexter for:</p>
+<ul>
+<li>Stock prices (current and historical)</li>
+<li>Financial statements (income, balance sheet, cash flow)</li>
+<li>Financial metrics (P/E, P/B, margins, market cap, etc.)</li>
+<li>SEC filings (10-K, 10-Q, 8-K)</li>
+<li>Analyst estimates</li>
+<li>Insider trades</li>
+<li>Company news</li>
+<li>Crypto prices</li>
+<li>Comparative financial analysis</li>
+<li>Revenue trends and growth rates</li>
+</ul>
+<p><strong>Note</strong>: Dexter&#39;s Financial Datasets API covers primarily US stocks. For international stocks (like European exchanges), it falls back to web search via Tavily.</p>
+<h2>Installation</h2>
+<p>If Dexter is not installed, follow these steps:</p>
+<h3>1. Clone and Install</h3>
+<pre><code class="language-bash">DEXTER_DIR=&quot;/root/clawd-workspace/dexter&quot;
+
+# Clone if not exists
+if [ ! -d &quot;$DEXTER_DIR&quot; ]; then
+  git clone https://github.com/virattt/dexter.git &quot;$DEXTER_DIR&quot;
+fi
+
+cd &quot;$DEXTER_DIR&quot;
+
+# Install dependencies
+bun install
+</code></pre>
+<h3>2. Configure API Keys</h3>
+<p>Create <code>.env</code> file with required API keys:</p>
+<pre><code class="language-bash">cat &gt; &quot;$DEXTER_DIR/.env&quot; &lt;&lt; &#39;EOF&#39;
+# LLM API Keys (at least one required)
+ANTHROPIC_API_KEY=your-anthropic-key
+
+# Stock Market API Key - Get from https://financialdatasets.ai
+FINANCIAL_DATASETS_API_KEY=your-financial-datasets-key
+
+# Web Search API Key - Get from https://tavily.com (optional but recommended)
+TAVILY_API_KEY=your-tavily-key
+EOF
+</code></pre>
+<p><strong>API Key Sources:</strong></p>
+<ul>
+<li>Anthropic: <a href="https://console.anthropic.com/">https://console.anthropic.com/</a></li>
+<li>Financial Datasets: <a href="https://financialdatasets.ai">https://financialdatasets.ai</a> (free tier available)</li>
+<li>Tavily: <a href="https://tavily.com">https://tavily.com</a> (optional, for web search fallback)</li>
+</ul>
+<h3>3. Patch for Anthropic-Only Usage</h3>
+<p>Dexter&#39;s tool executor defaults to OpenAI&#39;s <code>gpt-5-mini</code>. If using Anthropic only, patch it:</p>
+<pre><code class="language-bash"># Fix hardcoded OpenAI model in tool-executor.ts
+sed -i &quot;s/const SMALL_MODEL = &#39;gpt-5-mini&#39;;/const SMALL_MODEL = &#39;claude-3-5-haiku-latest&#39;;/&quot; \
+  &quot;$DEXTER_DIR/src/agent/tool-executor.ts&quot;
+</code></pre>
+<h3>4. Configure Model Settings</h3>
+<p>Set Claude as the default model:</p>
+<pre><code class="language-bash">mkdir -p &quot;$DEXTER_DIR/.dexter&quot;
+cat &gt; &quot;$DEXTER_DIR/.dexter/settings.json&quot; &lt;&lt; &#39;EOF&#39;
+{
+  &quot;provider&quot;: &quot;anthropic&quot;,
+  &quot;modelId&quot;: &quot;claude-sonnet-4-5&quot;
+}
+EOF
+</code></pre>
+<h3>5. Create Non-Interactive Query Script</h3>
+<pre><code class="language-bash">cat &gt; &quot;$DEXTER_DIR/query.ts&quot; &lt;&lt; &#39;SCRIPT&#39;
+#!/usr/bin/env bun
+/**
+ * Non-interactive Dexter query runner
+ * Usage: bun query.ts &quot;What is Apple&#39;s revenue growth?&quot;
+ */
+import { config } from &#39;dotenv&#39;;
+import { Agent } from &#39;./src/agent/orchestrator.js&#39;;
+import { getSetting } from &#39;./src/utils/config.js&#39;;
+
+config({ quiet: true });
+
+const query = process.argv[2];
+if (!query) {
+  console.error(&#39;Usage: bun query.ts &quot;Your financial question here&quot;&#39;);
+  process.exit(1);
+}
+
+const model = getSetting(&#39;modelId&#39;, &#39;claude-sonnet-4-5&#39;) as string;
+
+async function runQuery() {
+  let answer = &#39;&#39;;
+  
+  const agent = new Agent({
+    model,
+    callbacks: {
+      onPhaseStart: (phase) =&gt; {
+        if (process.env.DEXTER_VERBOSE) {
+          console.error(`[Phase: ${phase}]`);
+        }
+      },
+      onPlanCreated: (plan) =&gt; {
+        if (process.env.DEXTER_VERBOSE) {
+          console.error(`[Tasks: ${plan.tasks.map(t =&gt; t.description).join(&#39;, &#39;)}]`);
+        }
+      },
+      onAnswerStream: async (stream) =&gt; {
+        for await (const chunk of stream) {
+          answer += chunk;
+          process.stdout.write(chunk);
+        }
+      },
+    },
+  });
+
+  try {
+    await agent.run(query);
+    if (!answer.endsWith(&#39;\n&#39;)) {
+      console.log();
+    }
+  } catch (error) {
+    console.error(&#39;Error:&#39;, error);
+    process.exit(1);
+  }
+}
+
+runQuery();
+SCRIPT
+</code></pre>
+<h3>Full One-Shot Installation</h3>
+<p>Complete installation script (requires API keys as environment variables):</p>
+<pre><code class="language-bash">#!/bin/bash
+set -e
+
+DEXTER_DIR=&quot;/root/clawd-workspace/dexter&quot;
+
+# Clone
+[ ! -d &quot;$DEXTER_DIR&quot; ] &amp;&amp; git clone https://github.com/virattt/dexter.git &quot;$DEXTER_DIR&quot;
+cd &quot;$DEXTER_DIR&quot;
+
+# Install deps
+bun install
+
+# Create .env (set these variables before running)
+cat &gt; .env &lt;&lt; EOF
+ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-your-key-here}
+FINANCIAL_DATASETS_API_KEY=${FINANCIAL_DATASETS_API_KEY:-your-key-here}
+TAVILY_API_KEY=${TAVILY_API_KEY:-your-key-here}
+EOF
+
+# Patch for Anthropic
+sed -i &quot;s/const SMALL_MODEL = &#39;gpt-5-mini&#39;;/const SMALL_MODEL = &#39;claude-3-5-haiku-latest&#39;;/&quot; \
+  src/agent/tool-executor.ts
+
+# Set model config
+mkdir -p .dexter
+echo &#39;{&quot;provider&quot;:&quot;anthropic&quot;,&quot;modelId&quot;:&quot;claude-sonnet-4-5&quot;}&#39; &gt; .dexter/settings.json
+
+echo &quot;Dexter installed successfully!&quot;
+</code></pre>
+<h2>Location</h2>
+<pre><code>/root/clawd-workspace/dexter
+</code></pre>
+<h2>Quick Query (Non-Interactive)</h2>
+<p>For quick financial questions, use the query script:</p>
+<pre><code class="language-bash">cd /root/clawd-workspace/dexter &amp;&amp; bun query.ts &quot;Your financial question here&quot;
+</code></pre>
+<p>Examples:</p>
+<pre><code class="language-bash">bun query.ts &quot;What is Apple&#39;s current P/E ratio?&quot;
+bun query.ts &quot;Compare Microsoft and Google revenue growth over the last 4 quarters&quot;
+bun query.ts &quot;What was Tesla&#39;s free cash flow in 2025?&quot;
+bun query.ts &quot;Show me insider trades for NVDA in the last 30 days&quot;
+bun query.ts &quot;What is Bitcoin&#39;s price trend over the last week?&quot;
+</code></pre>
+<p>For verbose output (shows planning steps):</p>
+<pre><code class="language-bash">DEXTER_VERBOSE=1 bun query.ts &quot;Your question&quot;
+</code></pre>
+<h2>Interactive Mode (Complex Research)</h2>
+<p>For multi-turn research sessions or follow-up questions, use the interactive CLI via tmux:</p>
+<pre><code class="language-bash">SOCKET_DIR=&quot;${CLAWDBOT_TMUX_SOCKET_DIR:-${TMPDIR:-/tmp}/clawdbot-tmux-sockets}&quot;
+SOCKET=&quot;$SOCKET_DIR/clawdbot.sock&quot;
+SESSION=dexter
+
+# Start Dexter (if not running)
+tmux -S &quot;$SOCKET&quot; kill-session -t &quot;$SESSION&quot; 2&gt;/dev/null || true
+tmux -S &quot;$SOCKET&quot; new -d -s &quot;$SESSION&quot; -n shell -c /root/clawd-workspace/dexter
+tmux -S &quot;$SOCKET&quot; send-keys -t &quot;$SESSION&quot;:0.0 -- &#39;bun start&#39; Enter
+sleep 3
+
+# Send a query
+tmux -S &quot;$SOCKET&quot; send-keys -t &quot;$SESSION&quot;:0.0 -l -- &#39;Your question here&#39;
+tmux -S &quot;$SOCKET&quot; send-keys -t &quot;$SESSION&quot;:0.0 Enter
+
+# Check output
+tmux -S &quot;$SOCKET&quot; capture-pane -p -J -t &quot;$SESSION&quot;:0.0 -S -200
+</code></pre>
+<h2>Available Tools (Under the Hood)</h2>
+<p>Dexter automatically selects and uses these tools based on your query:</p>
+<h3>Financial Statements</h3>
+<ul>
+<li><code>get_income_statements</code> - Revenue, expenses, net income</li>
+<li><code>get_balance_sheets</code> - Assets, liabilities, equity</li>
+<li><code>get_cash_flow_statements</code> - Operating, investing, financing cash flows</li>
+<li><code>get_all_financial_statements</code> - All three in one call</li>
+</ul>
+<h3>Prices</h3>
+<ul>
+<li><code>get_price_snapshot</code> - Current stock price</li>
+<li><code>get_prices</code> - Historical price data</li>
+</ul>
+<h3>Crypto</h3>
+<ul>
+<li><code>get_crypto_price_snapshot</code> - Current crypto price (e.g., BTC-USD)</li>
+<li><code>get_crypto_prices</code> - Historical crypto prices</li>
+<li><code>get_available_crypto_tickers</code> - List available crypto tickers</li>
+</ul>
+<h3>Metrics</h3>
+<ul>
+<li><code>get_financial_metrics_snapshot</code> - Current metrics (P/E, market cap, etc.)</li>
+<li><code>get_financial_metrics</code> - Historical metrics</li>
+</ul>
+<h3>SEC Filings</h3>
+<ul>
+<li><code>get_10k_filing_items</code> - Annual report sections</li>
+<li><code>get_10q_filing_items</code> - Quarterly report sections</li>
+<li><code>get_8k_filing_items</code> - Current report items</li>
+<li><code>get_filings</code> - List of all filings</li>
+</ul>
+<h3>Other Data</h3>
+<ul>
+<li><code>get_analyst_estimates</code> - Earnings/revenue estimates</li>
+<li><code>get_segmented_revenues</code> - Revenue by segment</li>
+<li><code>get_insider_trades</code> - Insider buying/selling</li>
+<li><code>get_news</code> - Company news</li>
+<li><code>search_web</code> - Web search (via Tavily) for general info</li>
+</ul>
+<h2>Agent Architecture</h2>
+<p>Dexter uses a multi-phase approach:</p>
+<ol>
+<li><strong>Understand</strong>: Extract intent, tickers, and time periods from query</li>
+<li><strong>Plan</strong>: Create task list with dependencies</li>
+<li><strong>Execute</strong>: Run tasks in parallel where possible</li>
+<li><strong>Reflect</strong>: Evaluate if more data is needed (iterates up to 5x)</li>
+<li><strong>Answer</strong>: Synthesize comprehensive response with sources</li>
+</ol>
+<h2>Example Queries</h2>
+<p><strong>Stock Analysis:</strong></p>
+<ul>
+<li>&quot;What is AAPL&#39;s revenue growth over the last 4 quarters?&quot;</li>
+<li>&quot;Compare MSFT and GOOG operating margins for 2025&quot;</li>
+<li>&quot;What was AMZN&#39;s debt-to-equity ratio last quarter?&quot;</li>
+</ul>
+<p><strong>Financial Health:</strong></p>
+<ul>
+<li>&quot;Is NVDA&#39;s cash flow positive? Show me the trend&quot;</li>
+<li>&quot;What are Tesla&#39;s profit margins compared to Ford?&quot;</li>
+</ul>
+<p><strong>SEC Filings:</strong></p>
+<ul>
+<li>&quot;Summarize Apple&#39;s most recent 10-K risk factors&quot;</li>
+<li>&quot;What did Meta disclose in their latest 8-K?&quot;</li>
+</ul>
+<p><strong>Crypto:</strong></p>
+<ul>
+<li>&quot;What is Ethereum&#39;s price today?&quot;</li>
+<li>&quot;Show Bitcoin&#39;s price movement over the last month&quot;</li>
+</ul>
+<p><strong>Market Research:</strong></p>
+<ul>
+<li>&quot;What are analyst estimates for Amazon&#39;s next quarter earnings?&quot;</li>
+<li>&quot;Show me recent insider trades for Microsoft&quot;</li>
+</ul>
+<h2>Troubleshooting</h2>
+<h3>&quot;Missing credentials... OPENAI_API_KEY&quot;</h3>
+<p>Run the Anthropic patch (step 3 in installation) - Dexter&#39;s tool executor defaults to OpenAI.</p>
+<h3>API errors for non-US stocks</h3>
+<p>Financial Datasets API primarily covers US stocks. Dexter will fall back to Tavily web search for international stocks if TAVILY_API_KEY is configured.</p>
+<h3>Slow responses</h3>
+<p>Complex queries may take 30-60 seconds. Dexter plans, executes multiple API calls, reflects on results, and synthesizes answers.</p>
+<h2>Tips</h2>
+<ol>
+<li><strong>Be specific</strong>: Include ticker symbols and time periods when known</li>
+<li><strong>US stocks work best</strong>: The Financial Datasets API has comprehensive US coverage</li>
+<li><strong>International stocks</strong>: Dexter falls back to web search for non-US stocks</li>
+<li><strong>Crypto format</strong>: Use <code>BTC-USD</code>, <code>ETH-USD</code> format for crypto tickers</li>
+<li><strong>Timeout</strong>: Complex queries may take 30-60 seconds as Dexter plans and executes multiple tasks</li>
+</ol>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/igorhvr/dexter/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/igorhvr/dexter" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/igorhvr/dexter/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@igorhvr</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Productivity & Tasks</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

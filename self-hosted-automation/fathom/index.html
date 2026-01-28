@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Connect to Fathom AI to fetch call recordings, transcripts, and summaries">
+  <title>fathom - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Self-Hosted & Automation</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Self-Hosted & Automation</a>
+                <span class="skill-page-author">by @stopmoclay</span>
+              </div>
+              <h1 class="skill-page-title">fathom</h1>
+              <p class="skill-page-desc">Connect to Fathom AI to fetch call recordings, transcripts, and summaries</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Fathom Skill</h1>
+<p>Connect to <a href="https://fathom.video">Fathom AI</a> to fetch call recordings, transcripts, and summaries.</p>
+<h2>Setup</h2>
+<h3>1. Get Your API Key</h3>
+<ol>
+<li>Go to <a href="https://developers.fathom.ai">developers.fathom.ai</a></li>
+<li>Create an API key</li>
+<li>Copy the key (format: <code>v1XDx...</code>)</li>
+</ol>
+<h3>2. Configure</h3>
+<pre><code class="language-bash"># Option A: Store in file (recommended)
+echo &quot;YOUR_API_KEY&quot; &gt; ~/.fathom_api_key
+chmod 600 ~/.fathom_api_key
+
+# Option B: Environment variable
+export FATHOM_API_KEY=&quot;YOUR_API_KEY&quot;
+</code></pre>
+<h3>3. Test Connection</h3>
+<pre><code class="language-bash">./scripts/setup.sh
+</code></pre>
+<hr>
+<h2>Commands</h2>
+<h3>List Recent Calls</h3>
+<pre><code class="language-bash">./scripts/list-calls.sh                    # Last 10 calls
+./scripts/list-calls.sh --limit 20         # Last 20 calls
+./scripts/list-calls.sh --after 2026-01-01 # Calls after date
+./scripts/list-calls.sh --json             # Raw JSON output
+</code></pre>
+<h3>Get Transcript</h3>
+<pre><code class="language-bash">./scripts/get-transcript.sh 123456789      # By recording ID
+./scripts/get-transcript.sh 123456789 --json
+./scripts/get-transcript.sh 123456789 --text-only
+</code></pre>
+<h3>Get Summary</h3>
+<pre><code class="language-bash">./scripts/get-summary.sh 123456789         # By recording ID
+./scripts/get-summary.sh 123456789 --json
+</code></pre>
+<h3>Search Calls</h3>
+<pre><code class="language-bash">./scripts/search-calls.sh &quot;product launch&quot; # Search transcripts
+./scripts/search-calls.sh --speaker &quot;Lucas&quot;
+./scripts/search-calls.sh --after 2026-01-01 --before 2026-01-15
+</code></pre>
+<hr>
+<h2>API Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>/meetings</code></td>
+<td>GET</td>
+<td>List meetings with filters</td>
+</tr>
+<tr>
+<td><code>/recordings/{id}/transcript</code></td>
+<td>GET</td>
+<td>Full transcript with speakers</td>
+</tr>
+<tr>
+<td><code>/recordings/{id}/summary</code></td>
+<td>GET</td>
+<td>AI summary + action items</td>
+</tr>
+<tr>
+<td><code>/webhooks</code></td>
+<td>POST</td>
+<td>Register webhook for auto-sync</td>
+</tr>
+</tbody></table>
+<p><strong>Base URL:</strong> <code>https://api.fathom.ai/external/v1</code><br><strong>Auth:</strong> <code>X-API-Key</code> header</p>
+<hr>
+<h2>Filters for list-calls</h2>
+<table>
+<thead>
+<tr>
+<th>Filter</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>--limit N</code></td>
+<td>Number of results</td>
+<td><code>--limit 20</code></td>
+</tr>
+<tr>
+<td><code>--after DATE</code></td>
+<td>Calls after date</td>
+<td><code>--after 2026-01-01</code></td>
+</tr>
+<tr>
+<td><code>--before DATE</code></td>
+<td>Calls before date</td>
+<td><code>--before 2026-01-15</code></td>
+</tr>
+<tr>
+<td><code>--cursor TOKEN</code></td>
+<td>Pagination cursor</td>
+<td><code>--cursor eyJo...</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Output Formats</h2>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>--json</code></td>
+<td>Raw JSON from API</td>
+</tr>
+<tr>
+<td><code>--table</code></td>
+<td>Formatted table (default for lists)</td>
+</tr>
+<tr>
+<td><code>--text-only</code></td>
+<td>Plain text (transcripts only)</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Examples</h2>
+<h3>Get your last call&#39;s summary</h3>
+<pre><code class="language-bash"># Get latest call ID
+CALL_ID=$(./scripts/list-calls.sh --limit 1 --json | jq -r &#39;.[0].recording_id&#39;)
+
+# Get summary
+./scripts/get-summary.sh $CALL_ID
+</code></pre>
+<h3>Export all calls from last week</h3>
+<pre><code class="language-bash">./scripts/list-calls.sh --after $(date -d &#39;7 days ago&#39; +%Y-%m-%d) --json &gt; last_week_calls.json
+</code></pre>
+<h3>Find calls mentioning a topic</h3>
+<pre><code class="language-bash">./scripts/search-calls.sh &quot;quarterly review&quot;
+</code></pre>
+<hr>
+<h2>Troubleshooting</h2>
+<table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&quot;No API key found&quot;</td>
+<td>Run setup or set <code>FATHOM_API_KEY</code></td>
+</tr>
+<tr>
+<td>&quot;401 Unauthorized&quot;</td>
+<td>Check API key is valid</td>
+</tr>
+<tr>
+<td>&quot;429 Rate Limited&quot;</td>
+<td>Wait and retry</td>
+</tr>
+<tr>
+<td>&quot;Recording not found&quot;</td>
+<td>Verify recording ID exists</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Webhook Setup (Advanced)</h2>
+<p>For automatic transcript ingestion, see the webhook setup guide:</p>
+<pre><code class="language-bash">./scripts/setup-webhook.sh --url https://your-endpoint.com/webhook
+</code></pre>
+<p>Requires a publicly accessible HTTPS endpoint.</p>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/stopmoclay/fathom/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/stopmoclay/fathom" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/stopmoclay/fathom/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@stopmoclay</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Self-Hosted & Automation</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

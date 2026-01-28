@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Set reminders using natural language. Automatically creates one-time cron jobs and logs to markdown">
+  <title>remind-me - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Calendar & Scheduling</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Calendar & Scheduling</a>
+                <span class="skill-page-author">by @julianengel</span>
+              </div>
+              <h1 class="skill-page-title">remind-me</h1>
+              <p class="skill-page-desc">Set reminders using natural language. Automatically creates one-time cron jobs and logs to markdown</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Remind Me</h1>
+<p>Natural language reminders that fire automatically. Uses cron for scheduling, markdown for logging.</p>
+<h2>Usage</h2>
+<h3>One-Time Reminders</h3>
+<p>Just ask naturally:</p>
+<ul>
+<li>&quot;Remind me to pay for Gumroad later today&quot;</li>
+<li>&quot;Remind me to call mom tomorrow at 3pm&quot;</li>
+<li>&quot;Remind me in 2 hours to check the oven&quot;</li>
+<li>&quot;Remind me next Monday at 9am about the meeting&quot;</li>
+</ul>
+<h3>Recurring Reminders</h3>
+<p>For repeating reminders:</p>
+<ul>
+<li>&quot;Remind me every hour to stretch&quot;</li>
+<li>&quot;Remind me every day at 9am to check email&quot;</li>
+<li>&quot;Remind me every Monday at 2pm about the meeting&quot;</li>
+<li>&quot;Remind me weekly to submit timesheet&quot;</li>
+</ul>
+<h2>How It Works</h2>
+<ol>
+<li>Parse the time from your message</li>
+<li>Create a one-time cron job with <code>--at</code></li>
+<li>Log to <code>/home/julian/clawd/reminders.md</code> for history</li>
+<li>At the scheduled time, you get a message</li>
+</ol>
+<h2>Time Parsing</h2>
+<h3>One-Time Reminders</h3>
+<p><strong>Relative:</strong></p>
+<ul>
+<li>&quot;in 5 minutes&quot; / &quot;in 2 hours&quot; / &quot;in 3 days&quot;</li>
+<li>&quot;later today&quot; → 17:00 today</li>
+<li>&quot;this afternoon&quot; → 15:00 today</li>
+<li>&quot;tonight&quot; → 20:00 today</li>
+</ul>
+<p><strong>Absolute:</strong></p>
+<ul>
+<li>&quot;tomorrow&quot; → tomorrow 9am</li>
+<li>&quot;tomorrow at 3pm&quot; → tomorrow 15:00</li>
+<li>&quot;next Monday&quot; → next Monday 9am</li>
+<li>&quot;next Monday at 2pm&quot; → next Monday 14:00</li>
+</ul>
+<p><strong>Dates:</strong></p>
+<ul>
+<li>&quot;January 15&quot; → Jan 15 at 9am</li>
+<li>&quot;Jan 15 at 3pm&quot; → Jan 15 at 15:00</li>
+<li>&quot;2026-01-15&quot; → Jan 15 at 9am</li>
+<li>&quot;2026-01-15 14:30&quot; → Jan 15 at 14:30</li>
+</ul>
+<h3>Recurring Reminders</h3>
+<p><strong>Intervals:</strong></p>
+<ul>
+<li>&quot;every 30 minutes&quot;</li>
+<li>&quot;every 2 hours&quot;</li>
+</ul>
+<p><strong>Daily:</strong></p>
+<ul>
+<li>&quot;daily at 9am&quot;</li>
+<li>&quot;every day at 3pm&quot;</li>
+</ul>
+<p><strong>Weekly:</strong></p>
+<ul>
+<li>&quot;weekly&quot; → every Monday at 9am</li>
+<li>&quot;every Monday at 2pm&quot;</li>
+<li>&quot;every Friday at 5pm&quot;</li>
+</ul>
+<h2>Reminder Log</h2>
+<p>All reminders are logged to <code>/home/julian/clawd/reminders.md</code>:</p>
+<pre><code class="language-markdown">- [scheduled] 2026-01-06 17:00 | Pay for Gumroad (id: abc123)
+- [recurring] every 2h | Stand up and stretch (id: def456)
+- [recurring] cron: 0 9 * * 1 | Weekly meeting (id: ghi789)
+</code></pre>
+<p><strong>Status:</strong></p>
+<ul>
+<li><code>[scheduled]</code> — one-time reminder waiting to fire</li>
+<li><code>[recurring]</code> — repeating reminder (active)</li>
+<li><code>[sent]</code> — one-time reminder already delivered</li>
+</ul>
+<h2>Manual Commands</h2>
+<pre><code class="language-bash"># List pending reminders
+cron list
+
+# View reminder log
+cat /home/julian/clawd/reminders.md
+
+# Remove a scheduled reminder
+cron rm &lt;job-id&gt;
+</code></pre>
+<h2>Agent Implementation</h2>
+<h3>One-Time Reminders</h3>
+<p>When the user says &quot;remind me to X at Y&quot;:</p>
+<pre><code class="language-bash">bash /home/julian/clawd/skills/remind-me/create-reminder.sh &quot;X&quot; &quot;Y&quot;
+</code></pre>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-bash">bash /home/julian/clawd/skills/remind-me/create-reminder.sh &quot;Pay for Gumroad&quot; &quot;later today&quot;
+bash /home/julian/clawd/skills/remind-me/create-reminder.sh &quot;Call dentist&quot; &quot;tomorrow at 3pm&quot;
+bash /home/julian/clawd/skills/remind-me/create-reminder.sh &quot;Check email&quot; &quot;in 2 hours&quot;
+</code></pre>
+<h3>Recurring Reminders</h3>
+<p>When the user says &quot;remind me every X to Y&quot;:</p>
+<pre><code class="language-bash">bash /home/julian/clawd/skills/remind-me/create-recurring.sh &quot;Y&quot; &quot;every X&quot;
+</code></pre>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-bash">bash /home/julian/clawd/skills/remind-me/create-recurring.sh &quot;Stand up and stretch&quot; &quot;every 2 hours&quot;
+bash /home/julian/clawd/skills/remind-me/create-recurring.sh &quot;Check email&quot; &quot;daily at 9am&quot;
+bash /home/julian/clawd/skills/remind-me/create-recurring.sh &quot;Weekly team meeting&quot; &quot;every Monday at 2pm&quot;
+</code></pre>
+<p>Both scripts automatically:</p>
+<ol>
+<li>Parse the time/schedule</li>
+<li>Create a cron job (one-time with <code>--at</code> or recurring with <code>--every</code>/<code>--cron</code>)</li>
+<li>Log to <code>/home/julian/clawd/reminders.md</code></li>
+<li>Return confirmation with job ID</li>
+</ol>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/julianengel/remind-me/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/julianengel/remind-me" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/julianengel/remind-me/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@julianengel</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Calendar & Scheduling</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

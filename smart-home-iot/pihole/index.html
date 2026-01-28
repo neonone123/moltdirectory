@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="pihole">
+  <title>pihole - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Smart Home & IoT</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Smart Home & IoT</a>
+                <span class="skill-page-author">by @baanish</span>
+              </div>
+              <h1 class="skill-page-title">pihole</h1>
+              <p class="skill-page-desc">pihole</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Pi-hole Skill</h1>
+<p>Control your Pi-hole DNS ad blocker via the Pi-hole v6 API.</p>
+<h2>Setup</h2>
+<p>Set your Pi-hole API configuration in Clawdbot config:</p>
+<pre><code class="language-yaml">skills:
+  entries:
+    pihole:
+      apiUrl: &quot;https://pi-hole.local/api&quot;  # v6 API path
+      apiToken: &quot;your-app-password-here&quot;       # Get from Pi-hole Admin
+      insecure: false                          # Set to true for self-signed certs
+</code></pre>
+<p>Alternatively, set environment variables:</p>
+<pre><code class="language-bash">export PIHOLE_API_URL=&quot;https://pi-hole.local/api&quot;
+export PIHOLE_API_TOKEN=&quot;your-app-password-here&quot;
+export PIHOLE_INSECURE=&quot;false&quot;
+</code></pre>
+<h3>Getting API Credentials</h3>
+<ol>
+<li>Open Pi-hole Admin at <code>http://pi-hole.local/admin</code></li>
+<li>Navigate to <strong>Settings</strong> &gt; <strong>API</strong></li>
+<li>Generate an app password</li>
+<li>Use that password as <code>apiToken</code></li>
+</ol>
+<h2>Capabilities</h2>
+<h3>Status</h3>
+<ul>
+<li>Get current Pi-hole status (enabled/disabled)</li>
+<li>View stats: queries blocked, queries today, domains being blocked, active clients</li>
+<li>See recent query activity</li>
+</ul>
+<h3>Controls</h3>
+<ul>
+<li><strong>Enable/Disable</strong>: Turn Pi-hole on or off</li>
+<li><strong>Disable for 5 minutes</strong>: Temporarily disable ad blocking for a short period</li>
+<li><strong>Disable for custom duration</strong>: Set specific disable time (in minutes)</li>
+</ul>
+<h3>Block Analysis</h3>
+<ul>
+<li><strong>Check blocked domains</strong>: See what domains were blocked in a time window</li>
+<li><strong>Show top blocked</strong>: Most frequently blocked domains</li>
+</ul>
+<h2>Usage Examples</h2>
+<pre><code># Check Pi-hole status
+&quot;pihole status&quot;
+
+# Turn off ad blocking
+&quot;pihole off&quot;
+
+# Turn on ad blocking
+&quot;pihole on&quot;
+
+# Disable for 5 minutes (for a site that needs ads)
+&quot;pihole disable 5m&quot;
+
+# Disable for 30 minutes
+&quot;pihole disable 30&quot;
+
+# See what was blocked in the last 30 minutes
+&quot;pihole blocked&quot;
+
+# See blocked domains in last 10 minutes (600 seconds)
+&quot;pihole blocked 600&quot;
+
+# Show statistics
+&quot;pihole stats&quot;
+</code></pre>
+<h2>API Endpoints (Pi-hole v6)</h2>
+<h3>Authentication</h3>
+<pre><code>POST /api/auth
+Content-Type: application/json
+{&quot;password&quot;:&quot;your-app-password&quot;}
+
+Response:
+{
+  &quot;session&quot;: {
+    &quot;sid&quot;: &quot;session-token-here&quot;,
+    &quot;validity&quot;: 1800
+  }
+}
+</code></pre>
+<h3>Status</h3>
+<pre><code>GET /api/dns/blocking
+Headers: sid: &lt;session-token&gt;
+
+Response:
+{
+  &quot;blocking&quot;: &quot;enabled&quot; | &quot;disabled&quot;,
+  &quot;timer&quot;: 30  // seconds until re-enable (if disabled with timer)
+}
+</code></pre>
+<h3>Enable/Disable</h3>
+<pre><code>POST /api/dns/blocking
+Headers: sid: &lt;session-token&gt;
+Content-Type: application/json
+
+Enable:
+{&quot;blocking&quot;:true}
+
+Disable:
+{&quot;blocking&quot;:false}
+
+Disable with timer (seconds):
+{&quot;blocking&quot;:false,&quot;timer&quot;:300}
+</code></pre>
+<h3>Stats</h3>
+<pre><code>GET /api/stats/summary
+Headers: sid: &lt;session-token&gt;
+
+Response:
+{
+  &quot;queries&quot;: {
+    &quot;total&quot;: 233512,
+    &quot;blocked&quot;: 23496,
+    &quot;percent_blocked&quot;: 10.06
+  },
+  &quot;gravity&quot;: {
+    &quot;domains_being_blocked&quot;: 165606
+  },
+  &quot;clients&quot;: {
+    &quot;active&quot;: 45
+  }
+}
+</code></pre>
+<h3>Queries</h3>
+<pre><code>GET /api/queries?start=-&lt;seconds&gt;
+Headers: sid: &lt;session-token&gt;
+
+Response:
+{
+  &quot;queries&quot;: [
+    {
+      &quot;domain&quot;: &quot;example.com&quot;,
+      &quot;status&quot;: &quot;GRAVITY&quot;,
+      &quot;time&quot;: 1768363900,
+      &quot;type&quot;: &quot;A&quot;
+    }
+  ]
+}
+</code></pre>
+<h2>v5 vs v6 API Changes</h2>
+<p>Pi-hole v6 introduced significant API changes:</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>v5 API</th>
+<th>v6 API</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Base URL</td>
+<td><code>/admin/api.php</code></td>
+<td><code>/api</code></td>
+</tr>
+<tr>
+<td>Auth</td>
+<td>Token in URL/headers</td>
+<td>Session-based</td>
+</tr>
+<tr>
+<td>Status</td>
+<td><code>?status</code></td>
+<td><code>/api/dns/blocking</code></td>
+</tr>
+<tr>
+<td>Stats</td>
+<td><code>?summaryRaw</code></td>
+<td><code>/api/stats/summary</code></td>
+</tr>
+<tr>
+<td>Queries</td>
+<td><code>?recentBlocked</code></td>
+<td><code>/api/queries</code></td>
+</tr>
+<tr>
+<td>Whitelist</td>
+<td>Supported via API</td>
+<td><strong>Not available via API</strong></td>
+</tr>
+</tbody></table>
+<p><strong>Important:</strong> Domain whitelisting is no longer available via the v6 API. You must whitelist domains through the Pi-hole Admin UI.</p>
+<h2>SSL Certificates</h2>
+<h3>Production (Valid Cert)</h3>
+<pre><code class="language-yaml">{
+  &quot;apiUrl&quot;: &quot;https://pi-hole.example.com/api&quot;,
+  &quot;apiToken&quot;: &quot;...&quot;,
+  &quot;insecure&quot;: false
+}
+</code></pre>
+<h3>Self-Signed/Local Cert</h3>
+<pre><code class="language-yaml">{
+  &quot;apiUrl&quot;: &quot;https://pi-hole.local/api&quot;,
+  &quot;apiToken&quot;: &quot;...&quot;,
+  &quot;insecure&quot;: true
+}
+</code></pre>
+<p>The <code>insecure</code> flag adds the <code>-k</code> option to curl to bypass certificate validation.</p>
+<h2>Security Notes</h2>
+<ul>
+<li>Session tokens expire after 30 minutes (1800 seconds)</li>
+<li>API password is sent in JSON body, not URL</li>
+<li>All requests have a 30-second timeout</li>
+<li>Token is not visible in process list (passed via environment)</li>
+</ul>
+<h2>Troubleshooting</h2>
+<h3>&quot;Failed to authenticate&quot;</h3>
+<ul>
+<li>Check that <code>apiToken</code> matches your Pi-hole app password</li>
+<li>Verify <code>apiUrl</code> is correct (must end in <code>/api</code>)</li>
+<li>Ensure Pi-hole is accessible from your network</li>
+</ul>
+<h3>&quot;Could not determine status&quot;</h3>
+<ul>
+<li>Check API URL is reachable</li>
+<li>If using HTTPS with self-signed cert, set <code>insecure: true</code></li>
+<li>Verify API password is correct</li>
+</ul>
+<h3>Network Errors</h3>
+<ul>
+<li>Ensure clawdbot&#39;s machine can reach the Pi-hole</li>
+<li>Check firewall rules allow API access</li>
+<li>Verify URL scheme (http vs https)</li>
+</ul>
+<h2>Requirements</h2>
+<ul>
+<li>Pi-hole v6 or later</li>
+<li>App password generated in Pi-hole Admin</li>
+<li>Network access to Pi-hole API</li>
+<li><code>curl</code>, <code>jq</code> (installed on most Unix systems)</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/baanish/pihole/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/baanish/pihole" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/baanish/pihole/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@baanish</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Smart Home & IoT</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

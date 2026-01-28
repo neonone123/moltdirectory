@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Skåne public transport trip planner (Skånetrafiken). Plans bus/train journeys with real-time delays">
+  <title>skanetrafiken - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Transportation</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Transportation</a>
+                <span class="skill-page-author">by @rezkam</span>
+              </div>
+              <h1 class="skill-page-title">skanetrafiken</h1>
+              <p class="skill-page-desc">Skåne public transport trip planner (Skånetrafiken). Plans bus/train journeys with real-time delays</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Skånetrafiken Trip Planner</h1>
+<p>Plan public transport journeys in Skåne, Sweden with real-time departure information.</p>
+<h2>Commands</h2>
+<h3>1. Search Location</h3>
+<p>Search for stations, addresses, or points of interest.</p>
+<pre><code class="language-bash">./search-location.sh &lt;query&gt; [limit]
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>query</code></td>
+<td>Location name to search for</td>
+</tr>
+<tr>
+<td><code>limit</code></td>
+<td>Number of results to show (default: 3, max: 10)</td>
+</tr>
+</tbody></table>
+<p><strong>Output includes:</strong></p>
+<ul>
+<li><code>ID</code> - The location identifier (use this in journey search)</li>
+<li><code>Name</code> - Official name of the location</li>
+<li><code>Type</code> - STOP_AREA (station), ADDRESS, or POI (point of interest)</li>
+<li><code>Area</code> - Region/municipality</li>
+<li><code>Coordinates</code> - Latitude, longitude</li>
+</ul>
+<p><strong>When to increase limit:</strong></p>
+<ul>
+<li>First result doesn&#39;t match user&#39;s intent</li>
+<li>User&#39;s query is ambiguous (e.g., &quot;station&quot;, &quot;centrum&quot;)</li>
+<li>Need to show user multiple options to choose from</li>
+</ul>
+<h3>2. Journey Search</h3>
+<p>Plan a journey between two locations using their IDs.</p>
+<pre><code class="language-bash">./journey.sh &lt;from-id&gt; &lt;from-type&gt; &lt;to-id&gt; &lt;to-type&gt; [datetime] [mode]
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>from-id</code></td>
+<td>Origin location ID (from search) or coordinates (<code>lat#lon</code>)</td>
+</tr>
+<tr>
+<td><code>from-type</code></td>
+<td><code>STOP_AREA</code>, <code>ADDRESS</code>, <code>POI</code>, or <code>LOCATION</code> (for coordinates)</td>
+</tr>
+<tr>
+<td><code>to-id</code></td>
+<td>Destination location ID or coordinates</td>
+</tr>
+<tr>
+<td><code>to-type</code></td>
+<td>Type of destination</td>
+</tr>
+<tr>
+<td><code>datetime</code></td>
+<td>Optional: <code>&quot;18:30&quot;</code>, <code>&quot;tomorrow 09:00&quot;</code>, <code>&quot;2026-01-15 09:00&quot;</code></td>
+</tr>
+<tr>
+<td><code>mode</code></td>
+<td>Optional: <code>&quot;depart&quot;</code> (default) or <code>&quot;arrive&quot;</code></td>
+</tr>
+</tbody></table>
+<p><strong>Important:</strong> The Journey API only accepts <code>STOP_AREA</code> and <code>LOCATION</code> types. For <code>ADDRESS</code> or <code>POI</code> results, use the coordinates as <code>lat#lon</code> with type <code>LOCATION</code>.</p>
+<hr>
+<h2>Understanding User Time Intent</h2>
+<p>Before searching, understand what the user wants:</p>
+<h3>Intent Types</h3>
+<table>
+<thead>
+<tr>
+<th>User Says</th>
+<th>Intent</th>
+<th>How to Query</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&quot;now&quot;, &quot;next bus&quot;, &quot;how do I get to&quot;</td>
+<td><strong>Travel Now</strong></td>
+<td>No datetime parameter</td>
+</tr>
+<tr>
+<td>&quot;in 30 minutes&quot;, &quot;in 1 hour&quot;, &quot;after lunch&quot;</td>
+<td><strong>Depart Later</strong></td>
+<td>Calculate time, use <code>depart</code> mode</td>
+</tr>
+<tr>
+<td>&quot;around 15:00&quot;, &quot;sometime afternoon&quot;</td>
+<td><strong>Around Time</strong></td>
+<td>Query with offset (see below)</td>
+</tr>
+<tr>
+<td>&quot;arrive by 18:00&quot;, &quot;need to be there at 9&quot;</td>
+<td><strong>Arrive By</strong></td>
+<td>Use <code>arrive</code> mode</td>
+</tr>
+<tr>
+<td>&quot;tomorrow morning&quot;, &quot;on Friday at 10&quot;</td>
+<td><strong>Future Time</strong></td>
+<td>Use specific datetime</td>
+</tr>
+</tbody></table>
+<h3>Handling &quot;Around Time&quot; Queries</h3>
+<p>When user wants options &quot;around&quot; a time, query 15-30 minutes earlier to show options before and after:</p>
+<pre><code class="language-bash"># User: &quot;I want to travel around 15:00&quot;
+# Query at 14:30 to get options spanning 14:30-16:00+
+./journey.sh ... &quot;14:30&quot; depart
+</code></pre>
+<h3>Relative Time Calculations</h3>
+<p>Convert relative times to absolute:</p>
+<table>
+<thead>
+<tr>
+<th>User Says</th>
+<th>Current: 14:00</th>
+<th>Query Time</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&quot;in 30m&quot;</td>
+<td>→</td>
+<td>&quot;14:30&quot;</td>
+</tr>
+<tr>
+<td>&quot;in 1h&quot;</td>
+<td>→</td>
+<td>&quot;15:00&quot;</td>
+</tr>
+<tr>
+<td>&quot;in 2 hours&quot;</td>
+<td>→</td>
+<td>&quot;16:00&quot;</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>LLM Response Formatting</h2>
+<p>When presenting journey results to users, use these emojis and formatting guidelines.</p>
+<h3>Emoji Reference</h3>
+<table>
+<thead>
+<tr>
+<th>Emoji</th>
+<th>Use For</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>🚂</td>
+<td>Train (Pågatåg, Öresundståg)</td>
+</tr>
+<tr>
+<td>🚌</td>
+<td>Bus</td>
+</tr>
+<tr>
+<td>🚇</td>
+<td>Metro (Copenhagen)</td>
+</tr>
+<tr>
+<td>🚋</td>
+<td>Tram</td>
+</tr>
+<tr>
+<td>⛴️</td>
+<td>Ferry</td>
+</tr>
+<tr>
+<td>🚶</td>
+<td>Walking segment</td>
+</tr>
+<tr>
+<td>⏱️</td>
+<td>Time/duration</td>
+</tr>
+<tr>
+<td>🕐</td>
+<td>Departure time</td>
+</tr>
+<tr>
+<td>🏁</td>
+<td>Arrival time</td>
+</tr>
+<tr>
+<td>📍</td>
+<td>Stop/station</td>
+</tr>
+<tr>
+<td>🏠</td>
+<td>Origin (home/start)</td>
+</tr>
+<tr>
+<td>🎯</td>
+<td>Destination</td>
+</tr>
+<tr>
+<td>⚠️</td>
+<td>Delay or disruption</td>
+</tr>
+<tr>
+<td>✅</td>
+<td>On time</td>
+</tr>
+<tr>
+<td>🔄</td>
+<td>Transfer/change</td>
+</tr>
+<tr>
+<td>🛤️</td>
+<td>Platform/track</td>
+</tr>
+</tbody></table>
+<h3>Response Structure</h3>
+<p><strong>Always include these key elements from the tool output:</strong></p>
+<ol>
+<li><strong>When to leave</strong> - The actual time user needs to start (including walking)</li>
+<li><strong>Walking segments</strong> - Distance and time for any walking</li>
+<li><strong>Transport departure</strong> - When the bus/train actually leaves</li>
+<li><strong>Arrival time</strong> - When user reaches destination</li>
+<li><strong>Any delays</strong> - Show deviation from schedule</li>
+</ol>
+<h3>Example Response Format</h3>
+<p><strong>For a simple direct journey:</strong></p>
+<pre><code>🏠 **Leave home at 09:00**
+
+🚶 Walk 450m to Möllevångstorget (5 min)
+
+📍 **Möllevångstorget** → 🎯 **Malmö C**
+🚌 Bus 5 departs 09:07 from Möllevångstorget
+🏁 Arrives 09:18 at Malmö C
+
+⏱️ Total: 18 min
+</code></pre>
+<p><strong>For a journey with transfer:</strong></p>
+<pre><code>🏠 **Leave at 08:45**
+
+🚶 Walk 300m to Västra Hamnen (4 min)
+
+📍 **Västra Hamnen** → 🔄 **Malmö C** → 🎯 **Lund C**
+
+**Leg 1:**
+🚌 Bus 2 departs 08:51 [🛤️ Läge A]
+🏁 Arrives Malmö C 09:05
+
+🔄 Transfer at Malmö C (6 min)
+
+**Leg 2:**
+🚂 Pågatåg departs 09:11 [🛤️ Spår 4]
+🏁 Arrives Lund C 09:23
+
+⏱️ Total: 38 min | 🔄 1 change
+</code></pre>
+<p><strong>With delays:</strong></p>
+<pre><code>🕐 **Depart 14:30** from Triangeln
+
+🚂 Öresundståg 1042 → København H
+⚠️ +8 min delay (expected 14:38 instead of 14:30)
+🏁 Arrives ~15:25 (normally 15:17)
+</code></pre>
+<h3>Walking Segment Details</h3>
+<p><strong>CRITICAL: Always show walking details from the tool output:</strong></p>
+<ul>
+<li>Distance in meters (from <code>line.distance</code>)</li>
+<li>Include walking in the &quot;leave time&quot; calculation</li>
+<li>Show walking at start AND end of journey</li>
+</ul>
+<p>Example tool output:</p>
+<pre><code>→ WALK 450m from Kalendegatan to Möllevångstorget
+</code></pre>
+<p>Format as:</p>
+<pre><code>🚶 Walk 450m to Möllevångstorget (~5 min)
+</code></pre>
+<p>Walk time estimate: ~100m per minute (normal walking speed)</p>
+<h3>Presenting Multiple Options</h3>
+<p>When showing journey options, make timing crystal clear:</p>
+<pre><code>I found 3 options for you:
+
+**Option 1 - Leave now (09:00)** ✅ Recommended
+🚶 5 min walk → 🚌 Bus 5 at 09:07 → arrives 09:25
+⏱️ Total: 25 min
+
+**Option 2 - Leave in 15m (09:15)**
+🚶 5 min walk → 🚌 Bus 5 at 09:22 → arrives 09:40
+⏱️ Total: 25 min
+
+**Option 3 - Leave in 30m (09:30)**
+🚶 5 min walk → 🚂 Train at 09:37 → arrives 09:48
+⏱️ Total: 18 min | Faster but later departure
+</code></pre>
+<h3>Time Offset Notation</h3>
+<p>Use clear notation for departure times:</p>
+<table>
+<thead>
+<tr>
+<th>Notation</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&quot;now&quot;</td>
+<td>Immediately</td>
+</tr>
+<tr>
+<td>&quot;in 15m&quot;</td>
+<td>15 minutes from now</td>
+</tr>
+<tr>
+<td>&quot;in 1h&quot;</td>
+<td>1 hour from now</td>
+</tr>
+<tr>
+<td>&quot;at 14:30&quot;</td>
+<td>Specific time</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>LLM Workflow: How to Plan a Trip</h2>
+<p>Follow this workflow when a user asks for a trip:</p>
+<h3>Step 1: Understand Time Intent</h3>
+<p>Parse what the user wants:</p>
+<ul>
+<li><strong>&quot;How do I get to...&quot;</strong> → Travel now</li>
+<li><strong>&quot;I need to be there at 18:00&quot;</strong> → Arrive mode</li>
+<li><strong>&quot;Sometime around 3pm&quot;</strong> → Query 14:30, show range</li>
+<li><strong>&quot;In about an hour&quot;</strong> → Calculate from current time</li>
+</ul>
+<h3>Step 2: Search for Both Locations</h3>
+<p>Search for origin and destination separately:</p>
+<pre><code class="language-bash">./search-location.sh &quot;Malmö C&quot;
+./search-location.sh &quot;Emporia&quot;
+</code></pre>
+<h3>Step 3: Validate Search Results</h3>
+<p><strong>Check each result carefully:</strong></p>
+<ol>
+<li><p><strong>Exact or close match?</strong> - If the name matches what the user asked for, proceed.</p>
+</li>
+<li><p><strong>Multiple results returned?</strong> - The script shows up to 10 matches. If the first result isn&#39;t clearly correct, ask the user to confirm.</p>
+</li>
+<li><p><strong>Name significantly different?</strong> - If user asked for &quot;the mall near Hyllie&quot; and result shows &quot;Emporia&quot;, confirm with user: &quot;I found Emporia shopping center near Hyllie. Is this correct?&quot;</p>
+</li>
+<li><p><strong>No results found?</strong> - Try alternative strategies (see below).</p>
+</li>
+</ol>
+<h3>Step 4: Handle Ambiguous or Failed Searches</h3>
+<p><strong>When results don&#39;t match or are ambiguous, ask clarifying questions:</strong></p>
+<pre><code>I searched for &quot;centrum&quot; and found multiple locations:
+1. Malmö Centrum (bus stop)
+2. Lund Centrum (bus stop)
+3. Helsingborg Centrum (bus stop)
+
+Which one did you mean?
+</code></pre>
+<p><strong>When no results are found, try these strategies:</strong></p>
+<ol>
+<li><p><strong>Try with city name for addresses:</strong></p>
+<pre><code class="language-bash"># If &quot;Storgatan 10&quot; fails, try:
+./search-location.sh &quot;Storgatan 10, Malmö&quot;
+</code></pre>
+</li>
+<li><p><strong>Try official station names:</strong></p>
+<pre><code class="language-bash"># If &quot;Malmö station&quot; fails, try:
+./search-location.sh &quot;Malmö C&quot;
+</code></pre>
+</li>
+<li><p><strong>Try landmark name only (without city):</strong></p>
+<pre><code class="language-bash"># If &quot;Emporia, Malmö&quot; fails, try:
+./search-location.sh &quot;Emporia&quot;
+</code></pre>
+</li>
+<li><p><strong>Use coordinates as last resort:</strong></p>
+<ul>
+<li>If you know the approximate location, use <code>lat#lon</code> format directly</li>
+<li>Ask user: &quot;I couldn&#39;t find that location. Can you provide the address or coordinates?&quot;</li>
+</ul>
+</li>
+</ol>
+<h3>Step 5: Convert Types for Journey API</h3>
+<p>The Journey API only accepts:</p>
+<ul>
+<li><code>STOP_AREA</code> - Bus/train stations (use ID directly)</li>
+<li><code>LOCATION</code> - GPS coordinates as <code>lat#lon</code></li>
+</ul>
+<p><strong>If search returns ADDRESS or POI:</strong></p>
+<ul>
+<li>Use the coordinates from search result</li>
+<li>Format as <code>lat#lon</code> with type <code>LOCATION</code></li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-bash"># Search returns: ID: 123, Type: ADDRESS, Coordinates: 55.605, 13.003
+# Use in journey as:
+./journey.sh &quot;55.605#13.003&quot; LOCATION 9021012080000000 STOP_AREA
+</code></pre>
+<h3>Step 6: Execute Journey Search</h3>
+<p>Once you have confirmed IDs/coordinates for both locations:</p>
+<pre><code class="language-bash">./journey.sh &lt;from-id&gt; &lt;from-type&gt; &lt;to-id&gt; &lt;to-type&gt; [datetime] [mode]
+</code></pre>
+<h3>Step 7: Format Response with Emojis</h3>
+<p>Use the emoji guide above to present results clearly. <strong>Always use actual numbers from the tool output - never speculate or estimate.</strong></p>
+<hr>
+<h2>Query Formatting Rules</h2>
+<p><strong>The search API is sensitive to formatting. Follow these rules:</strong></p>
+<h3>Landmarks and POIs: Name Only</h3>
+<p>Use the landmark name WITHOUT city name.</p>
+<pre><code class="language-bash"># CORRECT
+./search-location.sh &quot;Emporia&quot;
+./search-location.sh &quot;Triangeln&quot;
+./search-location.sh &quot;Turning Torso&quot;
+
+# WRONG - city name breaks POI search
+./search-location.sh &quot;Emporia, Malmö&quot;        # May return wrong location!
+./search-location.sh &quot;Triangeln, Malmö&quot;      # Unnecessary, may fail
+</code></pre>
+<h3>Street Addresses: Include City</h3>
+<p>Include city name for better accuracy.</p>
+<pre><code class="language-bash"># CORRECT
+./search-location.sh &quot;Kalendegatan 12, Malmö&quot;
+./search-location.sh &quot;Storgatan 25, Lund&quot;
+./search-location.sh &quot;Drottninggatan 5, Helsingborg&quot;
+
+# RISKY - may be ambiguous
+./search-location.sh &quot;Kalendegatan 12&quot;       # Works if unambiguous
+</code></pre>
+<h3>Train Stations: Use Official Names</h3>
+<p>Use &quot;C&quot; suffix for central stations.</p>
+<pre><code class="language-bash"># CORRECT
+./search-location.sh &quot;Malmö C&quot;
+./search-location.sh &quot;Lund C&quot;
+./search-location.sh &quot;Helsingborg C&quot;
+./search-location.sh &quot;Malmö Hyllie&quot;
+./search-location.sh &quot;Malmö Triangeln&quot;
+
+# WRONG
+./search-location.sh &quot;Malmö&quot;                 # Ambiguous!
+./search-location.sh &quot;Malmö Central&quot;         # Not official name
+./search-location.sh &quot;Lund station&quot;          # Not official name
+</code></pre>
+<h3>Copenhagen (Cross-border)</h3>
+<p>Use Danish names or common alternatives.</p>
+<pre><code class="language-bash"># All work
+./search-location.sh &quot;København H&quot;
+./search-location.sh &quot;Nørreport&quot;
+./search-location.sh &quot;Copenhagen Airport&quot;
+./search-location.sh &quot;Köpenhamn&quot;
+</code></pre>
+<hr>
+<h2>Examples</h2>
+<h3>Example 1: Travel Now</h3>
+<p>User: &quot;How do I get from Malmö C to Lund C?&quot;</p>
+<pre><code class="language-bash">./search-location.sh &quot;Malmö C&quot;
+./search-location.sh &quot;Lund C&quot;
+./journey.sh 9021012080000000 STOP_AREA 9021012080040000 STOP_AREA
+</code></pre>
+<p><strong>Response:</strong></p>
+<pre><code>🏠 **Leave now** from Malmö C
+
+📍 **Malmö C** → 🎯 **Lund C**
+🚂 Öresundståg 1324 departs 09:04 [🛤️ Spår 2b]
+🏁 Arrives 09:16 at Lund C [🛤️ Spår 1]
+
+⏱️ Total: 12 min | ✅ Direct, no changes
+</code></pre>
+<h3>Example 2: Address with Walking</h3>
+<p>User: &quot;I need to go from Kalendegatan 12 in Malmö to Emporia&quot;</p>
+<pre><code class="language-bash">./search-location.sh &quot;Kalendegatan 12, Malmö&quot;
+./search-location.sh &quot;Emporia&quot;
+./journey.sh &quot;55.595#13.001&quot; LOCATION &quot;55.563#12.973&quot; LOCATION
+</code></pre>
+<p><strong>Response:</strong></p>
+<pre><code>🏠 **Leave at 10:05**
+
+🚶 Walk 320m to Möllevångstorget (~3 min)
+
+📍 **Möllevångstorget** → 🎯 **Emporia**
+🚌 Bus 32 departs 10:10
+🏁 Arrives 10:28 at Emporia
+
+🚶 Walk 150m to destination (~2 min)
+
+⏱️ Total: 25 min
+</code></pre>
+<h3>Example 3: Arrive By Time</h3>
+<p>User: &quot;I need to be at Copenhagen central by 18:00 tomorrow&quot;</p>
+<pre><code class="language-bash">./search-location.sh &quot;Malmö C&quot;
+./search-location.sh &quot;København H&quot;
+./journey.sh 9021012080000000 STOP_AREA 9921000008600626 STOP_AREA &quot;tomorrow 18:00&quot; arrive
+</code></pre>
+<p><strong>Response:</strong></p>
+<pre><code>🎯 **Arrive by 18:00** at København H
+
+📍 **Malmö C** → 🎯 **København H**
+🚂 Öresundståg departs **17:21** [🛤️ Spår 1]
+🏁 Arrives **17:56** ✅ 4 min buffer
+
+⏱️ Journey: 35 min
+
+💡 Leave Malmö C by 17:21 to arrive on time!
+</code></pre>
+<h3>Example 4: Around Time Query</h3>
+<p>User: &quot;I want to travel to Lund around 15:00&quot;</p>
+<pre><code class="language-bash"># Query 30 min earlier to show options around 15:00
+./journey.sh 9021012080000000 STOP_AREA 9021012080040000 STOP_AREA &quot;14:30&quot;
+</code></pre>
+<p><strong>Response:</strong></p>
+<pre><code>Options around 15:00 for Malmö C → Lund C:
+
+**Option 1 - Depart 14:34** (in 25m)
+🚂 Pågatåg → arrives 14:52
+⏱️ 18 min
+
+**Option 2 - Depart 14:49** (in 40m)
+🚂 Öresundståg → arrives 15:01
+⏱️ 12 min
+
+**Option 3 - Depart 15:04** (in 55m) ✅ Closest to 15:00
+🚂 Pågatåg → arrives 15:22
+⏱️ 18 min
+
+Which works best for you?
+</code></pre>
+<h3>Example 5: Relative Time</h3>
+<p>User: &quot;I want to leave in about an hour&quot;</p>
+<pre><code class="language-bash"># Current time: 13:00, so query for 14:00
+./journey.sh ... &quot;14:00&quot;
+</code></pre>
+<p><strong>Response:</strong></p>
+<pre><code>Options departing around 14:00 (in ~1h):
+
+**Leave at 13:55** (in 55m)
+🚶 5 min walk → 🚌 Bus 5 at 14:02 → arrives 14:25
+
+**Leave at 14:10** (in 1h 10m)
+🚶 5 min walk → 🚂 Train at 14:17 → arrives 14:35
+
+Let me know which one works!
+</code></pre>
+<h3>Example 6: Journey with Delays</h3>
+<p>When tool output shows delays:</p>
+<pre><code>From: 14:30 Malmö C [+8 min late]
+</code></pre>
+<p><strong>Response:</strong></p>
+<pre><code>📍 **Malmö C** → 🎯 **Lund C**
+🚂 Öresundståg 1042
+⚠️ **Running 8 min late**
+🕐 Scheduled: 14:30 → Expected: ~14:38
+🏁 Arrives ~14:50 (normally 14:42)
+</code></pre>
+<hr>
+<h2>When to Ask Clarifying Questions</h2>
+<p><strong>Always ask when:</strong></p>
+<ol>
+<li><p><strong>Search returns no results:</strong></p>
+<ul>
+<li>&quot;I couldn&#39;t find [location]. Could you provide more details like the full address or nearby landmarks?&quot;</li>
+</ul>
+</li>
+<li><p><strong>Multiple plausible matches:</strong></p>
+<ul>
+<li>&quot;I found several locations matching &#39;[query]&#39;: [list]. Which one did you mean?&quot;</li>
+</ul>
+</li>
+<li><p><strong>Result name very different from query:</strong></p>
+<ul>
+<li>&quot;You asked for &#39;[user query]&#39; but the closest match I found is &#39;[result name]&#39;. Is this correct?&quot;</li>
+</ul>
+</li>
+<li><p><strong>User request is vague:</strong></p>
+<ul>
+<li>&quot;From Malmö&quot; - &quot;Which location in Malmö? The central station (Malmö C), or a specific address?&quot;</li>
+</ul>
+</li>
+<li><p><strong>Cross-border ambiguity:</strong></p>
+<ul>
+<li>&quot;Copenhagen&quot; could mean different stations - confirm if they want København H (central), Airport, or another station.</li>
+</ul>
+</li>
+<li><p><strong>Time is unclear:</strong></p>
+<ul>
+<li>&quot;When do you want to travel? Now, or at a specific time?&quot;</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2>DateTime Formats</h2>
+<p>All times are Swedish local time (CET/CEST).</p>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Example</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em>(empty)</em></td>
+<td></td>
+<td>Travel now</td>
+</tr>
+<tr>
+<td><code>HH:MM</code></td>
+<td><code>&quot;18:30&quot;</code></td>
+<td>Today at 18:30</td>
+</tr>
+<tr>
+<td><code>tomorrow HH:MM</code></td>
+<td><code>&quot;tomorrow 09:00&quot;</code></td>
+<td>Tomorrow at 09:00</td>
+</tr>
+<tr>
+<td><code>YYYY-MM-DD HH:MM</code></td>
+<td><code>&quot;2026-01-15 09:00&quot;</code></td>
+<td>Specific date</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Output Format</h2>
+<h3>Journey Option (Raw Tool Output)</h3>
+<pre><code>══════════════════════════════════════════════════════════════
+OPTION 1: Malmö C → Lund C
+══════════════════════════════════════════════════════════════
+Date:    2026-01-14
+Depart:  09:04
+Arrive:  09:16
+Changes: 0
+
+LEGS:
+  → ORESUND Öresundståg 1324
+    From: 09:04 Malmö C [Spår 2b]
+    To:   09:16 Lund C [Spår 1]
+    Direction: mot Helsingborg C
+</code></pre>
+<h3>Transport Types</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Emoji</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>TRAIN</code></td>
+<td>🚂</td>
+<td>Pågatåg (regional train)</td>
+</tr>
+<tr>
+<td><code>ORESUND</code></td>
+<td>🚂</td>
+<td>Öresundståg (cross-border train)</td>
+</tr>
+<tr>
+<td><code>BUS</code></td>
+<td>🚌</td>
+<td>City or regional bus</td>
+</tr>
+<tr>
+<td><code>WALK</code></td>
+<td>🚶</td>
+<td>Walking segment</td>
+</tr>
+<tr>
+<td><code>TRAM</code></td>
+<td>🚋</td>
+<td>Tram/light rail</td>
+</tr>
+<tr>
+<td><code>METRO</code></td>
+<td>🚇</td>
+<td>Copenhagen Metro</td>
+</tr>
+<tr>
+<td><code>FERRY</code></td>
+<td>⛴️</td>
+<td>Ferry</td>
+</tr>
+</tbody></table>
+<h3>Status Indicators</h3>
+<table>
+<thead>
+<tr>
+<th>Indicator</th>
+<th>Emoji</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em>(none)</em></td>
+<td>✅</td>
+<td>On time</td>
+</tr>
+<tr>
+<td><code>[+X min late]</code></td>
+<td>⚠️</td>
+<td>Delayed</td>
+</tr>
+<tr>
+<td><code>[-X min early]</code></td>
+<td>ℹ️</td>
+<td>Running early</td>
+</tr>
+<tr>
+<td><code>[PASSED]</code></td>
+<td>❌</td>
+<td>Already departed</td>
+</tr>
+<tr>
+<td><code>AVVIKELSE</code></td>
+<td>🚨</td>
+<td>Service disruption</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Error Handling</h2>
+<h3>&quot;No locations found&quot;</h3>
+<p>The search returned no results.</p>
+<p><strong>Strategies:</strong></p>
+<ol>
+<li>Check spelling (Swedish: å, ä, ö)</li>
+<li>Try official station names with &quot;C&quot; for central</li>
+<li>For landmarks, remove city suffix</li>
+<li>For addresses, add city name</li>
+<li>Ask user for clarification</li>
+</ol>
+<h3>&quot;No journeys found&quot;</h3>
+<p>No routes available.</p>
+<p><strong>Strategies:</strong></p>
+<ol>
+<li>Check if service operates at that hour (late night/early morning limited)</li>
+<li>Try different departure time</li>
+<li>Suggest alternative nearby stops</li>
+</ol>
+<hr>
+<h2>Quick Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Location Type</th>
+<th>Search Format</th>
+<th>Journey Type</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Train station</td>
+<td><code>&quot;Malmö C&quot;</code></td>
+<td>STOP_AREA</td>
+</tr>
+<tr>
+<td>Bus stop</td>
+<td><code>&quot;Möllevångstorget&quot;</code></td>
+<td>STOP_AREA</td>
+</tr>
+<tr>
+<td>Address</td>
+<td><code>&quot;Street 12, City&quot;</code></td>
+<td>Use coords → LOCATION</td>
+</tr>
+<tr>
+<td>Landmark/POI</td>
+<td><code>&quot;Emporia&quot;</code> (no city!)</td>
+<td>Use coords → LOCATION</td>
+</tr>
+<tr>
+<td>Coordinates</td>
+<td><code>55.605#13.003</code></td>
+<td>LOCATION</td>
+</tr>
+</tbody></table>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/rezkam/skanetrafiken/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/rezkam/skanetrafiken" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/rezkam/skanetrafiken/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@rezkam</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Transportation</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

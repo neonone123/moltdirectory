@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Create and manage blog posts on Bear Blog (bearblog.dev)">
+  <title>bearblog - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Marketing & Sales</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Marketing & Sales</a>
+                <span class="skill-page-author">by @azade-c</span>
+              </div>
+              <h1 class="skill-page-title">bearblog</h1>
+              <p class="skill-page-desc">Create and manage blog posts on Bear Blog (bearblog.dev)</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Bear Blog Skill</h1>
+<p>Create, edit, and manage posts on <a href="https://bearblog.dev">Bear Blog</a> — a minimal, fast blogging platform.</p>
+<h2>Authentication</h2>
+<p>Bear Blog requires browser-based authentication. Log in once via the browser tool, and cookies will persist.</p>
+<pre><code>browser action:navigate url:https://bearblog.dev/accounts/login/
+</code></pre>
+<h2>Creating a Post</h2>
+<h3>Step 1: Navigate to the post editor</h3>
+<pre><code>browser action:navigate url:https://&lt;subdomain&gt;.bearblog.dev/dashboard/post/
+</code></pre>
+<h3>Step 2: Fill the editor</h3>
+<p>Bear Blog uses a <strong>plain text header format</strong> — no JavaScript DOM manipulation needed!</p>
+<p>The editor has two textareas:</p>
+<ul>
+<li><code>header_content</code> — metadata attributes (one per line)</li>
+<li><code>body_content</code> — the actual post content in Markdown</li>
+</ul>
+<p><strong>Header format:</strong></p>
+<pre><code>title: Your Post Title
+link: custom-slug
+published_date: 2026-01-05 14:00
+tags: tag1, tag2, tag3
+make_discoverable: true
+is_page: false
+class_name: custom-css-class
+meta_description: SEO description for the post
+meta_image: https://example.com/image.jpg
+lang: en
+canonical_url: https://original-source.com/post
+alias: alternative-url
+</code></pre>
+<p><strong>Body format:</strong> Standard Markdown with extensions (see below).</p>
+<p>The separator <code>___</code> (three underscores) is used in templates to separate header from body.</p>
+<h3>Step 3: Publish</h3>
+<p>Click the publish button or submit the form with <code>publish: true</code>.</p>
+<h2>Post Attributes Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>title</code></td>
+<td>Post title (required)</td>
+<td><code>title: My Post</code></td>
+</tr>
+<tr>
+<td><code>link</code></td>
+<td>Custom URL slug</td>
+<td><code>link: my-custom-url</code></td>
+</tr>
+<tr>
+<td><code>published_date</code></td>
+<td>Publication date/time</td>
+<td><code>published_date: 2026-01-05 14:30</code></td>
+</tr>
+<tr>
+<td><code>tags</code></td>
+<td>Comma-separated tags</td>
+<td><code>tags: tech, ai, coding</code></td>
+</tr>
+<tr>
+<td><code>make_discoverable</code></td>
+<td>Show in discovery feed</td>
+<td><code>make_discoverable: true</code></td>
+</tr>
+<tr>
+<td><code>is_page</code></td>
+<td>Static page vs blog post</td>
+<td><code>is_page: false</code></td>
+</tr>
+<tr>
+<td><code>class_name</code></td>
+<td>Custom CSS class (slugified)</td>
+<td><code>class_name: featured</code></td>
+</tr>
+<tr>
+<td><code>meta_description</code></td>
+<td>SEO meta description</td>
+<td><code>meta_description: A post about...</code></td>
+</tr>
+<tr>
+<td><code>meta_image</code></td>
+<td>Open Graph image URL</td>
+<td><code>meta_image: https://...</code></td>
+</tr>
+<tr>
+<td><code>lang</code></td>
+<td>Language code</td>
+<td><code>lang: fr</code></td>
+</tr>
+<tr>
+<td><code>canonical_url</code></td>
+<td>Canonical URL for SEO</td>
+<td><code>canonical_url: https://...</code></td>
+</tr>
+<tr>
+<td><code>alias</code></td>
+<td>Alternative URL path</td>
+<td><code>alias: old-url</code></td>
+</tr>
+</tbody></table>
+<h2>Extended Markdown</h2>
+<p>Bear Blog uses <a href="https://github.com/lepture/mistune">Mistune</a> with plugins:</p>
+<h3>Text Formatting</h3>
+<ul>
+<li><code>~~strikethrough~~</code> → <del>strikethrough</del></li>
+<li><code>^superscript^</code> → superscript</li>
+<li><code>~subscript~</code> → subscript</li>
+<li><code>==highlighted==</code> → highlighted (mark)</li>
+<li><code>**bold**</code> and <code>*italic*</code> — standard</li>
+</ul>
+<h3>Footnotes</h3>
+<pre><code class="language-markdown">Here&#39;s a sentence with a footnote.[^1]
+
+[^1]: This is the footnote content.
+</code></pre>
+<h3>Task Lists</h3>
+<pre><code class="language-markdown">- [x] Completed task
+- [ ] Incomplete task
+</code></pre>
+<h3>Tables</h3>
+<pre><code class="language-markdown">| Header 1 | Header 2 |
+|----------|----------|
+| Cell 1   | Cell 2   |
+</code></pre>
+<h3>Code Blocks</h3>
+<pre><code class="language-markdown">```python
+def hello():
+    print(&quot;Hello, world!&quot;)
+```
+</code></pre>
+<p>Syntax highlighting via Pygments (specify language after ```).</p>
+<h3>Math (LaTeX)</h3>
+<ul>
+<li>Inline: <code>$E = mc^2$</code></li>
+<li>Block: <code>$$\int_0^\infty e^{-x^2} dx$$</code></li>
+</ul>
+<h3>Abbreviations</h3>
+<pre><code class="language-markdown">*[HTML]: Hypertext Markup Language
+The HTML specification is maintained by the W3C.
+</code></pre>
+<h3>Admonitions</h3>
+<pre><code class="language-markdown">.. note::
+   This is a note admonition.
+
+.. warning::
+   This is a warning.
+</code></pre>
+<h3>Table of Contents</h3>
+<pre><code class="language-markdown">.. toc::
+</code></pre>
+<h2>Dynamic Variables</h2>
+<p>Use <code>{{ variable }}</code> in your content:</p>
+<h3>Blog Variables</h3>
+<ul>
+<li><code>{{ blog_title }}</code> — Blog title</li>
+<li><code>{{ blog_description }}</code> — Blog meta description</li>
+<li><code>{{ blog_created_date }}</code> — Blog creation date</li>
+<li><code>{{ blog_last_modified }}</code> — Time since last modification</li>
+<li><code>{{ blog_last_posted }}</code> — Time since last post</li>
+<li><code>{{ blog_link }}</code> — Full blog URL</li>
+<li><code>{{ tags }}</code> — Rendered tag list with links</li>
+</ul>
+<h3>Post Variables (in post templates)</h3>
+<ul>
+<li><code>{{ post_title }}</code> — Current post title</li>
+<li><code>{{ post_description }}</code> — Post meta description</li>
+<li><code>{{ post_published_date }}</code> — Publication date</li>
+<li><code>{{ post_last_modified }}</code> — Time since modification</li>
+<li><code>{{ post_link }}</code> — Full post URL</li>
+<li><code>{{ next_post }}</code> — Link to next post</li>
+<li><code>{{ previous_post }}</code> — Link to previous post</li>
+</ul>
+<h3>Post Listing</h3>
+<pre><code class="language-markdown">{{ posts }}
+{{ posts limit:5 }}
+{{ posts tag:&quot;tech&quot; }}
+{{ posts tag:&quot;tech,ai&quot; limit:10 order:asc }}
+{{ posts description:True image:True content:True }}
+</code></pre>
+<p>Parameters:</p>
+<ul>
+<li><code>tag:</code> — filter by tag(s), comma-separated</li>
+<li><code>limit:</code> — max number of posts</li>
+<li><code>order:</code> — <code>asc</code> or <code>desc</code> (default: desc)</li>
+<li><code>description:True</code> — show meta descriptions</li>
+<li><code>image:True</code> — show meta images</li>
+<li><code>content:True</code> — show full content (only on pages)</li>
+</ul>
+<h3>Email Signup (upgraded blogs only)</h3>
+<pre><code class="language-markdown">{{ email-signup }}
+{{ email_signup }}
+</code></pre>
+<h2>Links</h2>
+<h3>Standard Links</h3>
+<pre><code class="language-markdown">[Link text](https://example.com)
+[Link with title](https://example.com &quot;Title text&quot;)
+</code></pre>
+<h3>Open in New Tab</h3>
+<p>Prefix URL with <code>tab:</code>:</p>
+<pre><code class="language-markdown">[External link](tab:https://example.com)
+</code></pre>
+<h3>Heading Anchors</h3>
+<p>Headings automatically get slugified IDs:</p>
+<pre><code class="language-markdown">## My Section Title
+</code></pre>
+<p>Links to: <code>#my-section-title</code></p>
+<h2>Typography</h2>
+<p>Automatic replacements:</p>
+<ul>
+<li><code>(c)</code> → ©</li>
+<li><code>(C)</code> → ©</li>
+<li><code>(r)</code> → ®</li>
+<li><code>(R)</code> → ®</li>
+<li><code>(tm)</code> → ™</li>
+<li><code>(TM)</code> → ™</li>
+<li><code>(p)</code> → ℗</li>
+<li><code>(P)</code> → ℗</li>
+<li><code>+-</code> → ±</li>
+</ul>
+<h2>Raw HTML</h2>
+<p>HTML is supported directly in Markdown:</p>
+<pre><code class="language-html">&lt;div class=&quot;custom-class&quot; style=&quot;text-align: center;&quot;&gt;
+  &lt;p&gt;Centered content with custom styling&lt;/p&gt;
+&lt;/div&gt;
+</code></pre>
+<p><strong>Note:</strong> <code>&lt;script&gt;</code>, <code>&lt;object&gt;</code>, <code>&lt;embed&gt;</code>, <code>&lt;form&gt;</code> are stripped for free accounts. Iframes are whitelisted (YouTube, Vimeo, Spotify, etc.).</p>
+<h2>Whitelisted Iframe Sources</h2>
+<ul>
+<li>youtube.com, youtube-nocookie.com</li>
+<li>vimeo.com</li>
+<li>soundcloud.com</li>
+<li>spotify.com</li>
+<li>codepen.io</li>
+<li>google.com (docs, drive, maps)</li>
+<li>bandcamp.com</li>
+<li>apple.com (music embeds)</li>
+<li>archive.org</li>
+<li>And more...</li>
+</ul>
+<h2>Dashboard URLs</h2>
+<p>Replace <code>&lt;subdomain&gt;</code> with your blog subdomain:</p>
+<ul>
+<li><strong>Blog list:</strong> <code>https://bearblog.dev/dashboard/</code></li>
+<li><strong>Dashboard:</strong> <code>https://&lt;subdomain&gt;.bearblog.dev/dashboard/</code></li>
+<li><strong>New post:</strong> <code>https://&lt;subdomain&gt;.bearblog.dev/dashboard/post/</code></li>
+<li><strong>Edit post:</strong> <code>https://&lt;subdomain&gt;.bearblog.dev/dashboard/post/&lt;uid&gt;/</code></li>
+<li><strong>Styles:</strong> <code>https://&lt;subdomain&gt;.bearblog.dev/dashboard/styles/</code></li>
+<li><strong>Navigation:</strong> <code>https://&lt;subdomain&gt;.bearblog.dev/dashboard/nav/</code></li>
+<li><strong>Analytics:</strong> <code>https://&lt;subdomain&gt;.bearblog.dev/dashboard/analytics/</code></li>
+<li><strong>Settings:</strong> <code>https://&lt;subdomain&gt;.bearblog.dev/dashboard/settings/</code></li>
+</ul>
+<h2>Example: Complete Post</h2>
+<p><strong>Header content:</strong></p>
+<pre><code>title: Getting Started with AI Assistants
+link: ai-assistants-intro
+published_date: 2026-01-05 15:00
+tags: ai, tutorial, tech
+make_discoverable: true
+is_page: false
+meta_description: A beginner&#39;s guide to working with AI assistants
+lang: en
+</code></pre>
+<p><strong>Body content:</strong></p>
+<pre><code class="language-markdown">AI assistants are changing how we work. Here&#39;s what you need to know.
+
+## Why AI Assistants?
+
+They help with:
+- [x] Writing and editing
+- [x] Research and analysis
+- [ ] Making coffee (not yet!)
+
+&gt; &quot;The best tool is the one you actually use.&quot; — Someone wise
+
+## Getting Started
+
+Check out [OpenAI](tab:https://openai.com) or [Anthropic](tab:https://anthropic.com) for popular options.
+
+---
+
+*What&#39;s your experience with AI? Let me know!*
+
+{{ previous_post }} {{ next_post }}
+</code></pre>
+<h2>Tips</h2>
+<ol>
+<li><strong>Preview before publishing</strong> — Use the preview button to check formatting</li>
+<li><strong>Use templates</strong> — Set up a post template in dashboard settings for consistent headers</li>
+<li><strong>Schedule posts</strong> — Set <code>published_date</code> in the future</li>
+<li><strong>Draft mode</strong> — Don&#39;t click publish to keep as draft</li>
+<li><strong>Custom CSS</strong> — Add <code>class_name</code> and style in your blog&#39;s CSS</li>
+<li><strong>SEO</strong> — Always set <code>meta_description</code> and <code>meta_image</code></li>
+</ol>
+<h2>Troubleshooting</h2>
+<ul>
+<li><strong>Post not showing?</strong> Check <code>publish</code> status and <code>published_date</code></li>
+<li><strong>Tags not working?</strong> Use comma separation, no quotes</li>
+<li><strong>Styling issues?</strong> Check <code>class_name</code> is slugified (lowercase, hyphens)</li>
+<li><strong>Date format error?</strong> Use <code>YYYY-MM-DD HH:MM</code></li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/azade-c/bearblog/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/azade-c/bearblog" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/azade-c/bearblog/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@azade-c</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Marketing & Sales</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

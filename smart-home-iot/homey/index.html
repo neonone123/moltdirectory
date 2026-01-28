@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Control Athom Homey smart home devices via local (LAN/VPN) or cloud APIs">
+  <title>homey - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Smart Home & IoT</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Smart Home & IoT</a>
+                <span class="skill-page-author">by @maxsumrall</span>
+              </div>
+              <h1 class="skill-page-title">homey</h1>
+              <p class="skill-page-desc">Control Athom Homey smart home devices via local (LAN/VPN) or cloud APIs</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Homey Smart Home Control</h1>
+<p>Control Athom Homey devices via local (LAN/VPN) or cloud APIs using token authentication.</p>
+<h2>Setup</h2>
+<p>Requires Node.js &gt;= 18.</p>
+<ol>
+<li><p><strong>Decide local vs cloud</strong></p>
+<ul>
+<li><strong>Local (LAN/VPN):</strong> use a local API key from the Homey Web App + Homey IP address</li>
+<li><strong>Cloud (remote/headless):</strong> use a cloud token from Developer Tools</li>
+</ul>
+</li>
+<li><p><strong>Configure</strong></p>
+<p><strong>Local (recommended when the agent runs on your home network):</strong></p>
+<pre><code class="language-bash">homeycli auth discover-local --save --pick 1
+echo &quot;&lt;LOCAL_API_KEY&gt;&quot; | homeycli auth set-local --stdin
+# or interactive (hidden input): homeycli auth set-local --prompt
+</code></pre>
+<p><strong>Cloud (recommended for VPS/headless hosting):</strong></p>
+<pre><code class="language-bash">echo &quot;&lt;CLOUD_TOKEN&gt;&quot; | homeycli auth set-token --stdin
+# or interactive (hidden input): homeycli auth set-token --prompt
+</code></pre>
+<p>Check status:</p>
+<pre><code class="language-bash">homeycli auth status
+</code></pre>
+</li>
+<li><p><strong>Test connection</strong></p>
+<pre><code class="language-bash">homeycli status
+</code></pre>
+</li>
+</ol>
+<h2>Commands</h2>
+<h3>Snapshot (recommended for agents)</h3>
+<pre><code class="language-bash">homeycli snapshot --json
+homeycli snapshot --json --include-flows
+</code></pre>
+<h3>List Devices</h3>
+<pre><code class="language-bash">homeycli devices              # Pretty table output
+homeycli devices --json       # JSON output for AI parsing (includes latest values)
+
+# Filter by name (returns multiple matches)
+homeycli devices --match &quot;kitchen&quot; --json
+</code></pre>
+<h3>Control Devices</h3>
+<p>Turn devices on/off:</p>
+<pre><code class="language-bash">homeycli device &quot;Living Room Light&quot; on
+homeycli device &quot;Bedroom Lamp&quot; off
+</code></pre>
+<p>Set specific capabilities:</p>
+<pre><code class="language-bash">homeycli device &quot;Dimmer&quot; set dim 0.5                    # 50% brightness
+homeycli device &quot;Thermostat&quot; set target_temperature 21  # Set temperature
+homeycli device &quot;RGB Light&quot; set light_hue 0.5           # Hue (0-1)
+homeycli device &quot;Lock&quot; set locked true                  # Lock device
+</code></pre>
+<p>Get capability values:</p>
+<pre><code class="language-bash">homeycli device &quot;Thermostat&quot; get measure_temperature
+homeycli device &quot;Motion Sensor&quot; get alarm_motion
+
+# Get all values for a device (multi-sensors)
+homeycli device &quot;Living Room Air&quot; values
+homeycli device &quot;Living Room Air&quot; get
+</code></pre>
+<h3>Flows (Automations)</h3>
+<pre><code class="language-bash">homeycli flows                        # List all flows
+homeycli flows --json                 # JSON output
+homeycli flows --match &quot;good&quot; --json  # Filter flows by name
+homeycli flow trigger &quot;Good Night&quot;    # Trigger by name
+homeycli flow trigger &lt;flow-id&gt;       # Trigger by ID
+</code></pre>
+<h3>Zones (Rooms)</h3>
+<pre><code class="language-bash">homeycli zones           # List all zones/rooms
+homeycli zones --json    # JSON output
+</code></pre>
+<h3>Status</h3>
+<pre><code class="language-bash">homeycli status    # Show Homey connection info
+</code></pre>
+<h2>Common Capabilities</h2>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Type</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>onoff</code></td>
+<td>boolean</td>
+<td>Power on/off</td>
+<td><code>true</code>, <code>false</code></td>
+</tr>
+<tr>
+<td><code>dim</code></td>
+<td>number</td>
+<td>Brightness (0-1)</td>
+<td><code>0.5</code> (50%)</td>
+</tr>
+<tr>
+<td><code>light_hue</code></td>
+<td>number</td>
+<td>Color hue (0-1)</td>
+<td><code>0.33</code> (green)</td>
+</tr>
+<tr>
+<td><code>light_saturation</code></td>
+<td>number</td>
+<td>Color saturation (0-1)</td>
+<td><code>1.0</code> (full)</td>
+</tr>
+<tr>
+<td><code>light_temperature</code></td>
+<td>number</td>
+<td>Color temp (0-1)</td>
+<td><code>0.5</code> (neutral)</td>
+</tr>
+<tr>
+<td><code>target_temperature</code></td>
+<td>number</td>
+<td>Thermostat target (°C)</td>
+<td><code>21</code></td>
+</tr>
+<tr>
+<td><code>measure_temperature</code></td>
+<td>number</td>
+<td>Current temp (read-only)</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>locked</code></td>
+<td>boolean</td>
+<td>Lock state</td>
+<td><code>true</code>, <code>false</code></td>
+</tr>
+<tr>
+<td><code>alarm_motion</code></td>
+<td>boolean</td>
+<td>Motion detected (read-only)</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>alarm_contact</code></td>
+<td>boolean</td>
+<td>Contact sensor (read-only)</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>volume_set</code></td>
+<td>number</td>
+<td>Volume (0-1)</td>
+<td><code>0.5</code></td>
+</tr>
+</tbody></table>
+<p>Use <code>homeycli devices</code> to see what capabilities each device supports.</p>
+<h2>Fuzzy Matching</h2>
+<p>Device and flow names support fuzzy matching:</p>
+<ul>
+<li><strong>Exact match:</strong> &quot;Living Room Light&quot; → finds &quot;Living Room Light&quot;</li>
+<li><strong>Substring:</strong> &quot;living light&quot; → finds &quot;Living Room Light&quot;  </li>
+<li><strong>Levenshtein distance:</strong> &quot;livng light&quot; → finds &quot;Living Room Light&quot; (typo-tolerant)</li>
+</ul>
+<h2>JSON Mode</h2>
+<p>Add <code>--json</code> to any command for machine-readable output:</p>
+<pre><code class="language-bash">homeycli devices --json | jq &#39;.[] | select(.class == &quot;light&quot;)&#39;
+homeycli status --json
+</code></pre>
+<h2>Examples</h2>
+<p><strong>Morning routine:</strong></p>
+<pre><code class="language-bash">homeycli device &quot;Bedroom Light&quot; on
+homeycli device &quot;Bedroom Light&quot; set dim 0.3
+homeycli device &quot;Thermostat&quot; set target_temperature 20
+</code></pre>
+<p><strong>Check temperature:</strong></p>
+<pre><code class="language-bash">homeycli device &quot;Living Room&quot; get measure_temperature
+</code></pre>
+<p><strong>Trigger scene:</strong></p>
+<pre><code class="language-bash">homeycli flow trigger &quot;Movie Time&quot;
+</code></pre>
+<p><strong>List all lights:</strong></p>
+<pre><code class="language-bash">homeycli devices --json | jq &#39;.[] | select(.class == &quot;light&quot;) | .name&#39;
+</code></pre>
+<h2>Troubleshooting</h2>
+<p><strong>&quot;No auth configured&quot;</strong></p>
+<p>Local (LAN/VPN):</p>
+<ul>
+<li>Save local config: <code>echo &quot;&lt;LOCAL_API_KEY&gt;&quot; | homeycli auth set-local --address http://&lt;homey-ip&gt; --stdin</code></li>
+</ul>
+<p>Cloud (remote/headless):</p>
+<ul>
+<li>Save cloud token: <code>echo &quot;&lt;CLOUD_TOKEN&gt;&quot; | homeycli auth set-token --stdin</code></li>
+<li>Cloud tokens can be created in Homey Developer Tools: <a href="https://tools.developer.homey.app/api/clients">https://tools.developer.homey.app/api/clients</a></li>
+</ul>
+<p><strong>&quot;Device not found&quot; / ambiguous match</strong></p>
+<ul>
+<li>List devices with <code>homeycli devices --json</code> (or <code>homeycli devices --match &lt;query&gt; --json</code>) to find the right <code>id</code></li>
+<li>If a query matches more than one device, the CLI returns candidate IDs and asks you to specify the device by ID</li>
+</ul>
+<p><strong>&quot;Capability not supported&quot;</strong></p>
+<ul>
+<li>Check available capabilities: <code>homeycli devices</code> shows what each device supports</li>
+<li>Common issue: trying to turn on a sensor (use <code>get</code> instead of <code>set</code>)</li>
+</ul>
+<h2>API Reference</h2>
+<p>The CLI uses the official <code>homey-api</code> npm package (v3.15.0).</p>
+<p><strong>Auth/connection modes:</strong></p>
+<ul>
+<li><strong>Local mode:</strong> <code>HomeyAPI.createLocalAPI({ address, token })</code> using the Homey Web App local API key.</li>
+<li><strong>Cloud mode:</strong> <code>AthomCloudAPI</code> using a cloud bearer token (PAT) to create a session and access devices/flows/zones.</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/maxsumrall/homey/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/maxsumrall/homey" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/maxsumrall/homey/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@maxsumrall</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Smart Home & IoT</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

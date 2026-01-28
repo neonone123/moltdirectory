@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage linkding bookmarks - save URLs, search, tag, organize">
+  <title>clinkding - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Image & Video Generation</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Image & Video Generation</a>
+                <span class="skill-page-author">by @daveonkels</span>
+              </div>
+              <h1 class="skill-page-title">clinkding</h1>
+              <p class="skill-page-desc">Manage linkding bookmarks - save URLs, search, tag, organize</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>clinkding - Linkding Bookmark Manager CLI</h1>
+<p>A modern Go-based CLI for managing bookmarks in <a href="https://github.com/sissbruecker/linkding">linkding</a>, a self-hosted bookmark manager.</p>
+<h2>What This Does</h2>
+<p><strong>Linkding</strong> is a self-hosted bookmark manager (like Pocket, Instapaper). <strong>clinkding</strong> is the CLI that lets you manage your bookmarks from the terminal or via AI agents.</p>
+<p>Think of it as:</p>
+<ul>
+<li><strong>Save for later</strong> - Capture URLs you want to read</li>
+<li><strong>Searchable library</strong> - Full-text search across titles, descriptions, tags</li>
+<li><strong>Organized collections</strong> - Tag and bundle related bookmarks</li>
+<li><strong>Personal archive</strong> - Keep important links with notes and metadata</li>
+</ul>
+<h2>Quick Start</h2>
+<h3>Initial Setup</h3>
+<pre><code class="language-bash"># Interactive configuration
+clinkding config init
+
+# Or manually configure
+clinkding config set url https://your-linkding-instance.com
+clinkding config set token YOUR_API_TOKEN
+
+# Test connection
+clinkding config test
+</code></pre>
+<h3>Configuration File</h3>
+<p>Location: <code>~/.config/clinkding/config.yaml</code></p>
+<pre><code class="language-yaml">url: https://linkding.example.com
+token: your-api-token-here
+
+defaults:
+  bookmark_limit: 100
+  output_format: auto
+</code></pre>
+<h3>Environment Variables</h3>
+<pre><code class="language-bash">export LINKDING_URL=&quot;https://linkding.example.com&quot;
+export LINKDING_TOKEN=&quot;your-api-token-here&quot;
+</code></pre>
+<h2>Core Commands</h2>
+<h3>Bookmarks</h3>
+<h4>List &amp; Search</h4>
+<pre><code class="language-bash"># List recent bookmarks
+clinkding bookmarks list
+
+# Search by keyword
+clinkding bookmarks list --query &quot;golang tutorial&quot;
+
+# Filter by tag
+clinkding bookmarks list --query &quot;tag:programming&quot;
+
+# Recent bookmarks (last 7 days)
+clinkding bookmarks list --added-since &quot;7d&quot;
+
+# Unread bookmarks
+clinkding bookmarks list --query &quot;unread:yes&quot;
+
+# JSON output for scripting
+clinkding bookmarks list --json
+
+# Plain text (tab-separated)
+clinkding bookmarks list --plain
+</code></pre>
+<h4>Create Bookmarks</h4>
+<pre><code class="language-bash"># Simple bookmark
+clinkding bookmarks create https://go.dev
+
+# With metadata
+clinkding bookmarks create https://go.dev \
+  --title &quot;Go Programming Language&quot; \
+  --tags &quot;golang,programming,reference&quot; \
+  --description &quot;Official Go website&quot; \
+  --unread
+
+# Check if URL already exists before creating
+clinkding bookmarks check https://go.dev
+</code></pre>
+<h4>Update Bookmarks</h4>
+<pre><code class="language-bash"># Update title
+clinkding bookmarks update 42 --title &quot;New Title&quot;
+
+# Add tags
+clinkding bookmarks update 42 --add-tags &quot;important,work&quot;
+
+# Remove tags
+clinkding bookmarks update 42 --remove-tags &quot;old-tag&quot;
+
+# Mark as read
+clinkding bookmarks update 42 --read
+
+# Update description
+clinkding bookmarks update 42 --description &quot;Updated notes&quot;
+</code></pre>
+<h4>Get Bookmark Details</h4>
+<pre><code class="language-bash"># Full details
+clinkding bookmarks get 42
+
+# JSON output
+clinkding bookmarks get 42 --json
+</code></pre>
+<h4>Archive &amp; Delete</h4>
+<pre><code class="language-bash"># Archive (hide from main list)
+clinkding bookmarks archive 42
+
+# Unarchive
+clinkding bookmarks unarchive 42
+
+# Delete permanently
+clinkding bookmarks delete 42
+</code></pre>
+<h3>Tags</h3>
+<pre><code class="language-bash"># List all tags
+clinkding tags list
+
+# Create a tag
+clinkding tags create &quot;golang&quot;
+
+# Get tag details
+clinkding tags get 1
+
+# Plain text output
+clinkding tags list --plain
+</code></pre>
+<h3>Bundles</h3>
+<p>Bundles are collections of related bookmarks.</p>
+<pre><code class="language-bash"># List bundles
+clinkding bundles list
+
+# Create a bundle
+clinkding bundles create &quot;Go Resources&quot; \
+  --description &quot;Everything related to Go programming&quot;
+
+# Update a bundle
+clinkding bundles update 1 --name &quot;Go Lang Resources&quot;
+
+# Get bundle details
+clinkding bundles get 1
+
+# Delete a bundle
+clinkding bundles delete 1
+</code></pre>
+<h3>Assets</h3>
+<p>Upload and manage file attachments for bookmarks.</p>
+<pre><code class="language-bash"># List assets for a bookmark
+clinkding assets list 42
+
+# Upload a file
+clinkding assets upload 42 ~/Documents/screenshot.png
+
+# Download an asset
+clinkding assets download 42 1 -o ./downloaded-file.png
+
+# Delete an asset
+clinkding assets delete 42 1
+</code></pre>
+<h3>User Profile</h3>
+<pre><code class="language-bash"># Get user profile info
+clinkding user profile
+</code></pre>
+<h2>Agent Usage Patterns</h2>
+<h3>Save URL from Conversation</h3>
+<pre><code class="language-bash"># User: &quot;Save this for later: https://example.com&quot;
+clinkding bookmarks create https://example.com \
+  --title &quot;Article Title&quot; \
+  --description &quot;Context from conversation&quot; \
+  --tags &quot;topic,context&quot;
+</code></pre>
+<h3>Search Bookmarks</h3>
+<pre><code class="language-bash"># User: &quot;Find my golang bookmarks&quot;
+clinkding bookmarks list --query &quot;golang&quot;
+
+# User: &quot;Show me unread programming articles&quot;
+clinkding bookmarks list --query &quot;tag:programming unread:yes&quot;
+
+# User: &quot;What did I save last week?&quot;
+clinkding bookmarks list --added-since &quot;7d&quot;
+</code></pre>
+<h3>Organize &amp; Tag</h3>
+<pre><code class="language-bash"># User: &quot;Tag bookmark 42 as important&quot;
+clinkding bookmarks update 42 --add-tags &quot;important&quot;
+
+# User: &quot;Create a bundle for my AI research links&quot;
+clinkding bundles create &quot;AI Research&quot; \
+  --description &quot;Machine learning and AI papers&quot;
+</code></pre>
+<h3>Retrieve for Reading</h3>
+<pre><code class="language-bash"># User: &quot;Give me something to read&quot;
+clinkding bookmarks list --query &quot;unread:yes&quot; --limit 5
+
+# User: &quot;Show me my golang tutorials&quot;
+clinkding bookmarks list --query &quot;tag:golang tag:tutorial&quot;
+</code></pre>
+<h2>Output Formats</h2>
+<h3>Auto (Default)</h3>
+<p>Human-friendly tables and colors for terminal display.</p>
+<h3>JSON</h3>
+<pre><code class="language-bash">clinkding bookmarks list --json
+</code></pre>
+<p>Machine-readable for scripting and agent parsing.</p>
+<h3>Plain Text</h3>
+<pre><code class="language-bash">clinkding bookmarks list --plain
+</code></pre>
+<p>Tab-separated values for pipe-friendly parsing.</p>
+<h2>Relative Date Filtering</h2>
+<p>Supports human-friendly time ranges:</p>
+<pre><code class="language-bash"># Last 24 hours
+clinkding bookmarks list --added-since &quot;24h&quot;
+
+# Last 7 days
+clinkding bookmarks list --added-since &quot;7d&quot;
+
+# Last 6 months
+clinkding bookmarks list --modified-since &quot;180d&quot;
+</code></pre>
+<p><strong>Supported units:</strong> <code>h</code> (hours), <code>d</code> (days), <code>y</code> (years)</p>
+<h2>Common Workflows</h2>
+<h3>Morning Reading Routine</h3>
+<pre><code class="language-bash"># Check unread bookmarks
+clinkding bookmarks list --query &quot;unread:yes&quot;
+
+# Get top 5 most recent
+clinkding bookmarks list --limit 5
+</code></pre>
+<h3>Save from Clipboard</h3>
+<pre><code class="language-bash"># macOS
+pbpaste | xargs -I {} clinkding bookmarks create {}
+
+# Linux
+xclip -o | xargs -I {} clinkding bookmarks create {}
+</code></pre>
+<h3>Batch Operations</h3>
+<pre><code class="language-bash"># Tag multiple bookmarks
+for id in 42 43 44; do
+  clinkding bookmarks update $id --add-tags &quot;important&quot;
+done
+
+# Archive old unread bookmarks
+clinkding bookmarks list --query &quot;unread:yes&quot; --added-since &quot;30d&quot; --plain | \
+  while read id _; do
+    clinkding bookmarks archive &quot;$id&quot;
+  done
+</code></pre>
+<h3>Backup Bookmarks</h3>
+<pre><code class="language-bash"># Export all bookmarks as JSON
+clinkding bookmarks list --json &gt; bookmarks-backup-$(date +%Y%m%d).json
+
+# Export specific tag
+clinkding bookmarks list --query &quot;tag:important&quot; --json &gt; important.json
+</code></pre>
+<h2>Global Flags</h2>
+<p>Available on all commands:</p>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>-c, --config &lt;file&gt;</code></td>
+<td>Config file path</td>
+</tr>
+<tr>
+<td><code>-u, --url &lt;url&gt;</code></td>
+<td>Linkding instance URL</td>
+</tr>
+<tr>
+<td><code>-t, --token &lt;token&gt;</code></td>
+<td>API token</td>
+</tr>
+<tr>
+<td><code>--json</code></td>
+<td>Output as JSON</td>
+</tr>
+<tr>
+<td><code>--plain</code></td>
+<td>Output as plain text</td>
+</tr>
+<tr>
+<td><code>--no-color</code></td>
+<td>Disable colors</td>
+</tr>
+<tr>
+<td><code>-q, --quiet</code></td>
+<td>Minimal output</td>
+</tr>
+<tr>
+<td><code>-v, --verbose</code></td>
+<td>Verbose output</td>
+</tr>
+</tbody></table>
+<h2>Exit Codes</h2>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>Success</td>
+</tr>
+<tr>
+<td>1</td>
+<td>General error (API/network)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Invalid usage (bad flags/args)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Authentication error</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Not found</td>
+</tr>
+<tr>
+<td>130</td>
+<td>Interrupted (Ctrl-C)</td>
+</tr>
+</tbody></table>
+<h2>Troubleshooting</h2>
+<h3>Test Configuration</h3>
+<pre><code class="language-bash"># Verify settings
+clinkding config show
+
+# Test connection
+clinkding config test
+</code></pre>
+<h3>Common Issues</h3>
+<p><strong>Authentication Error:</strong></p>
+<ul>
+<li>Verify API token in linkding web interface</li>
+<li>Check URL includes protocol (<code>https://</code>)</li>
+<li>Remove trailing slashes from URL</li>
+</ul>
+<p><strong>Command-Specific Help:</strong></p>
+<pre><code class="language-bash">clinkding bookmarks --help
+clinkding bookmarks create --help
+</code></pre>
+<h2>Links</h2>
+<ul>
+<li><strong>GitHub:</strong> <a href="https://github.com/daveonkels/clinkding">https://github.com/daveonkels/clinkding</a></li>
+<li><strong>Linkding:</strong> <a href="https://github.com/sissbruecker/linkding">https://github.com/sissbruecker/linkding</a></li>
+<li><strong>Homebrew:</strong> <code>brew install daveonkels/tap/clinkding</code></li>
+</ul>
+<h2>Installation</h2>
+<h3>Homebrew (macOS/Linux)</h3>
+<pre><code class="language-bash">brew install daveonkels/tap/clinkding
+</code></pre>
+<h3>Go Install</h3>
+<pre><code class="language-bash">go install github.com/daveonkels/clinkding@latest
+</code></pre>
+<h3>Binary Download</h3>
+<p>Download from <a href="https://github.com/daveonkels/clinkding/releases">releases</a> for your platform.</p>
+<h2>Shell Completion</h2>
+<pre><code class="language-bash"># Bash
+clinkding completion bash &gt; /etc/bash_completion.d/clinkding
+
+# Zsh
+clinkding completion zsh &gt; &quot;${fpath[1]}/_clinkding&quot;
+
+# Fish
+clinkding completion fish &gt; ~/.config/fish/completions/clinkding.fish
+</code></pre>
+<hr>
+<p><strong>Built by:</strong> <a href="https://github.com/daveonkels">@daveonkels</a><br><strong>License:</strong> MIT</p>
+<h2>Agent Workflows for Smart Bookmark Creation</h2>
+<h3>Adding URLs with Automatic Metadata</h3>
+<p>When a user says &quot;Add this to linkding&quot; or &quot;Save this URL&quot;, follow this workflow:</p>
+<p><strong>1. Extract metadata from the URL</strong></p>
+<p>Use the <code>summarize</code> skill to get title and description:</p>
+<pre><code class="language-bash"># Get page metadata
+summarize url https://example.com --format json
+</code></pre>
+<p>This returns structured data with:</p>
+<ul>
+<li>Title</li>
+<li>Description/summary</li>
+<li>Main content</li>
+</ul>
+<p><strong>2. Infer appropriate tags from content</strong></p>
+<p>Map the content to <strong>existing canonical tags only</strong>. Do NOT create new tags.</p>
+<p>Use this canonical tag list (263 tags total):</p>
+<ul>
+<li><strong>Tech:</strong> webdev, design, programming, ai, cloud, devops, docker, linux, networking, security, privacy</li>
+<li><strong>Content:</strong> content, media, photography, video, audio, books, podcasting</li>
+<li><strong>Business:</strong> business, marketing, ecommerce, finance, career, productivity</li>
+<li><strong>Home:</strong> smart-home, home-assistant, esphome, iot, home-improvement</li>
+<li><strong>Tools:</strong> tools, cli, git, github, editor, reference, documentation</li>
+<li><strong>Data:</strong> data, analytics, mysql, nosql</li>
+<li><strong>Communication:</strong> communication, email, messaging, slack</li>
+<li><strong>Education:</strong> education, guide, howto, research, testing</li>
+<li><strong>Locations:</strong> texas, seattle, dallas (use sparingly)</li>
+</ul>
+<p><strong>Tag Selection Rules:</strong></p>
+<ul>
+<li>Use 2-5 tags maximum</li>
+<li>Choose the most specific applicable tags</li>
+<li>If unsure, default to broader categories (e.g., <code>tools</code> over <code>generator</code>)</li>
+<li>Check existing tags first: <code>clinkding tags list --plain | grep -i &lt;keyword&gt;</code></li>
+<li>Never create tags like: <code>awesome</code>, <code>cool</code>, <code>interesting</code>, <code>resources</code>, <code>tips</code></li>
+</ul>
+<p><strong>3. Create the bookmark with metadata</strong></p>
+<pre><code class="language-bash">clinkding bookmarks create &quot;https://example.com&quot; \
+  --title &quot;Title from summarize&quot; \
+  --description &quot;Summary from summarize (1-2 sentences)&quot; \
+  --tags &quot;webdev,tools,reference&quot;
+</code></pre>
+<h3>Example Workflow</h3>
+<p><strong>User:</strong> &quot;Save this to linkding: <a href="https://github.com/awesome/project">https://github.com/awesome/project</a>&quot;</p>
+<p><strong>Agent Actions:</strong></p>
+<pre><code class="language-bash"># 1. Check if already bookmarked
+clinkding bookmarks check https://github.com/awesome/project
+
+# 2. Get metadata (use summarize skill)
+summarize url https://github.com/awesome/project --format json
+
+# 3. Analyze content and infer tags
+# From summary: &quot;A CLI tool for Docker container management&quot;
+# Canonical tags: docker, devops, cli, tools
+
+# 4. Create bookmark
+clinkding bookmarks create https://github.com/awesome/project \
+  --title &quot;Awesome Project - Docker Container CLI&quot; \
+  --description &quot;Command-line tool for managing Docker containers with enhanced features&quot; \
+  --tags &quot;docker,devops,cli&quot;
+</code></pre>
+<h3>Tag Mapping Heuristics</h3>
+<p>Use these rules to map content → canonical tags:</p>
+<table>
+<thead>
+<tr>
+<th>Content Type</th>
+<th>Canonical Tags</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Web development, HTML, CSS, JavaScript</td>
+<td><code>webdev</code>, <code>css</code>, <code>javascript</code></td>
+</tr>
+<tr>
+<td>React, frameworks, frontend</td>
+<td><code>webdev</code>, <code>react</code></td>
+</tr>
+<tr>
+<td>Design, UI/UX, mockups</td>
+<td><code>design</code></td>
+</tr>
+<tr>
+<td>Python, Go, Ruby code</td>
+<td><code>programming</code>, <code>python</code>/<code>ruby</code></td>
+</tr>
+<tr>
+<td>Docker, K8s, DevOps</td>
+<td><code>docker</code>, <code>devops</code>, <code>cloud</code></td>
+</tr>
+<tr>
+<td>Home automation, ESP32, sensors</td>
+<td><code>smart-home</code>, <code>esphome</code>, <code>iot</code></td>
+</tr>
+<tr>
+<td>AI, ML, LLMs</td>
+<td><code>ai</code>, <code>llm</code></td>
+</tr>
+<tr>
+<td>Productivity tools, workflows</td>
+<td><code>productivity</code>, <code>tools</code></td>
+</tr>
+<tr>
+<td>Finance, investing, crypto</td>
+<td><code>finance</code></td>
+</tr>
+<tr>
+<td>Marketing, SEO, ads</td>
+<td><code>marketing</code></td>
+</tr>
+<tr>
+<td>Shopping, deals, stores</td>
+<td><code>ecommerce</code></td>
+</tr>
+<tr>
+<td>Tutorials, guides, docs</td>
+<td><code>guide</code>, <code>howto</code>, <code>documentation</code></td>
+</tr>
+<tr>
+<td>Security, privacy, encryption</td>
+<td><code>security</code>, <code>privacy</code></td>
+</tr>
+<tr>
+<td>Local (DFW/Seattle)</td>
+<td><code>texas</code>, <code>seattle</code></td>
+</tr>
+</tbody></table>
+<h3>Validation Before Creating</h3>
+<p>Always run these checks:</p>
+<pre><code class="language-bash"># 1. Does URL already exist?
+clinkding bookmarks check &lt;url&gt;
+
+# 2. Do the tags exist?
+clinkding tags list --plain | grep -iE &quot;^(tag1|tag2|tag3)$&quot;
+
+# 3. Are we using canonical tags?
+# Cross-reference against the 263 canonical tags
+# Never create new tags without explicit user request
+</code></pre>
+<h3>User Requests to Save Multiple Links</h3>
+<p>If user provides multiple URLs:</p>
+<pre><code class="language-bash"># Process each URL separately with metadata extraction
+for url in url1 url2 url3; do
+  # Get metadata
+  # Infer tags
+  # Create bookmark
+done
+</code></pre>
+<h3>Updating Existing Bookmarks</h3>
+<p>If user says &quot;Update that bookmark&quot; or &quot;Add tags to my last save&quot;:</p>
+<pre><code class="language-bash"># Get most recent bookmark
+recent_id=$(clinkding bookmarks list --limit 1 --plain | cut -f1)
+
+# Add tags (don&#39;t remove existing ones unless asked)
+clinkding bookmarks update $recent_id --add-tags &quot;new-tag&quot;
+
+# Update description
+clinkding bookmarks update $recent_id --description &quot;Updated notes&quot;
+</code></pre>
+<h3>Key Principles</h3>
+<ol>
+<li><strong>Always fetch metadata</strong> - Use <code>summarize</code> to get good titles/descriptions</li>
+<li><strong>Use existing tags</strong> - Never create new tags without checking canonical list</li>
+<li><strong>Be selective</strong> - 2-5 tags max, choose the most specific applicable</li>
+<li><strong>Validate first</strong> - Check for duplicates before creating</li>
+<li><strong>Provide context</strong> - Include brief description explaining why it&#39;s useful</li>
+</ol>
+<hr>
+<h2>Current Canonical Tag Structure</h2>
+<p>Dave&#39;s linkding instance has <strong>263 canonical tags</strong> after consolidation from 17,189 duplicates.</p>
+<p>Top categories (by bookmark count):</p>
+<ul>
+<li><code>pinboard</code> (4,987) - Legacy import tag</li>
+<li><code>ifttt</code> (2,639) - Legacy import tag  </li>
+<li><code>webdev</code> (1,679) - Web development</li>
+<li><code>design</code> (561) - Design/UI/UX</li>
+<li><code>content</code> (416) - Content/writing</li>
+<li><code>cloud</code> (383) - Cloud/hosting/SaaS</li>
+<li><code>business</code> (364) - Business/strategy</li>
+<li><code>ecommerce</code> (308) - Shopping/marketplace</li>
+<li><code>smart-home</code> (295) - Home automation</li>
+<li><code>productivity</code> (291) - Productivity tools</li>
+</ul>
+<p><strong>Golden Rule:</strong> When in doubt, use broader existing tags rather than creating new specific ones.</p>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/daveonkels/clinkding/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/daveonkels/clinkding" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/daveonkels/clinkding/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@daveonkels</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Image & Video Generation</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

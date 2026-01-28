@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Comprehensive Azure Cloud Platform management via command-line interface">
+  <title>Azure CLI - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to DevOps & Cloud</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">DevOps & Cloud</a>
+                <span class="skill-page-author">by @ddevaal</span>
+              </div>
+              <h1 class="skill-page-title">Azure CLI</h1>
+              <p class="skill-page-desc">Comprehensive Azure Cloud Platform management via command-line interface</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Azure CLI Skill</h1>
+<p><strong>Master the Azure command-line interface for cloud infrastructure management, automation, and DevOps workflows.</strong></p>
+<p>Azure CLI is Microsoft&#39;s powerful cross-platform command-line tool for managing Azure resources. This skill provides comprehensive knowledge of Azure CLI commands, authentication, resource management, and automation patterns.</p>
+<h2>What You&#39;ll Learn</h2>
+<h3>Core Concepts</h3>
+<ul>
+<li>Azure subscription and resource group architecture</li>
+<li>Authentication methods and credential management</li>
+<li>Resource Provider organization and registration</li>
+<li>Global parameters, output formatting, and query syntax</li>
+<li>Automation scripting and error handling</li>
+</ul>
+<h3>Major Service Areas (66 command modules)</h3>
+<ul>
+<li><strong>Compute:</strong> Virtual Machines, Scale Sets, Kubernetes (AKS), Containers</li>
+<li><strong>Networking:</strong> Virtual Networks, Load Balancers, CDN, Traffic Manager</li>
+<li><strong>Storage &amp; Data:</strong> Storage Accounts, Data Lake, Cosmos DB, Databases</li>
+<li><strong>Application Services:</strong> App Service, Functions, Container Apps</li>
+<li><strong>Databases:</strong> SQL Server, MySQL, PostgreSQL, CosmosDB</li>
+<li><strong>Integration &amp; Messaging:</strong> Event Hubs, Service Bus, Logic Apps</li>
+<li><strong>Monitoring &amp; Management:</strong> Azure Monitor, Policy, RBAC, Cost Management</li>
+<li><strong>AI &amp; Machine Learning:</strong> Cognitive Services, Machine Learning</li>
+<li><strong>DevOps:</strong> Azure DevOps, Pipelines, Extensions</li>
+</ul>
+<h2>Quick Start</h2>
+<h3>Installation</h3>
+<p><strong>macOS:</strong></p>
+<pre><code class="language-bash">brew install azure-cli
+</code></pre>
+<p><strong>Linux (Ubuntu/Debian):</strong></p>
+<pre><code class="language-bash">curl -sL https://aka.ms/InstallAzureCliLinux | bash
+</code></pre>
+<p><strong>Windows:</strong></p>
+<pre><code class="language-powershell">choco install azure-cli
+# Or download MSI from https://aka.ms/InstallAzureCliWindowsMSI
+</code></pre>
+<p><strong>Verify Installation:</strong></p>
+<pre><code class="language-bash">az --version          # Show version
+az --help             # Show general help
+</code></pre>
+<h3>First Steps</h3>
+<pre><code class="language-bash"># 1. Login to Azure (opens browser for authentication)
+az login
+
+# 2. View your subscriptions
+az account list
+
+# 3. Set default subscription (optional)
+az account set --subscription &quot;My Subscription&quot;
+
+# 4. Create a resource group
+az group create -g myResourceGroup -l eastus
+
+# 5. List your resource groups
+az group list
+</code></pre>
+<h2>Essential Commands</h2>
+<h3>Authentication &amp; Accounts</h3>
+<pre><code class="language-bash">az login                                    # Interactive login
+az login --service-principal -u APP_ID -p PASSWORD -t TENANT_ID
+az login --identity                         # Managed identity
+az logout                                   # Sign out
+az account show                             # Current account
+az account list                             # All accounts
+az account set --subscription SUBSCRIPTION  # Set default
+</code></pre>
+<h3>Global Flags (Use with Any Command)</h3>
+<pre><code class="language-bash">--subscription ID       # Target subscription
+--resource-group -g RG  # Target resource group
+--output -o json|table|tsv|yaml  # Output format
+--query JMESPATH_QUERY  # Filter/extract output
+--verbose -v            # Verbose output
+--debug                 # Debug mode
+--help -h               # Command help
+</code></pre>
+<h3>Resource Groups</h3>
+<pre><code class="language-bash">az group list           # List all resource groups
+az group create -g RG -l LOCATION  # Create
+az group delete -g RG   # Delete
+az group show -g RG     # Get details
+az group update -g RG --tags key=value  # Update tags
+</code></pre>
+<h3>Virtual Machines (Compute)</h3>
+<pre><code class="language-bash">az vm create -g RG -n VM_NAME --image UbuntuLTS
+az vm list -g RG
+az vm show -g RG -n VM_NAME
+az vm start -g RG -n VM_NAME
+az vm stop -g RG -n VM_NAME
+az vm restart -g RG -n VM_NAME
+az vm delete -g RG -n VM_NAME
+</code></pre>
+<h3>Storage Operations</h3>
+<pre><code class="language-bash">az storage account create -g RG -n ACCOUNT --sku Standard_LRS
+az storage account list
+az storage container create --account-name ACCOUNT -n CONTAINER
+az storage blob upload --account-name ACCOUNT -c CONTAINER -n BLOB -f LOCAL_FILE
+az storage blob download --account-name ACCOUNT -c CONTAINER -n BLOB -f LOCAL_FILE
+</code></pre>
+<h3>Azure Kubernetes Service (AKS)</h3>
+<pre><code class="language-bash">az aks create -g RG -n CLUSTER --node-count 2
+az aks get-credentials -g RG -n CLUSTER
+az aks list
+az aks show -g RG -n CLUSTER
+az aks delete -g RG -n CLUSTER
+</code></pre>
+<h2>Common Patterns</h2>
+<h3>Pattern 1: Output Formatting</h3>
+<pre><code class="language-bash"># Get only specific fields
+az vm list --query &quot;[].{name: name, state: powerState}&quot;
+
+# Get just the names
+az vm list --query &quot;[].name&quot; -o tsv
+
+# Filter and extract
+az vm list --query &quot;[?powerState==&#39;VM running&#39;].name&quot;
+</code></pre>
+<h3>Pattern 2: Automation &amp; Scripting</h3>
+<pre><code class="language-bash">#!/bin/bash
+set -e  # Exit on error
+
+# Get VM ID
+VM_ID=$(az vm create \
+  -g myRG \
+  -n myVM \
+  --image UbuntuLTS \
+  --query id \
+  --output tsv)
+
+echo &quot;Created VM: $VM_ID&quot;
+
+# Check provisioning state
+az vm show --ids &quot;$VM_ID&quot; --query provisioningState
+</code></pre>
+<h3>Pattern 3: Batch Operations</h3>
+<pre><code class="language-bash"># Delete all VMs in a resource group
+az vm list -g myRG -d --query &quot;[].id&quot; -o tsv | xargs az vm delete --ids
+
+# List all resources by tag
+az resource list --tag env=production
+</code></pre>
+<h3>Pattern 4: Using Defaults</h3>
+<pre><code class="language-bash"># Set defaults to reduce typing
+az configure --defaults group=myRG subscription=mySubscription location=eastus
+
+# Now commands are simpler
+az vm create -n myVM --image UbuntuLTS  # group, subscription, location inherited
+</code></pre>
+<h2>Helper Scripts</h2>
+<p>This skill includes helper bash scripts for common operations:</p>
+<ul>
+<li><strong>azure-vm-status.sh</strong> — Check VM status across subscription</li>
+<li><strong>azure-resource-cleanup.sh</strong> — Identify and remove unused resources</li>
+<li><strong>azure-storage-analysis.sh</strong> — Analyze storage account usage and costs</li>
+<li><strong>azure-subscription-info.sh</strong> — Get subscription quotas and limits</li>
+<li><strong>azure-rg-deploy.sh</strong> — Deploy infrastructure with monitoring</li>
+</ul>
+<p><strong>Usage:</strong></p>
+<pre><code class="language-bash">./scripts/azure-vm-status.sh -g myResourceGroup
+./scripts/azure-storage-analysis.sh --subscription mySubscription
+</code></pre>
+<h2>Advanced Topics</h2>
+<h3>Output Querying with JMESPath</h3>
+<p>Azure CLI supports powerful output filtering using JMESPath:</p>
+<pre><code class="language-bash"># Sort results
+az vm list --query &quot;sort_by([], &amp;name)&quot;
+
+# Complex filtering
+az vm list --query &quot;[?location==&#39;eastus&#39; &amp;&amp; powerState==&#39;VM running&#39;].name&quot;
+
+# Aggregation
+az vm list --query &quot;length([])&quot;  # Count VMs
+</code></pre>
+<h3>Error Handling</h3>
+<pre><code class="language-bash"># Check exit codes
+az vm create -g RG -n VM --image UbuntuLTS
+if [ $? -eq 0 ]; then
+  echo &quot;VM created successfully&quot;
+else
+  echo &quot;Failed to create VM&quot;
+  exit 1
+fi
+</code></pre>
+<h3>Authentication Methods</h3>
+<p><strong>Service Principal (Automation):</strong></p>
+<pre><code class="language-bash">az login --service-principal \
+  --username $AZURE_CLIENT_ID \
+  --password $AZURE_CLIENT_SECRET \
+  --tenant $AZURE_TENANT_ID
+</code></pre>
+<p><strong>Managed Identity (Azure Resources):</strong></p>
+<pre><code class="language-bash"># On an Azure VM or Container Instance
+az login --identity
+</code></pre>
+<p><strong>Token-based (CI/CD):</strong></p>
+<pre><code class="language-bash">echo &quot;$AZURE_ACCESS_TOKEN&quot; | az login --service-principal -u $AZURE_CLIENT_ID --password-stdin --tenant $AZURE_TENANT_ID
+</code></pre>
+<h2>Key Resources</h2>
+<ul>
+<li><strong>Official Documentation:</strong> <a href="https://learn.microsoft.com/en-us/cli/azure/">https://learn.microsoft.com/en-us/cli/azure/</a></li>
+<li><strong>Command Reference:</strong> <a href="https://learn.microsoft.com/en-us/cli/azure/reference-index">https://learn.microsoft.com/en-us/cli/azure/reference-index</a></li>
+<li><strong>GitHub Repository:</strong> <a href="https://github.com/Azure/azure-cli">https://github.com/Azure/azure-cli</a></li>
+<li><strong>Comprehensive Guide:</strong> See <a href="references/REFERENCE.md">references/REFERENCE.md</a></li>
+<li><strong>Release Notes:</strong> <a href="https://github.com/Azure/azure-cli/releases">https://github.com/Azure/azure-cli/releases</a></li>
+</ul>
+<h2>Tips &amp; Tricks</h2>
+<ol>
+<li><p><strong>Enable Tab Completion:</strong></p>
+<pre><code class="language-bash"># macOS with Homebrew
+eval &quot;$(az completion init zsh)&quot;
+
+# Linux (bash)
+eval &quot;$(az completion init bash)&quot;
+</code></pre>
+</li>
+<li><p><strong>Find Commands Quickly:</strong></p>
+<pre><code class="language-bash">az find &quot;create virtual machine&quot;  # Search for commands
+</code></pre>
+</li>
+<li><p><strong>Use --no-wait for Long Operations:</strong></p>
+<pre><code class="language-bash">az vm create -g RG -n VM --image UbuntuLTS --no-wait
+# Check status later with az vm show
+</code></pre>
+</li>
+<li><p><strong>Save Frequently Used Parameters:</strong></p>
+<pre><code class="language-bash">az configure --defaults group=myRG location=eastus
+</code></pre>
+</li>
+<li><p><strong>Combine with Other Tools:</strong></p>
+<pre><code class="language-bash"># Use with jq for advanced JSON processing
+az vm list | jq &#39;.[] | select(.powerState == &quot;VM running&quot;) | .name&#39;
+
+# Use with xargs for batch operations
+az storage account list --query &quot;[].name&quot; -o tsv | xargs -I {} az storage account show -g RG -n {}
+</code></pre>
+</li>
+</ol>
+<h2>Next Steps</h2>
+<ul>
+<li>Review <a href="references/REFERENCE.md">references/REFERENCE.md</a> for comprehensive command documentation</li>
+<li>Explore helper scripts in the <code>scripts/</code> directory</li>
+<li>Practice with non-production resources first</li>
+<li>Review Azure best practices and cost optimization strategies</li>
+</ul>
+<hr>
+<p><strong>Version:</strong> 1.0.0<br><strong>License:</strong> MIT<br><strong>Compatible with:</strong> Azure CLI v2.50+, Azure Subscription</p>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/ddevaal/azure-cli/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/ddevaal/azure-cli" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/ddevaal/azure-cli/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@ddevaal</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">DevOps & Cloud</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="dropbox">
+  <title>dropbox - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to CLI Utilities</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">CLI Utilities</a>
+                <span class="skill-page-author">by @ryanlisse</span>
+              </div>
+              <h1 class="skill-page-title">dropbox</h1>
+              <p class="skill-page-desc">dropbox</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Dropbox Manager Skill</h1>
+<p>Manage Dropbox files via MCP server and CLI. Swift-native implementation using SwiftyDropbox SDK with OAuth 2.0 PKCE and secure Keychain token storage.</p>
+<h2>Setup</h2>
+<h3>Prerequisites</h3>
+<pre><code class="language-bash"># Clone and build Dropbook
+git clone https://github.com/RyanLisse/Dropbook.git
+cd Dropbook
+make build
+</code></pre>
+<h3>Authentication</h3>
+<h4>Option 1: OAuth Login with Keychain (Recommended)</h4>
+<p>Use the interactive OAuth flow with secure Keychain storage:</p>
+<pre><code class="language-bash">export DROPBOX_APP_KEY=&quot;your_dropbox_app_key&quot;
+export DROPBOX_APP_SECRET=&quot;your_dropbox_app_secret&quot;
+make login
+# or: swift run dropbook login
+</code></pre>
+<p>This will:</p>
+<ol>
+<li>Generate PKCE code verifier and challenge (SHA256, RFC 7636)</li>
+<li>Open an authorization URL with state parameter (CSRF protection)</li>
+<li>Prompt you to paste the authorization code</li>
+<li>Exchange code for access and refresh tokens</li>
+<li><strong>Save tokens to macOS Keychain</strong> (hardware-backed encryption)</li>
+<li>Fall back to <code>~/.dropbook/auth.json</code> if Keychain unavailable</li>
+<li>Enable automatic token refreshing</li>
+</ol>
+<p><strong>Security Features (RFC 9700 compliant):</strong></p>
+<ul>
+<li>PKCE with S256 challenge method</li>
+<li>State parameter for CSRF protection</li>
+<li>Keychain storage with <code>kSecAttrAccessibleWhenUnlocked</code></li>
+<li>CryptoKit for cryptographic operations</li>
+</ul>
+<h4>Option 2: Environment Variables (Legacy)</h4>
+<pre><code class="language-bash">export DROPBOX_APP_KEY=&quot;your_dropbox_app_key&quot;
+export DROPBOX_APP_SECRET=&quot;your_dropbox_app_secret&quot;
+export DROPBOX_ACCESS_TOKEN=&quot;your_dropbox_access_token&quot;
+</code></pre>
+<p><strong>Note</strong>: Manual tokens don&#39;t support automatic refreshing. Use OAuth login for production use.</p>
+<h3>Logout</h3>
+<p>Clear stored tokens from both Keychain and file storage:</p>
+<pre><code class="language-bash">make logout
+# or: swift run dropbook logout
+</code></pre>
+<h2>MCP Server (Recommended)</h2>
+<p>Start the MCP server:</p>
+<pre><code class="language-bash">make mcp
+# or: ./.build/debug/dropbook mcp
+</code></pre>
+<h3>MCP Tools</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>list_directory</code></td>
+<td>List files and folders in a Dropbox directory</td>
+</tr>
+<tr>
+<td><code>search</code></td>
+<td>Search for files by name or content</td>
+</tr>
+<tr>
+<td><code>upload</code></td>
+<td>Upload a file to Dropbox</td>
+</tr>
+<tr>
+<td><code>download</code></td>
+<td>Download a file from Dropbox</td>
+</tr>
+<tr>
+<td><code>delete</code></td>
+<td>Delete a file or folder (moves to trash)</td>
+</tr>
+<tr>
+<td><code>get_account_info</code></td>
+<td>Get account name and email</td>
+</tr>
+<tr>
+<td><code>read_file</code></td>
+<td>Read contents of a text file</td>
+</tr>
+</tbody></table>
+<h4>list_directory</h4>
+<p>List files and folders in a Dropbox directory.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>path</code> (string, optional): Directory path. Default: &quot;/&quot;</li>
+</ul>
+<p><strong>Response:</strong></p>
+<pre><code class="language-json">{
+  &quot;files&quot;: [
+    {&quot;type&quot;: &quot;file&quot;, &quot;name&quot;: &quot;doc.pdf&quot;, &quot;path&quot;: &quot;/Docs/doc.pdf&quot;, &quot;size&quot;: 1024},
+    {&quot;type&quot;: &quot;folder&quot;, &quot;name&quot;: &quot;Projects&quot;, &quot;path&quot;: &quot;/Projects&quot;}
+  ]
+}
+</code></pre>
+<h4>search</h4>
+<p>Search for files by name or content.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>query</code> (string, required): Search term</li>
+<li><code>path</code> (string, optional): Path to search within. Default: &quot;/&quot;</li>
+</ul>
+<p><strong>Response:</strong></p>
+<pre><code class="language-json">{
+  &quot;count&quot;: 2,
+  &quot;results&quot;: [
+    {&quot;matchType&quot;: &quot;filename&quot;, &quot;metadata&quot;: {&quot;name&quot;: &quot;report.pdf&quot;, &quot;path&quot;: &quot;/Docs/report.pdf&quot;}}
+  ]
+}
+</code></pre>
+<h4>upload</h4>
+<p>Upload a file to Dropbox.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>localPath</code> (string, required): Absolute path to local file</li>
+<li><code>remotePath</code> (string, required): Destination in Dropbox</li>
+<li><code>overwrite</code> (boolean, optional): Replace if exists. Default: false</li>
+</ul>
+<p><strong>Response:</strong></p>
+<pre><code class="language-json">{
+  &quot;uploaded&quot;: true,
+  &quot;name&quot;: &quot;file.txt&quot;,
+  &quot;path&quot;: &quot;/Uploads/file.txt&quot;,
+  &quot;size&quot;: 5000
+}
+</code></pre>
+<h4>download</h4>
+<p>Download a file from Dropbox.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>remotePath</code> (string, required): File path in Dropbox</li>
+<li><code>localPath</code> (string, required): Local destination path</li>
+</ul>
+<p><strong>Response:</strong></p>
+<pre><code class="language-json">{
+  &quot;downloaded&quot;: true,
+  &quot;to&quot;: &quot;/tmp/report.pdf&quot;
+}
+</code></pre>
+<h4>delete</h4>
+<p>Delete a file or folder from Dropbox (moves to trash).</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>path</code> (string, required): Path to delete in Dropbox</li>
+</ul>
+<p><strong>Response:</strong></p>
+<pre><code class="language-json">{
+  &quot;deleted&quot;: true,
+  &quot;path&quot;: &quot;/Docs/old-file.pdf&quot;
+}
+</code></pre>
+<h4>get_account_info</h4>
+<p>Get Dropbox account information.</p>
+<p><strong>Parameters:</strong> None</p>
+<p><strong>Response:</strong></p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;Ryan Lisse&quot;,
+  &quot;email&quot;: &quot;user@example.com&quot;
+}
+</code></pre>
+<h4>read_file</h4>
+<p>Read and return the contents of a text file from Dropbox.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>path</code> (string, required): Path to file in Dropbox</li>
+</ul>
+<p><strong>Response:</strong>
+Returns the file contents as text. Only works with UTF-8 encoded text files.</p>
+<h2>CLI Commands</h2>
+<pre><code class="language-bash"># Authentication
+make login                 # OAuth login with Keychain storage
+make logout                # Clear stored tokens
+
+# File operations
+make list                  # List root directory
+swift run dropbook list /path
+
+# Search files
+swift run dropbook search &quot;query&quot; [path]
+
+# Upload file
+swift run dropbook upload /local/path /remote/path [--overwrite]
+
+# Download file
+swift run dropbook download /remote/path /local/path
+
+# Start MCP server
+make mcp
+</code></pre>
+<h2>MCP Client Configuration</h2>
+<h3>Claude Code (Project-level)</h3>
+<p>The project includes a <code>.mcp.json</code> file that configures the MCP server:</p>
+<pre><code class="language-json">{
+  &quot;mcpServers&quot;: {
+    &quot;dropbox&quot;: {
+      &quot;command&quot;: &quot;/path/to/Dropbook/.build/debug/dropbook&quot;,
+      &quot;args&quot;: [&quot;mcp&quot;],
+      &quot;env&quot;: {
+        &quot;DROPBOX_APP_KEY&quot;: &quot;${DROPBOX_APP_KEY}&quot;,
+        &quot;DROPBOX_APP_SECRET&quot;: &quot;${DROPBOX_APP_SECRET}&quot;
+      }
+    }
+  }
+}
+</code></pre>
+<p>Enable project MCP servers in Claude Code settings.json:</p>
+<pre><code class="language-json">{
+  &quot;enableAllProjectMcpServers&quot;: true
+}
+</code></pre>
+<h3>Claude Desktop</h3>
+<pre><code class="language-json">{
+  &quot;mcpServers&quot;: {
+    &quot;dropbox&quot;: {
+      &quot;command&quot;: &quot;/path/to/dropbook/.build/debug/dropbook&quot;,
+      &quot;args&quot;: [&quot;mcp&quot;],
+      &quot;env&quot;: {
+        &quot;DROPBOX_APP_KEY&quot;: &quot;${DROPBOX_APP_KEY}&quot;,
+        &quot;DROPBOX_APP_SECRET&quot;: &quot;${DROPBOX_APP_SECRET}&quot;
+      }
+    }
+  }
+}
+</code></pre>
+<h2>Error Handling</h2>
+<table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Cause</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>notConfigured</code></td>
+<td>Missing env vars</td>
+<td>Set DROPBOX_APP_KEY, DROPBOX_APP_SECRET</td>
+</tr>
+<tr>
+<td><code>invalidArguments</code></td>
+<td>Missing required params</td>
+<td>Check tool parameters</td>
+</tr>
+<tr>
+<td><code>notFound</code></td>
+<td>Path doesn&#39;t exist</td>
+<td>Use <code>list_directory</code> to verify paths</td>
+</tr>
+<tr>
+<td><code>itemNotFound</code></td>
+<td>No token in Keychain</td>
+<td>Run <code>make login</code> to authenticate</td>
+</tr>
+</tbody></table>
+<h2>Architecture</h2>
+<pre><code>Dropbook/
+├── Sources/
+│   ├── DropbookCore/           # Business logic (actor-based)
+│   │   ├── Auth/               # Keychain &amp; file token storage
+│   │   ├── Config/             # Configuration management
+│   │   ├── Models/             # Domain models
+│   │   └── Services/           # DropboxService actor
+│   ├── DropbookCLI/            # CLI adapter
+│   │   └── Commands/           # Login, logout, file commands
+│   └── DropbookMCP/            # MCP server
+├── dropbox-skill/              # Skill documentation
+├── Makefile                    # Build automation
+├── .mcp.json                   # MCP server configuration
+└── Package.swift
+</code></pre>
+<h2>Bulk Operations with rclone</h2>
+<p>For large-scale operations like backups, syncing, or bulk transfers, use <a href="https://rclone.org/">rclone</a> - a powerful cloud sync tool with native Dropbox support.</p>
+<h3>Install rclone</h3>
+<pre><code class="language-bash">brew install rclone
+</code></pre>
+<h3>Configure rclone for Dropbox</h3>
+<pre><code class="language-bash"># Interactive setup (opens browser for OAuth)
+rclone authorize dropbox
+
+# Save the token output to config
+mkdir -p ~/.config/rclone
+cat &gt; ~/.config/rclone/rclone.conf &lt;&lt; &#39;EOF&#39;
+[dropbox]
+type = dropbox
+token = {&quot;access_token&quot;:&quot;...paste token here...&quot;}
+EOF
+</code></pre>
+<h3>Backup to Network Drive / Time Capsule</h3>
+<pre><code class="language-bash"># Full backup with progress
+rclone copy dropbox: /Volumes/TimeCapsule/Dropbox-Backup \
+    --progress \
+    --transfers 4 \
+    --checkers 8 \
+    --retries 10 \
+    --log-file /tmp/dropbox-backup.log
+
+# Sync (mirror - deletes files not in source)
+rclone sync dropbox: /Volumes/Backup/Dropbox --progress
+
+# Check what would be copied (dry run)
+rclone copy dropbox: /Volumes/Backup --dry-run
+</code></pre>
+<h3>Common rclone Commands</h3>
+<pre><code class="language-bash"># List remote contents
+rclone lsd dropbox:              # List directories
+rclone ls dropbox:               # List all files
+rclone size dropbox:             # Calculate total size
+
+# Copy operations
+rclone copy dropbox:folder /local/path    # Download folder
+rclone copy /local/path dropbox:folder    # Upload folder
+
+# Sync (bidirectional)
+rclone bisync dropbox: /local/path --resync
+
+# Mount as filesystem (macOS - requires macFUSE)
+rclone mount dropbox: /mnt/dropbox --vfs-cache-mode full
+</code></pre>
+<h3>rclone Flags for Reliability</h3>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>--progress</code></td>
+<td>Show real-time transfer progress</td>
+</tr>
+<tr>
+<td><code>--transfers 4</code></td>
+<td>Number of parallel transfers</td>
+</tr>
+<tr>
+<td><code>--checkers 8</code></td>
+<td>Number of parallel checkers</td>
+</tr>
+<tr>
+<td><code>--retries 10</code></td>
+<td>Retry failed operations</td>
+</tr>
+<tr>
+<td><code>--low-level-retries 20</code></td>
+<td>Retry low-level errors</td>
+</tr>
+<tr>
+<td><code>--log-file path</code></td>
+<td>Write logs to file</td>
+</tr>
+<tr>
+<td><code>--dry-run</code></td>
+<td>Show what would be done</td>
+</tr>
+<tr>
+<td><code>--checksum</code></td>
+<td>Verify with checksums</td>
+</tr>
+</tbody></table>
+<h3>Rate Limiting</h3>
+<p>Dropbox has strict API rate limits. If you see <code>too_many_requests</code> errors:</p>
+<pre><code class="language-bash"># Use bandwidth limiting
+rclone copy dropbox: /backup --bwlimit 1M
+
+# Or add delays between operations
+rclone copy dropbox: /backup --tpslimit 2
+</code></pre>
+<p>rclone handles rate limits automatically with exponential backoff.</p>
+<h2>Best Practices</h2>
+<ol>
+<li><strong>Use OAuth login</strong> - Secure Keychain storage with automatic token refresh</li>
+<li><strong>Use MCP for agents</strong> - More reliable for programmatic access</li>
+<li><strong>Use rclone for bulk ops</strong> - Better for backups and large transfers</li>
+<li><strong>Validate paths first</strong> - Use <code>list_directory</code> before operations</li>
+<li><strong>Handle errors gracefully</strong> - Check responses for error fields</li>
+<li><strong>Respect rate limits</strong> - Add delays between bulk operations</li>
+<li><strong>Use absolute paths</strong> - Always provide full paths for file operations</li>
+</ol>
+<h2>Security</h2>
+<ul>
+<li><strong>Keychain Storage</strong>: Tokens stored with hardware-backed encryption</li>
+<li><strong>PKCE</strong>: Proof Key for Code Exchange prevents authorization code interception</li>
+<li><strong>State Parameter</strong>: CSRF protection for OAuth flow</li>
+<li><strong>Token Refresh</strong>: Automatic refresh before expiration</li>
+<li><strong>CryptoKit</strong>: Modern Swift cryptographic library</li>
+</ul>
+<h2>Dependencies</h2>
+<ul>
+<li><strong>SwiftyDropbox</strong> (v10.2.4+): Official Dropbox Swift SDK</li>
+<li><strong>MCP (swift-sdk)</strong>: Model Context Protocol SDK</li>
+<li><strong>CryptoKit</strong>: Apple&#39;s cryptographic framework</li>
+<li><strong>rclone</strong> (optional): For bulk operations and backups (<code>brew install rclone</code>)</li>
+</ul>
+<h2>See Also</h2>
+<ul>
+<li><a href="https://github.com/RyanLisse/Dropbook">Dropbook GitHub</a></li>
+<li><a href="../CLAUDE.md">CLAUDE.md</a> - Full project documentation</li>
+<li><a href="https://www.dropbox.com/developers/documentation">Dropbox API Docs</a></li>
+<li><a href="https://rclone.org/dropbox/">rclone Dropbox Docs</a> - Bulk sync and backup</li>
+<li><a href="https://datatracker.ietf.org/doc/html/rfc7636">RFC 7636 - PKCE</a></li>
+<li><a href="https://datatracker.ietf.org/doc/html/rfc9700">RFC 9700 - OAuth 2.0 Security Best Practices</a></li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/ryanlisse/dropbox/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/ryanlisse/dropbox" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/ryanlisse/dropbox/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@ryanlisse</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">CLI Utilities</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

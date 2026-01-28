@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Smart ClawdBot documentation access with local search index, cached snippets, and on-demand fetch">
+  <title>clawd-docs-v2 - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Productivity & Tasks</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Productivity & Tasks</a>
+                <span class="skill-page-author">by @aranej</span>
+              </div>
+              <h1 class="skill-page-title">clawd-docs-v2</h1>
+              <p class="skill-page-desc">Smart ClawdBot documentation access with local search index, cached snippets, and on-demand fetch</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Clawd-Docs v2.0 - Smart Documentation Access</h1>
+<p>This skill provides <strong>intelligent access</strong> to ClawdBot documentation with:</p>
+<ul>
+<li><strong>Local search index</strong> - instant keyword lookup (0 tokens)</li>
+<li><strong>Cached snippets</strong> - pre-fetched common answers (~300-500 tokens)</li>
+<li><strong>On-demand fetch</strong> - full page when needed (~8-12k tokens)</li>
+<li><strong>Freshness tracking</strong> - TTL per page type</li>
+</ul>
+<hr>
+<h2>Quick Start</h2>
+<h3>Step 1: Check Golden Snippets First</h3>
+<p>Before fetching anything, check if a <strong>Golden Snippet</strong> exists:</p>
+<pre><code class="language-bash">ls ~/clawd/data/docs-snippets/
+</code></pre>
+<p><strong>Available snippets (check cache first!):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Snippet</th>
+<th>Query matches</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>telegram-setup.md</code></td>
+<td>&quot;ako nastaviť telegram&quot;, &quot;telegram setup&quot;</td>
+</tr>
+<tr>
+<td><code>telegram-allowfrom.md</code></td>
+<td>&quot;allowFrom&quot;, &quot;kto mi môže písať&quot;, &quot;access control&quot;</td>
+</tr>
+<tr>
+<td><code>oauth-troubleshoot.md</code></td>
+<td>&quot;token expired&quot;, &quot;oauth error&quot;, &quot;credentials&quot;</td>
+</tr>
+<tr>
+<td><code>update-procedure.md</code></td>
+<td>&quot;ako updatnuť&quot;, &quot;update clawdbot&quot;</td>
+</tr>
+<tr>
+<td><code>restart-gateway.md</code></td>
+<td>&quot;restart&quot;, &quot;reštart&quot;, &quot;stop/start&quot;</td>
+</tr>
+<tr>
+<td><code>config-basics.md</code></td>
+<td>&quot;config&quot;, &quot;nastavenie&quot;, &quot;konfigurácia&quot;</td>
+</tr>
+<tr>
+<td><code>config-providers.md</code></td>
+<td>&quot;pridať provider&quot;, &quot;discord setup&quot;, &quot;nový kanál&quot;</td>
+</tr>
+<tr>
+<td><code>memory-search.md</code></td>
+<td>&quot;memory&quot;, &quot;vector search&quot;, &quot;pamäť&quot;, &quot;embeddings&quot;</td>
+</tr>
+</tbody></table>
+<p><strong>Read snippet:</strong></p>
+<pre><code class="language-bash">cat ~/clawd/data/docs-snippets/telegram-setup.md
+</code></pre>
+<h3>Step 2: Search Index (if snippet doesn&#39;t exist)</h3>
+<p>Check <code>~/clawd/data/docs-index.json</code> for page suggestions.</p>
+<p><strong>Keyword matching:</strong></p>
+<ul>
+<li>&quot;telegram&quot; → channels/telegram</li>
+<li>&quot;oauth&quot; → concepts/oauth, gateway/troubleshooting</li>
+<li>&quot;update&quot; → install/updating</li>
+<li>&quot;config&quot; → gateway/configuration</li>
+</ul>
+<h3>Step 3: Check Full Page Cache</h3>
+<p><strong>BEFORE fetching via brightdata</strong>, check if the page is already cached:</p>
+<pre><code class="language-bash"># Convert path: concepts/memory → concepts_memory.md
+ls ~/clawd/data/docs-cache/ | grep &quot;concepts_memory&quot;
+</code></pre>
+<p><strong>If exists, read locally (0 tokens!):</strong></p>
+<pre><code class="language-bash">cat ~/clawd/data/docs-cache/concepts_memory.md
+</code></pre>
+<h3>Step 4: Fetch Page (only if NOT in cache)</h3>
+<p>Use native <strong>web_fetch</strong> tool (part of Clawdbot core - FREE and fast!):</p>
+<pre><code class="language-javascript">web_fetch({ url: &quot;https://docs.clawd.bot/{path}&quot;, extractMode: &quot;markdown&quot; })
+</code></pre>
+<p><strong>Example:</strong></p>
+<pre><code class="language-javascript">web_fetch({ url: &quot;https://docs.clawd.bot/tools/skills&quot;, extractMode: &quot;markdown&quot; })
+</code></pre>
+<p><strong>web_fetch advantages:</strong></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>web_fetch</th>
+<th>brightdata</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Cost</strong></td>
+<td>$0 (free!)</td>
+<td>~$0.003/call</td>
+</tr>
+<tr>
+<td><strong>Speed</strong></td>
+<td>~400ms</td>
+<td>2-5s</td>
+</tr>
+<tr>
+<td><strong>Quality</strong></td>
+<td>Markdown ✅</td>
+<td>Markdown ✅</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Search Index Structure</h2>
+<p><strong>Location:</strong> <code>~/clawd/data/docs-index.json</code></p>
+<pre><code class="language-json">{
+  &quot;pages&quot;: [
+    {
+      &quot;path&quot;: &quot;channels/telegram&quot;,
+      &quot;ttl_days&quot;: 7,
+      &quot;keywords&quot;: [&quot;telegram&quot;, &quot;tg&quot;, &quot;bot&quot;, &quot;allowfrom&quot;]
+    }
+  ],
+  &quot;synonyms&quot;: {
+    &quot;telegram&quot;: [&quot;tg&quot;, &quot;telegrambot&quot;],
+    &quot;configuration&quot;: [&quot;config&quot;, &quot;nastavenie&quot;, &quot;settings&quot;]
+  }
+}
+</code></pre>
+<p><strong>Use synonyms</strong> for fuzzy matching.</p>
+<hr>
+<h2>TTL Strategy (Freshness)</h2>
+<table>
+<thead>
+<tr>
+<th>Page Category</th>
+<th>TTL</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>install/updating</code></td>
+<td>1 day</td>
+<td>Always current!</td>
+</tr>
+<tr>
+<td><code>gateway/*</code></td>
+<td>7 days</td>
+<td>Config changes</td>
+</tr>
+<tr>
+<td><code>channels/*</code></td>
+<td>7 days</td>
+<td>Provider updates</td>
+</tr>
+<tr>
+<td><code>tools/*</code></td>
+<td>7 days</td>
+<td>Features added</td>
+</tr>
+<tr>
+<td><code>concepts/*</code></td>
+<td>14 days</td>
+<td>Rarely changes</td>
+</tr>
+<tr>
+<td><code>reference/*</code></td>
+<td>30 days</td>
+<td>Stable templates</td>
+</tr>
+</tbody></table>
+<p><strong>Check snippet expiry:</strong></p>
+<pre><code class="language-bash">head -10 ~/clawd/data/docs-snippets/telegram-setup.md | grep expires
+</code></pre>
+<hr>
+<h2>Common Scenarios</h2>
+<h3>&quot;Ako nastaviť Telegram?&quot;</h3>
+<ol>
+<li>✅ Read <code>~/clawd/data/docs-snippets/telegram-setup.md</code></li>
+</ol>
+<h3>&quot;allowFrom nefunguje&quot;</h3>
+<ol>
+<li>✅ Read <code>~/clawd/data/docs-snippets/telegram-allowfrom.md</code></li>
+</ol>
+<h3>&quot;Token expired / oauth error&quot;</h3>
+<ol>
+<li>✅ Read <code>~/clawd/data/docs-snippets/oauth-troubleshoot.md</code></li>
+</ol>
+<h3>&quot;Ako updatnúť ClawdBot?&quot;</h3>
+<ol>
+<li>✅ Read <code>~/clawd/data/docs-snippets/update-procedure.md</code></li>
+</ol>
+<h3>&quot;Ako pridať nový skill?&quot; (nie je snippet)</h3>
+<ol>
+<li>Search index → tools/skills</li>
+<li>Fetch: <code>web_fetch({ url: &quot;https://docs.clawd.bot/tools/skills&quot;, extractMode: &quot;markdown&quot; })</code></li>
+</ol>
+<h3>&quot;Multi-agent routing&quot;</h3>
+<ol>
+<li>Search index → concepts/multi-agent</li>
+<li>Fetch: <code>web_fetch({ url: &quot;https://docs.clawd.bot/concepts/multi-agent&quot;, extractMode: &quot;markdown&quot; })</code></li>
+</ol>
+<hr>
+<h2>Fallback: Full Index Refresh</h2>
+<p>If you can&#39;t find what you need:</p>
+<pre><code class="language-javascript">web_fetch({ url: &quot;https://docs.clawd.bot/llms.txt&quot;, extractMode: &quot;markdown&quot; })
+</code></pre>
+<p>Returns <strong>complete list</strong> of all documentation pages.</p>
+<hr>
+<h2>Token Efficiency Guide</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Tokens</th>
+<th>When to use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Golden Snippet</td>
+<td>~300-500</td>
+<td>✅ Always first!</td>
+</tr>
+<tr>
+<td>Search Index</td>
+<td>0</td>
+<td>Keyword lookup</td>
+</tr>
+<tr>
+<td>Full Page Fetch</td>
+<td>~8-12k</td>
+<td>Last resort</td>
+</tr>
+<tr>
+<td>Batch Fetch</td>
+<td>~20-30k</td>
+<td>Multiple related topics</td>
+</tr>
+</tbody></table>
+<p><strong>80-90% of queries</strong> should be answered from snippets!</p>
+<hr>
+<h2>Data Locations</h2>
+<pre><code>~/clawd/data/
+├── docs-index.json       # Search index
+├── docs-stats.json       # Usage tracking
+├── docs-snippets/        # Cached Golden Snippets
+│   ├── telegram-setup.md
+│   ├── telegram-allowfrom.md
+│   ├── oauth-troubleshoot.md
+│   ├── update-procedure.md
+│   ├── restart-gateway.md
+│   └── config-basics.md
+└── docs-cache/           # Full page cache (future)
+</code></pre>
+<hr>
+<h2>Version Info</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Skill version</strong></td>
+<td>2.1.0</td>
+</tr>
+<tr>
+<td><strong>Created</strong></td>
+<td>2026-01-14</td>
+</tr>
+<tr>
+<td><strong>Updated</strong></td>
+<td>2026-01-26</td>
+</tr>
+<tr>
+<td><strong>Authors</strong></td>
+<td>Claude Code + Clawd (collaborative)</td>
+</tr>
+<tr>
+<td><strong>Source</strong></td>
+<td><a href="https://docs.clawd.bot/">https://docs.clawd.bot/</a></td>
+</tr>
+<tr>
+<td><strong>Dependencies</strong></td>
+<td>web_fetch (Clawdbot core tool)</td>
+</tr>
+<tr>
+<td><strong>Index pages</strong></td>
+<td>~50 core pages</td>
+</tr>
+<tr>
+<td><strong>Golden snippets</strong></td>
+<td>7 pre-cached</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Changelog</h2>
+<h3>v2.2.0 (2026-01-26)</h3>
+<ul>
+<li><strong>Migration to web_fetch</strong> - replaced brightdata MCP with native Clawdbot tool</li>
+<li>Benefits: FREE ($0), faster (~400ms vs 2-5s)</li>
+<li>No external dependencies (mcporter no longer required)</li>
+<li>Collaborative work: Claude Code 🦞 implementation, Clawd 🐾 review</li>
+</ul>
+<h3>v2.1.3 (2026-01-25) - ClawdHub</h3>
+<ul>
+<li>Documentation fix: check vs refresh clarification</li>
+</ul>
+<h3>v2.0.0 (2026-01-14)</h3>
+<ul>
+<li>3-layer architecture: Search Index → Snippets → On-demand Fetch</li>
+<li>Golden Snippets pre-cached for common queries</li>
+<li>TTL-based freshness tracking</li>
+<li>Synonym support for fuzzy matching</li>
+<li>80-90% token reduction for common queries</li>
+</ul>
+<h3>v1.0.0 (2026-01-08)</h3>
+<ul>
+<li>Initial release with brightdata fetch only</li>
+</ul>
+<hr>
+<p><em>This skill provides smart documentation access - always cached snippets first, fetch only when necessary.</em></p>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/aranej/clawd-docs-v2/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/aranej/clawd-docs-v2" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/aranej/clawd-docs-v2/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@aranej</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Productivity & Tasks</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

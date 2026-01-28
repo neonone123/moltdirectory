@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Automatically update Clawdbot and all installed skills once daily">
+  <title>auto-updater - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Clawdbot Tools</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Clawdbot Tools</a>
+                <span class="skill-page-author">by @maximeprades</span>
+              </div>
+              <h1 class="skill-page-title">auto-updater</h1>
+              <p class="skill-page-desc">Automatically update Clawdbot and all installed skills once daily</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Auto-Updater Skill</h1>
+<p>Keep your Clawdbot and skills up to date automatically with daily update checks.</p>
+<h2>What It Does</h2>
+<p>This skill sets up a daily cron job that:</p>
+<ol>
+<li>Updates Clawdbot itself (via <code>clawdbot doctor</code> or package manager)</li>
+<li>Updates all installed skills (via <code>clawdhub update --all</code>)</li>
+<li>Messages you with a summary of what was updated</li>
+</ol>
+<h2>Setup</h2>
+<h3>Quick Start</h3>
+<p>Ask Clawdbot to set up the auto-updater:</p>
+<pre><code>Set up daily auto-updates for yourself and all your skills.
+</code></pre>
+<p>Or manually add the cron job:</p>
+<pre><code class="language-bash">clawdbot cron add \
+  --name &quot;Daily Auto-Update&quot; \
+  --cron &quot;0 4 * * *&quot; \
+  --tz &quot;America/Los_Angeles&quot; \
+  --session isolated \
+  --wake now \
+  --deliver \
+  --message &quot;Run daily auto-updates: check for Clawdbot updates and update all skills. Report what was updated.&quot;
+</code></pre>
+<h3>Configuration Options</h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Time</td>
+<td>4:00 AM</td>
+<td>When to run updates (use <code>--cron</code> to change)</td>
+</tr>
+<tr>
+<td>Timezone</td>
+<td>System default</td>
+<td>Set with <code>--tz</code></td>
+</tr>
+<tr>
+<td>Delivery</td>
+<td>Main session</td>
+<td>Where to send the update summary</td>
+</tr>
+</tbody></table>
+<h2>How Updates Work</h2>
+<h3>Clawdbot Updates</h3>
+<p>For <strong>npm/pnpm/bun installs</strong>:</p>
+<pre><code class="language-bash">npm update -g clawdbot@latest
+# or: pnpm update -g clawdbot@latest
+# or: bun update -g clawdbot@latest
+</code></pre>
+<p>For <strong>source installs</strong> (git checkout):</p>
+<pre><code class="language-bash">clawdbot update
+</code></pre>
+<p>Always run <code>clawdbot doctor</code> after updating to apply migrations.</p>
+<h3>Skill Updates</h3>
+<pre><code class="language-bash">clawdhub update --all
+</code></pre>
+<p>This checks all installed skills against the registry and updates any with new versions available.</p>
+<h2>Update Summary Format</h2>
+<p>After updates complete, you&#39;ll receive a message like:</p>
+<pre><code>🔄 Daily Auto-Update Complete
+
+**Clawdbot**: Updated to v2026.1.10 (was v2026.1.9)
+
+**Skills Updated (3)**:
+- prd: 2.0.3 → 2.0.4
+- browser: 1.2.0 → 1.2.1  
+- nano-banana-pro: 3.1.0 → 3.1.2
+
+**Skills Already Current (5)**:
+gemini, sag, things-mac, himalaya, peekaboo
+
+No issues encountered.
+</code></pre>
+<h2>Manual Commands</h2>
+<p>Check for updates without applying:</p>
+<pre><code class="language-bash">clawdhub update --all --dry-run
+</code></pre>
+<p>View current skill versions:</p>
+<pre><code class="language-bash">clawdhub list
+</code></pre>
+<p>Check Clawdbot version:</p>
+<pre><code class="language-bash">clawdbot --version
+</code></pre>
+<h2>Troubleshooting</h2>
+<h3>Updates Not Running</h3>
+<ol>
+<li>Verify cron is enabled: check <code>cron.enabled</code> in config</li>
+<li>Confirm Gateway is running continuously</li>
+<li>Check cron job exists: <code>clawdbot cron list</code></li>
+</ol>
+<h3>Update Failures</h3>
+<p>If an update fails, the summary will include the error. Common fixes:</p>
+<ul>
+<li><strong>Permission errors</strong>: Ensure the Gateway user can write to skill directories</li>
+<li><strong>Network errors</strong>: Check internet connectivity</li>
+<li><strong>Package conflicts</strong>: Run <code>clawdbot doctor</code> to diagnose</li>
+</ul>
+<h3>Disabling Auto-Updates</h3>
+<p>Remove the cron job:</p>
+<pre><code class="language-bash">clawdbot cron remove &quot;Daily Auto-Update&quot;
+</code></pre>
+<p>Or disable temporarily in config:</p>
+<pre><code class="language-json">{
+  &quot;cron&quot;: {
+    &quot;enabled&quot;: false
+  }
+}
+</code></pre>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://docs.clawd.bot/install/updating">Clawdbot Updating Guide</a></li>
+<li><a href="https://docs.clawd.bot/tools/clawdhub">ClawdHub CLI</a></li>
+<li><a href="https://docs.clawd.bot/cron">Cron Jobs</a></li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/maximeprades/auto-updater/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/maximeprades/auto-updater" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/maximeprades/auto-updater/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@maximeprades</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Clawdbot Tools</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

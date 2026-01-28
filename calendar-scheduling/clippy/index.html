@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Microsoft 365 / Outlook CLI for calendar and email">
+  <title>clippy - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Calendar & Scheduling</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Calendar & Scheduling</a>
+                <span class="skill-page-author">by @foeken</span>
+              </div>
+              <h1 class="skill-page-title">clippy</h1>
+              <p class="skill-page-desc">Microsoft 365 / Outlook CLI for calendar and email</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Clippy - Microsoft 365 CLI</h1>
+<p>Source: <a href="https://github.com/foeken/clippy">https://github.com/foeken/clippy</a></p>
+<p>Works through the M365 web UI via browser automation (Playwright), not the Graph API. No Azure AD app registration required - just login with your browser.</p>
+<h2>Install</h2>
+<pre><code class="language-bash">git clone https://github.com/foeken/clippy.git
+cd clippy &amp;&amp; bun install
+bun run src/cli.ts --help
+</code></pre>
+<p>Or link globally: <code>bun link</code></p>
+<h2>Authentication</h2>
+<pre><code class="language-bash"># Interactive login (opens browser, establishes session)
+clippy login --interactive
+
+# Check auth status
+clippy whoami
+</code></pre>
+<h3>Keepalive (recommended)</h3>
+<p>Keep a browser session alive to prevent token expiry:</p>
+<pre><code class="language-bash"># Start keepalive (keeps browser open, refreshes every 10min)
+clippy keepalive --interval 10
+</code></pre>
+<p>For persistent operation, set up as a launchd service (macOS) or systemd (Linux).</p>
+<p><strong>Health monitoring:</strong> Keepalive writes to <code>~/.config/clippy/keepalive-health.txt</code> on each successful refresh. Check if this file is stale (&gt;15min) to detect failures.</p>
+<h2>Calendar</h2>
+<pre><code class="language-bash"># Today&#39;s events
+clippy calendar
+
+# Specific day
+clippy calendar --day tomorrow
+clippy calendar --day monday
+clippy calendar --day 2024-02-15
+
+# Week view
+clippy calendar --week
+
+# With details (description, attendees)
+clippy calendar --details
+</code></pre>
+<h3>Create Events</h3>
+<pre><code class="language-bash">clippy create-event &quot;Title&quot; 09:00 10:00
+
+# Full options
+clippy create-event &quot;Meeting&quot; 14:00 15:00 \
+  --day tomorrow \
+  --description &quot;Meeting notes&quot; \
+  --attendees &quot;alice@company.com,bob@company.com&quot; \
+  --teams \
+  --find-room
+
+# Recurring
+clippy create-event &quot;Standup&quot; 09:00 09:15 --repeat daily
+clippy create-event &quot;Sync&quot; 14:00 15:00 --repeat weekly --days mon,wed,fri
+</code></pre>
+<h3>Update/Delete Events</h3>
+<pre><code class="language-bash">clippy update-event 1 --title &quot;New Title&quot;
+clippy update-event 1 --start 10:00 --end 11:00
+clippy delete-event 1
+clippy delete-event 1 --message &quot;Need to reschedule&quot;
+</code></pre>
+<h3>Respond to Invitations</h3>
+<pre><code class="language-bash">clippy respond                           # List pending
+clippy respond accept --id &lt;eventId&gt;
+clippy respond decline --id &lt;eventId&gt; --message &quot;Conflict&quot;
+clippy respond tentative --id &lt;eventId&gt;
+</code></pre>
+<h3>Find Meeting Times</h3>
+<pre><code class="language-bash">clippy findtime
+clippy findtime --attendees &quot;alice@company.com,bob@company.com&quot;
+clippy findtime --duration 60 --days 5
+</code></pre>
+<h2>Email</h2>
+<pre><code class="language-bash"># Inbox
+clippy mail
+clippy mail --unread
+clippy mail -n 20
+clippy mail --search &quot;invoice&quot;
+
+# Other folders
+clippy mail sent
+clippy mail drafts
+clippy mail archive
+
+# Read email
+clippy mail -r &lt;number&gt;
+
+# Download attachments
+clippy mail -d &lt;number&gt; -o ~/Downloads
+</code></pre>
+<h3>Send Email</h3>
+<pre><code class="language-bash">clippy send \
+  --to &quot;recipient@example.com&quot; \
+  --subject &quot;Subject&quot; \
+  --body &quot;Message body&quot;
+
+# With CC, attachments, markdown
+clippy send \
+  --to &quot;alice@example.com&quot; \
+  --cc &quot;manager@example.com&quot; \
+  --subject &quot;Report&quot; \
+  --body &quot;**See attached**&quot; \
+  --markdown \
+  --attach &quot;report.pdf&quot;
+</code></pre>
+<h3>Reply/Forward</h3>
+<pre><code class="language-bash">clippy mail --reply &lt;number&gt; --message &quot;Thanks!&quot;
+clippy mail --reply-all &lt;number&gt; --message &quot;Got it&quot;
+clippy mail --forward &lt;number&gt; --to-addr &quot;colleague@example.com&quot;
+</code></pre>
+<h3>Email Actions</h3>
+<pre><code class="language-bash">clippy mail --mark-read &lt;number&gt;
+clippy mail --flag &lt;number&gt;
+clippy mail --move &lt;number&gt; --to archive
+</code></pre>
+<h2>People/Room Search</h2>
+<pre><code class="language-bash">clippy find &quot;john&quot;                       # People
+clippy find &quot;conference&quot; --rooms         # Rooms
+</code></pre>
+<h2>JSON Output</h2>
+<pre><code class="language-bash">clippy calendar --json
+clippy mail --json
+</code></pre>
+<h2>Configuration</h2>
+<p>Profile directory can be overridden:</p>
+<pre><code class="language-bash">export CLIPPY_PROFILE_DIR=~/.config/clippy/my-profile
+</code></pre>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/foeken/clippy/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/foeken/clippy" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/foeken/clippy/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@foeken</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Calendar & Scheduling</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

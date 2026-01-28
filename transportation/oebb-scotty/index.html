@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Austrian rail travel planner (ÖBB Scotty)">
+  <title>oebb-scotty - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Transportation</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Transportation</a>
+                <span class="skill-page-author">by @manmal</span>
+              </div>
+              <h1 class="skill-page-title">oebb-scotty</h1>
+              <p class="skill-page-desc">Austrian rail travel planner (ÖBB Scotty)</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>ÖBB Scotty API</h1>
+<p>Query Austria&#39;s public transport for trip planning, station departures, and service alerts via the HAFAS mgate API.</p>
+<h2>Quick Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>LocMatch</code></td>
+<td>Search for stations/stops by name</td>
+</tr>
+<tr>
+<td><code>TripSearch</code></td>
+<td>Plan a journey between two locations</td>
+</tr>
+<tr>
+<td><code>StationBoard</code></td>
+<td>Get departures/arrivals at a station</td>
+</tr>
+<tr>
+<td><code>HimSearch</code></td>
+<td>Get service alerts and disruptions</td>
+</tr>
+</tbody></table>
+<p><strong>Base URL:</strong> <code>https://fahrplan.oebb.at/bin/mgate.exe</code></p>
+<hr>
+<h2>Authentication</h2>
+<p>All requests require these headers in the JSON body:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;1&quot;,
+  &quot;ver&quot;: &quot;1.67&quot;,
+  &quot;lang&quot;: &quot;deu&quot;,
+  &quot;auth&quot;: {&quot;type&quot;: &quot;AID&quot;, &quot;aid&quot;: &quot;OWDL4fE4ixNiPBBm&quot;},
+  &quot;client&quot;: {&quot;id&quot;: &quot;OEBB&quot;, &quot;type&quot;: &quot;WEB&quot;, &quot;name&quot;: &quot;webapp&quot;, &quot;l&quot;: &quot;vs_webapp&quot;},
+  &quot;formatted&quot;: false,
+  &quot;svcReqL&quot;: [...]
+}
+</code></pre>
+<hr>
+<h2>1. Location Search (<code>LocMatch</code>)</h2>
+<p>Search for stations, stops, addresses, or POIs by name.</p>
+<h3>Request</h3>
+<pre><code class="language-bash">curl -s -X POST &quot;https://fahrplan.oebb.at/bin/mgate.exe&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;id&quot;:&quot;1&quot;,&quot;ver&quot;:&quot;1.67&quot;,&quot;lang&quot;:&quot;deu&quot;,
+    &quot;auth&quot;:{&quot;type&quot;:&quot;AID&quot;,&quot;aid&quot;:&quot;OWDL4fE4ixNiPBBm&quot;},
+    &quot;client&quot;:{&quot;id&quot;:&quot;OEBB&quot;,&quot;type&quot;:&quot;WEB&quot;,&quot;name&quot;:&quot;webapp&quot;,&quot;l&quot;:&quot;vs_webapp&quot;},
+    &quot;formatted&quot;:false,
+    &quot;svcReqL&quot;:[{
+      &quot;req&quot;:{&quot;input&quot;:{&quot;field&quot;:&quot;S&quot;,&quot;loc&quot;:{&quot;name&quot;:&quot;Wien Hbf&quot;,&quot;type&quot;:&quot;ALL&quot;},&quot;maxLoc&quot;:10}},
+      &quot;meth&quot;:&quot;LocMatch&quot;
+    }]
+  }&#39;
+</code></pre>
+<h3>Response Structure</h3>
+<pre><code class="language-json">{
+  &quot;svcResL&quot;: [{
+    &quot;res&quot;: {
+      &quot;match&quot;: {
+        &quot;locL&quot;: [{
+          &quot;lid&quot;: &quot;A=1@O=Wien Hbf (U)@X=16377950@Y=48184986@U=181@L=1290401@&quot;,
+          &quot;type&quot;: &quot;S&quot;,
+          &quot;name&quot;: &quot;Wien Hbf (U)&quot;,
+          &quot;extId&quot;: &quot;1290401&quot;,
+          &quot;crd&quot;: { &quot;x&quot;: 16377950, &quot;y&quot;: 48184986 },
+          &quot;pCls&quot;: 6015
+        }]
+      }
+    }
+  }]
+}
+</code></pre>
+<h3>Location Types</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>S</code></td>
+<td>Station/Stop</td>
+</tr>
+<tr>
+<td><code>A</code></td>
+<td>Address</td>
+</tr>
+<tr>
+<td><code>P</code></td>
+<td>POI (Point of Interest)</td>
+</tr>
+</tbody></table>
+<h3>Key Fields</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>lid</code></td>
+<td>Location ID string (use in TripSearch)</td>
+</tr>
+<tr>
+<td><code>extId</code></td>
+<td>External station ID</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>Station name</td>
+</tr>
+<tr>
+<td><code>crd.x/y</code></td>
+<td>Coordinates (x=lon, y=lat, scaled by 10^6)</td>
+</tr>
+<tr>
+<td><code>pCls</code></td>
+<td>Product class bitmask</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>2. Trip Search (<code>TripSearch</code>)</h2>
+<p>Plan a journey between two locations.</p>
+<h3>Request</h3>
+<pre><code class="language-bash">curl -s -X POST &quot;https://fahrplan.oebb.at/bin/mgate.exe&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;id&quot;:&quot;1&quot;,&quot;ver&quot;:&quot;1.67&quot;,&quot;lang&quot;:&quot;deu&quot;,
+    &quot;auth&quot;:{&quot;type&quot;:&quot;AID&quot;,&quot;aid&quot;:&quot;OWDL4fE4ixNiPBBm&quot;},
+    &quot;client&quot;:{&quot;id&quot;:&quot;OEBB&quot;,&quot;type&quot;:&quot;WEB&quot;,&quot;name&quot;:&quot;webapp&quot;,&quot;l&quot;:&quot;vs_webapp&quot;},
+    &quot;formatted&quot;:false,
+    &quot;svcReqL&quot;:[{
+      &quot;req&quot;:{
+        &quot;depLocL&quot;:[{&quot;lid&quot;:&quot;A=1@O=Wien Hbf@L=8103000@&quot;,&quot;type&quot;:&quot;S&quot;}],
+        &quot;arrLocL&quot;:[{&quot;lid&quot;:&quot;A=1@O=Salzburg Hbf@L=8100002@&quot;,&quot;type&quot;:&quot;S&quot;}],
+        &quot;jnyFltrL&quot;:[{&quot;type&quot;:&quot;PROD&quot;,&quot;mode&quot;:&quot;INC&quot;,&quot;value&quot;:&quot;1023&quot;}],
+        &quot;getPolyline&quot;:false,
+        &quot;getPasslist&quot;:true,
+        &quot;outDate&quot;:&quot;20260109&quot;,
+        &quot;outTime&quot;:&quot;080000&quot;,
+        &quot;outFrwd&quot;:true,
+        &quot;numF&quot;:5
+      },
+      &quot;meth&quot;:&quot;TripSearch&quot;
+    }]
+  }&#39;
+</code></pre>
+<h3>Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>depLocL</code></td>
+<td>Departure location(s) - use <code>lid</code> from LocMatch</td>
+</tr>
+<tr>
+<td><code>arrLocL</code></td>
+<td>Arrival location(s)</td>
+</tr>
+<tr>
+<td><code>outDate</code></td>
+<td>Departure date (YYYYMMDD)</td>
+</tr>
+<tr>
+<td><code>outTime</code></td>
+<td>Departure time (HHMMSS)</td>
+</tr>
+<tr>
+<td><code>outFrwd</code></td>
+<td><code>true</code> = search forward, <code>false</code> = search backward</td>
+</tr>
+<tr>
+<td><code>numF</code></td>
+<td>Number of connections to return</td>
+</tr>
+<tr>
+<td><code>jnyFltrL</code></td>
+<td>Product filter (see below)</td>
+</tr>
+<tr>
+<td><code>getPasslist</code></td>
+<td>Include intermediate stops</td>
+</tr>
+</tbody></table>
+<h3>Product Filter Values</h3>
+<table>
+<thead>
+<tr>
+<th>Bit</th>
+<th>Value</th>
+<th>Product</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>1</td>
+<td>ICE/RJX (High-speed)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>IC/EC (InterCity)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>4</td>
+<td>NJ (Night trains)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>8</td>
+<td>D/EN (Express)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>16</td>
+<td>REX/R (Regional Express)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>32</td>
+<td>S-Bahn</td>
+</tr>
+<tr>
+<td>6</td>
+<td>64</td>
+<td>Bus</td>
+</tr>
+<tr>
+<td>7</td>
+<td>128</td>
+<td>Ferry</td>
+</tr>
+<tr>
+<td>8</td>
+<td>256</td>
+<td>U-Bahn</td>
+</tr>
+<tr>
+<td>9</td>
+<td>512</td>
+<td>Tram</td>
+</tr>
+</tbody></table>
+<p>Use <code>1023</code> for all products, or sum specific bits.</p>
+<h3>Response Structure</h3>
+<pre><code class="language-json">{
+  &quot;svcResL&quot;: [{
+    &quot;res&quot;: {
+      &quot;outConL&quot;: [{
+        &quot;date&quot;: &quot;20260109&quot;,
+        &quot;dur&quot;: &quot;025200&quot;,
+        &quot;chg&quot;: 0,
+        &quot;dep&quot;: {
+          &quot;dTimeS&quot;: &quot;075700&quot;,
+          &quot;dPltfS&quot;: {&quot;txt&quot;: &quot;8A-B&quot;}
+        },
+        &quot;arr&quot;: {
+          &quot;aTimeS&quot;: &quot;104900&quot;,
+          &quot;aPltfS&quot;: {&quot;txt&quot;: &quot;7&quot;}
+        },
+        &quot;secL&quot;: [{
+          &quot;type&quot;: &quot;JNY&quot;,
+          &quot;jny&quot;: {
+            &quot;prodX&quot;: 0,
+            &quot;dirTxt&quot;: &quot;Salzburg Hbf&quot;,
+            &quot;stopL&quot;: [...]
+          }
+        }]
+      }],
+      &quot;common&quot;: {
+        &quot;locL&quot;: [...],
+        &quot;prodL&quot;: [...]
+      }
+    }
+  }]
+}
+</code></pre>
+<h3>Key Connection Fields</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>dur</code></td>
+<td>Duration (HHMMSS)</td>
+</tr>
+<tr>
+<td><code>chg</code></td>
+<td>Number of changes</td>
+</tr>
+<tr>
+<td><code>dTimeS</code></td>
+<td>Scheduled departure</td>
+</tr>
+<tr>
+<td><code>dTimeR</code></td>
+<td>Real-time departure (if available)</td>
+</tr>
+<tr>
+<td><code>aTimeS</code></td>
+<td>Scheduled arrival</td>
+</tr>
+<tr>
+<td><code>aTimeR</code></td>
+<td>Real-time arrival (if available)</td>
+</tr>
+<tr>
+<td><code>dPltfS.txt</code></td>
+<td>Departure platform</td>
+</tr>
+<tr>
+<td><code>aPltfS.txt</code></td>
+<td>Arrival platform</td>
+</tr>
+<tr>
+<td><code>secL</code></td>
+<td>Journey sections (legs)</td>
+</tr>
+<tr>
+<td><code>secL[].jny.prodX</code></td>
+<td>Index into <code>common.prodL[]</code> for train name</td>
+</tr>
+</tbody></table>
+<h3>Understanding prodX (Product Index)</h3>
+<p><strong>Important:</strong> The <code>prodX</code> field in journey sections is an index into the <code>common.prodL[]</code> array, NOT the train name itself. To get the actual train name (e.g., &quot;S7&quot;, &quot;RJX 662&quot;), you must look up <code>common.prodL[prodX].name</code>.</p>
+<h3>Extracting Trip Summaries with jq</h3>
+<p>The raw TripSearch response is very verbose. Use this jq filter to extract a concise summary with resolved train names:</p>
+<pre><code class="language-bash">curl -s -X POST &quot;https://fahrplan.oebb.at/bin/mgate.exe&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{ ... }&#39; | jq &#39;
+    .svcResL[0].res as $r |
+    $r.common.prodL as $prods |
+    [$r.outConL[] | {
+      dep: .dep.dTimeS,
+      arr: .arr.aTimeS,
+      depPlatform: .dep.dPltfS.txt,
+      arrPlatform: .arr.aPltfS.txt,
+      dur: .dur,
+      chg: .chg,
+      legs: [.secL[] | select(.type == &quot;JNY&quot;) | {
+        train: $prods[.jny.prodX].name,
+        dir: .jny.dirTxt,
+        dep: .dep.dTimeS,
+        arr: .arr.aTimeS,
+        depPlatform: .dep.dPltfS.txt,
+        arrPlatform: .arr.aPltfS.txt
+      }]
+    }]&#39;
+</code></pre>
+<p>Example output:</p>
+<pre><code class="language-json">[
+  {
+    &quot;dep&quot;: &quot;213900&quot;,
+    &quot;arr&quot;: &quot;221100&quot;,
+    &quot;depPlatform&quot;: &quot;1&quot;,
+    &quot;arrPlatform&quot;: &quot;3A-B&quot;,
+    &quot;dur&quot;: &quot;003200&quot;,
+    &quot;chg&quot;: 0,
+    &quot;legs&quot;: [{&quot;train&quot;: &quot;S 7&quot;, &quot;dir&quot;: &quot;Flughafen Wien Bahnhof&quot;, &quot;dep&quot;: &quot;213900&quot;, &quot;arr&quot;: &quot;221100&quot;, ...}]
+  }
+]
+</code></pre>
+<hr>
+<h2>3. Station Board (<code>StationBoard</code>)</h2>
+<p>Get departures or arrivals at a station.</p>
+<h3>Request</h3>
+<pre><code class="language-bash">curl -s -X POST &quot;https://fahrplan.oebb.at/bin/mgate.exe&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;id&quot;:&quot;1&quot;,&quot;ver&quot;:&quot;1.67&quot;,&quot;lang&quot;:&quot;deu&quot;,
+    &quot;auth&quot;:{&quot;type&quot;:&quot;AID&quot;,&quot;aid&quot;:&quot;OWDL4fE4ixNiPBBm&quot;},
+    &quot;client&quot;:{&quot;id&quot;:&quot;OEBB&quot;,&quot;type&quot;:&quot;WEB&quot;,&quot;name&quot;:&quot;webapp&quot;,&quot;l&quot;:&quot;vs_webapp&quot;},
+    &quot;formatted&quot;:false,
+    &quot;svcReqL&quot;:[{
+      &quot;req&quot;:{
+        &quot;stbLoc&quot;:{&quot;lid&quot;:&quot;A=1@O=Wien Hbf@L=8103000@&quot;,&quot;type&quot;:&quot;S&quot;},
+        &quot;date&quot;:&quot;20260109&quot;,
+        &quot;time&quot;:&quot;080000&quot;,
+        &quot;type&quot;:&quot;DEP&quot;,
+        &quot;maxJny&quot;:20
+      },
+      &quot;meth&quot;:&quot;StationBoard&quot;
+    }]
+  }&#39;
+</code></pre>
+<h3>Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>stbLoc</code></td>
+<td>Station location</td>
+</tr>
+<tr>
+<td><code>date</code></td>
+<td>Date (YYYYMMDD)</td>
+</tr>
+<tr>
+<td><code>time</code></td>
+<td>Time (HHMMSS)</td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td><code>DEP</code> (departures) or <code>ARR</code> (arrivals)</td>
+</tr>
+<tr>
+<td><code>maxJny</code></td>
+<td>Maximum number of journeys</td>
+</tr>
+</tbody></table>
+<h3>Response Structure</h3>
+<pre><code class="language-json">{
+  &quot;svcResL&quot;: [{
+    &quot;res&quot;: {
+      &quot;jnyL&quot;: [{
+        &quot;prodX&quot;: 0,
+        &quot;dirTxt&quot;: &quot;Salzburg Hbf&quot;,
+        &quot;stbStop&quot;: {
+          &quot;dTimeS&quot;: &quot;080000&quot;,
+          &quot;dPltfS&quot;: {&quot;txt&quot;: &quot;8A-B&quot;}
+        }
+      }],
+      &quot;common&quot;: {
+        &quot;prodL&quot;: [{
+          &quot;name&quot;: &quot;RJX 662&quot;,
+          &quot;cls&quot;: 1,
+          &quot;prodCtx&quot;: {&quot;catOutL&quot;: &quot;Railjet Xpress&quot;}
+        }]
+      }
+    }
+  }]
+}
+</code></pre>
+<hr>
+<h2>4. Service Alerts (<code>HimSearch</code>)</h2>
+<p>Get current disruptions and service information.</p>
+<h3>Request</h3>
+<pre><code class="language-bash">curl -s -X POST &quot;https://fahrplan.oebb.at/bin/mgate.exe&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;id&quot;:&quot;1&quot;,&quot;ver&quot;:&quot;1.67&quot;,&quot;lang&quot;:&quot;deu&quot;,
+    &quot;auth&quot;:{&quot;type&quot;:&quot;AID&quot;,&quot;aid&quot;:&quot;OWDL4fE4ixNiPBBm&quot;},
+    &quot;client&quot;:{&quot;id&quot;:&quot;OEBB&quot;,&quot;type&quot;:&quot;WEB&quot;,&quot;name&quot;:&quot;webapp&quot;,&quot;l&quot;:&quot;vs_webapp&quot;},
+    &quot;formatted&quot;:false,
+    &quot;svcReqL&quot;:[{
+      &quot;req&quot;:{
+        &quot;himFltrL&quot;:[{&quot;type&quot;:&quot;PROD&quot;,&quot;mode&quot;:&quot;INC&quot;,&quot;value&quot;:&quot;255&quot;}],
+        &quot;maxNum&quot;:20
+      },
+      &quot;meth&quot;:&quot;HimSearch&quot;
+    }]
+  }&#39;
+</code></pre>
+<h3>Response Structure</h3>
+<pre><code class="language-json">{
+  &quot;svcResL&quot;: [{
+    &quot;res&quot;: {
+      &quot;msgL&quot;: [{
+        &quot;hid&quot;: &quot;HIM_FREETEXT_843858&quot;,
+        &quot;head&quot;: &quot;Verringertes Sitzplatzangebot&quot;,
+        &quot;text&quot;: &quot;Wegen einer technischen Störung...&quot;,
+        &quot;prio&quot;: 0,
+        &quot;sDate&quot;: &quot;20260108&quot;,
+        &quot;eDate&quot;: &quot;20260108&quot;
+      }]
+    }
+  }]
+}
+</code></pre>
+<hr>
+<h2>Common Station IDs</h2>
+<table>
+<thead>
+<tr>
+<th>Station</th>
+<th>extId</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Wien Hbf</td>
+<td>8103000</td>
+</tr>
+<tr>
+<td>Wien Meidling</td>
+<td>8100514</td>
+</tr>
+<tr>
+<td>Wien Westbahnhof</td>
+<td>8101003</td>
+</tr>
+<tr>
+<td>Salzburg Hbf</td>
+<td>8100002</td>
+</tr>
+<tr>
+<td>Linz Hbf</td>
+<td>8100013</td>
+</tr>
+<tr>
+<td>Graz Hbf</td>
+<td>8100173</td>
+</tr>
+<tr>
+<td>Innsbruck Hbf</td>
+<td>8100108</td>
+</tr>
+<tr>
+<td>Klagenfurt Hbf</td>
+<td>8100085</td>
+</tr>
+<tr>
+<td>St. Pölten Hbf</td>
+<td>8100008</td>
+</tr>
+<tr>
+<td>Wr. Neustadt Hbf</td>
+<td>8100516</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Time Format</h2>
+<ul>
+<li>Dates: <code>YYYYMMDD</code> (e.g., <code>20260109</code>)</li>
+<li>Times: <code>HHMMSS</code> (e.g., <code>080000</code> = 08:00:00)</li>
+<li>Duration: <code>HHMMSS</code> (e.g., <code>025200</code> = 2h 52m)</li>
+</ul>
+<hr>
+<h2>Error Handling</h2>
+<p>Check <code>err</code> field in response:</p>
+<pre><code class="language-json">{
+  &quot;err&quot;: &quot;OK&quot;,           // Success
+  &quot;err&quot;: &quot;PARSE&quot;,        // Invalid request format
+  &quot;err&quot;: &quot;NO_MATCH&quot;,     // No results found
+  &quot;errTxt&quot;: &quot;...&quot;        // Error details
+}
+</code></pre>
+<hr>
+<h2>Product Classes (cls values)</h2>
+<table>
+<thead>
+<tr>
+<th>cls</th>
+<th>Product</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>ICE/RJX</td>
+</tr>
+<tr>
+<td>2</td>
+<td>IC/EC</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Night trains</td>
+</tr>
+<tr>
+<td>8</td>
+<td>NJ/EN</td>
+</tr>
+<tr>
+<td>16</td>
+<td>REX/Regional</td>
+</tr>
+<tr>
+<td>32</td>
+<td>S-Bahn</td>
+</tr>
+<tr>
+<td>64</td>
+<td>Bus</td>
+</tr>
+<tr>
+<td>128</td>
+<td>Ferry</td>
+</tr>
+<tr>
+<td>256</td>
+<td>U-Bahn</td>
+</tr>
+<tr>
+<td>512</td>
+<td>Tram</td>
+</tr>
+<tr>
+<td>1024</td>
+<td>On-demand</td>
+</tr>
+<tr>
+<td>2048</td>
+<td>Other</td>
+</tr>
+</tbody></table>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/manmal/oebb-scotty/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/manmal/oebb-scotty" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/manmal/oebb-scotty/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@manmal</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Transportation</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage Coolify deployments, applications, databases, and services via the Coolify API">
+  <title>coolify - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to DevOps & Cloud</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">DevOps & Cloud</a>
+                <span class="skill-page-author">by @visiongeist</span>
+              </div>
+              <h1 class="skill-page-title">coolify</h1>
+              <p class="skill-page-desc">Manage Coolify deployments, applications, databases, and services via the Coolify API</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Coolify API Skill</h1>
+<p><strong>Repository:</strong> <a href="https://github.com/visiongeist/coolifycli">github.com/visiongeist/coolifycli</a></p>
+<p>Comprehensive management of Coolify deployments, applications, databases, services, and infrastructure via the Coolify API.</p>
+<h2>When to Use This Skill</h2>
+<p>Use this skill when the user needs to:</p>
+<ul>
+<li>Deploy applications to Coolify</li>
+<li>Manage application lifecycle (start, stop, restart)</li>
+<li>View application logs</li>
+<li>Create and manage databases (PostgreSQL, MySQL, MongoDB, Redis, etc.)</li>
+<li>Deploy Docker Compose services</li>
+<li>Manage servers and infrastructure</li>
+<li>Configure environment variables</li>
+<li>Trigger and monitor deployments</li>
+<li>Manage GitHub App integrations</li>
+<li>Configure SSH private keys</li>
+</ul>
+<h2>Prerequisites</h2>
+<ol>
+<li><p><strong>Coolify API Token</strong> — Generate from Coolify dashboard:</p>
+<ul>
+<li>Navigate to <strong>Keys &amp; Tokens</strong> → <strong>API tokens</strong></li>
+<li>Create token with appropriate permissions (<code>read</code>, <code>write</code>, <code>deploy</code>)</li>
+<li>Set <code>COOLIFY_TOKEN</code> environment variable</li>
+</ul>
+</li>
+<li><p><strong>Coolify API URL</strong> (Optional) — For self-hosted instances:</p>
+<ul>
+<li>Set <code>COOLIFY_API_URL</code> environment variable (default: <code>https://app.coolify.io/api/v1</code>)</li>
+<li>Example: <code>export COOLIFY_API_URL=&quot;https://your-coolify.com/api/v1&quot;</code></li>
+</ul>
+</li>
+<li><p><strong>Node.js 20+</strong> — Required for running the CLI</p>
+</li>
+<li><p><strong>API Access</strong> — Coolify Cloud (<code>app.coolify.io</code>) or self-hosted instance</p>
+</li>
+</ol>
+<h2>Quick Start</h2>
+<h3>Basic Commands</h3>
+<pre><code class="language-bash"># List all applications
+{baseDir}/dist/coolify-cli.cjs applications list
+
+# Get application details
+{baseDir}/dist/coolify-cli.cjs applications get --uuid abc-123
+
+# Deploy an application
+{baseDir}/dist/coolify-cli.cjs deploy --uuid abc-123 --force
+
+# View application logs
+{baseDir}/dist/coolify-cli.cjs applications logs --uuid abc-123
+
+# Restart an application
+{baseDir}/dist/coolify-cli.cjs applications restart --uuid abc-123
+</code></pre>
+<hr>
+<h2>Applications</h2>
+<h3>List Applications</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs applications list
+</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code class="language-json">{
+  &quot;success&quot;: true,
+  &quot;data&quot;: [
+    {
+      &quot;uuid&quot;: &quot;abc-123&quot;,
+      &quot;name&quot;: &quot;my-app&quot;,
+      &quot;status&quot;: &quot;running&quot;,
+      &quot;fqdn&quot;: &quot;https://app.example.com&quot;
+    }
+  ],
+  &quot;count&quot;: 1
+}
+</code></pre>
+<h3>Get Application Details</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs applications get --uuid abc-123
+</code></pre>
+<h3>Application Lifecycle</h3>
+<pre><code class="language-bash"># Start
+{baseDir}/dist/coolify-cli.cjs applications start --uuid abc-123
+
+# Stop
+{baseDir}/dist/coolify-cli.cjs applications stop --uuid abc-123
+
+# Restart
+{baseDir}/dist/coolify-cli.cjs applications restart --uuid abc-123
+</code></pre>
+<h3>View Logs</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs applications logs --uuid abc-123
+</code></pre>
+<h3>Environment Variables</h3>
+<pre><code class="language-bash"># List environment variables
+{baseDir}/dist/coolify-cli.cjs applications envs list --uuid abc-123
+
+# Create environment variable
+{baseDir}/dist/coolify-cli.cjs applications envs create \
+  --uuid abc-123 \
+  --key DATABASE_URL \
+  --value &quot;postgres://user:pass@host:5432/db&quot; \
+  --is-runtime true \
+  --is-buildtime false
+
+# Update environment variable
+{baseDir}/dist/coolify-cli.cjs applications envs update \
+  --uuid abc-123 \
+  --env-uuid env-456 \
+  --value &quot;new-value&quot;
+
+# Bulk update environment variables
+{baseDir}/dist/coolify-cli.cjs applications envs bulk-update \
+  --uuid abc-123 \
+  --json &#39;{&quot;DATABASE_URL&quot;:&quot;postgres://...&quot;,&quot;API_KEY&quot;:&quot;...&quot;}&#39;
+
+# Delete environment variable
+{baseDir}/dist/coolify-cli.cjs applications envs delete \
+  --uuid abc-123 \
+  --env-uuid env-456
+</code></pre>
+<h3>Create Applications</h3>
+<pre><code class="language-bash"># Public Git repository
+{baseDir}/dist/coolify-cli.cjs applications create-public \
+  --project-uuid proj-123 \
+  --server-uuid server-456 \
+  --git-repository &quot;https://github.com/user/repo&quot; \
+  --git-branch main \
+  --name &quot;My App&quot;
+
+# Private GitHub App
+{baseDir}/dist/coolify-cli.cjs applications create-private-github-app \
+  --project-uuid proj-123 \
+  --server-uuid server-456 \
+  --github-app-uuid gh-789 \
+  --git-repository &quot;user/repo&quot; \
+  --git-branch main
+
+# Dockerfile
+{baseDir}/dist/coolify-cli.cjs applications create-dockerfile \
+  --project-uuid proj-123 \
+  --server-uuid server-456 \
+  --dockerfile-location &quot;./Dockerfile&quot; \
+  --name &quot;My Docker App&quot;
+
+# Docker Image
+{baseDir}/dist/coolify-cli.cjs applications create-dockerimage \
+  --project-uuid proj-123 \
+  --server-uuid server-456 \
+  --docker-image &quot;nginx:latest&quot; \
+  --name &quot;Nginx&quot;
+
+# Docker Compose
+{baseDir}/dist/coolify-cli.cjs applications create-dockercompose \
+  --project-uuid proj-123 \
+  --server-uuid server-456 \
+  --docker-compose-location &quot;./docker-compose.yml&quot;
+</code></pre>
+<hr>
+<h2>Databases</h2>
+<h3>List Databases</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs databases list
+</code></pre>
+<h3>Get Database Details</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs databases get --uuid db-123
+</code></pre>
+<h3>Database Lifecycle</h3>
+<pre><code class="language-bash"># Start
+{baseDir}/dist/coolify-cli.cjs databases start --uuid db-123
+
+# Stop
+{baseDir}/dist/coolify-cli.cjs databases stop --uuid db-123
+
+# Restart
+{baseDir}/dist/coolify-cli.cjs databases restart --uuid db-123
+
+# Delete
+{baseDir}/dist/coolify-cli.cjs databases delete --uuid db-123
+</code></pre>
+<h3>Create Databases</h3>
+<pre><code class="language-bash"># PostgreSQL
+{baseDir}/dist/coolify-cli.cjs databases create-postgresql \
+  --project-uuid proj-123 \
+  --server-uuid server-456 \
+  --name &quot;my-postgres&quot; \
+  --postgres-user admin \
+  --postgres-password secret \
+  --postgres-db myapp
+
+# MySQL
+{baseDir}/dist/coolify-cli.cjs databases create-mysql \
+  --project-uuid proj-123 \
+  --server-uuid server-456 \
+  --name &quot;my-mysql&quot;
+
+# MariaDB
+{baseDir}/dist/coolify-cli.cjs databases create-mariadb \
+  --project-uuid proj-123 \
+  --server-uuid server-456 \
+  --name &quot;my-mariadb&quot;
+
+# MongoDB
+{baseDir}/dist/coolify-cli.cjs databases create-mongodb \
+  --project-uuid proj-123 \
+  --server-uuid server-456 \
+  --name &quot;my-mongo&quot;
+
+# Redis
+{baseDir}/dist/coolify-cli.cjs databases create-redis \
+  --project-uuid proj-123 \
+  --server-uuid server-456 \
+  --name &quot;my-redis&quot;
+
+# KeyDB
+{baseDir}/dist/coolify-cli.cjs databases create-keydb \
+  --project-uuid proj-123 \
+  --server-uuid server-456 \
+  --name &quot;my-keydb&quot;
+
+# ClickHouse
+{baseDir}/dist/coolify-cli.cjs databases create-clickhouse \
+  --project-uuid proj-123 \
+  --server-uuid server-456 \
+  --name &quot;my-clickhouse&quot;
+
+# Dragonfly
+{baseDir}/dist/coolify-cli.cjs databases create-dragonfly \
+  --project-uuid proj-123 \
+  --server-uuid server-456 \
+  --name &quot;my-dragonfly&quot;
+</code></pre>
+<h3>Backups</h3>
+<pre><code class="language-bash"># List backup configurations
+{baseDir}/dist/coolify-cli.cjs databases backups list --uuid db-123
+
+# Create backup configuration
+{baseDir}/dist/coolify-cli.cjs databases backups create \
+  --uuid db-123 \
+  --frequency &quot;0 2 * * *&quot; \
+  --enabled true
+
+# Get backup details
+{baseDir}/dist/coolify-cli.cjs databases backups get \
+  --uuid db-123 \
+  --backup-uuid backup-456
+
+# Update backup
+{baseDir}/dist/coolify-cli.cjs databases backups update \
+  --uuid db-123 \
+  --backup-uuid backup-456 \
+  --frequency &quot;0 3 * * *&quot;
+
+# Trigger manual backup
+{baseDir}/dist/coolify-cli.cjs databases backups trigger \
+  --uuid db-123 \
+  --backup-uuid backup-456
+
+# List backup executions
+{baseDir}/dist/coolify-cli.cjs databases backups executions \
+  --uuid db-123 \
+  --backup-uuid backup-456
+
+# Delete backup configuration
+{baseDir}/dist/coolify-cli.cjs databases backups delete \
+  --uuid db-123 \
+  --backup-uuid backup-456
+</code></pre>
+<hr>
+<h2>Services (Docker Compose)</h2>
+<h3>List Services</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs services list
+</code></pre>
+<h3>Get Service Details</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs services get --uuid service-123
+</code></pre>
+<h3>Service Lifecycle</h3>
+<pre><code class="language-bash"># Start
+{baseDir}/dist/coolify-cli.cjs services start --uuid service-123
+
+# Stop
+{baseDir}/dist/coolify-cli.cjs services stop --uuid service-123
+
+# Restart
+{baseDir}/dist/coolify-cli.cjs services restart --uuid service-123
+
+# Delete
+{baseDir}/dist/coolify-cli.cjs services delete --uuid service-123
+</code></pre>
+<h3>Create Service</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs services create \
+  --project-uuid proj-123 \
+  --server-uuid server-456 \
+  --name &quot;My Service&quot; \
+  --docker-compose &#39;{&quot;version&quot;:&quot;3.8&quot;,&quot;services&quot;:{&quot;web&quot;:{&quot;image&quot;:&quot;nginx&quot;}}}&#39;
+</code></pre>
+<h3>Environment Variables</h3>
+<pre><code class="language-bash"># List
+{baseDir}/dist/coolify-cli.cjs services envs list --uuid service-123
+
+# Create
+{baseDir}/dist/coolify-cli.cjs services envs create \
+  --uuid service-123 \
+  --key API_KEY \
+  --value &quot;secret&quot;
+
+# Update
+{baseDir}/dist/coolify-cli.cjs services envs update \
+  --uuid service-123 \
+  --env-uuid env-456 \
+  --value &quot;new-secret&quot;
+
+# Bulk update
+{baseDir}/dist/coolify-cli.cjs services envs bulk-update \
+  --uuid service-123 \
+  --json &#39;{&quot;API_KEY&quot;:&quot;secret&quot;,&quot;DB_HOST&quot;:&quot;localhost&quot;}&#39;
+
+# Delete
+{baseDir}/dist/coolify-cli.cjs services envs delete \
+  --uuid service-123 \
+  --env-uuid env-456
+</code></pre>
+<hr>
+<h2>Deployments</h2>
+<h3>Deploy Application</h3>
+<pre><code class="language-bash"># Deploy by UUID
+{baseDir}/dist/coolify-cli.cjs deploy --uuid abc-123
+
+# Force rebuild
+{baseDir}/dist/coolify-cli.cjs deploy --uuid abc-123 --force
+
+# Deploy by tag
+{baseDir}/dist/coolify-cli.cjs deploy --tag production
+
+# Instant deploy (skip queue)
+{baseDir}/dist/coolify-cli.cjs deploy --uuid abc-123 --instant-deploy
+</code></pre>
+<h3>List Deployments</h3>
+<pre><code class="language-bash"># List all running deployments
+{baseDir}/dist/coolify-cli.cjs deployments list
+
+# List deployments for specific application
+{baseDir}/dist/coolify-cli.cjs deployments list-for-app --uuid abc-123
+</code></pre>
+<h3>Get Deployment Details</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs deployments get --uuid deploy-456
+</code></pre>
+<h3>Cancel Deployment</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs deployments cancel --uuid deploy-456
+</code></pre>
+<hr>
+<h2>Servers</h2>
+<h3>List Servers</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs servers list
+</code></pre>
+<h3>Get Server Details</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs servers get --uuid server-123
+</code></pre>
+<h3>Create Server</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs servers create \
+  --name &quot;Production Server&quot; \
+  --ip &quot;192.168.1.100&quot; \
+  --port 22 \
+  --user root \
+  --private-key-uuid key-456
+</code></pre>
+<h3>Update Server</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs servers update \
+  --uuid server-123 \
+  --name &quot;Updated Name&quot; \
+  --description &quot;Production environment&quot;
+</code></pre>
+<h3>Validate Server</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs servers validate --uuid server-123
+</code></pre>
+<h3>Get Server Resources</h3>
+<pre><code class="language-bash"># List all resources on server
+{baseDir}/dist/coolify-cli.cjs servers resources --uuid server-123
+
+# Get domains configured on server
+{baseDir}/dist/coolify-cli.cjs servers domains --uuid server-123
+</code></pre>
+<h3>Delete Server</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs servers delete --uuid server-123
+</code></pre>
+<hr>
+<h2>Projects</h2>
+<h3>List Projects</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs projects list
+</code></pre>
+<h3>Get Project Details</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs projects get --uuid proj-123
+</code></pre>
+<h3>Create Project</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs projects create \
+  --name &quot;My Project&quot; \
+  --description &quot;Production project&quot;
+</code></pre>
+<h3>Update Project</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs projects update \
+  --uuid proj-123 \
+  --name &quot;Updated Name&quot;
+</code></pre>
+<h3>Delete Project</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs projects delete --uuid proj-123
+</code></pre>
+<h3>Environments</h3>
+<pre><code class="language-bash"># List environments
+{baseDir}/dist/coolify-cli.cjs projects environments list --uuid proj-123
+
+# Create environment
+{baseDir}/dist/coolify-cli.cjs projects environments create \
+  --uuid proj-123 \
+  --name &quot;staging&quot;
+
+# Get environment details
+{baseDir}/dist/coolify-cli.cjs projects environments get \
+  --uuid proj-123 \
+  --environment staging
+
+# Delete environment
+{baseDir}/dist/coolify-cli.cjs projects environments delete \
+  --uuid proj-123 \
+  --environment staging
+</code></pre>
+<hr>
+<h2>Teams</h2>
+<h3>List Teams</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs teams list
+</code></pre>
+<h3>Get Current Team</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs teams current
+</code></pre>
+<h3>Get Team Members</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs teams members
+</code></pre>
+<h3>Get Team by ID</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs teams get --id 1
+</code></pre>
+<hr>
+<h2>Security (Private Keys)</h2>
+<h3>List Private Keys</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs security keys list
+</code></pre>
+<h3>Get Private Key</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs security keys get --uuid key-123
+</code></pre>
+<h3>Create Private Key</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs security keys create \
+  --name &quot;Production Key&quot; \
+  --description &quot;SSH key for production servers&quot; \
+  --private-key &quot;$(cat ~/.ssh/id_rsa)&quot;
+</code></pre>
+<h3>Update Private Key</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs security keys update \
+  --uuid key-123 \
+  --name &quot;Updated Key Name&quot;
+</code></pre>
+<h3>Delete Private Key</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs security keys delete --uuid key-123
+</code></pre>
+<hr>
+<h2>GitHub Apps</h2>
+<h3>List GitHub Apps</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs github-apps list
+</code></pre>
+<h3>Get GitHub App</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs github-apps get --uuid gh-123
+</code></pre>
+<h3>Create GitHub App</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs github-apps create \
+  --name &quot;My GitHub App&quot; \
+  --app-id 123456 \
+  --installation-id 789012 \
+  --private-key &quot;$(cat github-app-key.pem)&quot;
+</code></pre>
+<h3>Update GitHub App</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs github-apps update \
+  --uuid gh-123 \
+  --name &quot;Updated App Name&quot;
+</code></pre>
+<h3>Delete GitHub App</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs github-apps delete --uuid gh-123
+</code></pre>
+<h3>List Repositories</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs github-apps repos --uuid gh-123
+</code></pre>
+<h3>List Branches</h3>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs github-apps branches \
+  --uuid gh-123 \
+  --owner myorg \
+  --repo myrepo
+</code></pre>
+<hr>
+<h2>Common Use Cases</h2>
+<h3>Deploy a New Application</h3>
+<ol>
+<li><p><strong>List available servers:</strong></p>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs servers list
+</code></pre>
+</li>
+<li><p><strong>Create application:</strong></p>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs applications create-public \
+  --project-uuid proj-123 \
+  --server-uuid server-456 \
+  --git-repository &quot;https://github.com/user/repo&quot; \
+  --git-branch main \
+  --name &quot;My App&quot;
+</code></pre>
+</li>
+<li><p><strong>Configure environment variables:</strong></p>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs applications envs create \
+  --uuid &lt;new-app-uuid&gt; \
+  --key DATABASE_URL \
+  --value &quot;postgres://...&quot; \
+  --is-runtime true
+</code></pre>
+</li>
+<li><p><strong>Deploy:</strong></p>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs deploy --uuid &lt;new-app-uuid&gt;
+</code></pre>
+</li>
+</ol>
+<h3>Set Up Database with Backups</h3>
+<ol>
+<li><p><strong>Create database:</strong></p>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs databases create-postgresql \
+  --project-uuid proj-123 \
+  --server-uuid server-456 \
+  --name &quot;production-db&quot;
+</code></pre>
+</li>
+<li><p><strong>Configure daily backups:</strong></p>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs databases backups create \
+  --uuid &lt;db-uuid&gt; \
+  --frequency &quot;0 2 * * *&quot; \
+  --enabled true
+</code></pre>
+</li>
+<li><p><strong>Trigger manual backup:</strong></p>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs databases backups trigger \
+  --uuid &lt;db-uuid&gt; \
+  --backup-uuid &lt;backup-uuid&gt;
+</code></pre>
+</li>
+</ol>
+<h3>Monitor Application Health</h3>
+<ol>
+<li><p><strong>Check application status:</strong></p>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs applications get --uuid abc-123
+</code></pre>
+</li>
+<li><p><strong>View recent logs:</strong></p>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs applications logs --uuid abc-123
+</code></pre>
+</li>
+<li><p><strong>List recent deployments:</strong></p>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs deployments list-for-app --uuid abc-123
+</code></pre>
+</li>
+</ol>
+<hr>
+<h2>Troubleshooting</h2>
+<h3>&quot;API token not configured&quot;</h3>
+<p><strong>Cause:</strong> <code>COOLIFY_TOKEN</code> environment variable not set.</p>
+<p><strong>Solution:</strong></p>
+<pre><code class="language-bash">export COOLIFY_TOKEN=&quot;your-token-here&quot;
+</code></pre>
+<p>Or configure in Clawdbot config at <code>~/.clawdbot/clawdbot.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;skills&quot;: {
+    &quot;entries&quot;: {
+      &quot;coolify&quot;: {
+        &quot;apiKey&quot;: &quot;your-token-here&quot;
+      }
+    }
+  }
+}
+</code></pre>
+<h3>&quot;Rate limit exceeded&quot;</h3>
+<p><strong>Cause:</strong> Too many API requests in a short time.</p>
+<p><strong>Solution:</strong> The client automatically retries with exponential backoff. Wait for the retry or reduce request frequency.</p>
+<h3>&quot;Application not found&quot;</h3>
+<p><strong>Cause:</strong> Invalid or non-existent UUID.</p>
+<p><strong>Solution:</strong></p>
+<pre><code class="language-bash"># List all applications to find correct UUID
+{baseDir}/dist/coolify-cli.cjs applications list
+</code></pre>
+<h3>&quot;connect ECONNREFUSED&quot;</h3>
+<p><strong>Cause:</strong> Cannot connect to Coolify API.</p>
+<p><strong>Solution for self-hosted:</strong></p>
+<pre><code class="language-bash"># Set custom API URL
+export COOLIFY_API_URL=&quot;https://your-coolify.example.com/api/v1&quot;
+</code></pre>
+<p><strong>Solution for cloud:</strong> Verify internet connection and that <code>app.coolify.io</code> is accessible.</p>
+<h3>&quot;Deployment failed&quot;</h3>
+<p><strong>Cause:</strong> Build or deployment error.</p>
+<p><strong>Solution:</strong></p>
+<ol>
+<li><p>Check deployment logs:</p>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs deployments get --uuid deploy-456
+</code></pre>
+</li>
+<li><p>Check application logs:</p>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs applications logs --uuid abc-123
+</code></pre>
+</li>
+<li><p>Verify environment variables are correct:</p>
+<pre><code class="language-bash">{baseDir}/dist/coolify-cli.cjs applications envs list --uuid abc-123
+</code></pre>
+</li>
+</ol>
+<h3>Node.js Not Found</h3>
+<p><strong>Cause:</strong> Node.js not installed or not in PATH.</p>
+<p><strong>Solution:</strong></p>
+<pre><code class="language-bash"># macOS (via Homebrew)
+brew install node
+
+# Verify installation
+node --version
+</code></pre>
+<hr>
+<h2>Output Format</h2>
+<p>All commands return structured JSON:</p>
+<h3>Success Response</h3>
+<pre><code class="language-json">{
+  &quot;success&quot;: true,
+  &quot;data&quot;: { ... },
+  &quot;count&quot;: 42
+}
+</code></pre>
+<h3>Error Response</h3>
+<pre><code class="language-json">{
+  &quot;success&quot;: false,
+  &quot;error&quot;: {
+    &quot;type&quot;: &quot;APIError&quot;,
+    &quot;message&quot;: &quot;Application not found&quot;,
+    &quot;hint&quot;: &quot;Use &#39;applications list&#39; to find valid UUIDs&quot;
+  }
+}
+</code></pre>
+<hr>
+<h2>Configuration</h2>
+<h3>Environment Variables</h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Required</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>COOLIFY_TOKEN</code></td>
+<td>Yes</td>
+<td>—</td>
+<td>API token from Coolify dashboard</td>
+</tr>
+<tr>
+<td><code>COOLIFY_API_URL</code></td>
+<td>No</td>
+<td><code>https://app.coolify.io/api/v1</code></td>
+<td>API base URL (for self-hosted)</td>
+</tr>
+</tbody></table>
+<h3>Self-Hosted Coolify</h3>
+<p>For self-hosted instances, set the API URL:</p>
+<pre><code class="language-bash">export COOLIFY_API_URL=&quot;https://coolify.example.com/api/v1&quot;
+export COOLIFY_TOKEN=&quot;your-token-here&quot;
+</code></pre>
+<hr>
+<h2>Additional Resources</h2>
+<ul>
+<li><strong>This Skill Repository:</strong> <a href="https://github.com/visiongeist/coolifycli">https://github.com/visiongeist/coolifycli</a></li>
+<li><strong>Coolify Documentation:</strong> <a href="https://coolify.io/docs/">https://coolify.io/docs/</a></li>
+<li><strong>API Reference:</strong> See <code>{baseDir}/references/API.md</code></li>
+<li><strong>Coolify GitHub:</strong> <a href="https://github.com/coollabsio/coolify">https://github.com/coollabsio/coolify</a></li>
+<li><strong>Coolify Discord:</strong> <a href="https://coollabs.io/discord">https://coollabs.io/discord</a></li>
+</ul>
+<hr>
+<h2>Edge Cases and Best Practices</h2>
+<h3>UUID vs Name</h3>
+<p>Most commands require UUIDs, not names. Always use <code>list</code> commands first to find UUIDs:</p>
+<pre><code class="language-bash"># Bad: Using name (will fail)
+{baseDir}/dist/coolify-cli.cjs applications get --uuid &quot;my-app&quot;
+
+# Good: Using UUID
+{baseDir}/dist/coolify-cli.cjs applications list  # Find UUID first
+{baseDir}/dist/coolify-cli.cjs applications get --uuid abc-123
+</code></pre>
+<h3>Force Deployments</h3>
+<p>Use <code>--force</code> flag carefully as it rebuilds from scratch:</p>
+<pre><code class="language-bash"># Normal deployment (uses cache)
+{baseDir}/dist/coolify-cli.cjs deploy --uuid abc-123
+
+# Force rebuild (slower, but ensures clean build)
+{baseDir}/dist/coolify-cli.cjs deploy --uuid abc-123 --force
+</code></pre>
+<h3>Environment Variable Updates</h3>
+<p>After updating environment variables, restart the application:</p>
+<pre><code class="language-bash"># Update env var
+{baseDir}/dist/coolify-cli.cjs applications envs update \
+  --uuid abc-123 \
+  --env-uuid env-456 \
+  --value &quot;new-value&quot;
+
+# Restart to apply changes
+{baseDir}/dist/coolify-cli.cjs applications restart --uuid abc-123
+</code></pre>
+<h3>Backup Frequency</h3>
+<p>Use cron expressions for backup schedules:</p>
+<table>
+<thead>
+<tr>
+<th>Expression</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>0 2 * * *</code></td>
+<td>Daily at 2 AM</td>
+</tr>
+<tr>
+<td><code>0 */6 * * *</code></td>
+<td>Every 6 hours</td>
+</tr>
+<tr>
+<td><code>0 0 * * 0</code></td>
+<td>Weekly on Sunday at midnight</td>
+</tr>
+<tr>
+<td><code>0 0 1 * *</code></td>
+<td>Monthly on 1st at midnight</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Summary</h2>
+<p>This skill provides complete access to Coolify&#39;s API across:</p>
+<ul>
+<li><strong>Applications</strong> — Deployment, lifecycle, logs, environment variables</li>
+<li><strong>Databases</strong> — 8 database types, backups, lifecycle management</li>
+<li><strong>Services</strong> — Docker Compose orchestration</li>
+<li><strong>Deployments</strong> — Trigger, monitor, cancel</li>
+<li><strong>Servers</strong> — Infrastructure management and validation</li>
+<li><strong>Projects</strong> — Organization and environment management</li>
+<li><strong>Teams</strong> — Access control and collaboration</li>
+<li><strong>Security</strong> — SSH key management</li>
+<li><strong>GitHub Apps</strong> — Repository integration</li>
+</ul>
+<p>All operations return structured JSON for easy agent consumption.</p>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/visiongeist/coolify/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/visiongeist/coolify" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/visiongeist/coolify/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@visiongeist</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">DevOps & Cloud</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A fast Rust-based headless browser automation CLI with Node.js fallback that enables AI agents to">
+  <title>Agent Browser - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Browser & Automation</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Browser & Automation</a>
+                <span class="skill-page-author">by @thesethrose</span>
+              </div>
+              <h1 class="skill-page-title">Agent Browser</h1>
+              <p class="skill-page-desc">A fast Rust-based headless browser automation CLI with Node.js fallback that enables AI agents to</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Browser Automation with agent-browser</h1>
+<h2>Installation</h2>
+<h3>npm recommended</h3>
+<pre><code class="language-bash">npm install -g agent-browser
+agent-browser install
+agent-browser install --with-deps
+</code></pre>
+<h3>From Source</h3>
+<pre><code class="language-bash">git clone https://github.com/vercel-labs/agent-browser
+cd agent-browser
+pnpm install
+pnpm build
+agent-browser install
+</code></pre>
+<h2>Quick start</h2>
+<pre><code class="language-bash">agent-browser open &lt;url&gt;        # Navigate to page
+agent-browser snapshot -i       # Get interactive elements with refs
+agent-browser click @e1         # Click element by ref
+agent-browser fill @e2 &quot;text&quot;   # Fill input by ref
+agent-browser close             # Close browser
+</code></pre>
+<h2>Core workflow</h2>
+<ol>
+<li>Navigate: <code>agent-browser open &lt;url&gt;</code></li>
+<li>Snapshot: <code>agent-browser snapshot -i</code> (returns elements with refs like <code>@e1</code>, <code>@e2</code>)</li>
+<li>Interact using refs from the snapshot</li>
+<li>Re-snapshot after navigation or significant DOM changes</li>
+</ol>
+<h2>Commands</h2>
+<h3>Navigation</h3>
+<pre><code class="language-bash">agent-browser open &lt;url&gt;      # Navigate to URL
+agent-browser back            # Go back
+agent-browser forward         # Go forward
+agent-browser reload          # Reload page
+agent-browser close           # Close browser
+</code></pre>
+<h3>Snapshot (page analysis)</h3>
+<pre><code class="language-bash">agent-browser snapshot            # Full accessibility tree
+agent-browser snapshot -i         # Interactive elements only (recommended)
+agent-browser snapshot -c         # Compact output
+agent-browser snapshot -d 3       # Limit depth to 3
+agent-browser snapshot -s &quot;#main&quot; # Scope to CSS selector
+</code></pre>
+<h3>Interactions (use @refs from snapshot)</h3>
+<pre><code class="language-bash">agent-browser click @e1           # Click
+agent-browser dblclick @e1        # Double-click
+agent-browser focus @e1           # Focus element
+agent-browser fill @e2 &quot;text&quot;     # Clear and type
+agent-browser type @e2 &quot;text&quot;     # Type without clearing
+agent-browser press Enter         # Press key
+agent-browser press Control+a     # Key combination
+agent-browser keydown Shift       # Hold key down
+agent-browser keyup Shift         # Release key
+agent-browser hover @e1           # Hover
+agent-browser check @e1           # Check checkbox
+agent-browser uncheck @e1         # Uncheck checkbox
+agent-browser select @e1 &quot;value&quot;  # Select dropdown
+agent-browser scroll down 500     # Scroll page
+agent-browser scrollintoview @e1  # Scroll element into view
+agent-browser drag @e1 @e2        # Drag and drop
+agent-browser upload @e1 file.pdf # Upload files
+</code></pre>
+<h3>Get information</h3>
+<pre><code class="language-bash">agent-browser get text @e1        # Get element text
+agent-browser get html @e1        # Get innerHTML
+agent-browser get value @e1       # Get input value
+agent-browser get attr @e1 href   # Get attribute
+agent-browser get title           # Get page title
+agent-browser get url             # Get current URL
+agent-browser get count &quot;.item&quot;   # Count matching elements
+agent-browser get box @e1         # Get bounding box
+</code></pre>
+<h3>Check state</h3>
+<pre><code class="language-bash">agent-browser is visible @e1      # Check if visible
+agent-browser is enabled @e1      # Check if enabled
+agent-browser is checked @e1      # Check if checked
+</code></pre>
+<h3>Screenshots &amp; PDF</h3>
+<pre><code class="language-bash">agent-browser screenshot          # Screenshot to stdout
+agent-browser screenshot path.png # Save to file
+agent-browser screenshot --full   # Full page
+agent-browser pdf output.pdf      # Save as PDF
+</code></pre>
+<h3>Video recording</h3>
+<pre><code class="language-bash">agent-browser record start ./demo.webm    # Start recording (uses current URL + state)
+agent-browser click @e1                   # Perform actions
+agent-browser record stop                 # Stop and save video
+agent-browser record restart ./take2.webm # Stop current + start new recording
+</code></pre>
+<p>Recording creates a fresh context but preserves cookies/storage from your session. If no URL is provided, it automatically returns to your current page. For smooth demos, explore first, then start recording.</p>
+<h3>Wait</h3>
+<pre><code class="language-bash">agent-browser wait @e1                     # Wait for element
+agent-browser wait 2000                    # Wait milliseconds
+agent-browser wait --text &quot;Success&quot;        # Wait for text
+agent-browser wait --url &quot;/dashboard&quot;    # Wait for URL pattern
+agent-browser wait --load networkidle      # Wait for network idle
+agent-browser wait --fn &quot;window.ready&quot;     # Wait for JS condition
+</code></pre>
+<h3>Mouse control</h3>
+<pre><code class="language-bash">agent-browser mouse move 100 200      # Move mouse
+agent-browser mouse down left         # Press button
+agent-browser mouse up left           # Release button
+agent-browser mouse wheel 100         # Scroll wheel
+</code></pre>
+<h3>Semantic locators (alternative to refs)</h3>
+<pre><code class="language-bash">agent-browser find role button click --name &quot;Submit&quot;
+agent-browser find text &quot;Sign In&quot; click
+agent-browser find label &quot;Email&quot; fill &quot;user@test.com&quot;
+agent-browser find first &quot;.item&quot; click
+agent-browser find nth 2 &quot;a&quot; text
+</code></pre>
+<h3>Browser settings</h3>
+<pre><code class="language-bash">agent-browser set viewport 1920 1080      # Set viewport size
+agent-browser set device &quot;iPhone 14&quot;      # Emulate device
+agent-browser set geo 37.7749 -122.4194   # Set geolocation
+agent-browser set offline on              # Toggle offline mode
+agent-browser set headers &#39;{&quot;X-Key&quot;:&quot;v&quot;}&#39; # Extra HTTP headers
+agent-browser set credentials user pass   # HTTP basic auth
+agent-browser set media dark              # Emulate color scheme
+</code></pre>
+<h3>Cookies &amp; Storage</h3>
+<pre><code class="language-bash">agent-browser cookies                     # Get all cookies
+agent-browser cookies set name value      # Set cookie
+agent-browser cookies clear               # Clear cookies
+agent-browser storage local               # Get all localStorage
+agent-browser storage local key           # Get specific key
+agent-browser storage local set k v       # Set value
+agent-browser storage local clear         # Clear all
+</code></pre>
+<h3>Network</h3>
+<pre><code class="language-bash">agent-browser network route &lt;url&gt;              # Intercept requests
+agent-browser network route &lt;url&gt; --abort      # Block requests
+agent-browser network route &lt;url&gt; --body &#39;{}&#39;  # Mock response
+agent-browser network unroute [url]            # Remove routes
+agent-browser network requests                 # View tracked requests
+agent-browser network requests --filter api    # Filter requests
+</code></pre>
+<h3>Tabs &amp; Windows</h3>
+<pre><code class="language-bash">agent-browser tab                 # List tabs
+agent-browser tab new [url]       # New tab
+agent-browser tab 2               # Switch to tab
+agent-browser tab close           # Close tab
+agent-browser window new          # New window
+</code></pre>
+<h3>Frames</h3>
+<pre><code class="language-bash">agent-browser frame &quot;#iframe&quot;     # Switch to iframe
+agent-browser frame main          # Back to main frame
+</code></pre>
+<h3>Dialogs</h3>
+<pre><code class="language-bash">agent-browser dialog accept [text]  # Accept dialog
+agent-browser dialog dismiss        # Dismiss dialog
+</code></pre>
+<h3>JavaScript</h3>
+<pre><code class="language-bash">agent-browser eval &quot;document.title&quot;   # Run JavaScript
+</code></pre>
+<h3>State management</h3>
+<pre><code class="language-bash">agent-browser state save auth.json    # Save session state
+agent-browser state load auth.json    # Load saved state
+</code></pre>
+<h2>Example: Form submission</h2>
+<pre><code class="language-bash">agent-browser open https://example.com/form
+agent-browser snapshot -i
+# Output shows: textbox &quot;Email&quot; [ref=e1], textbox &quot;Password&quot; [ref=e2], button &quot;Submit&quot; [ref=e3]
+
+agent-browser fill @e1 &quot;user@example.com&quot;
+agent-browser fill @e2 &quot;password123&quot;
+agent-browser click @e3
+agent-browser wait --load networkidle
+agent-browser snapshot -i  # Check result
+</code></pre>
+<h2>Example: Authentication with saved state</h2>
+<pre><code class="language-bash"># Login once
+agent-browser open https://app.example.com/login
+agent-browser snapshot -i
+agent-browser fill @e1 &quot;username&quot;
+agent-browser fill @e2 &quot;password&quot;
+agent-browser click @e3
+agent-browser wait --url &quot;/dashboard&quot;
+agent-browser state save auth.json
+
+# Later sessions: load saved state
+agent-browser state load auth.json
+agent-browser open https://app.example.com/dashboard
+</code></pre>
+<h2>Sessions (parallel browsers)</h2>
+<pre><code class="language-bash">agent-browser --session test1 open site-a.com
+agent-browser --session test2 open site-b.com
+agent-browser session list
+</code></pre>
+<h2>JSON output (for parsing)</h2>
+<p>Add <code>--json</code> for machine-readable output:</p>
+<pre><code class="language-bash">agent-browser snapshot -i --json
+agent-browser get text @e1 --json
+</code></pre>
+<h2>Debugging</h2>
+<pre><code class="language-bash">agent-browser open example.com --headed              # Show browser window
+agent-browser console                                # View console messages
+agent-browser console --clear                        # Clear console
+agent-browser errors                                 # View page errors
+agent-browser errors --clear                         # Clear errors
+agent-browser highlight @e1                          # Highlight element
+agent-browser trace start                            # Start recording trace
+agent-browser trace stop trace.zip                   # Stop and save trace
+agent-browser record start ./debug.webm              # Record from current page
+agent-browser record stop                            # Save recording
+agent-browser --cdp 9222 snapshot                    # Connect via CDP
+</code></pre>
+<h2>Troubleshooting</h2>
+<ul>
+<li>If the command is not found on Linux ARM64, use the full path in the bin folder.</li>
+<li>If an element is not found, use snapshot to find the correct ref.</li>
+<li>If the page is not loaded, add a wait command after navigation.</li>
+<li>Use --headed to see the browser window for debugging.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li>--session <name> uses an isolated session.</li>
+<li>--json provides JSON output.</li>
+<li>--full takes a full page screenshot.</li>
+<li>--headed shows the browser window.</li>
+<li>--timeout sets the command timeout in milliseconds.</li>
+<li>--cdp <port> connects via Chrome DevTools Protocol.</li>
+</ul>
+<h2>Notes</h2>
+<ul>
+<li>Refs are stable per page load but change on navigation.</li>
+<li>Always snapshot after navigation to get new refs.</li>
+<li>Use fill instead of type for input fields to ensure existing text is cleared.</li>
+</ul>
+<h2>Reporting Issues</h2>
+<ul>
+<li>Skill issues: Open an issue at <a href="https://github.com/TheSethRose/Agent-Browser-CLI">https://github.com/TheSethRose/Agent-Browser-CLI</a></li>
+<li>agent-browser CLI issues: Open an issue at <a href="https://github.com/vercel-labs/agent-browser">https://github.com/vercel-labs/agent-browser</a></li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/thesethrose/agent-browser/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/thesethrose/agent-browser" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/thesethrose/agent-browser/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@thesethrose</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Browser & Automation</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

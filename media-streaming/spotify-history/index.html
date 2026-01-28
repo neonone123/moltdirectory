@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Access Spotify listening history, top artists/tracks">
+  <title>spotify-history - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Media & Streaming</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Media & Streaming</a>
+                <span class="skill-page-author">by @braydoncoyer</span>
+              </div>
+              <h1 class="skill-page-title">spotify-history</h1>
+              <p class="skill-page-desc">Access Spotify listening history, top artists/tracks</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Spotify History &amp; Recommendations</h1>
+<p>Access Spotify listening history and get personalized recommendations.</p>
+<h2>Setup (One-Time)</h2>
+<h3>Quick Setup (Recommended)</h3>
+<p>Run the setup wizard:</p>
+<pre><code class="language-bash">bash skills/spotify-history/scripts/setup.sh
+</code></pre>
+<p>This guides you through:</p>
+<ol>
+<li>Creating a Spotify Developer App</li>
+<li>Saving credentials securely</li>
+<li>Authorizing access</li>
+</ol>
+<h3>Manual Setup</h3>
+<ol>
+<li><p><strong>Create Spotify Developer App</strong></p>
+<ul>
+<li>Go to <a href="https://developer.spotify.com/dashboard">developer.spotify.com/dashboard</a></li>
+<li>Click <strong>Create App</strong></li>
+<li>Fill in:<ul>
+<li><strong>App name:</strong> <code>Clawd</code> (or any name)</li>
+<li><strong>App description:</strong> <code>Personal assistant integration</code></li>
+<li><strong>Redirect URI:</strong> <code>http://127.0.0.1:8888/callback</code> ⚠️ Use exact URL!</li>
+</ul>
+</li>
+<li>Save and copy <strong>Client ID</strong> and <strong>Client Secret</strong></li>
+</ul>
+</li>
+<li><p><strong>Store Credentials</strong></p>
+<p><strong>Option A: Credentials file (recommended)</strong></p>
+<pre><code class="language-bash">mkdir -p credentials
+cat &gt; credentials/spotify.json &lt;&lt;EOF
+{
+  &quot;client_id&quot;: &quot;your_client_id&quot;,
+  &quot;client_secret&quot;: &quot;your_client_secret&quot;
+}
+EOF
+chmod 600 credentials/spotify.json
+</code></pre>
+<p><strong>Option B: Environment variables</strong></p>
+<pre><code class="language-bash"># Add to ~/.zshrc or ~/.bashrc
+export SPOTIFY_CLIENT_ID=&quot;your_client_id&quot;
+export SPOTIFY_CLIENT_SECRET=&quot;your_client_secret&quot;
+</code></pre>
+</li>
+<li><p><strong>Authenticate</strong></p>
+<p><strong>With browser (local machine):</strong></p>
+<pre><code class="language-bash">python3 scripts/spotify-auth.py
+</code></pre>
+<p><strong>Headless (no browser):</strong></p>
+<pre><code class="language-bash">python3 scripts/spotify-auth.py --headless
+</code></pre>
+<p>Follow the prompts to authorize via URL and paste the callback.</p>
+</li>
+</ol>
+<p>Tokens are saved to <code>~/.config/spotify-clawd/token.json</code> and auto-refresh when expired.</p>
+<h2>Usage</h2>
+<h3>Command Line</h3>
+<pre><code class="language-bash"># Recent listening history
+python3 scripts/spotify-api.py recent
+
+# Top artists (time_range: short_term, medium_term, long_term)
+python3 scripts/spotify-api.py top-artists medium_term
+
+# Top tracks
+python3 scripts/spotify-api.py top-tracks medium_term
+
+# Get recommendations based on your top artists
+python3 scripts/spotify-api.py recommend
+
+# Raw API call (any endpoint)
+python3 scripts/spotify-api.py json /me
+python3 scripts/spotify-api.py json /me/player/recently-played
+</code></pre>
+<h3>Time Ranges</h3>
+<ul>
+<li><code>short_term</code> — approximately last 4 weeks</li>
+<li><code>medium_term</code> — approximately last 6 months (default)</li>
+<li><code>long_term</code> — all time</li>
+</ul>
+<h3>Example Output</h3>
+<pre><code>Top Artists (medium_term):
+  1. Hans Zimmer [soundtrack, score]
+  2. John Williams [soundtrack, score]
+  3. Michael Giacchino [soundtrack, score]
+  4. Max Richter [ambient, modern classical]
+  5. Ludovico Einaudi [italian contemporary classical]
+</code></pre>
+<h2>Agent Usage</h2>
+<p>When user asks about music:</p>
+<ul>
+<li>&quot;What have I been listening to?&quot; → <code>spotify-api.py recent</code></li>
+<li>&quot;Who are my top artists?&quot; → <code>spotify-api.py top-artists</code></li>
+<li>&quot;Recommend new music&quot; → <code>spotify-api.py recommend</code> + add your own knowledge</li>
+</ul>
+<p>For recommendations, combine API data with music knowledge to suggest similar artists not in their library.</p>
+<h2>Troubleshooting</h2>
+<h3>&quot;Spotify credentials not found!&quot;</h3>
+<ul>
+<li>Make sure <code>credentials/spotify.json</code> exists <strong>or</strong> environment variables are set</li>
+<li>Credential file is checked first, then env vars</li>
+<li>Run <code>bash skills/spotify-history/scripts/setup.sh</code> to create credentials</li>
+</ul>
+<h3>&quot;Not authenticated. Run spotify-auth.py first.&quot;</h3>
+<ul>
+<li>Tokens don&#39;t exist or are invalid</li>
+<li>Run: <code>python3 scripts/spotify-auth.py</code> (or with <code>--headless</code> if no browser)</li>
+</ul>
+<h3>&quot;HTTP Error 400: Bad Request&quot; during token refresh</h3>
+<ul>
+<li>Credentials changed or are invalid</li>
+<li>Re-run setup: <code>bash skills/spotify-history/scripts/setup.sh</code></li>
+<li>Or update <code>credentials/spotify.json</code> with correct Client ID/Secret</li>
+</ul>
+<h3>&quot;HTTP Error 401: Unauthorized&quot;</h3>
+<ul>
+<li>Token expired and auto-refresh failed</li>
+<li>Delete token and re-authenticate:<pre><code class="language-bash">rm ~/.config/spotify-clawd/token.json
+python3 scripts/spotify-auth.py
+</code></pre>
+</li>
+</ul>
+<h3>Headless / No Browser</h3>
+<ul>
+<li>Use <code>--headless</code> flag: <code>python3 scripts/spotify-auth.py --headless</code></li>
+<li>Manually open the auth URL on any device</li>
+<li>Copy the callback URL (starts with <code>http://127.0.0.1:8888/callback?code=...</code>)</li>
+<li>Paste it back when prompted</li>
+</ul>
+<h2>Security Notes</h2>
+<ul>
+<li>Tokens stored with 0600 permissions (user-only read/write)</li>
+<li>Client secret should be kept private</li>
+<li>Redirect URI uses <code>127.0.0.1</code> (local only) for security</li>
+</ul>
+<h2>Required Scopes</h2>
+<ul>
+<li><code>user-read-recently-played</code> — recent listening history</li>
+<li><code>user-top-read</code> — top artists and tracks</li>
+<li><code>user-read-playback-state</code> — current playback</li>
+<li><code>user-read-currently-playing</code> — currently playing track</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/braydoncoyer/spotify-history/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/braydoncoyer/spotify-history" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/braydoncoyer/spotify-history/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@braydoncoyer</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Media & Streaming</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

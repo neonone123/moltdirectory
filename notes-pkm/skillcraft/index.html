@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Create, design, and package Clawdbot skills">
+  <title>skillcraft - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Notes & PKM</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Notes & PKM</a>
+                <span class="skill-page-author">by @jmz1</span>
+              </div>
+              <h1 class="skill-page-title">skillcraft</h1>
+              <p class="skill-page-desc">Create, design, and package Clawdbot skills</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Skillcraft - Clawdbot Skill Creator</h1>
+<p>An opinionated, AI-native design guide for Clawdbot skills. Focuses on <strong>clawdbot-specific integration patterns</strong> — message routing, cron scheduling, memory persistence, channel formatting — not generic programming advice.</p>
+<p><strong>Assumes:</strong> The agent knows how to write code, structure projects, and handle errors. This skill teaches <em>clawdbot-specific</em> concerns.</p>
+<h2>Prerequisites</h2>
+<p><strong>Load the <code>clawddocs</code> (or equivalent) skill first.</strong> This skill relies on Clawdbot documentation for authoritative feature details. The clawddocs skill provides:</p>
+<ul>
+<li>Documentation category navigation (see categories below)</li>
+<li>Search scripts for finding specific docs</li>
+<li>Config snippets for common patterns</li>
+</ul>
+<p><strong>Documentation categories</strong> (via clawddocs):</p>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Path</th>
+<th>Use for</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Gateway &amp; Config</td>
+<td><code>/gateway/</code></td>
+<td>Configuration, security, health</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td><code>/tools/</code></td>
+<td>Skills, browser, bash, subagents</td>
+</tr>
+<tr>
+<td>Automation</td>
+<td><code>/automation/</code></td>
+<td>Cron jobs, webhooks, polling</td>
+</tr>
+<tr>
+<td>Concepts</td>
+<td><code>/concepts/</code></td>
+<td>Sessions, models, queues, streaming</td>
+</tr>
+<tr>
+<td>Providers</td>
+<td><code>/providers/</code></td>
+<td>Discord, Telegram, WhatsApp, etc.</td>
+</tr>
+</tbody></table>
+<p>When this skill says &quot;consult documentation,&quot; use clawddocs to fetch the relevant doc.</p>
+<h2>Core Philosophy</h2>
+<p><strong>Skills are how Clawdbot extends itself.</strong> They survive context limits, compose cleanly, and share via ClawdHub. </p>
+<p><strong>Most good skills start as scattered notes before anyone formalizes them.</strong> This skill is a protocol for that formalization — turning &quot;remember to do X&quot; into something that composes and shares.</p>
+<hr>
+<h2>The Design Sequence</h2>
+<p>Follow these stages in order. Each produces artifacts that feed the next.</p>
+<p><strong>Two entry modes:</strong></p>
+<ul>
+<li><strong>New skill:</strong> Start at Stage 1</li>
+<li><strong>Extracting existing functionality:</strong> Start at Stage 0</li>
+</ul>
+<hr>
+<h3>Stage 0: Inventory (Extraction Only)</h3>
+<p><strong>Skip this stage if building a new skill from scratch.</strong></p>
+<p>Use this when functionality already exists but isn&#39;t packaged as a skill. Common sources:</p>
+<ul>
+<li>Scripts in <code>&lt;workspace&gt;/scripts/</code> that aren&#39;t part of any skill</li>
+<li>Instructions buried in TOOLS.md or AGENTS.md</li>
+<li>Patterns repeated across conversations</li>
+<li>&quot;Remember to do X&quot; notes that should be formalized</li>
+</ul>
+<p><strong>Gather the artifacts:</strong></p>
+<p>Ask:</p>
+<ul>
+<li><strong>Where does it live?</strong> (scripts, TOOLS.md section, memory notes, conversation patterns)</li>
+<li><strong>What does it do?</strong> (describe the capability)</li>
+<li><strong>How is it currently triggered?</strong> (manual request, heartbeat check, ad-hoc)</li>
+<li><strong>What Clawdbot features does it use?</strong> (exec, cron, message, memory, etc.)</li>
+</ul>
+<p>Example inventory:</p>
+<pre><code>- scripts/mail/check.py — fetches and processes emails
+- TOOLS.md ## Mail Rules — documents the mail command syntax  
+- HEARTBEAT.md — includes &quot;run mail heartbeat&quot; instruction
+- mail-rules.yaml — configuration file
+</code></pre>
+<p><strong>Assess current state:</strong></p>
+<ul>
+<li><strong>What&#39;s working well?</strong> (keep it)</li>
+<li><strong>What&#39;s fragile or unclear?</strong> (improve it)</li>
+<li><strong>What&#39;s missing?</strong> (add it)</li>
+<li><strong>What&#39;s over-engineered?</strong> (simplify it)</li>
+</ul>
+<p><strong>Output:</strong> Inventory of existing artifacts with assessment notes. Then proceed to Stage 1.</p>
+<hr>
+<h3>Stage 1: Problem Understanding</h3>
+<p><strong>Goal:</strong> Concrete clarity on what the skill does and when it&#39;s needed.</p>
+<p>Work through these questions with the user:</p>
+<ol>
+<li><p><strong>What does this skill do?</strong> (one sentence)</p>
+</li>
+<li><p><strong>When should this skill be loaded?</strong></p>
+<ul>
+<li>What would a user say? (3-5 example phrases)</li>
+<li>What mid-task needs might lead here? (e.g., &quot;need weather data&quot;, &quot;need to send a message&quot;)</li>
+<li>Any scheduled/periodic triggers? (heartbeat, cron)</li>
+</ul>
+</li>
+<li><p><strong>What does success look like?</strong> For each example, what&#39;s the outcome?</p>
+</li>
+</ol>
+<p><em>If extracting:</em> Derive from actual usage, not just hypotheticals. It&#39;s ok to generalise the problem if that&#39;s what the user wants.</p>
+<p><strong>Output:</strong> Problem statement with trigger examples and success criteria.</p>
+<hr>
+<h3>Stage 2: Capability Discovery</h3>
+<p><strong>Goal:</strong> Understand what the skill needs to work with.</p>
+<h4>Generalisability</h4>
+<p>Ask the user: <strong>Is this skill for your setup specifically, or should it work for any Clawdbot instance?</strong></p>
+<table>
+<thead>
+<tr>
+<th>Choice</th>
+<th>Implications</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Universal</strong></td>
+<td>Generic paths (<code>&lt;workspace&gt;/</code>), no assumptions about installed tools, minimal references to user-specific config, suitable for ClawdHub</td>
+</tr>
+<tr>
+<td><strong>Particular</strong></td>
+<td>Can reference specific local paths, skills, tools, TOOLS.md entries; tailored to user&#39;s workflow</td>
+</tr>
+</tbody></table>
+<p>This affects many downstream decisions. Capture it early.</p>
+<p><em>If extracting:</em> Also decide what stays in workspace (user config, state) vs. what moves to skill (scripts, instructions, references).</p>
+<h4>Skill Synergy Search (Particular Only)</h4>
+<p><strong>Skip this section if building a Universal skill.</strong></p>
+<p>When building for a particular setup, leverage existing workspace capabilities:</p>
+<ol>
+<li><strong>Scan available skills</strong> — review the skill descriptions in <code>&lt;available_skills&gt;</code> from your system prompt</li>
+<li><strong>Identify promising synergies</strong> — look for skills that:<ul>
+<li>Provide data sources this skill could consume (e.g., calendar, contacts, location)</li>
+<li>Offer complementary capabilities (e.g., notification, storage, presentation)</li>
+<li>Handle adjacent domains that might integrate naturally</li>
+</ul>
+</li>
+<li><strong>Deep-read promising skills</strong> — for each skill with apparent synergy, read its SKILL.md to understand:<ul>
+<li>Exact capabilities and invocation patterns</li>
+<li>Output formats that could be consumed</li>
+<li>State or configuration that might be shared</li>
+<li>Opportunities for composition or delegation</li>
+</ul>
+</li>
+</ol>
+<p>Prioritise skills which have their dependencies fulfilled and are in active use.</p>
+<p><strong>Example:</strong> Building a &quot;daily briefing&quot; skill? Scan for: calendar skills (event data), weather skills (forecast), mail skills (unread count), location skills (context-aware content). Read each to understand how to compose them.</p>
+<p><strong>Output from this step:</strong> List of synergistic skills with brief notes on how each might integrate.</p>
+<h4>External Dependencies</h4>
+<ul>
+<li>Does it wrap a CLI tool? Which one? Is it installed? What&#39;s the basic usage pattern?</li>
+<li>Does it wrap a web API? What&#39;s the base URL? Auth mechanism? Rate limits?</li>
+<li>Does it process local files? What formats? What transformations?</li>
+</ul>
+<h4>Clawdbot Features</h4>
+<p>Clawdbot has powerful built-in features with deep semantics and rich configurability. They can be combined in unexpected ways to solve user problems.</p>
+<p><strong>Conduct a creatively-minded review of the documentation</strong> with the skill&#39;s needs in mind. Use <strong>clawddocs</strong> to explore — start with <code>/concepts/</code> and <code>/tools/</code> categories. Think like a meta-programmer: Clawdbot&#39;s features are primitives that compose. A skill might combine cron scheduling with canvas presentation and node camera access in ways no single feature anticipates. If a solution would require a configuration change, check <code>/gateway/configuration</code> and suggest it to the user.</p>
+<p><strong>Documentation categories to explore:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Doc Category</th>
+<th>Tools/Features</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Send messages</td>
+<td><code>/concepts/messages</code></td>
+<td><code>message</code> tool</td>
+</tr>
+<tr>
+<td>Scheduled tasks</td>
+<td><code>/automation/cron-jobs</code></td>
+<td><code>cron</code> tool</td>
+</tr>
+<tr>
+<td>Persistent memory</td>
+<td><code>/concepts/</code></td>
+<td>Memory system, state files</td>
+</tr>
+<tr>
+<td>Background work</td>
+<td><code>/tools/subagents</code></td>
+<td><code>sessions_spawn</code></td>
+</tr>
+<tr>
+<td>Device interaction</td>
+<td><code>/nodes/</code></td>
+<td><code>nodes</code> tool (camera, screen, location)</td>
+</tr>
+<tr>
+<td>UI presentation</td>
+<td><code>/tools/</code></td>
+<td><code>canvas</code> tool</td>
+</tr>
+<tr>
+<td>Web browsing</td>
+<td><code>/tools/browser</code></td>
+<td><code>browser</code> tool</td>
+</tr>
+<tr>
+<td>Web research</td>
+<td><code>/tools/</code></td>
+<td><code>web_search</code>, <code>web_fetch</code></td>
+</tr>
+<tr>
+<td>Image analysis</td>
+<td><code>/tools/</code></td>
+<td><code>image</code> tool</td>
+</tr>
+</tbody></table>
+<p><strong>Verify feature usage against documentation.</strong> Don&#39;t assume — features evolve and have nuances. Use clawddocs to check:</p>
+<ul>
+<li>Tool parameters and capabilities (fetch the relevant <code>/tools/</code> doc)</li>
+<li>Channel-specific constraints (check <code>/providers/</code> for the target channel)</li>
+<li>Configuration requirements and defaults (<code>/gateway/configuration</code>)</li>
+<li>Known gotchas or limitations</li>
+</ul>
+<p><strong>Output:</strong> Capability map listing external deps, Clawdbot features to use, and generalisability choice.</p>
+<hr>
+<h3>Stage 3: Architecture</h3>
+<p><strong>Goal:</strong> Identify applicable design patterns and propose initial architecture.</p>
+<p>Based on Stages 1-2, identify which patterns apply. Load relevant pattern references:</p>
+<table>
+<thead>
+<tr>
+<th>If the skill...</th>
+<th>Load pattern</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Wraps a CLI tool</td>
+<td><code>patterns/cli-wrapper.md</code></td>
+</tr>
+<tr>
+<td>Wraps a web API</td>
+<td><code>patterns/api-wrapper.md</code></td>
+</tr>
+<tr>
+<td>Monitors and notifies</td>
+<td><code>patterns/monitor.md</code></td>
+</tr>
+</tbody></table>
+<p>Skills often combine multiple patterns. Load all that apply and synthesize.</p>
+<h4>Script vs. Agent Instructions</h4>
+<p>A critical design juncture: how should executable scripts be combined with agent instructions in SKILL.md?</p>
+<p><strong>Use scripts when:</strong></p>
+<ul>
+<li>The operation is deterministic and repeatable</li>
+<li>Complex logic that&#39;s error-prone to re-derive each time</li>
+<li>Performance matters (script runs faster than AI reasoning)</li>
+<li>External tool interaction with specific syntax</li>
+<li>State management with precise file formats</li>
+</ul>
+<p><strong>Use agent instructions when:</strong></p>
+<ul>
+<li>Judgment is required (interpreting results, choosing approaches)</li>
+<li>The task varies based on context</li>
+<li>Natural language interaction is primary</li>
+<li>Flexibility matters more than consistency</li>
+<li>The &quot;how&quot; depends on &quot;what&quot; (can&#39;t be predetermined)</li>
+</ul>
+<p>The split: scripts handle the <em>mechanics</em>, instructions handle the <em>judgment</em>.</p>
+<h4>Example: Context Briefing Skill</h4>
+<p>A skill that prepares briefings before meetings. This illustrates the full agent→script→agent flow.</p>
+<p><strong>User message:</strong></p>
+<blockquote>
+<p>&quot;Brief me on Acme Corp before my 2pm call&quot;</p>
+</blockquote>
+<p><strong>Phase 1: Agent parses and routes (SKILL.md instructions)</strong></p>
+<pre><code class="language-markdown">## Handling Briefing Requests
+
+When user requests a briefing:
+1. Extract the **subject** (company, person, project, topic)
+2. Extract **context** if provided (meeting, call, presentation, general)
+3. Check calendar for related upcoming events
+4. Run the appropriate gather script based on subject type:
+   - Company/org → `scripts/gather.py --type company --name &quot;...&quot;`
+   - Person → `scripts/gather.py --type person --name &quot;...&quot;`
+   - Project → `scripts/gather.py --type project --name &quot;...&quot;`
+5. Analyze results and compose briefing (see Phase 3)
+</code></pre>
+<p>The agent interprets &quot;Acme Corp&quot; as a company, &quot;2pm call&quot; as meeting context. It checks calendar, finds &quot;Call with Acme Corp re: Q2 partnership&quot; at 2pm.</p>
+<p><strong>Phase 2: Script fetches external data</strong></p>
+<pre><code class="language-bash">scripts/gather.py --type company --name &quot;Acme Corp&quot; --context meeting
+</code></pre>
+<pre><code class="language-python"># scripts/gather.py - deterministic data gathering
+def gather_company(name: str, context: str) -&gt; dict:
+    return {
+        &quot;emails&quot;: search_emails(f&quot;from:{domain} OR to:{domain}&quot;, days=30),
+        &quot;calendar&quot;: get_related_events(name, days=14),
+        &quot;web&quot;: search_web(f&quot;{name} news&quot;, recent=True),
+        &quot;contacts&quot;: find_contacts(name),
+        &quot;history&quot;: load_prior_briefings(name)  # from state
+    }
+    # Output: structured JSON with all gathered data
+</code></pre>
+<p><strong>Phase 3: Agent synthesizes and acts (SKILL.md instructions)</strong></p>
+<pre><code class="language-markdown">## Composing the Briefing
+
+With gathered data, synthesize: key context, recent activity, news, relationship history, suggested talking points, and warnings.
+
+If meeting is &lt;1 hour away, send immediately. If &gt;1 hour, offer to set a reminder.
+
+After delivery: log to `&lt;workspace&gt;/memory/`, update `&lt;skill&gt;/state.json`.
+</code></pre>
+<p>The agent composes a briefing from the structured data, using judgment to prioritize and frame.</p>
+<p>If user confirms reminder → <strong>dynamically select the appropriate reminder system</strong>. The skill doesn&#39;t hardcode &quot;use Apple Reminders&quot; — it checks what&#39;s available (Apple Reminders skill? Google Calendar? cron-based?) and routes accordingly. This is agent judgment, not script logic.</p>
+<hr>
+<h4>Composable Pattern Examples</h4>
+<p>Skills often combine multiple Clawdbot primitives in non-obvious ways. See <strong><a href="patterns/composable-examples.md">patterns/composable-examples.md</a></strong> for 7 detailed examples:</p>
+<ol>
+<li>Visual Monitoring Pipeline (nodes + image + canvas + message)</li>
+<li>Parallel Research Aggregator (sessions_spawn + web_search + browser)</li>
+<li>Location-Aware Context Switcher (nodes + cron + memory)</li>
+<li>Cross-Channel Thread Tracker (message + memory_search + sessions_send)</li>
+<li>Scheduled Report Generator (cron + exec + browser + canvas)</li>
+<li>Interactive Approval Workflow (message + cron + memory + gateway)</li>
+<li>Adaptive Learning Loop (image + memory + cron)</li>
+</ol>
+<p><strong>Output:</strong> Selection of Clawdbot system features with rationale (if any), initial architecture sketch.</p>
+<h3>Stage 4: Design Specification</h3>
+<p><strong>Goal:</strong> User-reviewed specification ready for implementation.</p>
+<h4>State Requirements</h4>
+<ul>
+<li><strong>Stateless:</strong> Pure function of inputs, no memory needed</li>
+<li><strong>Session-stateful:</strong> Remembers within a conversation (use context)</li>
+<li><strong>Persistent-stateful:</strong> Survives restarts (needs file-based state)</li>
+</ul>
+<p>If persistent state is needed, where should it live?</p>
+<ul>
+<li><code>&lt;workspace&gt;/memory/</code> — for context that&#39;s part of the user&#39;s memory</li>
+<li><code>&lt;skill&gt;/state.json</code> — for skill-internal state (lives with the skill)</li>
+<li><code>&lt;workspace&gt;/state/&lt;skill&gt;.json</code> — for skill-internal state (common workspace area)</li>
+<li><code>&lt;workspace&gt;/TOOLS.md</code> — for user-specific configuration notes</li>
+</ul>
+<p>By default, skills shouldn&#39;t write state outside the workspace. <code>~/.clawdbot/</code> and other system-level config directories are not suitable for state storage.</p>
+<h4>User Preferences &amp; Environment</h4>
+<p>Ask about the user&#39;s existing setup:</p>
+<ul>
+<li><strong>Scripting language preference?</strong> (Python, Bash, etc.)</li>
+<li><strong>Coding style preferences?</strong> (types, functional idioms, etc.)</li>
+<li><strong>Existing shared environment?</strong> (venv, uv, conda that scripts should use)</li>
+</ul>
+<p>Check USER.md and TOOLS.md for documented coding preferences.</p>
+<h4>Secret Handling</h4>
+<p>If the skill needs API keys or credentials:</p>
+<ol>
+<li><strong>Ask how the user handles secrets</strong> — they may have existing patterns</li>
+<li><strong>Default to environment variables</strong> — <code>SERVICENAME_API_KEY</code></li>
+<li><strong>Document the requirement</strong> — in SKILL.md setup section</li>
+<li><strong>Never hard-code secrets</strong> — not in scripts, not in skill files</li>
+</ol>
+<p>Common patterns:</p>
+<ul>
+<li>Environment variables (most portable)</li>
+<li>macOS Keychain via <code>security</code> command</li>
+<li>Config file in <code>~/.config/skillname/</code> (gitignored)</li>
+<li>1Password CLI (<code>op read</code>)</li>
+</ul>
+<h4>Proposed Architecture</h4>
+<p>Present the proposed architecture:</p>
+<ol>
+<li><strong>Skill structure</strong> — files and directories</li>
+<li><strong>SKILL.md outline</strong> — sections and key content</li>
+<li><strong>Software</strong> — high level requirements for each software component (script, module, wrapper)</li>
+<li><strong>State management</strong> — where and how state is persisted</li>
+<li><strong>Clawdbot integration points</strong> — which features, how they interact</li>
+</ol>
+<p><em>If extracting:</em> Include migration notes — what moves where, what workspace files need updating.</p>
+<p><strong>The specification is a review checkpoint.</strong> Its purpose is letting the user verify:</p>
+<ul>
+<li>Assumptions about Clawdbot integration are correct</li>
+<li>The design fits their existing workflow</li>
+<li>No conflicts with existing workspace files or tools</li>
+<li>Generalisability matches their intent</li>
+</ul>
+<p><strong>Validate against requirements:</strong></p>
+<ul>
+<li>Does it handle all the examples from Stage 1?</li>
+<li>Are Clawdbot features used correctly? (verify via clawddocs)</li>
+<li>Is the state approach appropriate for the access pattern?</li>
+<li>Are there edge cases or failure modes to handle?</li>
+<li>Has the proposed architecture revealed any contradictions in the Stage 1 requirements?</li>
+</ul>
+<p><strong>Iterate</strong> until the user is satisfied. This is where design problems surface cheaply.</p>
+<p><strong>Output:</strong> Design specification including state approach, user preferences, secret handling, and skill structure.</p>
+<hr>
+<h3>Stage 5: Implementation</h3>
+<p><strong>Goal:</strong> Working skill with all components.</p>
+<p><strong>Strong default: Same-session implementation.</strong> Work through the spec with user review at each step. This keeps the user in the loop for integration decisions.</p>
+<p><strong>Coding-agent handoff is optional</strong> and should be reserved for <strong>complex software subcomponents only</strong> — not entire skills. The SKILL.md and integration logic should stay in the main session where the user can review.</p>
+<h4>Implementation Steps</h4>
+<p>Work through in order, with user review at each checkpoint:</p>
+<ol>
+<li><strong>Create skill directory</strong></li>
+<li><strong>SKILL.md skeleton</strong> — frontmatter + section headers
+→ <em>Review: is the structure right?</em></li>
+<li><strong>Scripts</strong> (if any) — get executable pieces working
+→ <em>Review: test each script</em></li>
+<li><strong>SKILL.md body</strong> — complete instructions</li>
+<li><strong>Test against Stage 1 examples</strong>
+→ <em>Review: does it handle all examples?</em></li>
+</ol>
+<p><em>If extracting:</em>
+6. Update workspace files (remove migrated content, add skill references)
+7. Clean up old locations
+8. Verify skill works standalone</p>
+<h4>Crafting the Skill Frontmatter</h4>
+<p>The SKILL.md frontmatter determines discoverability and provides structured metadata. The <code>description</code> field is critical — when the agent scans available skills, this determines whether the skill gets loaded.</p>
+<p>See <a href="https://docs.clawd.bot/tools/skills">https://docs.clawd.bot/tools/skills</a> for Clawdbot-specific metadata documentation.</p>
+<p><strong>Frontmatter format:</strong></p>
+<pre><code class="language-yaml">---
+name: my-skill
+description: [description optimized for discovery]
+homepage: https://github.com/user/repo  # optional
+metadata: {&quot;clawdbot&quot;: {&quot;emoji&quot;: &quot;🔧&quot;, &quot;requires&quot;: {&quot;bins&quot;: [&quot;tool&quot;], &quot;env&quot;: [&quot;API_KEY&quot;]}, &quot;install&quot;: [...]}}
+---
+</code></pre>
+<p><strong>Description field — write for keyword matching and context recognition:</strong></p>
+<ul>
+<li><strong>What it does</strong> — the core capability</li>
+<li><strong>Keywords</strong> — terms users might say that should trigger this skill</li>
+<li><strong>Contexts</strong> — situations where this skill applies</li>
+<li><strong>Trigger phrases</strong> — natural language patterns that indicate relevance</li>
+</ul>
+<p><strong>Example (good):</strong></p>
+<pre><code class="language-yaml">description: Download videos/audio from YouTube and other sites with interactive quality selection, learned preferences, and recent directory tracking. Use when user shares a video URL or asks to download video/audio.
+</code></pre>
+<p><strong>Example (too sparse):</strong></p>
+<pre><code class="language-yaml">description: YouTube downloader.
+</code></pre>
+<p><strong>Metadata field</strong> (optional but recommended for publishable skills)</p>
+<p>Refer to the format specification at <a href="https://docs.clawd.bot/tools/skills">https://docs.clawd.bot/tools/skills</a>.</p>
+<p>Simple example:</p>
+<pre><code class="language-json">{
+  &quot;clawdbot&quot;: {
+    &quot;emoji&quot;: &quot;📍&quot;,
+    &quot;requires&quot;: {
+      &quot;bins&quot;: [&quot;goplaces&quot;],
+      &quot;env&quot;: [&quot;GOOGLE_PLACES_API_KEY&quot;]
+    },
+    &quot;primaryEnv&quot;: &quot;GOOGLE_PLACES_API_KEY&quot;,
+    &quot;install&quot;: [
+      {
+        &quot;id&quot;: &quot;brew&quot;,
+        &quot;kind&quot;: &quot;brew&quot;,
+        &quot;formula&quot;: &quot;steipete/tap/goplaces&quot;,
+        &quot;bins&quot;: [&quot;goplaces&quot;],
+        &quot;label&quot;: &quot;Install goplaces (brew)&quot;
+      }
+    ]
+  }
+}
+</code></pre>
+<p><strong>Test the description:</strong> Would the agent select this skill if the user said each of your Stage 1 example phrases? If not, add the missing keywords.</p>
+<p><strong>Output:</strong> Complete skill directory ready for use.</p>
+<hr>
+<h2>Path Conventions</h2>
+<p>Skills must handle paths carefully, especially for portability and multi-agent contexts.</p>
+<h3>Notation</h3>
+<table>
+<thead>
+<tr>
+<th>Prefix</th>
+<th>Meaning</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>&lt;workspace&gt;/</code></td>
+<td>Agent&#39;s workspace root</td>
+<td><code>&lt;workspace&gt;/TOOLS.md</code></td>
+</tr>
+<tr>
+<td><code>&lt;skill&gt;/</code></td>
+<td>This skill&#39;s directory</td>
+<td><code>&lt;skill&gt;/scripts/check.py</code></td>
+</tr>
+<tr>
+<td>(no prefix)</td>
+<td>Skill-relative path</td>
+<td><code>scripts/helper.sh</code></td>
+</tr>
+</tbody></table>
+<p><strong>Rules:</strong></p>
+<ul>
+<li><strong>Workspace files:</strong> Always use <code>&lt;workspace&gt;/</code> prefix</li>
+<li><strong>Skill components:</strong> Relative paths OK (refers to skill directory)</li>
+<li><strong>Never hardcode</strong> <code>~/clawd</code> or similar — workspaces are portable</li>
+<li><strong>State files:</strong> Use <code>&lt;workspace&gt;/</code> paths, not <code>~/.clawdbot/</code> (skills don&#39;t own user home)</li>
+</ul>
+<h3>Sub-Agent Considerations</h3>
+<p>Sub-agents via <code>sessions_spawn</code> may run in sandboxed containers with different mount points. Use <strong>clawddocs</strong> to check <code>/tools/subagents</code> for current sandbox configuration and path translation requirements. When spawning sub-agents that need workspace files, include path context in the task description.</p>
+<h2>Workspace Awareness</h2>
+<p>Skills may interact with workspace structure:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Purpose</th>
+<th>When to reference</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>&lt;workspace&gt;/TOOLS.md</code></td>
+<td>Local tool notes</td>
+<td>CLI wrappers storing user-specific config</td>
+</tr>
+<tr>
+<td><code>&lt;workspace&gt;/MEMORY.md</code></td>
+<td>Long-term memory</td>
+<td>Skills that contribute to memory</td>
+</tr>
+<tr>
+<td><code>&lt;workspace&gt;/memory/</code></td>
+<td>Daily logs</td>
+<td>Skills that log activity</td>
+</tr>
+<tr>
+<td><code>&lt;workspace&gt;/HEARTBEAT.md</code></td>
+<td>Periodic checks</td>
+<td>Heartbeat-driven skills</td>
+</tr>
+<tr>
+<td><code>&lt;workspace&gt;/USER.md</code></td>
+<td>User context</td>
+<td>Skills needing user info</td>
+</tr>
+</tbody></table>
+<p><strong>Principle:</strong> Skills document <em>what</em> workspace files they touch and <em>why</em>.</p>
+<hr>
+<h2>References</h2>
+<p>Pattern references for common skill types:</p>
+<ul>
+<li><code>patterns/cli-wrapper.md</code> — wrapping CLI tools</li>
+<li><code>patterns/api-wrapper.md</code> — wrapping web APIs</li>
+<li><code>patterns/monitor.md</code> — watching conditions and notifying</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/jmz1/skillcraft/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/jmz1/skillcraft" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/jmz1/skillcraft/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@jmz1</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Notes & PKM</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

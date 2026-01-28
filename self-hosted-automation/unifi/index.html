@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Query and monitor UniFi network via local gateway API (Cloud Gateway Max / UniFi OS)">
+  <title>unifi - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Self-Hosted & Automation</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Self-Hosted & Automation</a>
+                <span class="skill-page-author">by @jmagar</span>
+              </div>
+              <h1 class="skill-page-title">unifi</h1>
+              <p class="skill-page-desc">Query and monitor UniFi network via local gateway API (Cloud Gateway Max / UniFi OS)</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>UniFi Network Monitoring Skill</h1>
+<p>Monitor and query your UniFi network via the local UniFi OS gateway API (tested on Cloud Gateway Max).</p>
+<h2>Purpose</h2>
+<p>This skill provides <strong>read-only</strong> access to your UniFi network&#39;s operational data:</p>
+<ul>
+<li>Devices (APs, switches, gateway) status and health</li>
+<li>Active clients (who&#39;s connected where)</li>
+<li>Network health overview</li>
+<li>Traffic insights (top applications via DPI)</li>
+<li>Recent alarms and events</li>
+</ul>
+<p>All operations are <strong>GET-only</strong> and safe for monitoring/reporting.</p>
+<h2>Setup</h2>
+<p>Create the credentials file: <code>~/.clawdbot/credentials/unifi/config.json</code></p>
+<pre><code class="language-json">{
+  &quot;url&quot;: &quot;https://10.1.0.1&quot;,
+  &quot;username&quot;: &quot;api&quot;,
+  &quot;password&quot;: &quot;YOUR_PASSWORD&quot;,
+  &quot;site&quot;: &quot;default&quot;
+}
+</code></pre>
+<ul>
+<li><code>url</code>: Your UniFi OS gateway IP/hostname (HTTPS)</li>
+<li><code>username</code>: Local UniFi OS admin username</li>
+<li><code>password</code>: Local UniFi OS admin password</li>
+<li><code>site</code>: Site name (usually <code>default</code>)</li>
+</ul>
+<h2>Commands</h2>
+<p>All commands support optional <code>json</code> argument for raw JSON output (default is human-readable table).</p>
+<h3>Network Dashboard</h3>
+<p>Comprehensive view of all network stats (Health, Devices, Clients, Networks, DPI, etc.):</p>
+<pre><code class="language-bash">bash scripts/dashboard.sh
+bash scripts/dashboard.sh json  # Raw JSON for all sections
+</code></pre>
+<p><strong>Output:</strong> Full ASCII dashboard with all metrics.</p>
+<h3>List Devices</h3>
+<p>Shows all UniFi devices (APs, switches, gateway):</p>
+<pre><code class="language-bash">bash scripts/devices.sh
+bash scripts/devices.sh json  # Raw JSON
+</code></pre>
+<p><strong>Output:</strong> Device name, model, IP, state, uptime, connected clients</p>
+<h3>List Active Clients</h3>
+<p>Shows who&#39;s currently connected:</p>
+<pre><code class="language-bash">bash scripts/clients.sh
+bash scripts/clients.sh json  # Raw JSON
+</code></pre>
+<p><strong>Output:</strong> Hostname, IP, MAC, AP, signal strength, RX/TX rates</p>
+<h3>Health Summary</h3>
+<p>Site-wide health status:</p>
+<pre><code class="language-bash">bash scripts/health.sh
+bash scripts/health.sh json  # Raw JSON
+</code></pre>
+<p><strong>Output:</strong> Subsystem status (WAN, LAN, WLAN), counts (up/adopted/disconnected)</p>
+<h3>Top Applications (DPI)</h3>
+<p>Top bandwidth consumers by application:</p>
+<pre><code class="language-bash">bash scripts/top-apps.sh
+bash scripts/top-apps.sh 15  # Show top 15 (default: 10)
+</code></pre>
+<p><strong>Output:</strong> App name, category, RX/TX/total traffic in GB</p>
+<h3>Recent Alerts</h3>
+<p>Recent alarms and events:</p>
+<pre><code class="language-bash">bash scripts/alerts.sh
+bash scripts/alerts.sh 50  # Show last 50 (default: 20)
+</code></pre>
+<p><strong>Output:</strong> Timestamp, alarm key, message, affected device</p>
+<h2>Workflow</h2>
+<p>When the user asks about UniFi:</p>
+<ol>
+<li><strong>&quot;What&#39;s on my network?&quot;</strong> → Run <code>bash scripts/devices.sh</code> + <code>bash scripts/clients.sh</code></li>
+<li><strong>&quot;Is everything healthy?&quot;</strong> → Run <code>bash scripts/health.sh</code></li>
+<li><strong>&quot;Any problems?&quot;</strong> → Run <code>bash scripts/alerts.sh</code></li>
+<li><strong>&quot;What&#39;s using bandwidth?&quot;</strong> → Run <code>bash scripts/top-apps.sh</code></li>
+<li><strong>&quot;Show me a dashboard&quot;</strong> or general checkup → Run <code>bash scripts/dashboard.sh</code></li>
+</ol>
+<p>Always confirm the output looks reasonable before presenting it to the user (check for auth failures, empty data, etc.).</p>
+<h2>Notes</h2>
+<ul>
+<li>Requires network access to your UniFi gateway</li>
+<li>Uses UniFi OS login + <code>/proxy/network</code> API path</li>
+<li>All calls are <strong>read-only GET requests</strong></li>
+<li>Tested endpoints are documented in <code>references/unifi-readonly-endpoints.md</code></li>
+</ul>
+<h2>Reference</h2>
+<ul>
+<li><a href="references/unifi-readonly-endpoints.md">Tested Endpoints</a> — Full catalog of verified read-only API calls on your Cloud Gateway Max</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/jmagar/unifi/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/jmagar/unifi" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/jmagar/unifi/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@jmagar</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Self-Hosted & Automation</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

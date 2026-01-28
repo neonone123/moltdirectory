@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Audit and improve SwiftUI runtime performance from code review and architecture">
+  <title>swiftui-performance-audit - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to iOS & macOS Development</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">iOS & macOS Development</a>
+                <span class="skill-page-author">by @steipete</span>
+              </div>
+              <h1 class="skill-page-title">swiftui-performance-audit</h1>
+              <p class="skill-page-desc">Audit and improve SwiftUI runtime performance from code review and architecture</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>SwiftUI Performance Audit</h1>
+<p><em>Attribution: copied from @Dimillian’s <code>Dimillian/Skills</code> (2025-12-31).</em></p>
+<h2>Overview</h2>
+<p>Audit SwiftUI view performance end-to-end, from instrumentation and baselining to root-cause analysis and concrete remediation steps.</p>
+<h2>Workflow Decision Tree</h2>
+<ul>
+<li>If the user provides code, start with &quot;Code-First Review.&quot;</li>
+<li>If the user only describes symptoms, ask for minimal code/context, then do &quot;Code-First Review.&quot;</li>
+<li>If code review is inconclusive, go to &quot;Guide the User to Profile&quot; and ask for a trace or screenshots.</li>
+</ul>
+<h2>1. Code-First Review</h2>
+<p>Collect:</p>
+<ul>
+<li>Target view/feature code.</li>
+<li>Data flow: state, environment, observable models.</li>
+<li>Symptoms and reproduction steps.</li>
+</ul>
+<p>Focus on:</p>
+<ul>
+<li>View invalidation storms from broad state changes.</li>
+<li>Unstable identity in lists (<code>id</code> churn, <code>UUID()</code> per render).</li>
+<li>Heavy work in <code>body</code> (formatting, sorting, image decoding).</li>
+<li>Layout thrash (deep stacks, <code>GeometryReader</code>, preference chains).</li>
+<li>Large images without downsampling or resizing.</li>
+<li>Over-animated hierarchies (implicit animations on large trees).</li>
+</ul>
+<p>Provide:</p>
+<ul>
+<li>Likely root causes with code references.</li>
+<li>Suggested fixes and refactors.</li>
+<li>If needed, a minimal repro or instrumentation suggestion.</li>
+</ul>
+<h2>2. Guide the User to Profile</h2>
+<p>Explain how to collect data with Instruments:</p>
+<ul>
+<li>Use the SwiftUI template in Instruments (Release build).</li>
+<li>Reproduce the exact interaction (scroll, navigation, animation).</li>
+<li>Capture SwiftUI timeline and Time Profiler.</li>
+<li>Export or screenshot the relevant lanes and the call tree.</li>
+</ul>
+<p>Ask for:</p>
+<ul>
+<li>Trace export or screenshots of SwiftUI lanes + Time Profiler call tree.</li>
+<li>Device/OS/build configuration.</li>
+</ul>
+<h2>3. Analyze and Diagnose</h2>
+<p>Prioritize likely SwiftUI culprits:</p>
+<ul>
+<li>View invalidation storms from broad state changes.</li>
+<li>Unstable identity in lists (<code>id</code> churn, <code>UUID()</code> per render).</li>
+<li>Heavy work in <code>body</code> (formatting, sorting, image decoding).</li>
+<li>Layout thrash (deep stacks, <code>GeometryReader</code>, preference chains).</li>
+<li>Large images without downsampling or resizing.</li>
+<li>Over-animated hierarchies (implicit animations on large trees).</li>
+</ul>
+<p>Summarize findings with evidence from traces/logs.</p>
+<h2>4. Remediate</h2>
+<p>Apply targeted fixes:</p>
+<ul>
+<li>Narrow state scope (<code>@State</code>/<code>@Observable</code> closer to leaf views).</li>
+<li>Stabilize identities for <code>ForEach</code> and lists.</li>
+<li>Move heavy work out of <code>body</code> (precompute, cache, <code>@State</code>).</li>
+<li>Use <code>equatable()</code> or value wrappers for expensive subtrees.</li>
+<li>Downsample images before rendering.</li>
+<li>Reduce layout complexity or use fixed sizing where possible.</li>
+</ul>
+<h2>Common Code Smells (and Fixes)</h2>
+<p>Look for these patterns during code review.</p>
+<h3>Expensive formatters in <code>body</code></h3>
+<pre><code class="language-swift">var body: some View {
+    let number = NumberFormatter() // slow allocation
+    let measure = MeasurementFormatter() // slow allocation
+    Text(measure.string(from: .init(value: meters, unit: .meters)))
+}
+</code></pre>
+<p>Prefer cached formatters in a model or a dedicated helper:</p>
+<pre><code class="language-swift">final class DistanceFormatter {
+    static let shared = DistanceFormatter()
+    let number = NumberFormatter()
+    let measure = MeasurementFormatter()
+}
+</code></pre>
+<h3>Computed properties that do heavy work</h3>
+<pre><code class="language-swift">var filtered: [Item] {
+    items.filter { $0.isEnabled } // runs on every body eval
+}
+</code></pre>
+<p>Prefer precompute or cache on change:</p>
+<pre><code class="language-swift">@State private var filtered: [Item] = []
+// update filtered when inputs change
+</code></pre>
+<h3>Sorting/filtering in <code>body</code> or <code>ForEach</code></h3>
+<pre><code class="language-swift">List {
+    ForEach(items.sorted(by: sortRule)) { item in
+        Row(item)
+    }
+}
+</code></pre>
+<p>Prefer sort once before view updates:</p>
+<pre><code class="language-swift">let sortedItems = items.sorted(by: sortRule)
+</code></pre>
+<h3>Inline filtering in <code>ForEach</code></h3>
+<pre><code class="language-swift">ForEach(items.filter { $0.isEnabled }) { item in
+    Row(item)
+}
+</code></pre>
+<p>Prefer a prefiltered collection with stable identity.</p>
+<h3>Unstable identity</h3>
+<pre><code class="language-swift">ForEach(items, id: \.self) { item in
+    Row(item)
+}
+</code></pre>
+<p>Avoid <code>id: \.self</code> for non-stable values; use a stable ID.</p>
+<h3>Image decoding on the main thread</h3>
+<pre><code class="language-swift">Image(uiImage: UIImage(data: data)!)
+</code></pre>
+<p>Prefer decode/downsample off the main thread and store the result.</p>
+<h3>Broad dependencies in observable models</h3>
+<pre><code class="language-swift">@Observable class Model {
+    var items: [Item] = []
+}
+
+var body: some View {
+    Row(isFavorite: model.items.contains(item))
+}
+</code></pre>
+<p>Prefer granular view models or per-item state to reduce update fan-out.</p>
+<h2>5. Verify</h2>
+<p>Ask the user to re-run the same capture and compare with baseline metrics.
+Summarize the delta (CPU, frame drops, memory peak) if provided.</p>
+<h2>Outputs</h2>
+<p>Provide:</p>
+<ul>
+<li>A short metrics table (before/after if available).</li>
+<li>Top issues (ordered by impact).</li>
+<li>Proposed fixes with estimated effort.</li>
+</ul>
+<h2>References</h2>
+<p>Add Apple documentation and WWDC resources under <code>references/</code> as they are supplied by the user.</p>
+<ul>
+<li>Optimizing SwiftUI performance with Instruments: <code>references/optimizing-swiftui-performance-instruments.md</code></li>
+<li>Understanding and improving SwiftUI performance: <code>references/understanding-improving-swiftui-performance.md</code></li>
+<li>Understanding hangs in your app: <code>references/understanding-hangs-in-your-app.md</code></li>
+<li>Demystify SwiftUI performance (WWDC23): <code>references/demystify-swiftui-performance-wwdc23.md</code></li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/steipete/swiftui-performance-audit/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/steipete/swiftui-performance-audit" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/steipete/swiftui-performance-audit/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@steipete</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">iOS & macOS Development</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

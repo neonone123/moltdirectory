@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Search and retrieve ServiceNow documentation, release notes">
+  <title>servicenow-docs - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to DevOps & Cloud</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">DevOps & Cloud</a>
+                <span class="skill-page-author">by @thesethrose</span>
+              </div>
+              <h1 class="skill-page-title">servicenow-docs</h1>
+              <p class="skill-page-desc">Search and retrieve ServiceNow documentation, release notes</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>ServiceNow Documentation Skill</h1>
+<p>Search and retrieve documentation from docs.servicenow.com and developer.servicenow.com. This skill provides access to ServiceNow&#39;s release notes, platform documentation, and developer-focused API references and guides.</p>
+<h2>When to Use</h2>
+<p>Use this skill when the user asks about:</p>
+<ul>
+<li>ServiceNow API documentation (GlideRecord, GlideAjax, GlideQuery, etc.)</li>
+<li>Release notes, patches, or new features</li>
+<li>Platform configuration or administration</li>
+<li>Scripting patterns or best practices</li>
+<li>Accessibility, UI, or user preferences</li>
+<li>Any ServiceNow product or feature documentation</li>
+<li>Developer topics like openFrameAPI, ScriptLoader, spContextManager, or mobile APIs</li>
+</ul>
+<h2>Tools</h2>
+<h3>servicenow_search</h3>
+<p>Search the ServiceNow documentation database.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>query</code> (string, required) - Search terms (e.g., &quot;GlideRecord&quot;, &quot;accessibility preferences&quot;, &quot;patch notes&quot;)</li>
+<li><code>limit</code> (number, default: 10) - Maximum results to return</li>
+<li><code>version</code> (string, optional) - Filter by version (e.g., &quot;Washington DC&quot;, &quot;Zurich&quot;, &quot;Yokohama&quot;)</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-json">{&quot;query&quot;: &quot;GlideAjax client script&quot;, &quot;limit&quot;: 5}
+</code></pre>
+<h3>servicenow_get_article</h3>
+<p>Fetch the full content of a documentation article.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>url</code> (string, required) - The article URL (automatically converted from Zoomin to docs.servicenow.com)</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-json">{&quot;url&quot;: &quot;https://docs.servicenow.com/bundle/zurich-release-notes/page/release-notes/quality/zurich-patch-5.html&quot;}
+</code></pre>
+<h3>servicenow_list_versions</h3>
+<p>List available ServiceNow documentation versions/releases.</p>
+<p><strong>Args:</strong> None required</p>
+<h3>servicenow_latest_release</h3>
+<p>Get release notes for the latest ServiceNow version (automatically detects most recent).</p>
+<p><strong>Args:</strong> None required</p>
+<h3>servicenow_dev_suggest</h3>
+<p>Get autocomplete suggestions from ServiceNow Developer Documentation.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>term</code> (string, required) - Partial search term (e.g., &quot;Gli&quot;, &quot;openFrame&quot;, &quot;spCon&quot;)</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-json">{&quot;term&quot;: &quot;openFrame&quot;}
+</code></pre>
+<h3>servicenow_dev_search</h3>
+<p>Search ServiceNow Developer Documentation (APIs, guides, references). Returns URLs to API reference pages.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>query</code> (string, required) - Search terms (e.g., &quot;openFrameAPI&quot;, &quot;spContextManager&quot;)</li>
+<li><code>limit</code> (number, default: 10) - Maximum results to return</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-json">{&quot;query&quot;: &quot;ScriptLoader&quot;, &quot;limit&quot;: 5}
+</code></pre>
+<h3>servicenow_dev_guide</h3>
+<p>Fetch a ServiceNow Developer Guide by path. Works for PDI guides, developer program docs, etc.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>path</code> (string, required) - Guide path (e.g., &quot;developer-program/getting-instance-assistance&quot;, &quot;pdi-guide/requesting-an-instance&quot;)</li>
+<li><code>release</code> (string, default: &quot;zurich&quot;) - Release version</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-json">{&quot;path&quot;: &quot;developer-program/getting-instance-assistance&quot;}
+</code></pre>
+<h2>URL Handling</h2>
+<ul>
+<li><strong>Search API:</strong> Uses Zoomin API (servicenow-be-prod.servicenow.com) for searching</li>
+<li><strong>User-facing URLs:</strong> Automatically converted to docs.servicenow.com for readability</li>
+<li><strong>Article content:</strong> Fetched via the Zoomin API endpoint with proper headers</li>
+<li><strong>Developer Docs Search:</strong> developer.servicenow.com GraphQL + databroker search APIs</li>
+<li><strong>Developer Docs Content:</strong> fetched directly from developer.servicenow.com pages</li>
+</ul>
+<h2>Example Usage</h2>
+<p>User: &quot;What are the accessibility preferences in ServiceNow?&quot;
+→ Use servicenow_search to find accessibility documentation
+→ Use servicenow_get_article to fetch the full content
+→ Summarize the preferences for the user</p>
+<p>User: &quot;Tell me about the latest ServiceNow patch&quot;
+→ Use servicenow_latest_release to get the most recent release notes
+→ Fetch and summarize the patch details</p>
+<p>User: &quot;How do I use openFrameAPI?&quot;
+→ Use servicenow_dev_suggest or servicenow_dev_search to find the best developer docs topic
+→ Returns URLs to API reference pages (requires browser access for full content)</p>
+<p>User: &quot;Show me the PDI guide for getting an instance&quot;
+→ Use servicenow_dev_guide with path &quot;pdi-guide/requesting-an-instance&quot;
+→ Returns full guide content</p>
+<h2>APIs Used</h2>
+<ul>
+<li><strong>Zoomin Search API:</strong> <code>https://servicenow-be-prod.servicenow.com/search</code></li>
+<li><strong>Content Source:</strong> docs.servicenow.com (accessed via Zoomin API)</li>
+<li><strong>Developer Search API:</strong> <code>https://developer.servicenow.com/api/now/uxf/databroker/exec</code></li>
+<li><strong>Developer Suggest API:</strong> <code>https://developer.servicenow.com/api/now/graphql</code></li>
+<li><strong>Developer Guides API:</strong> <code>https://developer.servicenow.com/api/snc/v1/guides</code> (public, no auth needed)</li>
+</ul>
+<h2>Limitations</h2>
+<ul>
+<li><strong>API Reference Content:</strong> The developer.servicenow.com API reference pages require browser access. <code>servicenow_dev_search</code> returns URLs but cannot fetch the full API documentation content.</li>
+<li><strong>Guide Content:</strong> Guides are fully available via <code>servicenow_dev_guide</code> without authentication.</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/thesethrose/servicenow-docs/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/thesethrose/servicenow-docs" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/thesethrose/servicenow-docs/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@thesethrose</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">DevOps & Cloud</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

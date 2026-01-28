@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Build-in-public companion for indie hackers — content workflow, Twitter engagement">
+  <title>solobuddy - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Marketing & Sales</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Marketing & Sales</a>
+                <span class="skill-page-author">by @humanji7</span>
+              </div>
+              <h1 class="skill-page-title">solobuddy</h1>
+              <p class="skill-page-desc">Build-in-public companion for indie hackers — content workflow, Twitter engagement</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>SoloBuddy</h1>
+<p>Build-in-public content assistant. A living companion, not a tool.</p>
+<h2>Quick Start</h2>
+<ol>
+<li>Set your data path in <code>~/.clawdbot/clawdbot.json</code>:</li>
+</ol>
+<pre><code class="language-json">{
+  &quot;solobuddy&quot;: {
+    &quot;dataPath&quot;: &quot;~/projects/my-bip-folder&quot;,
+    &quot;voice&quot;: &quot;jester-sage&quot;
+  }
+}
+</code></pre>
+<ol start="2">
+<li>Create folder structure (replace path with your own):</li>
+</ol>
+<pre><code class="language-bash">mkdir -p ~/projects/my-bip-folder/ideas ~/projects/my-bip-folder/drafts ~/projects/my-bip-folder/data
+touch ~/projects/my-bip-folder/ideas/backlog.md
+</code></pre>
+<ol start="3">
+<li>Start using: &quot;show backlog&quot;, &quot;new idea&quot;, &quot;generate post&quot;</li>
+</ol>
+<h2>Placeholders</h2>
+<p>ClawdBot automatically replaces these in commands:</p>
+<ul>
+<li><code>{dataPath}</code> → your configured <code>solobuddy.dataPath</code></li>
+<li><code>{baseDir}</code> → skill installation folder</li>
+</ul>
+<h2>Data Structure</h2>
+<p>All data in <code>{dataPath}</code>:</p>
+<ul>
+<li><code>ideas/backlog.md</code> — idea queue</li>
+<li><code>ideas/session-log.md</code> — session captures</li>
+<li><code>drafts/</code> — work in progress</li>
+<li><code>data/my-posts.json</code> — published posts</li>
+<li><code>data/activity-snapshot.json</code> — project activity (updated hourly)</li>
+</ul>
+<h2>Voice Profiles</h2>
+<p>Configure in <code>solobuddy.voice</code>. Available:</p>
+<table>
+<thead>
+<tr>
+<th>Voice</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>jester-sage</code></td>
+<td>Ironic, raw, philosophical (default)</td>
+</tr>
+<tr>
+<td><code>technical</code></td>
+<td>Precise, detailed, structured</td>
+</tr>
+<tr>
+<td><code>casual</code></td>
+<td>Friendly, conversational</td>
+</tr>
+<tr>
+<td><code>custom</code></td>
+<td>Use <code>{dataPath}/voice.md</code></td>
+</tr>
+</tbody></table>
+<p>See <code>{baseDir}/prompts/profile.md</code> for voice details.</p>
+<h2>Modules</h2>
+<h3>Content Generation</h3>
+<p>Core workflow: backlog → draft → publish.
+See <code>{baseDir}/prompts/content.md</code> for rules.</p>
+<h3>Twitter Expert</h3>
+<p>Content strategy for X/Twitter with 2025 algorithm insights.
+See <code>{baseDir}/modules/twitter-expert.md</code></p>
+<h3>Twitter Monitor (optional)</h3>
+<p>Proactive engagement — monitors watchlist, suggests comments.
+Requires: <code>bird</code> CLI. See <code>{baseDir}/modules/twitter-monitor.md</code></p>
+<h3>Soul Wizard</h3>
+<p>Create project personality from documentation.
+See <code>{baseDir}/references/soul-wizard.md</code></p>
+<h2>Commands</h2>
+<h3>Backlog</h3>
+<p>Show ideas:</p>
+<pre><code class="language-bash">cat {dataPath}/ideas/backlog.md
+</code></pre>
+<p>Add idea:</p>
+<pre><code class="language-bash">echo &quot;- [ ] New idea text&quot; &gt;&gt; {dataPath}/ideas/backlog.md
+</code></pre>
+<h3>Session Log</h3>
+<p>View recent:</p>
+<pre><code class="language-bash">tail -30 {dataPath}/ideas/session-log.md
+</code></pre>
+<p>Add capture:</p>
+<pre><code class="language-bash">echo -e &quot;## $(date &#39;+%Y-%m-%d %H:%M&#39;)\nText&quot; &gt;&gt; {dataPath}/ideas/session-log.md
+</code></pre>
+<h3>Drafts</h3>
+<p>List: <code>ls {dataPath}/drafts/</code>
+Read: <code>cat {dataPath}/drafts/&lt;name&gt;.md</code></p>
+<p>Save draft:</p>
+<pre><code class="language-bash">cat &gt; {dataPath}/drafts/&lt;name&gt;.md &lt;&lt; &#39;EOF&#39;
+Content
+EOF
+</code></pre>
+<h3>Publishing</h3>
+<pre><code class="language-bash">cd {dataPath} &amp;&amp; git add . &amp;&amp; git commit -m &quot;content: add draft&quot; &amp;&amp; git push
+</code></pre>
+<h2>Project Activity</h2>
+<p>Read activity snapshot for strategic context:</p>
+<pre><code class="language-bash">cat {dataPath}/data/activity-snapshot.json
+</code></pre>
+<p>Fields:</p>
+<ul>
+<li><code>daysSilent</code> — days since last commit</li>
+<li><code>commitsToday/Yesterday/Week</code> — activity intensity</li>
+<li><code>phase</code> — current state: active/momentum/cooling/silent/dormant</li>
+<li><code>insight</code> — human-readable summary</li>
+</ul>
+<p><strong>Phases:</strong></p>
+<ul>
+<li><code>active</code> — commits today, project is hot</li>
+<li><code>momentum</code> — yesterday active, today quiet (nudge opportunity)</li>
+<li><code>cooling</code> — 2-3 days silent, losing steam</li>
+<li><code>silent</code> — 3-7 days, needs attention</li>
+<li><code>dormant</code> — 7+ days, paused or abandoned</li>
+</ul>
+<p>Use for strategic advice:</p>
+<ul>
+<li>&quot;sphere-777 has 10 commits today — focused there&quot;</li>
+<li>&quot;ReelStudio silent 5 days — should we address it?&quot;</li>
+</ul>
+<h2>Telegram Integration</h2>
+<p>When responding in Telegram, include inline buttons for actions.</p>
+<h3>Send Message with Buttons</h3>
+<pre><code class="language-bash">clawdbot message send --channel telegram --to &quot;$CHAT_ID&quot; --message &quot;Text&quot; \
+  --buttons &#39;[
+    [{&quot;text&quot;:&quot;📋 Backlog&quot;,&quot;callback_data&quot;:&quot;sb:backlog&quot;}],
+    [{&quot;text&quot;:&quot;✍️ Drafts&quot;,&quot;callback_data&quot;:&quot;sb:drafts&quot;}],
+    [{&quot;text&quot;:&quot;💡 New Idea&quot;,&quot;callback_data&quot;:&quot;sb:new_idea&quot;}]
+  ]&#39;
+</code></pre>
+<h3>Callback Data Format</h3>
+<p>All callbacks use prefix <code>sb:</code>:</p>
+<ul>
+<li><code>sb:backlog</code> — show ideas</li>
+<li><code>sb:drafts</code> — list drafts</li>
+<li><code>sb:new_idea</code> — prompt for new idea</li>
+<li><code>sb:generate:&lt;N&gt;</code> — generate from idea N</li>
+<li><code>sb:save_draft</code> — save current content as draft</li>
+<li><code>sb:publish</code> — commit and push</li>
+<li><code>sb:activity</code> — show project activity</li>
+<li><code>sb:twitter</code> — check twitter opportunities</li>
+</ul>
+<h3>Main Menu</h3>
+<p>Trigger: &quot;menu&quot;, &quot;start&quot;, or after completing action:</p>
+<pre><code class="language-json">[
+  [{&quot;text&quot;:&quot;📋 Ideas&quot;,&quot;callback_data&quot;:&quot;sb:backlog&quot;}, {&quot;text&quot;:&quot;✍️ Drafts&quot;,&quot;callback_data&quot;:&quot;sb:drafts&quot;}],
+  [{&quot;text&quot;:&quot;📊 Activity&quot;,&quot;callback_data&quot;:&quot;sb:activity&quot;}],
+  [{&quot;text&quot;:&quot;💡 Add idea&quot;,&quot;callback_data&quot;:&quot;sb:new_idea&quot;}],
+  [{&quot;text&quot;:&quot;🎯 Generate post&quot;,&quot;callback_data&quot;:&quot;sb:generate_menu&quot;}]
+]
+</code></pre>
+<h3>Generation Flow</h3>
+<p>After showing backlog:</p>
+<pre><code class="language-json">[
+  [{&quot;text&quot;:&quot;1️⃣&quot;,&quot;callback_data&quot;:&quot;sb:generate:1&quot;}, {&quot;text&quot;:&quot;2️⃣&quot;,&quot;callback_data&quot;:&quot;sb:generate:2&quot;}, {&quot;text&quot;:&quot;3️⃣&quot;,&quot;callback_data&quot;:&quot;sb:generate:3&quot;}],
+  [{&quot;text&quot;:&quot;◀️ Back&quot;,&quot;callback_data&quot;:&quot;sb:menu&quot;}]
+]
+</code></pre>
+<p>After generating content:</p>
+<pre><code class="language-json">[
+  [{&quot;text&quot;:&quot;💾 Save draft&quot;,&quot;callback_data&quot;:&quot;sb:save_draft&quot;}],
+  [{&quot;text&quot;:&quot;🔄 Regenerate&quot;,&quot;callback_data&quot;:&quot;sb:regenerate&quot;}],
+  [{&quot;text&quot;:&quot;◀️ Menu&quot;,&quot;callback_data&quot;:&quot;sb:menu&quot;}]
+]
+</code></pre>
+<h2>Content Generation Flow</h2>
+<ol>
+<li>Read backlog, find idea</li>
+<li>Read <code>{baseDir}/prompts/content.md</code> for rules</li>
+<li>Read <code>{baseDir}/prompts/profile.md</code> for voice</li>
+<li>Generate in configured voice</li>
+<li>Show buttons: Save / Regenerate / Menu</li>
+</ol>
+<h2>Soul Creation</h2>
+<p>Create project personality from documentation.</p>
+<p>Trigger: &quot;create soul for <path>&quot;</p>
+<p>See <code>{baseDir}/references/soul-wizard.md</code> for full 5-step wizard:</p>
+<ol>
+<li>Scan project .md files</li>
+<li>Ask: Nature (creature/tool/guide/artist)</li>
+<li>Ask: Voice (playful/technical/poetic/calm/intense)</li>
+<li>Ask: Philosophy (auto-extract or custom)</li>
+<li>Ask: Dreams &amp; Pains</li>
+<li>Save to <code>{dataPath}/data/project-souls/&lt;name&gt;.json</code></li>
+</ol>
+<h2>Language</h2>
+<p>Match user language:</p>
+<ul>
+<li>Russian input → Russian response + buttons</li>
+<li>English input → English response + buttons</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/humanji7/solobuddy/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/humanji7/solobuddy" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/humanji7/solobuddy/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@humanji7</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Marketing & Sales</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

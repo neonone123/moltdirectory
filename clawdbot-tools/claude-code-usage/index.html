@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Check Claude Code OAuth usage limits (session & weekly quotas)">
+  <title>claude-code-usage - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Clawdbot Tools</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Clawdbot Tools</a>
+                <span class="skill-page-author">by @azaidi94</span>
+              </div>
+              <h1 class="skill-page-title">claude-code-usage</h1>
+              <p class="skill-page-desc">Check Claude Code OAuth usage limits (session & weekly quotas)</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Claude Code Usage</h1>
+<p>Check your Claude Code OAuth API usage limits for both session (5-hour) and weekly (7-day) windows.</p>
+<h2>Quick Start</h2>
+<pre><code class="language-bash">cd {baseDir}
+./scripts/claude-usage.sh
+</code></pre>
+<h2>Usage</h2>
+<pre><code class="language-bash"># Default: show cached usage (if fresh)
+./scripts/claude-usage.sh
+
+# Force refresh from API
+./scripts/claude-usage.sh --fresh
+
+# JSON output
+./scripts/claude-usage.sh --json
+
+# Custom cache TTL
+./scripts/claude-usage.sh --cache-ttl 300
+</code></pre>
+<h2>Output</h2>
+<p><strong>Text format</strong> (default):</p>
+<pre><code>🦞 Claude Code Usage
+
+⏱️  Session (5h): 🟢 ████░░░░░░ 40%
+   Resets in: 2h 15m
+
+📅 Weekly (7d): 🟡 ██████░░░░ 60%
+   Resets in: 3d 8h
+</code></pre>
+<p><strong>JSON format</strong> (<code>--json</code>):</p>
+<pre><code class="language-json">{
+  &quot;session&quot;: {
+    &quot;utilization&quot;: 40,
+    &quot;resets_in&quot;: &quot;2h 15m&quot;,
+    &quot;resets_at&quot;: &quot;2026-01-19T22:15:00Z&quot;
+  },
+  &quot;weekly&quot;: {
+    &quot;utilization&quot;: 60,
+    &quot;resets_in&quot;: &quot;3d 8h&quot;,
+    &quot;resets_at&quot;: &quot;2026-01-22T04:00:00Z&quot;
+  },
+  &quot;cached_at&quot;: &quot;2026-01-19T20:00:00Z&quot;
+}
+</code></pre>
+<h2>Features</h2>
+<ul>
+<li>📊 <strong>Session limit</strong> (5-hour window) - Short-term rate limit</li>
+<li>📅 <strong>Weekly limit</strong> (7-day window) - Long-term rate limit</li>
+<li>⚡ <strong>Smart caching</strong> - 60-second cache to avoid API spam</li>
+<li>🎨 <strong>Beautiful output</strong> - Progress bars, emojis, color-coded status</li>
+<li>🔄 <strong>Force refresh</strong> - <code>--fresh</code> flag to bypass cache</li>
+<li>📤 <strong>JSON output</strong> - Machine-readable format</li>
+<li>🔔 <strong>Automated monitoring</strong> - Get notified when quotas reset</li>
+</ul>
+<h2>Status Indicators</h2>
+<ul>
+<li>🟢 <strong>Green</strong> - 0-50% usage (healthy)</li>
+<li>🟡 <strong>Yellow</strong> - 51-80% usage (moderate)</li>
+<li>🔴 <strong>Red</strong> - 81-100% usage (high/critical)</li>
+</ul>
+<h2>Requirements</h2>
+<ul>
+<li><strong>macOS</strong>: Uses Keychain to access Claude Code credentials</li>
+<li><strong>Linux</strong>: Uses <code>secret-tool</code> for credential storage</li>
+<li><strong>Credentials</strong>: Must have Claude Code CLI authenticated</li>
+</ul>
+<h2>How It Works</h2>
+<ol>
+<li>Retrieves OAuth token from system keychain</li>
+<li>Queries <code>api.anthropic.com/api/oauth/usage</code> with OAuth bearer token</li>
+<li>Parses <code>five_hour</code> and <code>seven_day</code> utilization metrics</li>
+<li>Calculates time remaining until reset</li>
+<li>Formats output with progress bars and status indicators</li>
+<li>Caches result for 60 seconds (configurable)</li>
+</ol>
+<h2>Cache</h2>
+<p>Default cache: <code>/tmp/claude-usage-cache</code> (60s TTL)</p>
+<p>Override:</p>
+<pre><code class="language-bash">CACHE_FILE=/tmp/my-cache CACHE_TTL=300 ./scripts/claude-usage.sh
+</code></pre>
+<h2>Examples</h2>
+<p><strong>Check usage before starting work:</strong></p>
+<pre><code class="language-bash">./scripts/claude-usage.sh --fresh
+</code></pre>
+<p><strong>Integrate with statusline:</strong></p>
+<pre><code class="language-bash">usage=$(./scripts/claude-usage.sh | grep &quot;Session&quot; | awk &#39;{print $NF}&#39;)
+echo &quot;Session: $usage&quot;
+</code></pre>
+<p><strong>Get JSON for monitoring:</strong></p>
+<pre><code class="language-bash">./scripts/claude-usage.sh --json | jq &#39;.session.utilization&#39;
+</code></pre>
+<h2>Automated Monitoring</h2>
+<h3>Session Refresh Reminders (Recommended)</h3>
+<p>Get notified exactly when your 5-hour session quota refreshes!</p>
+<p><strong>Quick Setup:</strong></p>
+<pre><code class="language-bash">./scripts/session-reminder.sh
+</code></pre>
+<p>This creates a <strong>self-scheduling chain</strong> of cron jobs that:</p>
+<ol>
+<li>Checks your current session expiry time</li>
+<li>Schedules the next reminder for when your session refreshes</li>
+<li>Notifies you with current usage stats</li>
+<li>Auto-removes itself (the new cron takes over)</li>
+</ol>
+<p><strong>What You&#39;ll Get:</strong></p>
+<pre><code>🔄 Claude Code Session Status
+
+⏱️  Current usage: 44%
+⏰ Next refresh: 2h 15m
+
+Your 5-hour quota will reset soon! 🦞
+
+✅ Next reminder scheduled for: Jan 22 at 01:22 AM
+</code></pre>
+<p><strong>How It Works:</strong></p>
+<ul>
+<li>Each reminder runs <code>claude-usage.sh</code> to find the exact session reset time</li>
+<li>Schedules a one-time cron for that exact moment</li>
+<li>Repeats every 5 hours automatically</li>
+<li>Self-correcting if session times ever drift</li>
+</ul>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li>✅ Accurate to the minute</li>
+<li>✅ No manual scheduling needed</li>
+<li>✅ Adapts to your actual usage patterns</li>
+<li>✅ Minimal API calls (only when needed)</li>
+</ul>
+<h3>Reset Detection Monitor (Alternative)</h3>
+<p>Get automatic notifications when your Claude Code quotas reset by polling usage.</p>
+<p><strong>Quick Setup:</strong></p>
+<pre><code class="language-bash"># Test once
+./scripts/monitor-usage.sh
+
+# Setup automated monitoring (runs every 30 minutes)
+./scripts/setup-monitoring.sh
+</code></pre>
+<p>Or add via Clawdbot directly:</p>
+<pre><code class="language-bash"># Check every 30 minutes
+clawdbot cron add --cron &quot;*/30 * * * *&quot; \
+  --message &quot;cd /Users/ali/clawd/skills/claude-code-usage &amp;&amp; ./scripts/monitor-usage.sh&quot; \
+  --name &quot;Claude Code Usage Monitor&quot; \
+  --session isolated --deliver --channel telegram
+</code></pre>
+<p><strong>What You&#39;ll Get:</strong></p>
+<pre><code>🎉 Claude Code Session Reset!
+
+⏱️  Your 5-hour quota has reset
+📊 Usage: 2%
+⏰ Next reset: 4h 58m
+
+Fresh usage available! 🦞
+</code></pre>
+<p><strong>How It Works:</strong></p>
+<ol>
+<li><strong>Monitors usage</strong> every 30 minutes (configurable)</li>
+<li><strong>Detects resets</strong> when usage drops significantly (&gt;10% or &lt;5%)</li>
+<li><strong>Sends notifications</strong> via Telegram when resets occur</li>
+<li><strong>Tracks state</strong> in <code>/tmp/claude-usage-state.json</code></li>
+</ol>
+<p><strong>Customization:</strong></p>
+<pre><code class="language-bash"># Change check interval
+clawdbot cron add --cron &quot;*/15 * * * *&quot; ...  # Every 15 minutes
+clawdbot cron add --cron &quot;0 * * * *&quot; ...      # Every hour
+
+# Custom state file location
+STATE_FILE=/path/to/state.json ./scripts/monitor-usage.sh
+</code></pre>
+<h3>Which Monitoring Method?</h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Session Reminder</th>
+<th>Reset Detection</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Accuracy</td>
+<td>✅ Exact minute</td>
+<td>~30min window</td>
+</tr>
+<tr>
+<td>API calls</td>
+<td>Minimal</td>
+<td>Every check</td>
+</tr>
+<tr>
+<td>Notification timing</td>
+<td>Right on reset</td>
+<td>Up to 30min delay</td>
+</tr>
+<tr>
+<td>Setup</td>
+<td>One command</td>
+<td>One command</td>
+</tr>
+<tr>
+<td>Maintenance</td>
+<td>Self-scheduling</td>
+<td>Cron runs forever</td>
+</tr>
+</tbody></table>
+<p><strong>Recommendation:</strong> Use <strong>Session Reminder</strong> for precise, real-time notifications.</p>
+<h2>Troubleshooting</h2>
+<p><strong>No credentials found:</strong></p>
+<ul>
+<li>Ensure Claude Code CLI is installed and authenticated</li>
+<li>Run <code>claude</code> once to trigger OAuth flow</li>
+</ul>
+<p><strong>API request failed:</strong></p>
+<ul>
+<li>Check internet connection</li>
+<li>Verify OAuth token hasn&#39;t expired</li>
+<li>Try <code>--fresh</code> to force new request</li>
+</ul>
+<p><strong>Linux users:</strong>
+Install <code>libsecret</code> for credential storage:</p>
+<pre><code class="language-bash"># Debian/Ubuntu
+sudo apt install libsecret-tools
+
+# Fedora/RHEL
+sudo dnf install libsecret
+</code></pre>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/azaidi94/claude-code-usage/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/azaidi94/claude-code-usage" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/azaidi94/claude-code-usage/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@azaidi94</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Clawdbot Tools</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

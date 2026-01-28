@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Install, manage, and run ComfyUI instances">
+  <title>comfy-cli - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Image & Video Generation</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Image & Video Generation</a>
+                <span class="skill-page-author">by @johntheyoung</span>
+              </div>
+              <h1 class="skill-page-title">comfy-cli</h1>
+              <p class="skill-page-desc">Install, manage, and run ComfyUI instances</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>comfy-cli</h1>
+<p>CLI tool for managing ComfyUI installations, custom nodes, and models.</p>
+<h2>Quick start</h2>
+<pre><code class="language-bash">comfy install                          # Install ComfyUI + ComfyUI-Manager
+comfy launch                           # Start ComfyUI server
+comfy node install ComfyUI-Impact-Pack # Install a custom node
+comfy model download --url &quot;https://civitai.com/api/download/models/12345&quot;
+</code></pre>
+<h2>Installation</h2>
+<pre><code class="language-bash">comfy install                          # Interactive GPU selection
+comfy install --nvidia                 # NVIDIA GPU
+comfy install --amd                    # AMD GPU (Linux ROCm)
+comfy install --m-series               # Apple Silicon
+comfy install --cpu                    # CPU only
+comfy install --restore                # Restore deps for existing install
+comfy install --pr 1234                # Install specific PR
+comfy install --version latest         # Latest stable release
+comfy install --version 0.2.0          # Specific version
+</code></pre>
+<p>GPU options: <code>--nvidia</code>, <code>--amd</code>, <code>--intel-arc</code>, <code>--m-series</code>, <code>--cpu</code></p>
+<p>CUDA versions (NVIDIA): <code>--cuda 12.9</code>, <code>--cuda 12.6</code>, <code>--cuda 12.4</code>, <code>--cuda 12.1</code>, <code>--cuda 11.8</code></p>
+<p>Other flags: <code>--skip-manager</code>, <code>--skip-torch-or-directml</code>, <code>--skip-requirement</code>, <code>--fast-deps</code></p>
+<h2>Launch</h2>
+<pre><code class="language-bash">comfy launch                           # Foreground mode
+comfy launch --background              # Background mode
+comfy launch -- --listen 0.0.0.0       # Pass args to ComfyUI
+comfy stop                             # Stop background instance
+comfy launch --frontend-pr 1234        # Test frontend PR
+</code></pre>
+<h2>Workspace selection</h2>
+<p>Global flags (mutually exclusive):</p>
+<pre><code class="language-bash">comfy --workspace /path/to/ComfyUI ... # Explicit path
+comfy --recent ...                     # Last used instance
+comfy --here ...                       # Current directory
+comfy which                            # Show selected instance
+comfy set-default /path/to/ComfyUI     # Set default
+</code></pre>
+<h2>Custom nodes</h2>
+<pre><code class="language-bash">comfy node show                        # List installed nodes
+comfy node simple-show                 # Compact list
+comfy node install &lt;name&gt;              # Install from registry
+comfy node install &lt;name&gt; --fast-deps  # Fast dependency install
+comfy node reinstall &lt;name&gt;            # Reinstall node
+comfy node uninstall &lt;name&gt;            # Remove node
+comfy node update all                  # Update all nodes
+comfy node disable &lt;name&gt;              # Disable node
+comfy node enable &lt;name&gt;               # Enable node
+comfy node fix &lt;name&gt;                  # Fix node dependencies
+</code></pre>
+<p>Snapshots:</p>
+<pre><code class="language-bash">comfy node save-snapshot               # Save current state
+comfy node save-snapshot --output snapshot.json
+comfy node restore-snapshot snapshot.json
+comfy node restore-dependencies        # Restore deps from nodes
+</code></pre>
+<p>Debugging:</p>
+<pre><code class="language-bash">comfy node bisect                      # Binary search for broken node
+comfy node deps-in-workflow workflow.json  # Extract deps from workflow
+comfy node install-deps --workflow workflow.json  # Install workflow deps
+</code></pre>
+<p>Publishing:</p>
+<pre><code class="language-bash">comfy node init                        # Init scaffolding
+comfy node scaffold                    # Create project via cookiecutter
+comfy node validate                    # Validate before publishing
+comfy node pack                        # Package node
+comfy node publish                     # Publish to registry
+</code></pre>
+<h2>Models</h2>
+<pre><code class="language-bash">comfy model list                       # List available models
+comfy model download --url &lt;url&gt;       # Download from URL
+comfy model remove &lt;name&gt;              # Remove model
+</code></pre>
+<p>Sources: CivitAI, Hugging Face, direct URLs</p>
+<p>Tokens for gated models:</p>
+<ul>
+<li><code>--civitai-token</code> or config <code>civitai_api_token</code></li>
+<li><code>--hf-token</code> or config <code>hf_api_token</code></li>
+</ul>
+<h2>Run workflows</h2>
+<pre><code class="language-bash">comfy run --workflow workflow_api.json
+comfy run --workflow workflow.json --wait --verbose
+comfy run --workflow workflow.json --host 192.168.1.10 --port 8188
+</code></pre>
+<p>Requires running ComfyUI instance.</p>
+<h2>ComfyUI-Manager</h2>
+<pre><code class="language-bash">comfy manager disable-gui              # Hide manager in UI
+comfy manager enable-gui               # Show manager in UI
+comfy manager clear                    # Clear startup actions
+</code></pre>
+<h2>Update</h2>
+<pre><code class="language-bash">comfy update all                       # Update ComfyUI + nodes
+comfy update comfy                     # Update ComfyUI only
+</code></pre>
+<h2>Other commands</h2>
+<pre><code class="language-bash">comfy env                              # Show config and paths
+comfy --version                        # Print CLI version
+comfy pr-cache list                    # List cached PR builds
+comfy pr-cache clean                   # Clear expired caches
+comfy standalone                       # Create standalone Python bundle
+comfy tracking enable|disable          # Manage analytics
+comfy feedback                         # Submit feedback
+</code></pre>
+<h2>Config</h2>
+<p>Location:</p>
+<ul>
+<li>Linux: <code>~/.config/comfy-cli/config.ini</code></li>
+<li>macOS: <code>~/Library/Application Support/comfy-cli/config.ini</code></li>
+<li>Windows: <code>%APPDATA%\Local\comfy-cli\config.ini</code></li>
+</ul>
+<p>Keys: <code>default_workspace</code>, <code>default_launch_extras</code>, <code>civitai_api_token</code>, <code>hf_api_token</code></p>
+<h2>Tips</h2>
+<ul>
+<li><code>--skip-prompt</code> for non-interactive mode (CI/scripts)</li>
+<li>Background mode tracks PID for clean <code>comfy stop</code></li>
+<li>Snapshots preserve exact node versions for reproducibility</li>
+<li><code>comfy node bisect</code> binary-searches to find which node broke your setup</li>
+<li>PR cache avoids rebuilding frontend PRs you&#39;ve tested before</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/johntheyoung/comfy-cli/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/johntheyoung/comfy-cli" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/johntheyoung/comfy-cli/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@johntheyoung</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Image & Video Generation</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

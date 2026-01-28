@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Control Nest smart home devices (thermostat, cameras, doorbell) via the Device Access API">
+  <title>nest-devices - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Smart Home & IoT</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Smart Home & IoT</a>
+                <span class="skill-page-author">by @amogower</span>
+              </div>
+              <h1 class="skill-page-title">nest-devices</h1>
+              <p class="skill-page-desc">Control Nest smart home devices (thermostat, cameras, doorbell) via the Device Access API</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Nest Device Access</h1>
+<p>Control Nest devices via Google&#39;s Smart Device Management API.</p>
+<h2>Setup</h2>
+<h3>1. Google Cloud &amp; Device Access</h3>
+<ol>
+<li>Create a Google Cloud project at <a href="https://console.cloud.google.com">console.cloud.google.com</a></li>
+<li>Pay the $5 fee and create a Device Access project at <a href="https://console.nest.google.com/device-access">console.nest.google.com/device-access</a></li>
+<li>Create OAuth 2.0 credentials (Web application type)</li>
+<li>Add <code>https://www.google.com</code> as an authorized redirect URI</li>
+<li>Link your Nest account to the Device Access project</li>
+</ol>
+<h3>2. Get Refresh Token</h3>
+<p>Run the OAuth flow to get a refresh token:</p>
+<pre><code class="language-bash"># 1. Open this URL in browser (replace CLIENT_ID and PROJECT_ID):
+https://nestservices.google.com/partnerconnections/PROJECT_ID/auth?redirect_uri=https://www.google.com&amp;access_type=offline&amp;prompt=consent&amp;client_id=CLIENT_ID&amp;response_type=code&amp;scope=https://www.googleapis.com/auth/sdm.service
+
+# 2. Authorize and copy the &#39;code&#39; parameter from the redirect URL
+
+# 3. Exchange code for tokens:
+curl -X POST https://oauth2.googleapis.com/token \
+  -d &quot;client_id=CLIENT_ID&quot; \
+  -d &quot;client_secret=CLIENT_SECRET&quot; \
+  -d &quot;code=AUTH_CODE&quot; \
+  -d &quot;grant_type=authorization_code&quot; \
+  -d &quot;redirect_uri=https://www.google.com&quot;
+</code></pre>
+<h3>3. Store Credentials</h3>
+<p>Store in 1Password or environment variables:</p>
+<p><strong>1Password</strong> (recommended):
+Create an item with fields: <code>project_id</code>, <code>client_id</code>, <code>client_secret</code>, <code>refresh_token</code></p>
+<p><strong>Environment variables:</strong></p>
+<pre><code class="language-bash">export NEST_PROJECT_ID=&quot;your-project-id&quot;
+export NEST_CLIENT_ID=&quot;your-client-id&quot;
+export NEST_CLIENT_SECRET=&quot;your-client-secret&quot;
+export NEST_REFRESH_TOKEN=&quot;your-refresh-token&quot;
+</code></pre>
+<h2>Usage</h2>
+<h3>List devices</h3>
+<pre><code class="language-bash">python3 scripts/nest.py list
+</code></pre>
+<h3>Thermostat</h3>
+<pre><code class="language-bash"># Get status
+python3 scripts/nest.py get &lt;device_id&gt;
+
+# Set temperature (Celsius)
+python3 scripts/nest.py set-temp &lt;device_id&gt; 21 --unit c --type heat
+
+# Set temperature (Fahrenheit)
+python3 scripts/nest.py set-temp &lt;device_id&gt; 70 --unit f --type heat
+
+# Change mode (HEAT, COOL, HEATCOOL, OFF)
+python3 scripts/nest.py set-mode &lt;device_id&gt; HEAT
+
+# Eco mode
+python3 scripts/nest.py set-eco &lt;device_id&gt; MANUAL_ECO
+</code></pre>
+<h3>Cameras</h3>
+<pre><code class="language-bash"># Generate live stream URL (RTSP, valid ~5 min)
+python3 scripts/nest.py stream &lt;device_id&gt;
+</code></pre>
+<h2>Python API</h2>
+<pre><code class="language-python">from nest import NestClient
+
+client = NestClient()
+
+# List devices
+devices = client.list_devices()
+
+# Thermostat control
+client.set_heat_temperature(device_id, 21.0)  # Celsius
+client.set_thermostat_mode(device_id, &#39;HEAT&#39;)
+client.set_eco_mode(device_id, &#39;MANUAL_ECO&#39;)
+
+# Camera stream
+result = client.generate_stream(device_id)
+rtsp_url = result[&#39;results&#39;][&#39;streamUrls&#39;][&#39;rtspUrl&#39;]
+</code></pre>
+<h2>Configuration</h2>
+<p>The script checks for credentials in this order:</p>
+<ol>
+<li><strong>1Password</strong>: Set <code>NEST_OP_VAULT</code> and <code>NEST_OP_ITEM</code> (or use defaults: vault &quot;Alfred&quot;, item &quot;Nest Device Access API&quot;)</li>
+<li><strong>Environment variables</strong>: <code>NEST_PROJECT_ID</code>, <code>NEST_CLIENT_ID</code>, <code>NEST_CLIENT_SECRET</code>, <code>NEST_REFRESH_TOKEN</code></li>
+</ol>
+<h2>Temperature Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Celsius</th>
+<th>Fahrenheit</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Eco (away)</td>
+<td>15-17°C</td>
+<td>59-63°F</td>
+</tr>
+<tr>
+<td>Comfortable</td>
+<td>19-21°C</td>
+<td>66-70°F</td>
+</tr>
+<tr>
+<td>Warm</td>
+<td>22-23°C</td>
+<td>72-73°F</td>
+</tr>
+<tr>
+<td>Night</td>
+<td>17-18°C</td>
+<td>63-65°F</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Real-Time Events (Doorbell, Motion, etc.)</h2>
+<p>For instant alerts when someone rings the doorbell or motion is detected, you need to set up Google Cloud Pub/Sub with a webhook.</p>
+<h3>Prerequisites</h3>
+<ul>
+<li>Google Cloud CLI (<code>gcloud</code>) installed and authenticated</li>
+<li>Cloudflare account (free tier works) for the tunnel</li>
+<li>Clawdbot hooks enabled in config</li>
+</ul>
+<h3>1. Enable Clawdbot Hooks</h3>
+<p>Add to your <code>clawdbot.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;hooks&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;token&quot;: &quot;your-secret-token-here&quot;
+  }
+}
+</code></pre>
+<p>Generate a token: <code>openssl rand -hex 24</code></p>
+<h3>2. Create Pub/Sub Topic</h3>
+<pre><code class="language-bash">gcloud config set project YOUR_GCP_PROJECT_ID
+
+# Create topic
+gcloud pubsub topics create nest-events
+
+# Grant SDM permission to publish (both the service account and publisher group)
+gcloud pubsub topics add-iam-policy-binding nest-events \
+  --member=&quot;serviceAccount:sdm-prod@sdm-prod.iam.gserviceaccount.com&quot; \
+  --role=&quot;roles/pubsub.publisher&quot;
+
+gcloud pubsub topics add-iam-policy-binding nest-events \
+  --member=&quot;group:sdm-publisher@googlegroups.com&quot; \
+  --role=&quot;roles/pubsub.publisher&quot;
+</code></pre>
+<h3>3. Link Topic to Device Access</h3>
+<p>Go to <a href="https://console.nest.google.com/device-access">console.nest.google.com/device-access</a> → Your Project → Edit → Set Pub/Sub topic to:</p>
+<pre><code>projects/YOUR_GCP_PROJECT_ID/topics/nest-events
+</code></pre>
+<h3>4. Set Up Cloudflare Tunnel</h3>
+<pre><code class="language-bash"># Install cloudflared
+curl -L -o ~/.local/bin/cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
+chmod +x ~/.local/bin/cloudflared
+
+# Authenticate (opens browser)
+~/.local/bin/cloudflared tunnel login
+
+# Create named tunnel
+~/.local/bin/cloudflared tunnel create nest-webhook
+
+# Note the Tunnel ID (UUID) from output
+</code></pre>
+<p>Create <code>~/.cloudflared/config.yml</code>:</p>
+<pre><code class="language-yaml">tunnel: nest-webhook
+credentials-file: /home/YOUR_USER/.cloudflared/TUNNEL_ID.json
+
+ingress:
+  - hostname: nest.yourdomain.com
+    service: http://localhost:8420
+  - service: http_status:404
+</code></pre>
+<p>Create DNS route:</p>
+<pre><code class="language-bash">~/.local/bin/cloudflared tunnel route dns nest-webhook nest.yourdomain.com
+</code></pre>
+<h3>5. Create Systemd Services</h3>
+<p><strong>Webhook server</strong> (<code>/etc/systemd/system/nest-webhook.service</code>):</p>
+<pre><code class="language-ini">[Unit]
+Description=Nest Pub/Sub Webhook Server
+After=network.target
+
+[Service]
+Type=simple
+User=YOUR_USER
+Environment=CLAWDBOT_GATEWAY_URL=http://localhost:18789
+Environment=CLAWDBOT_HOOKS_TOKEN=your-hooks-token-here
+ExecStart=/usr/bin/python3 /path/to/skills/nest-devices/scripts/nest-webhook.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+<p><strong>Cloudflare tunnel</strong> (<code>/etc/systemd/system/cloudflared-nest.service</code>):</p>
+<pre><code class="language-ini">[Unit]
+Description=Cloudflare Tunnel for Nest Webhook
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=YOUR_USER
+ExecStart=/home/YOUR_USER/.local/bin/cloudflared tunnel run nest-webhook
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+<p>Enable and start:</p>
+<pre><code class="language-bash">sudo systemctl daemon-reload
+sudo systemctl enable --now nest-webhook cloudflared-nest
+</code></pre>
+<h3>6. Create Pub/Sub Push Subscription</h3>
+<pre><code class="language-bash">gcloud pubsub subscriptions create nest-events-sub \
+  --topic=nest-events \
+  --push-endpoint=&quot;https://nest.yourdomain.com/nest/events&quot; \
+  --ack-deadline=30
+</code></pre>
+<h3>7. Test</h3>
+<pre><code class="language-bash"># Test webhook endpoint
+curl https://nest.yourdomain.com/health
+
+# Simulate doorbell event
+curl -X POST http://localhost:8420/nest/events \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;message&quot;:{&quot;data&quot;:&quot;eyJyZXNvdXJjZVVwZGF0ZSI6eyJuYW1lIjoiZW50ZXJwcmlzZXMvdGVzdC9kZXZpY2VzL0RPT1JCRUxMLTAxIiwiZXZlbnRzIjp7InNkbS5kZXZpY2VzLmV2ZW50cy5Eb29yYmVsbENoaW1lLkNoaW1lIjp7ImV2ZW50SWQiOiJ0ZXN0In19fX0=&quot;}}&#39;
+</code></pre>
+<h3>Supported Events</h3>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>DoorbellChime.Chime</code></td>
+<td>🔔 <strong>Alerts</strong> — sends photo to Telegram</td>
+</tr>
+<tr>
+<td><code>CameraPerson.Person</code></td>
+<td>🚶 <strong>Alerts</strong> — sends photo to Telegram</td>
+</tr>
+<tr>
+<td><code>CameraMotion.Motion</code></td>
+<td>📹 Logged only (no alert)</td>
+</tr>
+<tr>
+<td><code>CameraSound.Sound</code></td>
+<td>🔊 Logged only (no alert)</td>
+</tr>
+<tr>
+<td><code>CameraClipPreview.ClipPreview</code></td>
+<td>🎬 Logged only (no alert)</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>Staleness filter:</strong> Events older than 5 minutes are logged but never alerted. This prevents notification floods if queued Pub/Sub messages are delivered late.</p>
+</blockquote>
+<h3>Image Capture</h3>
+<p>When a doorbell or person event triggers an alert:</p>
+<ol>
+<li><strong>Primary:</strong> SDM <code>GenerateImage</code> API — fast, event-specific snapshot</li>
+<li><strong>Fallback:</strong> RTSP live stream frame capture via <code>ffmpeg</code> (requires <code>ffmpeg</code> installed)</li>
+</ol>
+<h3>Environment Variables</h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>CLAWDBOT_GATEWAY_URL</code></td>
+<td>No</td>
+<td>Gateway URL (default: <code>http://localhost:18789</code>)</td>
+</tr>
+<tr>
+<td><code>CLAWDBOT_HOOKS_TOKEN</code></td>
+<td>Yes</td>
+<td>Gateway hooks token for awareness notifications</td>
+</tr>
+<tr>
+<td><code>OP_SVC_ACCT_TOKEN</code></td>
+<td>Yes</td>
+<td>1Password service account token for Nest API credentials</td>
+</tr>
+<tr>
+<td><code>TELEGRAM_BOT_TOKEN</code></td>
+<td>Yes</td>
+<td>Telegram bot token for sending alerts</td>
+</tr>
+<tr>
+<td><code>TELEGRAM_CHAT_ID</code></td>
+<td>Yes</td>
+<td>Telegram chat ID to receive alerts</td>
+</tr>
+<tr>
+<td><code>PORT</code></td>
+<td>No</td>
+<td>Webhook server port (default: <code>8420</code>)</td>
+</tr>
+</tbody></table>
+<h3>Important Setup Notes</h3>
+<ul>
+<li><strong>Verify the full Pub/Sub topic path</strong> in Device Access Console matches your GCP project exactly: <code>projects/YOUR_GCP_PROJECT_ID/topics/nest-events</code></li>
+<li><strong>Use a push subscription</strong>, not pull — the webhook expects HTTP POST delivery</li>
+<li><strong>Test end-to-end</strong> after setup: ring the doorbell and confirm a photo arrives. Don&#39;t rely on simulated POST requests alone.</li>
+</ul>
+<hr>
+<h2>Limitations</h2>
+<ul>
+<li>Camera event images expire after ~5 minutes (RTSP fallback captures current frame instead)</li>
+<li>Real-time events require Pub/Sub setup (see above)</li>
+<li>Quick tunnels (without Cloudflare account) have no uptime guarantee</li>
+<li>Some older Nest devices may not support all features</li>
+<li>Motion and sound events are intentionally not alerted to avoid notification fatigue</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/amogower/nest-devices/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/amogower/nest-devices" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/amogower/nest-devices/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@amogower</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Smart Home & IoT</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

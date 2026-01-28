@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Analyze stocks and cryptocurrencies using Yahoo Finance data">
+  <title>stock-analysis - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Finance & Crypto</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Finance & Crypto</a>
+                <span class="skill-page-author">by @udiedrichsen</span>
+              </div>
+              <h1 class="skill-page-title">stock-analysis</h1>
+              <p class="skill-page-desc">Analyze stocks and cryptocurrencies using Yahoo Finance data</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Stock Analysis (v5.0)</h1>
+<p>Analyze US stocks and cryptocurrencies using Yahoo Finance data. Includes portfolio management, crypto support, and periodic analysis.</p>
+<h2>Quick Start</h2>
+<p><strong>IMPORTANT:</strong> Pass ONLY the stock ticker symbol(s) as arguments. Do NOT add extra text, headers, or formatting in the command.</p>
+<p>Analyze a single ticker:</p>
+<pre><code class="language-bash">uv run {baseDir}/scripts/analyze_stock.py AAPL
+uv run {baseDir}/scripts/analyze_stock.py MSFT --output json
+</code></pre>
+<p>Compare multiple tickers:</p>
+<pre><code class="language-bash">uv run {baseDir}/scripts/analyze_stock.py AAPL MSFT GOOGL
+</code></pre>
+<h2>Cryptocurrency Analysis (v5.0)</h2>
+<p>Analyze top 20 cryptocurrencies by market cap:</p>
+<pre><code class="language-bash">uv run {baseDir}/scripts/analyze_stock.py BTC-USD
+uv run {baseDir}/scripts/analyze_stock.py ETH-USD SOL-USD
+</code></pre>
+<p><strong>Supported Cryptos:</strong>
+BTC-USD, ETH-USD, BNB-USD, SOL-USD, XRP-USD, ADA-USD, DOGE-USD, AVAX-USD, DOT-USD, MATIC-USD, LINK-USD, ATOM-USD, UNI-USD, LTC-USD, BCH-USD, XLM-USD, ALGO-USD, VET-USD, FIL-USD, NEAR-USD</p>
+<p><strong>Crypto Analysis Dimensions:</strong></p>
+<ul>
+<li>Market cap (large/mid/small classification)</li>
+<li>Category (Smart Contract L1, DeFi, Payment, etc.)</li>
+<li>BTC correlation (30-day)</li>
+<li>Momentum (RSI, price range)</li>
+<li>Market context (VIX, general market regime)</li>
+</ul>
+<h2>Portfolio Management (v5.0)</h2>
+<p>Create and manage portfolios with mixed assets (stocks + crypto):</p>
+<pre><code class="language-bash"># Create portfolio
+uv run {baseDir}/scripts/portfolio.py create &quot;My Portfolio&quot;
+
+# Add assets
+uv run {baseDir}/scripts/portfolio.py add AAPL --quantity 100 --cost 150.00
+uv run {baseDir}/scripts/portfolio.py add BTC-USD --quantity 0.5 --cost 40000 --portfolio &quot;My Portfolio&quot;
+
+# View holdings with current P&amp;L
+uv run {baseDir}/scripts/portfolio.py show
+
+# Update/remove assets
+uv run {baseDir}/scripts/portfolio.py update AAPL --quantity 150
+uv run {baseDir}/scripts/portfolio.py remove BTC-USD
+
+# List/delete portfolios
+uv run {baseDir}/scripts/portfolio.py list
+uv run {baseDir}/scripts/portfolio.py delete &quot;My Portfolio&quot;
+</code></pre>
+<p><strong>Portfolio Storage:</strong> <code>~/.clawdbot/skills/stock-analysis/portfolios.json</code></p>
+<h2>Portfolio Analysis (v5.0)</h2>
+<p>Analyze all assets in a portfolio with optional period returns:</p>
+<pre><code class="language-bash"># Analyze portfolio
+uv run {baseDir}/scripts/analyze_stock.py --portfolio &quot;My Portfolio&quot;
+
+# With period returns (daily/weekly/monthly/quarterly/yearly)
+uv run {baseDir}/scripts/analyze_stock.py --portfolio &quot;My Portfolio&quot; --period weekly
+uv run {baseDir}/scripts/analyze_stock.py -p &quot;My Portfolio&quot; --period monthly
+</code></pre>
+<p><strong>Portfolio Summary includes:</strong></p>
+<ul>
+<li>Total cost, current value, P&amp;L</li>
+<li>Period return (if specified)</li>
+<li>Concentration warnings (&gt;30% in single asset)</li>
+<li>Recommendation summary (BUY/HOLD/SELL counts)</li>
+</ul>
+<p><strong>Examples:</strong></p>
+<ul>
+<li>✅ CORRECT: <code>uv run {baseDir}/scripts/analyze_stock.py BAC</code></li>
+<li>✅ CORRECT: <code>uv run {baseDir}/scripts/analyze_stock.py BTC-USD</code></li>
+<li>❌ WRONG: <code>uv run {baseDir}/scripts/analyze_stock.py === BANK OF AMERICA (BAC) - Q4 2025 EARNINGS ===</code></li>
+<li>❌ WRONG: <code>uv run {baseDir}/scripts/analyze_stock.py &quot;Bank of America&quot;</code></li>
+</ul>
+<p>Use the ticker symbol only (e.g., BAC, not &quot;Bank of America&quot;). For crypto, use the -USD suffix (e.g., BTC-USD).</p>
+<h2>Analysis Components</h2>
+<p>The script evaluates eight key dimensions:</p>
+<ol>
+<li><strong>Earnings Surprise (30% weight)</strong>: Actual vs expected EPS, revenue beats/misses</li>
+<li><strong>Fundamentals (20% weight)</strong>: P/E ratio, profit margins, revenue growth, debt levels</li>
+<li><strong>Analyst Sentiment (20% weight)</strong>: Consensus ratings, price target vs current price</li>
+<li><strong>Historical Patterns (10% weight)</strong>: Past earnings reactions, volatility</li>
+<li><strong>Market Context (10% weight)</strong>: VIX, SPY/QQQ trends, market regime</li>
+<li><strong>Sector Performance (15% weight)</strong>: Stock vs sector comparison, sector trends</li>
+<li><strong>Momentum (15% weight)</strong>: RSI, 52-week range, volume, relative strength</li>
+<li><strong>Sentiment Analysis (10% weight)</strong>: Fear/Greed Index, short interest, VIX term structure, insider trading, put/call ratio</li>
+</ol>
+<p><strong>Sentiment Sub-Indicators:</strong></p>
+<ul>
+<li><strong>Fear &amp; Greed Index (CNN)</strong>: Contrarian signal (extreme fear = buy opportunity, extreme greed = caution)</li>
+<li><strong>Short Interest</strong>: High shorts + squeeze potential = bullish; justified shorts = bearish</li>
+<li><strong>VIX Term Structure</strong>: Contango = complacency/bullish; backwardation = stress/bearish</li>
+<li><strong>Insider Activity</strong>: Net buying/selling from SEC Form 4 filings (90-day window)</li>
+<li><strong>Put/Call Ratio</strong>: High ratio = excessive fear/bullish; low ratio = complacency/bearish</li>
+</ul>
+<p>Weights auto-normalize if some components unavailable.</p>
+<p><strong>Special Timing Checks:</strong></p>
+<ul>
+<li>Pre-earnings warning (&lt; 14 days): Recommends HOLD instead of BUY</li>
+<li>Post-earnings spike detection (&gt; 15% in 5 days): Flags &quot;gains priced in&quot;</li>
+<li>Overbought conditions (RSI &gt; 70 + near 52w high): Reduces confidence</li>
+</ul>
+<h2>Timing Warnings &amp; Risk Flags</h2>
+<p>The script detects high-risk scenarios:</p>
+<h3>Earnings Timing</h3>
+<ul>
+<li><strong>Pre-Earnings Period</strong>: If earnings &lt; 14 days away, BUY signals become HOLD</li>
+<li><strong>Post-Earnings Spike</strong>: If stock up &gt; 15% in 5 days after earnings, warns &quot;gains may be priced in&quot;</li>
+</ul>
+<h3>Technical Risk</h3>
+<ul>
+<li><strong>Overbought Conditions</strong>: RSI &gt; 70 + near 52-week high = high-risk entry</li>
+</ul>
+<h3>Market Risk</h3>
+<ul>
+<li><strong>High VIX</strong>: Market fear (VIX &gt; 30) reduces confidence in BUY signals</li>
+<li><strong>Risk-Off Mode (v4.0.0)</strong>: When safe-havens (GLD, TLT, UUP) rise together, reduces BUY confidence by 30%<ul>
+<li>Detects flight to safety across gold, treasuries, and USD</li>
+<li>Triggers when GLD ≥ +2%, TLT ≥ +1%, UUP ≥ +1% (5-day change)</li>
+</ul>
+</li>
+</ul>
+<h3>Sector Risk</h3>
+<ul>
+<li><strong>Sector Weakness</strong>: Stock may look good but sector is rotating out</li>
+</ul>
+<h3>Geopolitical Risk (v4.0.0)</h3>
+<p>The script now scans breaking news (last 24h) for crisis keywords and automatically flags affected stocks:</p>
+<ul>
+<li><strong>Taiwan Conflict</strong>: Semiconductors (NVDA, AMD, TSM, INTC, etc.) → 30% confidence penalty</li>
+<li><strong>China Tensions</strong>: Tech/Consumer (AAPL, QCOM, NKE, SBUX, etc.) → 30% confidence penalty</li>
+<li><strong>Russia-Ukraine</strong>: Energy/Materials (XOM, CVX, MOS, CF, etc.) → 30% confidence penalty</li>
+<li><strong>Middle East</strong>: Oil/Defense (XOM, LMT, RTX, etc.) → 30% confidence penalty</li>
+<li><strong>Banking Crisis</strong>: Financials (JPM, BAC, WFC, C, etc.) → 30% confidence penalty</li>
+</ul>
+<p>If a ticker is not in the affected list but its sector is exposed, applies a 15% confidence penalty.</p>
+<p><strong>Example Alert:</strong></p>
+<pre><code>⚠️ SECTOR RISK: Tech supply chain and consumer market exposure (detected: china, tariff)
+</code></pre>
+<h3>Breaking News Alerts (v4.0.0)</h3>
+<ul>
+<li>Scans Google News RSS for crisis keywords (war, recession, sanctions, disasters, etc.)</li>
+<li>Displays up to 2 breaking news alerts in caveats (last 24 hours)</li>
+<li>Uses 1-hour cache to avoid excessive API calls</li>
+</ul>
+<h2>Output Format</h2>
+<p><strong>Default (text)</strong>: Concise buy/hold/sell signal with 3-5 bullet points and caveats</p>
+<p><strong>JSON</strong>: Structured data with scores, metrics, and raw data for further analysis</p>
+<h2>Limitations</h2>
+<ul>
+<li><strong>Data freshness</strong>: Yahoo Finance may lag 15-20 minutes</li>
+<li><strong>Sentiment data staleness</strong>:<ul>
+<li>Short interest data lags ~2 weeks (FINRA reporting schedule)</li>
+<li>Insider trades may lag filing by 2-3 days</li>
+<li>VIX term structure only updates during futures trading hours</li>
+</ul>
+</li>
+<li><strong>Breaking news limitations (v4.0.0)</strong>:<ul>
+<li>Google News RSS may lag by 15-60 minutes</li>
+<li>Keyword matching may have false positives/negatives</li>
+<li>Does not analyze sentiment, only detects keywords</li>
+<li>1-hour cache means alerts may be slightly stale</li>
+</ul>
+</li>
+<li><strong>Missing data</strong>: Not all stocks have analyst coverage, options chains, or complete fundamentals</li>
+<li><strong>Execution time</strong>: 3-5s per stock with async parallel fetching and caching (shared indicators cached for 1h)</li>
+<li><strong>Disclaimer</strong>: All outputs include prominent &quot;not financial advice&quot; warning</li>
+<li><strong>US markets only</strong>: Non-US tickers may have incomplete data</li>
+</ul>
+<h2>Error Handling</h2>
+<p>The script gracefully handles:</p>
+<ul>
+<li>Invalid tickers → Clear error message</li>
+<li>Missing analyst data → Signal based on available metrics only</li>
+<li>API failures → Retry with exponential backoff, fail after 3 attempts</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/udiedrichsen/stock-analysis/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/udiedrichsen/stock-analysis" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/udiedrichsen/stock-analysis/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@udiedrichsen</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Finance & Crypto</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

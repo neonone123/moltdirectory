@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Control OpenCode directly via the Agent Client Protocol (ACP)">
+  <title>opencode-acp-control - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Coding Agents & IDEs</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Coding Agents & IDEs</a>
+                <span class="skill-page-author">by @bjesuiter</span>
+              </div>
+              <h1 class="skill-page-title">opencode-acp-control</h1>
+              <p class="skill-page-desc">Control OpenCode directly via the Agent Client Protocol (ACP)</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>OpenCode ACP Skill</h1>
+<p>Control OpenCode directly via the Agent Client Protocol (ACP).</p>
+<h2>Metadata</h2>
+<ul>
+<li>For ACP Protocol Docs (for Agents/LLMs): <a href="https://agentclientprotocol.com/llms.txt">https://agentclientprotocol.com/llms.txt</a></li>
+<li>GitHub Repo: <a href="https://github.com/bjesuiter/opencode-acp-skill">https://github.com/bjesuiter/opencode-acp-skill</a></li>
+<li>If you have issues with this skill, please open an issue ticket here: <a href="https://github.com/bjesuiter/opencode-acp-skill/issues">https://github.com/bjesuiter/opencode-acp-skill/issues</a></li>
+</ul>
+<h2>Quick Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Start OpenCode</td>
+<td><code>bash(command: &quot;opencode acp&quot;, background: true)</code></td>
+</tr>
+<tr>
+<td>Send message</td>
+<td><code>process.write(sessionId, data: &quot;&lt;json-rpc&gt;\n&quot;)</code></td>
+</tr>
+<tr>
+<td>Read response</td>
+<td><code>process.poll(sessionId)</code> - repeat every 2 seconds</td>
+</tr>
+<tr>
+<td>Stop OpenCode</td>
+<td><code>process.kill(sessionId)</code></td>
+</tr>
+<tr>
+<td>List sessions</td>
+<td><code>bash(command: &quot;opencode session list&quot;, workdir: &quot;...&quot;)</code></td>
+</tr>
+<tr>
+<td>Resume session</td>
+<td>List sessions → ask user → <code>session/load</code></td>
+</tr>
+<tr>
+<td>Check version</td>
+<td><code>bash(command: &quot;opencode --version&quot;)</code></td>
+</tr>
+</tbody></table>
+<h2>Starting OpenCode</h2>
+<pre><code>bash(
+  command: &quot;opencode acp&quot;,
+  background: true,
+  workdir: &quot;/path/to/your/project&quot;
+)
+</code></pre>
+<p>Save the returned <code>sessionId</code> - you&#39;ll need it for all subsequent commands.</p>
+<h2>Protocol Basics</h2>
+<ul>
+<li>All messages are <strong>JSON-RPC 2.0</strong> format</li>
+<li>Messages are <strong>newline-delimited</strong> (end each with <code>\n</code>)</li>
+<li>Maintain a <strong>message ID counter</strong> starting at 0</li>
+</ul>
+<h2>Step-by-Step Workflow</h2>
+<h3>Step 1: Initialize Connection</h3>
+<p>Send immediately after starting OpenCode:</p>
+<pre><code class="language-json">{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;id&quot;:0,&quot;method&quot;:&quot;initialize&quot;,&quot;params&quot;:{&quot;protocolVersion&quot;:1,&quot;clientCapabilities&quot;:{&quot;fs&quot;:{&quot;readTextFile&quot;:true,&quot;writeTextFile&quot;:true},&quot;terminal&quot;:true},&quot;clientInfo&quot;:{&quot;name&quot;:&quot;clawdbot&quot;,&quot;title&quot;:&quot;Clawdbot&quot;,&quot;version&quot;:&quot;1.0.0&quot;}}}
+</code></pre>
+<p>Poll for response. Expect <code>result.protocolVersion: 1</code>.</p>
+<h3>Step 2: Create Session</h3>
+<pre><code class="language-json">{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;id&quot;:1,&quot;method&quot;:&quot;session/new&quot;,&quot;params&quot;:{&quot;cwd&quot;:&quot;/path/to/project&quot;,&quot;mcpServers&quot;:[]}}
+</code></pre>
+<p>Poll for response. Save <code>result.sessionId</code> (e.g., <code>&quot;sess_abc123&quot;</code>).</p>
+<h3>Step 3: Send Prompts</h3>
+<pre><code class="language-json">{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;id&quot;:2,&quot;method&quot;:&quot;session/prompt&quot;,&quot;params&quot;:{&quot;sessionId&quot;:&quot;sess_abc123&quot;,&quot;prompt&quot;:[{&quot;type&quot;:&quot;text&quot;,&quot;text&quot;:&quot;Your question here&quot;}]}}
+</code></pre>
+<p>Poll every 2 seconds. You&#39;ll receive:</p>
+<ul>
+<li><code>session/update</code> notifications (streaming content)</li>
+<li>Final response with <code>result.stopReason</code></li>
+</ul>
+<h3>Step 4: Read Responses</h3>
+<p>Each poll may return multiple lines. Parse each line as JSON:</p>
+<ul>
+<li><strong>Notifications</strong>: <code>method: &quot;session/update&quot;</code> - collect these for the response</li>
+<li><strong>Response</strong>: Has <code>id</code> matching your request - stop polling when <code>stopReason</code> appears</li>
+</ul>
+<h3>Step 5: Cancel (if needed)</h3>
+<pre><code class="language-json">{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;method&quot;:&quot;session/cancel&quot;,&quot;params&quot;:{&quot;sessionId&quot;:&quot;sess_abc123&quot;}}
+</code></pre>
+<p>No response expected - this is a notification.</p>
+<h2>State to Track</h2>
+<p>Per OpenCode instance, track:</p>
+<ul>
+<li><code>processSessionId</code> - from bash tool (clawdbot&#39;s process ID)</li>
+<li><code>opencodeSessionId</code> - from session/new response (OpenCode&#39;s session ID)  </li>
+<li><code>messageId</code> - increment for each request you send</li>
+</ul>
+<h2>Polling Strategy</h2>
+<ul>
+<li>Poll every <strong>2 seconds</strong></li>
+<li>Continue until you receive a response with <code>stopReason</code></li>
+<li>Max wait: <strong>5 minutes</strong> (150 polls)</li>
+<li>If no response, consider the operation timed out</li>
+</ul>
+<h2>Common Stop Reasons</h2>
+<table>
+<thead>
+<tr>
+<th>stopReason</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>end_turn</code></td>
+<td>Agent finished responding</td>
+</tr>
+<tr>
+<td><code>cancelled</code></td>
+<td>You cancelled the prompt</td>
+</tr>
+<tr>
+<td><code>max_tokens</code></td>
+<td>Token limit reached</td>
+</tr>
+</tbody></table>
+<h2>Error Handling</h2>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Empty poll response</td>
+<td>Keep polling - agent is thinking</td>
+</tr>
+<tr>
+<td>Parse error</td>
+<td>Skip malformed line, continue</td>
+</tr>
+<tr>
+<td>Process exited</td>
+<td>Restart OpenCode</td>
+</tr>
+<tr>
+<td>No response after 5min</td>
+<td>Kill process, start fresh</td>
+</tr>
+</tbody></table>
+<h2>Example: Complete Interaction</h2>
+<pre><code>1. bash(command: &quot;opencode acp&quot;, background: true, workdir: &quot;/home/user/myproject&quot;)
+   -&gt; processSessionId: &quot;bg_42&quot;
+
+2. process.write(sessionId: &quot;bg_42&quot;, data: &#39;{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;id&quot;:0,&quot;method&quot;:&quot;initialize&quot;,...}\n&#39;)
+   process.poll(sessionId: &quot;bg_42&quot;) -&gt; initialize response
+
+3. process.write(sessionId: &quot;bg_42&quot;, data: &#39;{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;id&quot;:1,&quot;method&quot;:&quot;session/new&quot;,&quot;params&quot;:{&quot;cwd&quot;:&quot;/home/user/myproject&quot;,&quot;mcpServers&quot;:[]}}\n&#39;)
+   process.poll(sessionId: &quot;bg_42&quot;) -&gt; opencodeSessionId: &quot;sess_xyz789&quot;
+
+4. process.write(sessionId: &quot;bg_42&quot;, data: &#39;{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;id&quot;:2,&quot;method&quot;:&quot;session/prompt&quot;,&quot;params&quot;:{&quot;sessionId&quot;:&quot;sess_xyz789&quot;,&quot;prompt&quot;:[{&quot;type&quot;:&quot;text&quot;,&quot;text&quot;:&quot;List all TypeScript files&quot;}]}}\n&#39;)
+   
+5. process.poll(sessionId: &quot;bg_42&quot;) every 2 sec until stopReason
+   -&gt; Collect all session/update content
+   -&gt; Final response: stopReason: &quot;end_turn&quot;
+
+6. When done: process.kill(sessionId: &quot;bg_42&quot;)
+</code></pre>
+<hr>
+<h2>Resume Session</h2>
+<p>Resume a previous OpenCode session by letting the user choose from available sessions.</p>
+<h3>Step 1: List Available Sessions</h3>
+<pre><code>bash(command: &quot;opencode session list&quot;, workdir: &quot;/path/to/project&quot;)
+</code></pre>
+<p>Example output:</p>
+<pre><code>ID                                  Updated              Messages
+ses_451cd8ae0ffegNQsh59nuM3VVy      2026-01-11 15:30     12
+ses_451a89e63ffea2TQIpnDGtJBkS      2026-01-10 09:15     5
+ses_4518e90d0ffeJIpOFI3t3Jd23Q      2026-01-09 14:22     8
+</code></pre>
+<h3>Step 2: Ask User to Choose</h3>
+<p>Present the list to the user and ask which session to resume:</p>
+<pre><code>&quot;Which session would you like to resume?
+ 
+1. ses_451cd8ae... (12 messages, updated 2026-01-11)
+2. ses_451a89e6... (5 messages, updated 2026-01-10)
+3. ses_4518e90d... (8 messages, updated 2026-01-09)
+
+Enter session number or ID:&quot;
+</code></pre>
+<h3>Step 3: Load Selected Session</h3>
+<p>Once user responds (e.g., &quot;1&quot;, &quot;the first one&quot;, or &quot;ses_451cd8ae...&quot;):</p>
+<ol>
+<li><p><strong>Start OpenCode ACP</strong>:</p>
+<pre><code>bash(command: &quot;opencode acp&quot;, background: true, workdir: &quot;/path/to/project&quot;)
+</code></pre>
+</li>
+<li><p><strong>Initialize</strong>:</p>
+<pre><code class="language-json">{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;id&quot;:0,&quot;method&quot;:&quot;initialize&quot;,&quot;params&quot;:{...}}
+</code></pre>
+</li>
+<li><p><strong>Load the session</strong>:</p>
+<pre><code class="language-json">{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;id&quot;:1,&quot;method&quot;:&quot;session/load&quot;,&quot;params&quot;:{&quot;sessionId&quot;:&quot;ses_451cd8ae0ffegNQsh59nuM3VVy&quot;,&quot;cwd&quot;:&quot;/path/to/project&quot;,&quot;mcpServers&quot;:[]}}
+</code></pre>
+</li>
+</ol>
+<p><strong>Note</strong>: <code>session/load</code> requires <code>cwd</code> and <code>mcpServers</code> parameters.</p>
+<p>On load, OpenCode streams the full conversation history back to you.</p>
+<h3>Resume Workflow Summary</h3>
+<pre><code>function resumeSession(workdir):
+    # List available sessions
+    output = bash(&quot;opencode session list&quot;, workdir: workdir)
+    sessions = parseSessionList(output)
+    
+    if sessions.empty:
+        notify(&quot;No previous sessions found. Starting fresh.&quot;)
+        return createNewSession(workdir)
+    
+    # Ask user to choose
+    choice = askUser(&quot;Which session to resume?&quot;, sessions)
+    selectedId = matchUserChoice(choice, sessions)
+    
+    # Start OpenCode and load session
+    process = bash(&quot;opencode acp&quot;, background: true, workdir: workdir)
+    initialize(process)
+    
+    session_load(process, selectedId, workdir, mcpServers: [])
+    
+    notify(&quot;Session resumed. Conversation history loaded.&quot;)
+    return process
+</code></pre>
+<h3>Important Notes</h3>
+<ul>
+<li><strong>History replay</strong>: On load, all previous messages stream back</li>
+<li><strong>Memory preserved</strong>: Agent remembers the full conversation</li>
+<li><strong>Process independent</strong>: Sessions survive OpenCode restarts</li>
+</ul>
+<hr>
+<h2>Updating OpenCode</h2>
+<p>OpenCode auto-updates when restarted. Use this workflow to check and trigger updates.</p>
+<h3>Step 1: Check Current Version</h3>
+<pre><code>bash(command: &quot;opencode --version&quot;)
+</code></pre>
+<p>Returns something like: <code>opencode version 1.1.13</code></p>
+<p>Extract the version number (e.g., <code>1.1.13</code>).</p>
+<h3>Step 2: Check Latest Version</h3>
+<pre><code>webfetch(url: &quot;https://github.com/anomalyco/opencode/releases/latest&quot;, format: &quot;text&quot;)
+</code></pre>
+<p>The redirect URL contains the latest version tag:</p>
+<ul>
+<li>Redirects to: <code>https://github.com/anomalyco/opencode/releases/tag/v1.2.0</code></li>
+<li>Extract version from the URL path (e.g., <code>1.2.0</code>)</li>
+</ul>
+<h3>Step 3: Compare and Update</h3>
+<p>If latest version &gt; current version:</p>
+<ol>
+<li><p><strong>Stop all running OpenCode processes</strong>:</p>
+<pre><code>process.list()  # Find all &quot;opencode acp&quot; processes
+process.kill(sessionId) # For each running instance
+</code></pre>
+</li>
+<li><p><strong>Restart instances</strong> (OpenCode auto-downloads new binary on start):</p>
+<pre><code>bash(command: &quot;opencode acp&quot;, background: true, workdir: &quot;/path/to/project&quot;)
+</code></pre>
+</li>
+<li><p><strong>Re-initialize</strong> each instance (initialize + session/load for existing sessions)</p>
+</li>
+</ol>
+<h3>Step 4: Verify Update</h3>
+<pre><code>bash(command: &quot;opencode --version&quot;)
+</code></pre>
+<p>If version still doesn&#39;t match latest:</p>
+<ul>
+<li>Inform user: &quot;OpenCode auto-update may have failed. Current: X.X.X, Latest: Y.Y.Y&quot;</li>
+<li>Suggest manual update: <code>curl -fsSL https://opencode.dev/install | bash</code></li>
+</ul>
+<h3>Update Workflow Summary</h3>
+<pre><code>function updateOpenCode():
+    current = bash(&quot;opencode --version&quot;)  # e.g., &quot;1.1.13&quot;
+    
+    latestPage = webfetch(&quot;https://github.com/anomalyco/opencode/releases/latest&quot;)
+    latest = extractVersionFromRedirectUrl(latestPage)  # e.g., &quot;1.2.0&quot;
+    
+    if semverCompare(latest, current) &gt; 0:
+        # Stop all instances
+        for process in process.list():
+            if process.command.includes(&quot;opencode&quot;):
+                process.kill(process.sessionId)
+        
+        # Wait briefly for processes to terminate
+        sleep(2 seconds)
+        
+        # Restart triggers auto-update
+        bash(&quot;opencode acp&quot;, background: true)
+        
+        # Verify
+        newVersion = bash(&quot;opencode --version&quot;)
+        if newVersion != latest:
+            notify(&quot;Auto-update may have failed. Manual update recommended.&quot;)
+    else:
+        notify(&quot;OpenCode is up to date: &quot; + current)
+</code></pre>
+<h3>Important Notes</h3>
+<ul>
+<li><strong>Sessions persist</strong>: <code>opencodeSessionId</code> survives restarts — use <code>session/load</code> to recover</li>
+<li><strong>Auto-update</strong>: OpenCode downloads new binary automatically on restart</li>
+<li><strong>No data loss</strong>: Conversation history is preserved server-side</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/bjesuiter/opencode-acp-control/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/bjesuiter/opencode-acp-control" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/bjesuiter/opencode-acp-control/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@bjesuiter</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Coding Agents & IDEs</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

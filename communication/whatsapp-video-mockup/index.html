@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="whatsapp-video-mockup">
+  <title>whatsapp-video-mockup - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Communication</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Communication</a>
+                <span class="skill-page-author">by @danpeg</span>
+              </div>
+              <h1 class="skill-page-title">whatsapp-video-mockup</h1>
+              <p class="skill-page-desc">whatsapp-video-mockup</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>WhatsApp Video Skill</h1>
+<p>Create animated WhatsApp-style chat videos using Remotion. Perfect for X, TikTok, Instagram Reels.</p>
+<h2>Features</h2>
+<ul>
+<li>📱 Realistic iPhone frame with Dynamic Island</li>
+<li>💬 WhatsApp dark mode UI (accurate colors, bubbles, timestamps)</li>
+<li>📜 Auto-scrolling as messages extend</li>
+<li>🔤 Large, readable fonts (optimized for mobile viewing)</li>
+<li>🎵 Message notification sounds</li>
+<li>✨ Spring animations on message appearance</li>
+<li>⌨️ Typing indicator (&quot;...&quot; bubbles)</li>
+<li>🔗 Link preview cards</li>
+<li>✅ Read receipts (blue checkmarks)</li>
+<li><strong>Bold</strong> and <code>code</code> formatting support</li>
+</ul>
+<h2>Default Settings</h2>
+<ul>
+<li><strong>Aspect ratio:</strong> 4:5 (1080×1350) - optimal for X/Instagram feed</li>
+<li><strong>No intro/outro</strong> - starts and ends with the chat</li>
+<li><strong>2x fonts</strong> - readable on mobile devices</li>
+<li><strong>Auto-scroll</strong> - keeps all messages visible</li>
+</ul>
+<h2>Prerequisites</h2>
+<p>This skill requires the <strong>Remotion Best Practices</strong> skill:</p>
+<pre><code class="language-bash">npx skills add remotion-dev/skills -a claude-code -y -g
+</code></pre>
+<h2>Quick Start</h2>
+<pre><code class="language-bash">cd ~/Projects/remotion-test
+</code></pre>
+<p>Edit the conversation in <code>src/WhatsAppVideo.tsx</code>, then render:</p>
+<pre><code class="language-bash">npx remotion render WhatsAppDemo out/my-video.mp4 --concurrency=4
+</code></pre>
+<h2>How to Create a New Video</h2>
+<h3>1. Define Your Messages</h3>
+<p>Edit the <code>ChatMessages</code> component in <code>src/WhatsAppVideo.tsx</code>:</p>
+<pre><code class="language-tsx">// Incoming message (from assistant)
+&lt;Message
+  text=&quot;Your message text here&quot;
+  isOutgoing={false}
+  time=&quot;8:40 AM&quot;
+  delay={125}  // Frame when message appears (30fps)
+/&gt;
+
+// Outgoing message (from user)
+&lt;Message
+  text=&quot;Your outgoing message&quot;
+  isOutgoing={true}
+  time=&quot;8:41 AM&quot;
+  delay={200}
+  showCheck={true}
+/&gt;
+
+// Typing indicator (shows &quot;...&quot; bubbles)
+&lt;TypingIndicator delay={80} duration={45} /&gt;
+</code></pre>
+<h3>2. Timing Guide</h3>
+<ul>
+<li><strong>30 fps</strong> = 30 frames per second</li>
+<li><code>delay={30}</code> = appears at 1 second</li>
+<li><code>delay={60}</code> = appears at 2 seconds</li>
+<li><code>duration={45}</code> = lasts 1.5 seconds</li>
+</ul>
+<p><strong>Typical flow:</strong></p>
+<ol>
+<li>First message: <code>delay={20}</code> (~0.7s)</li>
+<li>Typing indicator: <code>delay={80}</code>, <code>duration={45}</code></li>
+<li>Response: <code>delay={125}</code> (after typing ends)</li>
+<li>Next typing: <code>delay={175}</code>, <code>duration={45}</code></li>
+<li>Next response: <code>delay={220}</code></li>
+</ol>
+<h3>3. Adjust Scrolling</h3>
+<p>In <code>ChatMessages</code>, update the scroll interpolation based on your message count:</p>
+<pre><code class="language-tsx">const scrollAmount = interpolate(
+  frame,
+  [scrollStart, scrollStart + 60, messageFrame, lastFrame],
+  [0, firstScroll, firstScroll, finalScroll],
+  { extrapolateLeft: &quot;clamp&quot;, extrapolateRight: &quot;clamp&quot; }
+);
+</code></pre>
+<p>Increase scroll values if messages overflow.</p>
+<h3>4. Text Formatting</h3>
+<p>Messages support:</p>
+<ul>
+<li><strong>Bold</strong>: <code>**bold text**</code></li>
+<li><code>Code</code>: backticks around text</li>
+<li>Line breaks: <code>\n</code> in the string</li>
+<li>Emojis: just use them directly 🎬</li>
+</ul>
+<h3>5. Customizing the Header</h3>
+<p>In <code>ChatHeader</code> component, change:</p>
+<ul>
+<li>Name: <code>Pokey 🐡</code> → your assistant name</li>
+<li>Status: <code>online</code></li>
+<li>Avatar emoji</li>
+</ul>
+<h3>6. Update Duration</h3>
+<p>In <code>Root.tsx</code>, set <code>durationInFrames</code> to match your video length:</p>
+<ul>
+<li>Count frames until last message appears + ~100 frames buffer</li>
+<li>At 30fps: 450 frames = 15 seconds</li>
+</ul>
+<h3>7. Render</h3>
+<pre><code class="language-bash"># Standard render
+npx remotion render WhatsAppDemo out/video.mp4 --concurrency=4
+
+# Higher quality
+npx remotion render WhatsAppDemo out/video.mp4 --codec h264 --crf 18
+
+# Preview in browser
+npm run dev
+</code></pre>
+<h2>Platform Dimensions</h2>
+<p>Edit <code>Root.tsx</code> to change dimensions:</p>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Dimensions</th>
+<th>Aspect Ratio</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>X/Instagram feed</strong></td>
+<td>1080×1350</td>
+<td>4:5</td>
+<td>Default, most visible</td>
+</tr>
+<tr>
+<td><strong>X/TikTok/Reels</strong></td>
+<td>1080×1920</td>
+<td>9:16</td>
+<td>Full vertical</td>
+</tr>
+<tr>
+<td><strong>X square</strong></td>
+<td>1080×1080</td>
+<td>1:1</td>
+<td>Universal</td>
+</tr>
+<tr>
+<td><strong>YouTube/X landscape</strong></td>
+<td>1920×1080</td>
+<td>16:9</td>
+<td>Horizontal</td>
+</tr>
+</tbody></table>
+<h2>Project Structure</h2>
+<pre><code>~/Projects/remotion-test/
+├── src/
+│   ├── WhatsAppVideo.tsx   # Main video component
+│   └── Root.tsx            # Composition config
+├── public/
+│   └── sounds/
+│       ├── pop.mp3         # Message received
+│       └── send.mp3        # Message sent
+└── out/                    # Rendered videos
+</code></pre>
+<h2>Sound Effects</h2>
+<p>Sounds are triggered with Sequence:</p>
+<pre><code class="language-tsx">&lt;Sequence from={125}&gt;
+  &lt;Audio src={staticFile(&quot;sounds/pop.mp3&quot;)} volume={0.5} /&gt;
+&lt;/Sequence&gt;
+</code></pre>
+<h2>Tips</h2>
+<ol>
+<li><strong>Preview while editing</strong>: Run <code>npm run dev</code> to see changes live</li>
+<li><strong>Frame-by-frame</strong>: Use timeline scrubber to check timing</li>
+<li><strong>Keep messages concise</strong>: Long messages may need scroll adjustment</li>
+<li><strong>Test on mobile</strong>: Check readability at actual size</li>
+</ol>
+<h2>Asking Pokey to Generate</h2>
+<p>Just describe the conversation:</p>
+<ul>
+<li>&quot;WhatsApp video: me asking you to [X]&quot;</li>
+<li>&quot;Make a chat video showing [conversation]&quot;</li>
+</ul>
+<p>Pokey will write the messages, set timing, render, and send the MP4.</p>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/danpeg/whatsapp-video-mockup/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/danpeg/whatsapp-video-mockup" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/danpeg/whatsapp-video-mockup/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@danpeg</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Communication</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

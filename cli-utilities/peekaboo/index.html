@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Capture and automate macOS UI with the Peekaboo CLI">
+  <title>peekaboo - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to CLI Utilities</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">CLI Utilities</a>
+                <span class="skill-page-author">by @steipete</span>
+              </div>
+              <h1 class="skill-page-title">peekaboo</h1>
+              <p class="skill-page-desc">Capture and automate macOS UI with the Peekaboo CLI</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Peekaboo</h1>
+<p>Peekaboo is a full macOS UI automation CLI: capture/inspect screens, target UI
+elements, drive input, and manage apps/windows/menus. Commands share a snapshot
+cache and support <code>--json</code>/<code>-j</code> for scripting. Run <code>peekaboo</code> or
+<code>peekaboo &lt;cmd&gt; --help</code> for flags; <code>peekaboo --version</code> prints build metadata.
+Tip: run via <code>polter peekaboo</code> to ensure fresh builds.</p>
+<h2>Features (all CLI capabilities, excluding agent/MCP)</h2>
+<p>Core</p>
+<ul>
+<li><code>bridge</code>: inspect Peekaboo Bridge host connectivity</li>
+<li><code>capture</code>: live capture or video ingest + frame extraction</li>
+<li><code>clean</code>: prune snapshot cache and temp files</li>
+<li><code>config</code>: init/show/edit/validate, providers, models, credentials</li>
+<li><code>image</code>: capture screenshots (screen/window/menu bar regions)</li>
+<li><code>learn</code>: print the full agent guide + tool catalog</li>
+<li><code>list</code>: apps, windows, screens, menubar, permissions</li>
+<li><code>permissions</code>: check Screen Recording/Accessibility status</li>
+<li><code>run</code>: execute <code>.peekaboo.json</code> scripts</li>
+<li><code>sleep</code>: pause execution for a duration</li>
+<li><code>tools</code>: list available tools with filtering/display options</li>
+</ul>
+<p>Interaction</p>
+<ul>
+<li><code>click</code>: target by ID/query/coords with smart waits</li>
+<li><code>drag</code>: drag &amp; drop across elements/coords/Dock</li>
+<li><code>hotkey</code>: modifier combos like <code>cmd,shift,t</code></li>
+<li><code>move</code>: cursor positioning with optional smoothing</li>
+<li><code>paste</code>: set clipboard -&gt; paste -&gt; restore</li>
+<li><code>press</code>: special-key sequences with repeats</li>
+<li><code>scroll</code>: directional scrolling (targeted + smooth)</li>
+<li><code>swipe</code>: gesture-style drags between targets</li>
+<li><code>type</code>: text + control keys (<code>--clear</code>, delays)</li>
+</ul>
+<p>System</p>
+<ul>
+<li><code>app</code>: launch/quit/relaunch/hide/unhide/switch/list apps</li>
+<li><code>clipboard</code>: read/write clipboard (text/images/files)</li>
+<li><code>dialog</code>: click/input/file/dismiss/list system dialogs</li>
+<li><code>dock</code>: launch/right-click/hide/show/list Dock items</li>
+<li><code>menu</code>: click/list application menus + menu extras</li>
+<li><code>menubar</code>: list/click status bar items</li>
+<li><code>open</code>: enhanced <code>open</code> with app targeting + JSON payloads</li>
+<li><code>space</code>: list/switch/move-window (Spaces)</li>
+<li><code>visualizer</code>: exercise Peekaboo visual feedback animations</li>
+<li><code>window</code>: close/minimize/maximize/move/resize/focus/list</li>
+</ul>
+<p>Vision</p>
+<ul>
+<li><code>see</code>: annotated UI maps, snapshot IDs, optional analysis</li>
+</ul>
+<p>Global runtime flags</p>
+<ul>
+<li><code>--json</code>/<code>-j</code>, <code>--verbose</code>/<code>-v</code>, <code>--log-level &lt;level&gt;</code></li>
+<li><code>--no-remote</code>, <code>--bridge-socket &lt;path&gt;</code></li>
+</ul>
+<h2>Quickstart (happy path)</h2>
+<pre><code class="language-bash">peekaboo permissions
+peekaboo list apps --json
+peekaboo see --annotate --path /tmp/peekaboo-see.png
+peekaboo click --on B1
+peekaboo type &quot;Hello&quot; --return
+</code></pre>
+<h2>Common targeting parameters (most interaction commands)</h2>
+<ul>
+<li>App/window: <code>--app</code>, <code>--pid</code>, <code>--window-title</code>, <code>--window-id</code>, <code>--window-index</code></li>
+<li>Snapshot targeting: <code>--snapshot</code> (ID from <code>see</code>; defaults to latest)</li>
+<li>Element/coords: <code>--on</code>/<code>--id</code> (element ID), <code>--coords x,y</code></li>
+<li>Focus control: <code>--no-auto-focus</code>, <code>--space-switch</code>, <code>--bring-to-current-space</code>,
+<code>--focus-timeout-seconds</code>, <code>--focus-retry-count</code></li>
+</ul>
+<h2>Common capture parameters</h2>
+<ul>
+<li>Output: <code>--path</code>, <code>--format png|jpg</code>, <code>--retina</code></li>
+<li>Targeting: <code>--mode screen|window|frontmost</code>, <code>--screen-index</code>,
+<code>--window-title</code>, <code>--window-id</code></li>
+<li>Analysis: <code>--analyze &quot;prompt&quot;</code>, <code>--annotate</code></li>
+<li>Capture engine: <code>--capture-engine auto|classic|cg|modern|sckit</code></li>
+</ul>
+<h2>Common motion/typing parameters</h2>
+<ul>
+<li>Timing: <code>--duration</code> (drag/swipe), <code>--steps</code>, <code>--delay</code> (type/scroll/press)</li>
+<li>Human-ish movement: <code>--profile human|linear</code>, <code>--wpm</code> (typing)</li>
+<li>Scroll: <code>--direction up|down|left|right</code>, <code>--amount &lt;ticks&gt;</code>, <code>--smooth</code></li>
+</ul>
+<h2>Examples</h2>
+<h3>See -&gt; click -&gt; type (most reliable flow)</h3>
+<pre><code class="language-bash">peekaboo see --app Safari --window-title &quot;Login&quot; --annotate --path /tmp/see.png
+peekaboo click --on B3 --app Safari
+peekaboo type &quot;user@example.com&quot; --app Safari
+peekaboo press tab --count 1 --app Safari
+peekaboo type &quot;supersecret&quot; --app Safari --return
+</code></pre>
+<h3>Target by window id</h3>
+<pre><code class="language-bash">peekaboo list windows --app &quot;Visual Studio Code&quot; --json
+peekaboo click --window-id 12345 --coords 120,160
+peekaboo type &quot;Hello from Peekaboo&quot; --window-id 12345
+</code></pre>
+<h3>Capture screenshots + analyze</h3>
+<pre><code class="language-bash">peekaboo image --mode screen --screen-index 0 --retina --path /tmp/screen.png
+peekaboo image --app Safari --window-title &quot;Dashboard&quot; --analyze &quot;Summarize KPIs&quot;
+peekaboo see --mode screen --screen-index 0 --analyze &quot;Summarize the dashboard&quot;
+</code></pre>
+<h3>Live capture (motion-aware)</h3>
+<pre><code class="language-bash">peekaboo capture live --mode region --region 100,100,800,600 --duration 30 \
+  --active-fps 8 --idle-fps 2 --highlight-changes --path /tmp/capture
+</code></pre>
+<h3>App + window management</h3>
+<pre><code class="language-bash">peekaboo app launch &quot;Safari&quot; --open https://example.com
+peekaboo window focus --app Safari --window-title &quot;Example&quot;
+peekaboo window set-bounds --app Safari --x 50 --y 50 --width 1200 --height 800
+peekaboo app quit --app Safari
+</code></pre>
+<h3>Menus, menubar, dock</h3>
+<pre><code class="language-bash">peekaboo menu click --app Safari --item &quot;New Window&quot;
+peekaboo menu click --app TextEdit --path &quot;Format &gt; Font &gt; Show Fonts&quot;
+peekaboo menu click-extra --title &quot;WiFi&quot;
+peekaboo dock launch Safari
+peekaboo menubar list --json
+</code></pre>
+<h3>Mouse + gesture input</h3>
+<pre><code class="language-bash">peekaboo move 500,300 --smooth
+peekaboo drag --from B1 --to T2
+peekaboo swipe --from-coords 100,500 --to-coords 100,200 --duration 800
+peekaboo scroll --direction down --amount 6 --smooth
+</code></pre>
+<h3>Keyboard input</h3>
+<pre><code class="language-bash">peekaboo hotkey --keys &quot;cmd,shift,t&quot;
+peekaboo press escape
+peekaboo type &quot;Line 1\nLine 2&quot; --delay 10
+</code></pre>
+<p>Notes</p>
+<ul>
+<li>Requires Screen Recording + Accessibility permissions.</li>
+<li>Use <code>peekaboo see --annotate</code> to identify targets before clicking.</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/steipete/peekaboo/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/steipete/peekaboo" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/steipete/peekaboo/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@steipete</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">CLI Utilities</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

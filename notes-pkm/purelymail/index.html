@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Set up and test PurelyMail email for Clawdbot agents">
+  <title>purelymail - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Notes & PKM</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Notes & PKM</a>
+                <span class="skill-page-author">by @dbhurley</span>
+              </div>
+              <h1 class="skill-page-title">purelymail</h1>
+              <p class="skill-page-desc">Set up and test PurelyMail email for Clawdbot agents</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>PurelyMail Setup for Clawdbot</h1>
+<p>Set up email for your Clawdbot agent using <a href="https://purelymail.com">PurelyMail</a> - a simple, privacy-focused email service perfect for agent inboxes.</p>
+<h2>Why PurelyMail?</h2>
+<ul>
+<li><strong>Cheap</strong>: ~$10/year for unlimited addresses</li>
+<li><strong>Simple</strong>: No bloat, just email</li>
+<li><strong>Privacy</strong>: Based in US, minimal data retention</li>
+<li><strong>Reliable</strong>: Great deliverability</li>
+<li><strong>Agent-friendly</strong>: Easy IMAP/SMTP setup</li>
+</ul>
+<h2>Quick Start (Wizard)</h2>
+<p>The easiest way to set up is with the interactive wizard:</p>
+<pre><code class="language-bash">purelymail wizard
+</code></pre>
+<p>The wizard will:</p>
+<ol>
+<li>✓ Check if you have a PurelyMail account</li>
+<li>✓ Test your IMAP/SMTP connection</li>
+<li>✓ Generate clawdbot.json config</li>
+<li>✓ Optionally send a test email</li>
+</ol>
+<h2>Manual Setup</h2>
+<h3>1. Create PurelyMail Account</h3>
+<ol>
+<li>Go to <a href="https://purelymail.com">purelymail.com</a> and sign up</li>
+<li>Add your domain (or use their subdomain)</li>
+<li>Create a mailbox for your agent (e.g., <code>agent@yourdomain.com</code>)</li>
+<li>Note the password</li>
+</ol>
+<h3>2. Generate Clawdbot Config</h3>
+<pre><code class="language-bash">purelymail config --email agent@yourdomain.com --password &quot;YourPassword&quot;
+</code></pre>
+<p>Outputs JSON to add to your <code>clawdbot.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;skills&quot;: {
+    &quot;entries&quot;: {
+      &quot;agent-email&quot;: {
+        &quot;env&quot;: {
+          &quot;AGENT_EMAIL&quot;: &quot;agent@yourdomain.com&quot;,
+          &quot;AGENT_EMAIL_PASSWORD&quot;: &quot;YourPassword&quot;,
+          &quot;AGENT_IMAP_SERVER&quot;: &quot;imap.purelymail.com&quot;,
+          &quot;AGENT_SMTP_SERVER&quot;: &quot;smtp.purelymail.com&quot;
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<h3>3. Test Connection</h3>
+<pre><code class="language-bash">purelymail test --email agent@yourdomain.com --password &quot;YourPassword&quot;
+</code></pre>
+<p>Tests IMAP and SMTP connectivity.</p>
+<h3>4. Send Test Email</h3>
+<pre><code class="language-bash">purelymail send-test --email agent@yourdomain.com --password &quot;YourPassword&quot; --to you@example.com
+</code></pre>
+<h3>5. Check Inbox</h3>
+<pre><code class="language-bash">purelymail inbox --email agent@yourdomain.com --password &quot;YourPassword&quot; --limit 5
+</code></pre>
+<h2>Commands</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>config</code></td>
+<td>Generate clawdbot.json config snippet</td>
+</tr>
+<tr>
+<td><code>test</code></td>
+<td>Test IMAP/SMTP connectivity</td>
+</tr>
+<tr>
+<td><code>send-test</code></td>
+<td>Send a test email</td>
+</tr>
+<tr>
+<td><code>inbox</code></td>
+<td>List recent inbox messages</td>
+</tr>
+<tr>
+<td><code>read</code></td>
+<td>Read a specific email</td>
+</tr>
+<tr>
+<td><code>setup-guide</code></td>
+<td>Print full setup instructions</td>
+</tr>
+</tbody></table>
+<h2>Environment Variables</h2>
+<p>Once configured in clawdbot.json, these env vars are available:</p>
+<ul>
+<li><code>AGENT_EMAIL</code> - The email address</li>
+<li><code>AGENT_EMAIL_PASSWORD</code> - The password</li>
+<li><code>AGENT_IMAP_SERVER</code> - IMAP server (imap.purelymail.com)</li>
+<li><code>AGENT_SMTP_SERVER</code> - SMTP server (smtp.purelymail.com)</li>
+</ul>
+<h2>PurelyMail Settings</h2>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>IMAP Server</td>
+<td><code>imap.purelymail.com</code></td>
+</tr>
+<tr>
+<td>IMAP Port</td>
+<td><code>993</code> (SSL)</td>
+</tr>
+<tr>
+<td>SMTP Server</td>
+<td><code>smtp.purelymail.com</code></td>
+</tr>
+<tr>
+<td>SMTP Port</td>
+<td><code>465</code> (SSL) or <code>587</code> (STARTTLS)</td>
+</tr>
+<tr>
+<td>Auth</td>
+<td>Email + Password</td>
+</tr>
+</tbody></table>
+<h2>Tips</h2>
+<ul>
+<li>Use a strong, unique password for your agent</li>
+<li>Consider creating a dedicated domain for agent emails</li>
+<li>PurelyMail supports catch-all addresses (great for routing)</li>
+<li>Enable 2FA on your PurelyMail account (use app password for agent)</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/dbhurley/purelymail/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/dbhurley/purelymail" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/dbhurley/purelymail/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@dbhurley</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Notes & PKM</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

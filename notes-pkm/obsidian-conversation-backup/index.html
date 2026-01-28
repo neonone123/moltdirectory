@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Automatic conversation backup system for Obsidian with incremental snapshots, hourly breakdowns">
+  <title>obsidian-conversation-backup - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Notes & PKM</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Notes & PKM</a>
+                <span class="skill-page-author">by @laserducktales</span>
+              </div>
+              <h1 class="skill-page-title">obsidian-conversation-backup</h1>
+              <p class="skill-page-desc">Automatic conversation backup system for Obsidian with incremental snapshots, hourly breakdowns</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Obsidian Conversation Backup</h1>
+<p>Automatically backs up Clawdbot conversations to Obsidian with beautiful chat-style formatting. Prevents data loss from <code>/new</code> resets with hourly incremental snapshots.</p>
+<h2>Features</h2>
+<ul>
+<li><strong>Incremental backups</strong>: Hourly snapshots of new messages only (no duplication)</li>
+<li><strong>Chat formatting</strong>: Obsidian callouts with emojis, timestamps, proper multi-paragraph support</li>
+<li><strong>Hourly breakdowns</strong>: Organize conversations by clock hour for easy reference</li>
+<li><strong>Zero token cost</strong>: Pure shell scripting, no LLM calls</li>
+<li><strong>Smart filtering</strong>: Skips empty messages and system notifications</li>
+</ul>
+<h2>Quick Setup</h2>
+<h3>Installation</h3>
+<pre><code class="language-bash"># Extract the skill (if downloaded as .skill file)
+unzip obsidian-conversation-backup.skill
+cd obsidian-conversation-backup
+
+# Run installer (interactive)
+chmod +x install.sh
+./install.sh
+</code></pre>
+<p>The installer will ask for:</p>
+<ul>
+<li>Obsidian vault path</li>
+<li>Session directory location</li>
+<li>Tracking files location</li>
+</ul>
+<p><strong>Or manual setup:</strong></p>
+<ol>
+<li>Copy <code>config.example</code> to <code>config</code></li>
+<li>Edit <code>config</code> with your paths</li>
+<li>Make scripts executable: <code>chmod +x scripts/*.sh</code></li>
+</ol>
+<h3>Enable Automatic Backups</h3>
+<p>Add to crontab for hourly backups:</p>
+<pre><code class="language-bash">crontab -e
+
+# Add this line (runs every hour at :00)
+0 * * * * /path/to/obsidian-conversation-backup/scripts/monitor_and_save.sh
+</code></pre>
+<h3>Customize Chat Appearance (Optional)</h3>
+<p>Edit <code>scripts/format_message_v2.jq</code> to change:</p>
+<ul>
+<li>User emoji (default: 🐉)</li>
+<li>Assistant emoji (default: 🦞)  </li>
+<li>Callout types (default: <code>[!quote]</code> for user, <code>[!check]</code> for assistant)</li>
+</ul>
+<h2>Usage</h2>
+<h3>Automatic Incremental Backups</h3>
+<p>Once configured in cron, the system runs automatically:</p>
+<p><strong>Every hour:</strong></p>
+<ul>
+<li>Checks for new messages (≥10 lines)</li>
+<li>Creates incremental snapshot if found</li>
+<li>Saves to: <code>YYYY-MM-DD-HHmm-incremental.md</code></li>
+<li>Skips if no new conversation</li>
+</ul>
+<p><strong>Example output:</strong></p>
+<pre><code>2026-01-20-1500-incremental.md (messages from last save to now)
+2026-01-20-1600-incremental.md (new messages since 15:00)
+2026-01-20-1700-incremental.md (new messages since 16:00)
+</code></pre>
+<p><strong>Protection:</strong> Max conversation loss = 1 hour</p>
+<h3>On-Demand Full Snapshot</h3>
+<p>Save complete conversation anytime:</p>
+<pre><code class="language-bash">scripts/save_full_snapshot.sh [topic-name]
+</code></pre>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-bash">scripts/save_full_snapshot.sh important-decisions
+scripts/save_full_snapshot.sh bug-fix-discussion
+scripts/save_full_snapshot.sh  # uses &quot;full-conversation&quot; as default
+</code></pre>
+<h3>Hourly Breakdown (Organization)</h3>
+<p>Create organized breakdown by clock hour:</p>
+<pre><code class="language-bash">scripts/create_hourly_snapshots.sh YYYY-MM-DD
+</code></pre>
+<p><strong>Example:</strong></p>
+<pre><code class="language-bash">scripts/create_hourly_snapshots.sh 2026-01-20
+</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>2026-01-20-1500-hourly.md (15:00-15:59 messages)
+2026-01-20-1600-hourly.md (16:00-16:59 messages)
+2026-01-20-1700-hourly.md (17:00-17:59 messages)
+</code></pre>
+<p><strong>Use case:</strong> End-of-day organization for easy reference</p>
+<h2>Chat Format</h2>
+<p>Messages appear as colored Obsidian callouts:</p>
+<p><strong>User messages</strong> (blue <code>[!quote]</code> callout):</p>
+<pre><code>&gt; [!quote] 🐉 User · 15:30
+&gt; This is my message
+</code></pre>
+<p><strong>Assistant messages</strong> (green <code>[!check]</code> callout):</p>
+<pre><code>&gt; [!check] 🦞 Zoidbot · 15:31  
+&gt; This is the response
+</code></pre>
+<p><strong>Features:</strong></p>
+<ul>
+<li>Timestamps (HH:MM format)</li>
+<li>Multi-paragraph support (uses <code>&lt;br&gt;&lt;br&gt;</code> for paragraph breaks)</li>
+<li>Proper line wrapping (all lines prefixed with <code>&gt; </code>)</li>
+<li>Empty messages filtered out</li>
+<li>System notifications excluded</li>
+</ul>
+<h2>Token Monitoring</h2>
+<p>The <code>monitor_and_save.sh</code> script also tracks token usage:</p>
+<p><strong>Warnings via Telegram:</strong></p>
+<ul>
+<li><strong>800k tokens (80%)</strong>: &quot;Consider /new soon&quot;</li>
+<li><strong>900k tokens (90%)</strong>: &quot;Run /new NOW&quot;</li>
+</ul>
+<p><strong>Implementation:</strong></p>
+<pre><code class="language-bash"># Sends warning only when crossing threshold (one-time)
+# No repeated warnings
+# Resets when back under 800k
+</code></pre>
+<h2>File Structure</h2>
+<pre><code>scripts/
+├── monitor_and_save.sh           # Hourly incremental backup + token monitoring
+├── save_full_snapshot.sh         # On-demand full conversation save
+├── create_hourly_snapshots.sh    # Organize by clock hour
+└── format_message_v2.jq          # Chat formatting logic
+</code></pre>
+<h2>Configuration</h2>
+<h3>Tracking Files</h3>
+<p>The system uses hidden files to track state:</p>
+<pre><code class="language-bash">/root/clawd/.last_save_line_count       # For token monitoring
+/root/clawd/.last_snapshot_timestamp    # For incremental saves
+/root/clawd/.token_warning_sent         # For warning deduplication
+</code></pre>
+<p><strong>Note:</strong> Do not delete these files or incremental backups may duplicate content</p>
+<h3>Session File Location</h3>
+<p>Default: <code>/root/.clawdbot/agents/main/sessions/*.jsonl</code></p>
+<p>If your session files are elsewhere, update the <code>SESSION_FILE</code> path in each script.</p>
+<h2>Troubleshooting</h2>
+<h3>No snapshots being created</h3>
+<ol>
+<li>Check cron is running: <code>crontab -l</code></li>
+<li>Verify script has execute permission: <code>chmod +x scripts/*.sh</code></li>
+<li>Check logs: Run manually to see errors</li>
+</ol>
+<h3>Messages breaking out of callouts</h3>
+<ul>
+<li>Ensure <code>format_message_v2.jq</code> has the <code>gsub(&quot;\n\n&quot;; &quot;&lt;br&gt;&lt;br&gt;&quot;)</code> line</li>
+<li>Check that all lines have <code>&gt; </code> prefix</li>
+<li>Verify jq is installed: <code>jq --version</code></li>
+</ul>
+<h3>Duplicated content in snapshots</h3>
+<ul>
+<li>Delete tracking files and let system reset:<pre><code class="language-bash">rm /root/clawd/.last_snapshot_timestamp
+</code></pre>
+</li>
+</ul>
+<h3>Empty callout boxes appearing</h3>
+<ul>
+<li>Update <code>format_message_v2.jq</code> to filter empty messages</li>
+<li>Check for the <code>if ($text_content | length) &gt; 0</code> condition</li>
+</ul>
+<h2>Requirements</h2>
+<ul>
+<li><strong>jq</strong>: JSON parsing (<code>apt-get install jq</code>)</li>
+<li><strong>cron</strong>: For automatic backups</li>
+<li><strong>Obsidian vault</strong>: Target directory for markdown files</li>
+</ul>
+<h2>Advanced Customization</h2>
+<h3>Change Backup Frequency</h3>
+<p>Edit crontab:</p>
+<pre><code class="language-bash"># Every 2 hours
+0 */2 * * * /path/to/monitor_and_save.sh
+
+# Every 30 minutes
+*/30 * * * * /path/to/monitor_and_save.sh
+
+# Specific times only (9am, 12pm, 6pm, 9pm)
+0 9,12,18,21 * * * /path/to/monitor_and_save.sh
+</code></pre>
+<h3>Change Minimum Message Threshold</h3>
+<p>Edit <code>monitor_and_save.sh</code>:</p>
+<pre><code class="language-bash"># Change from 10 to 5 messages minimum
+if [[ $new_lines -lt 5 ]]; then
+</code></pre>
+<h3>Add More Callout Styles</h3>
+<p>Obsidian callout types:</p>
+<ul>
+<li><code>[!quote]</code> - Blue</li>
+<li><code>[!check]</code> - Green</li>
+<li><code>[!note]</code> - Cyan</li>
+<li><code>[!tip]</code> - Purple</li>
+<li><code>[!warning]</code> - Orange</li>
+<li><code>[!danger]</code> - Red</li>
+</ul>
+<h3>Customize Telegram Notifications</h3>
+<p>Edit <code>monitor_and_save.sh</code> to change warning text or add custom notifications.</p>
+<h2>Best Practices</h2>
+<ol>
+<li><strong>Run hourly breakdown at end of day</strong> - Use as organizational tool, not backup</li>
+<li><strong>Keep incremental backups running</strong> - This is your safety net</li>
+<li><strong>Test scripts after setup</strong> - Run manually first to verify output</li>
+<li><strong>Backup tracking files</strong> - Include <code>.last_snapshot_timestamp</code> in vault backups</li>
+<li><strong>Use descriptive topic names</strong> - For full snapshots, use meaningful names</li>
+</ol>
+<h2>Example Workflow</h2>
+<p><strong>Daily routine:</strong></p>
+<ol>
+<li>Automatic incremental backups run hourly (no action needed)</li>
+<li>At end of day: <code>scripts/create_hourly_snapshots.sh 2026-01-20</code></li>
+<li>Review organized hourly files in Obsidian</li>
+<li>Delete old incrementals if desired (hourly breakdown covers them)</li>
+</ol>
+<p><strong>Before /new reset:</strong></p>
+<ol>
+<li>Optional: <code>scripts/save_full_snapshot.sh before-reset</code></li>
+<li>Run <code>/new</code> safely - conversation is backed up</li>
+<li>Continue chatting - incrementals resume automatically</li>
+</ol>
+<h2>Integration with Clawdbot</h2>
+<p>This skill works with:</p>
+<ul>
+<li><strong>HEARTBEAT.md</strong>: Automatic token monitoring</li>
+<li><strong>MEMORY.md</strong>: Conversation archival system</li>
+<li><strong>Telegram integration</strong>: Warning notifications</li>
+<li><strong>Any Obsidian vault</strong>: Works with existing vaults</li>
+</ul>
+<h2>Credits</h2>
+<p>Created by the Clawdbot community for reliable conversation backup and beautiful Obsidian formatting.</p>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/laserducktales/obsidian-conversation-backup/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/laserducktales/obsidian-conversation-backup" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/laserducktales/obsidian-conversation-backup/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@laserducktales</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Notes & PKM</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

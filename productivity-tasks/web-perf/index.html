@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Analyzes web performance using Chrome DevTools MCP">
+  <title>web-perf - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Productivity & Tasks</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Productivity & Tasks</a>
+                <span class="skill-page-author">by @elithrar</span>
+              </div>
+              <h1 class="skill-page-title">web-perf</h1>
+              <p class="skill-page-desc">Analyzes web performance using Chrome DevTools MCP</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Web Performance Audit</h1>
+<p>Audit web page performance using Chrome DevTools MCP tools. This skill focuses on Core Web Vitals, network optimization, and high-level accessibility gaps.</p>
+<h2>FIRST: Verify MCP Tools Available</h2>
+<p><strong>Run this before starting.</strong> Try calling <code>navigate_page</code> or <code>performance_start_trace</code>. If unavailable, STOP—the chrome-devtools MCP server isn&#39;t configured.</p>
+<p>Ask the user to add this to their MCP config:</p>
+<pre><code class="language-json">&quot;chrome-devtools&quot;: {
+  &quot;type&quot;: &quot;local&quot;,
+  &quot;command&quot;: [&quot;npx&quot;, &quot;-y&quot;, &quot;chrome-devtools-mcp@latest&quot;]
+}
+</code></pre>
+<h2>Key Guidelines</h2>
+<ul>
+<li><strong>Be assertive</strong>: Verify claims by checking network requests, DOM, or codebase—then state findings definitively.</li>
+<li><strong>Verify before recommending</strong>: Confirm something is unused before suggesting removal.</li>
+<li><strong>Quantify impact</strong>: Use estimated savings from insights. Don&#39;t prioritize changes with 0ms impact.</li>
+<li><strong>Skip non-issues</strong>: If render-blocking resources have 0ms estimated impact, note but don&#39;t recommend action.</li>
+<li><strong>Be specific</strong>: Say &quot;compress hero.png (450KB) to WebP&quot; not &quot;optimize images&quot;.</li>
+<li><strong>Prioritize ruthlessly</strong>: A site with 200ms LCP and 0 CLS is already excellent—say so.</li>
+</ul>
+<h2>Quick Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Tool Call</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Load page</td>
+<td><code>navigate_page(url: &quot;...&quot;)</code></td>
+</tr>
+<tr>
+<td>Start trace</td>
+<td><code>performance_start_trace(autoStop: true, reload: true)</code></td>
+</tr>
+<tr>
+<td>Analyze insight</td>
+<td><code>performance_analyze_insight(insightSetId: &quot;...&quot;, insightName: &quot;...&quot;)</code></td>
+</tr>
+<tr>
+<td>List requests</td>
+<td><code>list_network_requests(resourceTypes: [&quot;Script&quot;, &quot;Stylesheet&quot;, ...])</code></td>
+</tr>
+<tr>
+<td>Request details</td>
+<td><code>get_network_request(reqid: &lt;id&gt;)</code></td>
+</tr>
+<tr>
+<td>A11y snapshot</td>
+<td><code>take_snapshot(verbose: true)</code></td>
+</tr>
+</tbody></table>
+<h2>Workflow</h2>
+<p>Copy this checklist to track progress:</p>
+<pre><code>Audit Progress:
+- [ ] Phase 1: Performance trace (navigate + record)
+- [ ] Phase 2: Core Web Vitals analysis (includes CLS culprits)
+- [ ] Phase 3: Network analysis
+- [ ] Phase 4: Accessibility snapshot
+- [ ] Phase 5: Codebase analysis (skip if third-party site)
+</code></pre>
+<h3>Phase 1: Performance Trace</h3>
+<ol>
+<li><p>Navigate to the target URL:</p>
+<pre><code>navigate_page(url: &quot;&lt;target-url&gt;&quot;)
+</code></pre>
+</li>
+<li><p>Start a performance trace with reload to capture cold-load metrics:</p>
+<pre><code>performance_start_trace(autoStop: true, reload: true)
+</code></pre>
+</li>
+<li><p>Wait for trace completion, then retrieve results.</p>
+</li>
+</ol>
+<p><strong>Troubleshooting:</strong></p>
+<ul>
+<li>If trace returns empty or fails, verify the page loaded correctly with <code>navigate_page</code> first</li>
+<li>If insight names don&#39;t match, inspect the trace response to list available insights</li>
+</ul>
+<h3>Phase 2: Core Web Vitals Analysis</h3>
+<p>Use <code>performance_analyze_insight</code> to extract key metrics.</p>
+<p><strong>Note:</strong> Insight names may vary across Chrome DevTools versions. If an insight name doesn&#39;t work, check the <code>insightSetId</code> from the trace response to discover available insights.</p>
+<p>Common insight names:</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Insight Name</th>
+<th>What to Look For</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>LCP</td>
+<td><code>LCPBreakdown</code></td>
+<td>Time to largest contentful paint; breakdown of TTFB, resource load, render delay</td>
+</tr>
+<tr>
+<td>CLS</td>
+<td><code>CLSCulprits</code></td>
+<td>Elements causing layout shifts (images without dimensions, injected content, font swaps)</td>
+</tr>
+<tr>
+<td>Render Blocking</td>
+<td><code>RenderBlocking</code></td>
+<td>CSS/JS blocking first paint</td>
+</tr>
+<tr>
+<td>Document Latency</td>
+<td><code>DocumentLatency</code></td>
+<td>Server response time issues</td>
+</tr>
+<tr>
+<td>Network Dependencies</td>
+<td><code>NetworkRequestsDepGraph</code></td>
+<td>Request chains delaying critical resources</td>
+</tr>
+</tbody></table>
+<p>Example:</p>
+<pre><code>performance_analyze_insight(insightSetId: &quot;&lt;id-from-trace&gt;&quot;, insightName: &quot;LCPBreakdown&quot;)
+</code></pre>
+<p><strong>Key thresholds (good/needs-improvement/poor):</strong></p>
+<ul>
+<li>TTFB: &lt; 800ms / &lt; 1.8s / &gt; 1.8s</li>
+<li>FCP: &lt; 1.8s / &lt; 3s / &gt; 3s</li>
+<li>LCP: &lt; 2.5s / &lt; 4s / &gt; 4s</li>
+<li>INP: &lt; 200ms / &lt; 500ms / &gt; 500ms</li>
+<li>TBT: &lt; 200ms / &lt; 600ms / &gt; 600ms</li>
+<li>CLS: &lt; 0.1 / &lt; 0.25 / &gt; 0.25</li>
+<li>Speed Index: &lt; 3.4s / &lt; 5.8s / &gt; 5.8s</li>
+</ul>
+<h3>Phase 3: Network Analysis</h3>
+<p>List all network requests to identify optimization opportunities:</p>
+<pre><code>list_network_requests(resourceTypes: [&quot;Script&quot;, &quot;Stylesheet&quot;, &quot;Document&quot;, &quot;Font&quot;, &quot;Image&quot;])
+</code></pre>
+<p><strong>Look for:</strong></p>
+<ol>
+<li><strong>Render-blocking resources</strong>: JS/CSS in <code>&lt;head&gt;</code> without <code>async</code>/<code>defer</code>/<code>media</code> attributes</li>
+<li><strong>Network chains</strong>: Resources discovered late because they depend on other resources loading first (e.g., CSS imports, JS-loaded fonts)</li>
+<li><strong>Missing preloads</strong>: Critical resources (fonts, hero images, key scripts) not preloaded</li>
+<li><strong>Caching issues</strong>: Missing or weak <code>Cache-Control</code>, <code>ETag</code>, or <code>Last-Modified</code> headers</li>
+<li><strong>Large payloads</strong>: Uncompressed or oversized JS/CSS bundles</li>
+<li><strong>Unused preconnects</strong>: If flagged, verify by checking if ANY requests went to that origin. If zero requests, it&#39;s definitively unused—recommend removal. If requests exist but loaded late, the preconnect may still be valuable.</li>
+</ol>
+<p>For detailed request info:</p>
+<pre><code>get_network_request(reqid: &lt;id&gt;)
+</code></pre>
+<h3>Phase 4: Accessibility Snapshot</h3>
+<p>Take an accessibility tree snapshot:</p>
+<pre><code>take_snapshot(verbose: true)
+</code></pre>
+<p><strong>Flag high-level gaps:</strong></p>
+<ul>
+<li>Missing or duplicate ARIA IDs</li>
+<li>Elements with poor contrast ratios (check against WCAG AA: 4.5:1 for normal text, 3:1 for large text)</li>
+<li>Focus traps or missing focus indicators</li>
+<li>Interactive elements without accessible names</li>
+</ul>
+<h2>Phase 5: Codebase Analysis</h2>
+<p><strong>Skip if auditing a third-party site without codebase access.</strong></p>
+<p>Analyze the codebase to understand where improvements can be made.</p>
+<h3>Detect Framework &amp; Bundler</h3>
+<p>Search for configuration files to identify the stack:</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Config Files</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Webpack</td>
+<td><code>webpack.config.js</code>, <code>webpack.*.js</code></td>
+</tr>
+<tr>
+<td>Vite</td>
+<td><code>vite.config.js</code>, <code>vite.config.ts</code></td>
+</tr>
+<tr>
+<td>Rollup</td>
+<td><code>rollup.config.js</code>, <code>rollup.config.mjs</code></td>
+</tr>
+<tr>
+<td>esbuild</td>
+<td><code>esbuild.config.js</code>, build scripts with <code>esbuild</code></td>
+</tr>
+<tr>
+<td>Parcel</td>
+<td><code>.parcelrc</code>, <code>package.json</code> (parcel field)</td>
+</tr>
+<tr>
+<td>Next.js</td>
+<td><code>next.config.js</code>, <code>next.config.mjs</code></td>
+</tr>
+<tr>
+<td>Nuxt</td>
+<td><code>nuxt.config.js</code>, <code>nuxt.config.ts</code></td>
+</tr>
+<tr>
+<td>SvelteKit</td>
+<td><code>svelte.config.js</code></td>
+</tr>
+<tr>
+<td>Astro</td>
+<td><code>astro.config.mjs</code></td>
+</tr>
+</tbody></table>
+<p>Also check <code>package.json</code> for framework dependencies and build scripts.</p>
+<h3>Tree-Shaking &amp; Dead Code</h3>
+<ul>
+<li><strong>Webpack</strong>: Check for <code>mode: &#39;production&#39;</code>, <code>sideEffects</code> in package.json, <code>usedExports</code> optimization</li>
+<li><strong>Vite/Rollup</strong>: Tree-shaking enabled by default; check for <code>treeshake</code> options</li>
+<li><strong>Look for</strong>: Barrel files (<code>index.js</code> re-exports), large utility libraries imported wholesale (lodash, moment)</li>
+</ul>
+<h3>Unused JS/CSS</h3>
+<ul>
+<li>Check for CSS-in-JS vs. static CSS extraction</li>
+<li>Look for PurgeCSS/UnCSS configuration (Tailwind&#39;s <code>content</code> config)</li>
+<li>Identify dynamic imports vs. eager loading</li>
+</ul>
+<h3>Polyfills</h3>
+<ul>
+<li>Check for <code>@babel/preset-env</code> targets and <code>useBuiltIns</code> setting</li>
+<li>Look for <code>core-js</code> imports (often oversized)</li>
+<li>Check <code>browserslist</code> config for overly broad targeting</li>
+</ul>
+<h3>Compression &amp; Minification</h3>
+<ul>
+<li>Check for <code>terser</code>, <code>esbuild</code>, or <code>swc</code> minification</li>
+<li>Look for gzip/brotli compression in build output or server config</li>
+<li>Check for source maps in production builds (should be external or disabled)</li>
+</ul>
+<h2>Output Format</h2>
+<p>Present findings as:</p>
+<ol>
+<li><strong>Core Web Vitals Summary</strong> - Table with metric, value, and rating (good/needs-improvement/poor)</li>
+<li><strong>Top Issues</strong> - Prioritized list of problems with estimated impact (high/medium/low)</li>
+<li><strong>Recommendations</strong> - Specific, actionable fixes with code snippets or config changes</li>
+<li><strong>Codebase Findings</strong> - Framework/bundler detected, optimization opportunities (omit if no codebase access)</li>
+</ol>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/elithrar/web-perf/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/elithrar/web-perf" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/elithrar/web-perf/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@elithrar</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Productivity & Tasks</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

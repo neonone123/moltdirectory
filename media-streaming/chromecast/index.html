@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Control Chromecast devices on your local network - discover, cast media, control playback">
+  <title>chromecast - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Media & Streaming</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Media & Streaming</a>
+                <span class="skill-page-author">by @morozred</span>
+              </div>
+              <h1 class="skill-page-title">chromecast</h1>
+              <p class="skill-page-desc">Control Chromecast devices on your local network - discover, cast media, control playback</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Chromecast Control</h1>
+<p>Control Chromecast and Google Cast-enabled devices on your local network using <code>catt</code> (Cast All The Things).</p>
+<h2>Quick Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>catt scan</code></td>
+<td>Find all Chromecasts on network</td>
+</tr>
+<tr>
+<td><code>catt cast &lt;url&gt;</code></td>
+<td>Cast video/audio</td>
+</tr>
+<tr>
+<td><code>catt pause</code> / <code>play</code></td>
+<td>Pause/resume</td>
+</tr>
+<tr>
+<td><code>catt stop</code></td>
+<td>Stop playback</td>
+</tr>
+<tr>
+<td><code>catt status</code></td>
+<td>Current playback info</td>
+</tr>
+<tr>
+<td><code>catt volume &lt;0-100&gt;</code></td>
+<td>Set volume</td>
+</tr>
+</tbody></table>
+<p>Use <code>-d &lt;device&gt;</code> to target a specific device by name or IP.</p>
+<h2>Discovery &amp; Device Management</h2>
+<pre><code class="language-bash"># Find all devices
+catt scan
+
+# Set a default device (saves to config)
+catt -d &quot;Living Room TV&quot; set_default
+
+# Create an alias for easier access
+catt -d 192.168.1.163 set_alias tv
+
+# Remove alias or default
+catt -d tv del_alias
+catt del_default
+</code></pre>
+<h2>Casting Media</h2>
+<h3>Basic Casting</h3>
+<pre><code class="language-bash"># Cast from URL (YouTube, Vimeo, and hundreds of yt-dlp supported sites)
+catt cast &quot;https://www.youtube.com/watch?v=VIDEO_ID&quot;
+
+# Cast local file
+catt cast ./video.mp4
+
+# Cast a website (displays webpage on TV)
+catt cast_site &quot;https://example.com&quot;
+</code></pre>
+<h3>Advanced Cast Options</h3>
+<pre><code class="language-bash"># Cast with subtitles
+catt cast -s ./subtitles.srt ./video.mp4
+
+# Start at specific timestamp
+catt cast -t 01:30:00 &quot;https://youtube.com/watch?v=VIDEO_ID&quot;
+
+# Play random item from playlist
+catt cast -r &quot;https://youtube.com/playlist?list=PLAYLIST_ID&quot;
+
+# Play only video (ignore playlist in URL)
+catt cast -n &quot;https://youtube.com/watch?v=VIDEO_ID&amp;list=PLAYLIST_ID&quot;
+
+# Disable automatic subtitle loading
+catt cast --no-subs ./video.mp4
+
+# Pass yt-dlp options (e.g., select format)
+catt cast -y format=best &quot;https://youtube.com/watch?v=VIDEO_ID&quot;
+
+# Block until playback ends (useful for scripts)
+catt cast -b &quot;https://example.com/video.mp4&quot;
+</code></pre>
+<h2>Playback Control</h2>
+<pre><code class="language-bash">catt play              # Resume playback
+catt pause             # Pause playback
+catt play_toggle       # Toggle play/pause
+catt stop              # Stop playback completely
+catt skip              # Skip to end of content
+
+# Seeking
+catt seek 300          # Jump to 5 minutes (seconds)
+catt seek 01:30:00     # Jump to 1h 30m (HH:MM:SS)
+catt ffwd 30           # Fast forward 30 seconds
+catt rewind 30         # Rewind 30 seconds
+</code></pre>
+<h2>Volume Control</h2>
+<pre><code class="language-bash">catt volume 50         # Set volume to 50%
+catt volumeup 10       # Increase by 10
+catt volumedown 10     # Decrease by 10
+catt volumemute on     # Mute
+catt volumemute off    # Unmute
+</code></pre>
+<h2>Queue Management (YouTube)</h2>
+<pre><code class="language-bash"># Add video to end of queue
+catt add &quot;https://youtube.com/watch?v=VIDEO_ID&quot;
+
+# Add video to play next
+catt add -n &quot;https://youtube.com/watch?v=VIDEO_ID&quot;
+
+# Remove video from queue
+catt remove &quot;https://youtube.com/watch?v=VIDEO_ID&quot;
+
+# Clear entire queue
+catt clear
+</code></pre>
+<h2>State Management</h2>
+<pre><code class="language-bash"># Save current state (position, volume, what&#39;s playing)
+catt save
+
+# Restore saved state later
+catt restore
+</code></pre>
+<h2>Device Information</h2>
+<pre><code class="language-bash">catt status    # Brief: time, volume, mute status
+catt info      # Full: title, URL, player state, media type, etc.
+</code></pre>
+<h2>Configuration</h2>
+<p>Config file: <code>~/.config/catt/catt.cfg</code></p>
+<pre><code class="language-ini">[options]
+device = Living Room TV
+
+[aliases]
+tv = Living Room TV
+bedroom = Bedroom Speaker
+</code></pre>
+<h2>Network Requirements</h2>
+<ul>
+<li>Chromecast and computer must be on same network</li>
+<li>For local file casting: TCP ports 45000-47000 must be open</li>
+<li>Some networks block mDNS - use IP address directly if <code>catt scan</code> fails</li>
+</ul>
+<h2>Supported Sources</h2>
+<p>Catt uses yt-dlp internally, supporting:</p>
+<ul>
+<li>YouTube (videos, playlists, live streams)</li>
+<li>Vimeo, Dailymotion, Twitch</li>
+<li>Direct video URLs (MP4, MKV, WebM, etc.)</li>
+<li>Local files (video, audio, images)</li>
+<li>Hundreds more sites (see yt-dlp supported sites)</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/morozred/chromecast-control/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/morozred/chromecast" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/morozred/chromecast-control/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@morozred</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Media & Streaming</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

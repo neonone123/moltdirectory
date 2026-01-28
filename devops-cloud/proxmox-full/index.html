@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Complete Proxmox VE management - create/clone/start/stop VMs">
+  <title>proxmox-full - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to DevOps & Cloud</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">DevOps & Cloud</a>
+                <span class="skill-page-author">by @msarheed</span>
+              </div>
+              <h1 class="skill-page-title">proxmox-full</h1>
+              <p class="skill-page-desc">Complete Proxmox VE management - create/clone/start/stop VMs</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Proxmox VE - Full Management</h1>
+<p>Complete control over Proxmox VE hypervisor via REST API.</p>
+<h2>Setup</h2>
+<pre><code class="language-bash">export PVE_URL=&quot;https://192.168.1.10:8006&quot;
+export PVE_TOKEN=&quot;user@pam!tokenid=secret-uuid&quot;
+</code></pre>
+<p><strong>Create API token:</strong> Datacenter → Permissions → API Tokens → Add (uncheck Privilege Separation)</p>
+<h2>Auth Header</h2>
+<pre><code class="language-bash">AUTH=&quot;Authorization: PVEAPIToken=$PVE_TOKEN&quot;
+</code></pre>
+<hr>
+<h2>Cluster &amp; Nodes</h2>
+<pre><code class="language-bash"># Cluster status
+curl -sk -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/cluster/status&quot; | jq
+
+# List nodes
+curl -sk -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes&quot; | jq &#39;.data[] | {node, status, cpu: (.cpu*100|round), mem_pct: (.mem/.maxmem*100|round)}&#39;
+
+# Node details
+curl -sk -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/status&quot; | jq
+</code></pre>
+<hr>
+<h2>List VMs &amp; Containers</h2>
+<pre><code class="language-bash"># All VMs on node
+curl -sk -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/qemu&quot; | jq &#39;.data[] | {vmid, name, status}&#39;
+
+# All LXC on node
+curl -sk -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/lxc&quot; | jq &#39;.data[] | {vmid, name, status}&#39;
+
+# Cluster-wide (all VMs + LXC)
+curl -sk -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/cluster/resources?type=vm&quot; | jq &#39;.data[] | {node, type, vmid, name, status}&#39;
+</code></pre>
+<hr>
+<h2>VM/Container Control</h2>
+<pre><code class="language-bash"># Start
+curl -sk -X POST -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/qemu/{vmid}/status/start&quot;
+
+# Stop (immediate)
+curl -sk -X POST -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/qemu/{vmid}/status/stop&quot;
+
+# Shutdown (graceful)
+curl -sk -X POST -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/qemu/{vmid}/status/shutdown&quot;
+
+# Reboot
+curl -sk -X POST -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/qemu/{vmid}/status/reboot&quot;
+
+# For LXC: replace /qemu/ with /lxc/
+</code></pre>
+<hr>
+<h2>Create LXC Container</h2>
+<pre><code class="language-bash"># Get next available VMID
+NEWID=$(curl -sk -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/cluster/nextid&quot; | jq -r &#39;.data&#39;)
+
+# Create container
+curl -sk -X POST -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/lxc&quot; \
+  -d &quot;vmid=$NEWID&quot; \
+  -d &quot;hostname=my-container&quot; \
+  -d &quot;ostemplate=local:vztmpl/debian-12-standard_12.2-1_amd64.tar.zst&quot; \
+  -d &quot;storage=local-lvm&quot; \
+  -d &quot;rootfs=local-lvm:8&quot; \
+  -d &quot;memory=1024&quot; \
+  -d &quot;swap=512&quot; \
+  -d &quot;cores=2&quot; \
+  -d &quot;net0=name=eth0,bridge=vmbr0,ip=dhcp&quot; \
+  -d &quot;password=changeme123&quot; \
+  -d &quot;start=1&quot;
+</code></pre>
+<p><strong>LXC Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Example</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>vmid</td>
+<td>200</td>
+<td>Container ID</td>
+</tr>
+<tr>
+<td>hostname</td>
+<td>myct</td>
+<td>Container hostname</td>
+</tr>
+<tr>
+<td>ostemplate</td>
+<td>local:vztmpl/debian-12-...</td>
+<td>Template path</td>
+</tr>
+<tr>
+<td>storage</td>
+<td>local-lvm</td>
+<td>Storage for rootfs</td>
+</tr>
+<tr>
+<td>rootfs</td>
+<td>local-lvm:8</td>
+<td>Root disk (8GB)</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>1024</td>
+<td>RAM in MB</td>
+</tr>
+<tr>
+<td>swap</td>
+<td>512</td>
+<td>Swap in MB</td>
+</tr>
+<tr>
+<td>cores</td>
+<td>2</td>
+<td>CPU cores</td>
+</tr>
+<tr>
+<td>net0</td>
+<td>name=eth0,bridge=vmbr0,ip=dhcp</td>
+<td>Network config</td>
+</tr>
+<tr>
+<td>password</td>
+<td>secret</td>
+<td>Root password</td>
+</tr>
+<tr>
+<td>ssh-public-keys</td>
+<td>ssh-rsa ...</td>
+<td>SSH keys (URL encoded)</td>
+</tr>
+<tr>
+<td>unprivileged</td>
+<td>1</td>
+<td>Unprivileged container</td>
+</tr>
+<tr>
+<td>start</td>
+<td>1</td>
+<td>Start after creation</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Create VM</h2>
+<pre><code class="language-bash"># Get next VMID
+NEWID=$(curl -sk -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/cluster/nextid&quot; | jq -r &#39;.data&#39;)
+
+# Create VM
+curl -sk -X POST -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/qemu&quot; \
+  -d &quot;vmid=$NEWID&quot; \
+  -d &quot;name=my-vm&quot; \
+  -d &quot;memory=2048&quot; \
+  -d &quot;cores=2&quot; \
+  -d &quot;sockets=1&quot; \
+  -d &quot;cpu=host&quot; \
+  -d &quot;net0=virtio,bridge=vmbr0&quot; \
+  -d &quot;scsi0=local-lvm:32&quot; \
+  -d &quot;scsihw=virtio-scsi-pci&quot; \
+  -d &quot;ide2=local:iso/ubuntu-22.04.iso,media=cdrom&quot; \
+  -d &quot;boot=order=scsi0;ide2;net0&quot; \
+  -d &quot;ostype=l26&quot;
+</code></pre>
+<p><strong>VM Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Example</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>vmid</td>
+<td>100</td>
+<td>VM ID</td>
+</tr>
+<tr>
+<td>name</td>
+<td>myvm</td>
+<td>VM name</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>2048</td>
+<td>RAM in MB</td>
+</tr>
+<tr>
+<td>cores</td>
+<td>2</td>
+<td>CPU cores per socket</td>
+</tr>
+<tr>
+<td>sockets</td>
+<td>1</td>
+<td>CPU sockets</td>
+</tr>
+<tr>
+<td>cpu</td>
+<td>host</td>
+<td>CPU type</td>
+</tr>
+<tr>
+<td>net0</td>
+<td>virtio,bridge=vmbr0</td>
+<td>Network</td>
+</tr>
+<tr>
+<td>scsi0</td>
+<td>local-lvm:32</td>
+<td>Disk (32GB)</td>
+</tr>
+<tr>
+<td>ide2</td>
+<td>local:iso/file.iso,media=cdrom</td>
+<td>ISO</td>
+</tr>
+<tr>
+<td>ostype</td>
+<td>l26 (Linux), win11</td>
+<td>OS type</td>
+</tr>
+<tr>
+<td>boot</td>
+<td>order=scsi0;ide2</td>
+<td>Boot order</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Clone VM/Container</h2>
+<pre><code class="language-bash"># Clone VM
+curl -sk -X POST -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/qemu/{vmid}/clone&quot; \
+  -d &quot;newid=201&quot; \
+  -d &quot;name=cloned-vm&quot; \
+  -d &quot;full=1&quot; \
+  -d &quot;storage=local-lvm&quot;
+
+# Clone LXC
+curl -sk -X POST -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/lxc/{vmid}/clone&quot; \
+  -d &quot;newid=202&quot; \
+  -d &quot;hostname=cloned-ct&quot; \
+  -d &quot;full=1&quot; \
+  -d &quot;storage=local-lvm&quot;
+</code></pre>
+<p><strong>Clone Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>newid</td>
+<td>New VMID</td>
+</tr>
+<tr>
+<td>name/hostname</td>
+<td>New name</td>
+</tr>
+<tr>
+<td>full</td>
+<td>1=full clone, 0=linked clone</td>
+</tr>
+<tr>
+<td>storage</td>
+<td>Target storage</td>
+</tr>
+<tr>
+<td>target</td>
+<td>Target node (for migration)</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Convert to Template</h2>
+<pre><code class="language-bash"># Convert VM to template
+curl -sk -X POST -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/qemu/{vmid}/template&quot;
+
+# Convert LXC to template
+curl -sk -X POST -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/lxc/{vmid}/template&quot;
+</code></pre>
+<hr>
+<h2>Snapshots</h2>
+<pre><code class="language-bash"># List snapshots
+curl -sk -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/qemu/{vmid}/snapshot&quot; | jq &#39;.data[] | {name, description}&#39;
+
+# Create snapshot
+curl -sk -X POST -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/qemu/{vmid}/snapshot&quot; \
+  -d &quot;snapname=before-update&quot; \
+  -d &quot;description=Snapshot before system update&quot;
+
+# Rollback
+curl -sk -X POST -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/qemu/{vmid}/snapshot/{snapname}/rollback&quot;
+
+# Delete snapshot
+curl -sk -X DELETE -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/qemu/{vmid}/snapshot/{snapname}&quot;
+</code></pre>
+<hr>
+<h2>Backups</h2>
+<pre><code class="language-bash"># Start backup
+curl -sk -X POST -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/vzdump&quot; \
+  -d &quot;vmid={vmid}&quot; \
+  -d &quot;storage=local&quot; \
+  -d &quot;mode=snapshot&quot; \
+  -d &quot;compress=zstd&quot;
+
+# List backups
+curl -sk -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/storage/{storage}/content?content=backup&quot; | jq
+
+# Restore backup
+curl -sk -X POST -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/qemu&quot; \
+  -d &quot;vmid=300&quot; \
+  -d &quot;archive=local:backup/vzdump-qemu-100-2024_01_01-12_00_00.vma.zst&quot; \
+  -d &quot;storage=local-lvm&quot;
+</code></pre>
+<hr>
+<h2>Storage &amp; Templates</h2>
+<pre><code class="language-bash"># List storage
+curl -sk -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/storage&quot; | jq &#39;.data[] | {storage, type, avail, used}&#39;
+
+# List available templates
+curl -sk -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/storage/local/content?content=vztmpl&quot; | jq &#39;.data[] | .volid&#39;
+
+# List ISOs
+curl -sk -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/storage/local/content?content=iso&quot; | jq &#39;.data[] | .volid&#39;
+
+# Download template
+curl -sk -X POST -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/aplinfo&quot; \
+  -d &quot;storage=local&quot; \
+  -d &quot;template=debian-12-standard_12.2-1_amd64.tar.zst&quot;
+</code></pre>
+<hr>
+<h2>Tasks</h2>
+<pre><code class="language-bash"># Recent tasks
+curl -sk -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/tasks?limit=10&quot; | jq &#39;.data[] | {upid, type, status}&#39;
+
+# Task status
+curl -sk -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/tasks/{upid}/status&quot; | jq
+
+# Task log
+curl -sk -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/tasks/{upid}/log&quot; | jq -r &#39;.data[].t&#39;
+</code></pre>
+<hr>
+<h2>Delete VM/Container</h2>
+<pre><code class="language-bash"># Delete VM (must be stopped)
+curl -sk -X DELETE -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/qemu/{vmid}&quot;
+
+# Delete LXC
+curl -sk -X DELETE -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/lxc/{vmid}&quot;
+
+# Force delete (purge)
+curl -sk -X DELETE -H &quot;$AUTH&quot; &quot;$PVE_URL/api2/json/nodes/{node}/qemu/{vmid}?purge=1&amp;destroy-unreferenced-disks=1&quot;
+</code></pre>
+<hr>
+<h2>Quick Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Endpoint</th>
+<th>Method</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>List nodes</td>
+<td>/nodes</td>
+<td>GET</td>
+</tr>
+<tr>
+<td>List VMs</td>
+<td>/nodes/{node}/qemu</td>
+<td>GET</td>
+</tr>
+<tr>
+<td>List LXC</td>
+<td>/nodes/{node}/lxc</td>
+<td>GET</td>
+</tr>
+<tr>
+<td>Create VM</td>
+<td>/nodes/{node}/qemu</td>
+<td>POST</td>
+</tr>
+<tr>
+<td>Create LXC</td>
+<td>/nodes/{node}/lxc</td>
+<td>POST</td>
+</tr>
+<tr>
+<td>Clone</td>
+<td>/nodes/{node}/qemu/{vmid}/clone</td>
+<td>POST</td>
+</tr>
+<tr>
+<td>Start</td>
+<td>/nodes/{node}/qemu/{vmid}/status/start</td>
+<td>POST</td>
+</tr>
+<tr>
+<td>Stop</td>
+<td>/nodes/{node}/qemu/{vmid}/status/stop</td>
+<td>POST</td>
+</tr>
+<tr>
+<td>Snapshot</td>
+<td>/nodes/{node}/qemu/{vmid}/snapshot</td>
+<td>POST</td>
+</tr>
+<tr>
+<td>Delete</td>
+<td>/nodes/{node}/qemu/{vmid}</td>
+<td>DELETE</td>
+</tr>
+<tr>
+<td>Next ID</td>
+<td>/cluster/nextid</td>
+<td>GET</td>
+</tr>
+</tbody></table>
+<h2>Notes</h2>
+<ul>
+<li>Use <code>-k</code> for self-signed certs</li>
+<li>API tokens don&#39;t need CSRF</li>
+<li>Replace <code>{node}</code> with node name (e.g., <code>pve</code>)</li>
+<li>Replace <code>{vmid}</code> with VM/container ID</li>
+<li>Use <code>qemu</code> for VMs, <code>lxc</code> for containers</li>
+<li>All create/clone operations return task UPID for tracking</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/msarheed/proxmox-full/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/msarheed/proxmox-full" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/msarheed/proxmox-full/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@msarheed</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">DevOps & Cloud</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

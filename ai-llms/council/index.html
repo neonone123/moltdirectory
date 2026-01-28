@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Council Chamber orchestration with Memory Bridge">
+  <title>council - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to AI & LLMs</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">AI & LLMs</a>
+                <span class="skill-page-author">by @emasoudy</span>
+              </div>
+              <h1 class="skill-page-title">council</h1>
+              <p class="skill-page-desc">Council Chamber orchestration with Memory Bridge</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Council - Chamber Orchestration Pattern</h1>
+<p>Instead of spawning separate agent silos, create a <strong>Council Chamber</strong> where multiple expert personas deliberate in a single session with cross-pollination and unified transcript.</p>
+<h2>Prerequisites</h2>
+<ul>
+<li>SQLite3 (member database)</li>
+<li>Graphiti service (Memory Bridge)</li>
+<li>Clawdbot gateway (sessions_spawn)</li>
+</ul>
+<h2>Setup</h2>
+<p>Initialize council database:</p>
+<pre><code class="language-bash">bash command:&quot;{baseDir}/init-db.sh&quot;
+</code></pre>
+<h2>🏛️ The Chamber Pattern</h2>
+<p><strong>Traditional Approach</strong> (Silos):</p>
+<ul>
+<li>Spawn 3 separate agents</li>
+<li>Each analyzes independently</li>
+<li>No cross-pollination</li>
+<li>Fragmented output</li>
+</ul>
+<p><strong>Chamber Approach</strong> (Meeting Room):</p>
+<ul>
+<li>Single agent session</li>
+<li>Moderates multiple personas</li>
+<li>Structured turn-taking</li>
+<li>Unified deliberation transcript</li>
+</ul>
+<h2>Tools</h2>
+<h3>council_chamber</h3>
+<p>Start a Council Chamber session (recommended).</p>
+<p><strong>Usage:</strong></p>
+<pre><code class="language-bash">bash command:&quot;
+TOPIC=&#39;YOUR_TOPIC&#39;
+MEMBERS=&#39;architect,analyst,security&#39;
+
+{baseDir}/references/chamber-orchestrator.sh \&quot;\$TOPIC\&quot; \&quot;\$MEMBERS\&quot;
+&quot;
+</code></pre>
+<p><strong>What it does</strong>:</p>
+<ol>
+<li>Fetches Graphiti context (Memory Bridge)</li>
+<li>Loads member personas from database</li>
+<li>Constructs chamber task with turn structure</li>
+<li>Creates session record</li>
+<li>Outputs task for sessions_spawn</li>
+</ol>
+<h3>council_list_members</h3>
+<p>List all registered members.</p>
+<p><strong>Usage:</strong></p>
+<pre><code class="language-bash">bash command:&quot;sqlite3 -header -column ~/.clawdbot/council.db &#39;SELECT id, name, role FROM council_members&#39;&quot;
+</code></pre>
+<h3>council_add_member</h3>
+<p>Register new member.</p>
+<p><strong>Usage:</strong></p>
+<pre><code class="language-bash">bash command:&quot;
+sqlite3 ~/.clawdbot/council.db \&quot;
+INSERT INTO council_members (id, name, role, system_message, expertise)
+VALUES (&#39;MEMBER_ID&#39;, &#39;NAME&#39;, &#39;ROLE&#39;, &#39;SYSTEM_MESSAGE&#39;, &#39;EXPERTISE&#39;);
+\&quot;&quot;
+</code></pre>
+<h2>Chamber Session Structure</h2>
+<p><strong>3-Turn Deliberation</strong>:</p>
+<ol>
+<li><p><strong>Turn 1: Initial Analysis</strong></p>
+<ul>
+<li>Each persona provides their perspective</li>
+<li>Distinct voices maintained</li>
+</ul>
+</li>
+<li><p><strong>Turn 2: Cross-Pollination</strong></p>
+<ul>
+<li>Members critique each other&#39;s points</li>
+<li>Real-time responses</li>
+<li>Healthy debate</li>
+</ul>
+</li>
+<li><p><strong>Turn 3: Synthesis</strong></p>
+<ul>
+<li>Find common ground</li>
+<li>Resolve disagreements</li>
+<li>Executive Summary for user</li>
+</ul>
+</li>
+</ol>
+<h2>Default Members</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>architect</td>
+<td>System Architect</td>
+<td>Technical Design</td>
+</tr>
+<tr>
+<td>analyst</td>
+<td>Technical Analyst</td>
+<td>Research &amp; Analysis</td>
+</tr>
+<tr>
+<td>security</td>
+<td>Security Officer</td>
+<td>Risk Assessment</td>
+</tr>
+<tr>
+<td>designer</td>
+<td>UX Designer</td>
+<td>User Experience</td>
+</tr>
+<tr>
+<td>strategist</td>
+<td>Business Strategist</td>
+<td>ROI &amp; Strategy</td>
+</tr>
+</tbody></table>
+<h2>Example</h2>
+<pre><code class="language-bash"># User: &quot;Start council on Salesforce integration&quot;
+council_chamber topic:&quot;Salesforce Integration&quot; members:&quot;architect,strategist&quot;
+
+# Output:
+# 🏛️ Convening Council Chamber...
+# 🧠 Memory Bridge: [Retrieved 10 facts about Salesforce]
+# 👥 Loaded 2 personas
+# ✅ Chamber Task ready for sessions_spawn
+</code></pre>
+<p><strong>Benefits</strong>:</p>
+<ul>
+<li>✅ Cross-pollination (members respond to each other)</li>
+<li>✅ Single transcript (one .jsonl file)</li>
+<li>✅ Shared context (Memory Bridge loaded once)</li>
+<li>✅ Structured output (3-turn deliberation)</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/emasoudy/council/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/emasoudy/council" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/emasoudy/council/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@emasoudy</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">AI & LLMs</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

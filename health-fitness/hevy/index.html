@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Query workout data from Hevy including workouts, routines, exercises, and history">
+  <title>hevy - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Health & Fitness</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Health & Fitness</a>
+                <span class="skill-page-author">by @mjrussell</span>
+              </div>
+              <h1 class="skill-page-title">hevy</h1>
+              <p class="skill-page-desc">Query workout data from Hevy including workouts, routines, exercises, and history</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Hevy CLI</h1>
+<p>CLI for the Hevy workout tracking API. Query workouts, routines, exercises, and track progress.</p>
+<h2>Setup</h2>
+<p>Requires Hevy Pro subscription for API access.</p>
+<ol>
+<li>Get API key from <a href="https://hevy.com/settings?developer">https://hevy.com/settings?developer</a></li>
+<li>Set environment variable: <code>export HEVY_API_KEY=&quot;your-key&quot;</code></li>
+</ol>
+<h2>Commands</h2>
+<h3>Status</h3>
+<pre><code class="language-bash"># Check configuration and connection
+hevy status
+</code></pre>
+<h3>Workouts</h3>
+<pre><code class="language-bash"># List recent workouts (default 5)
+hevy workouts
+hevy workouts --limit 10
+
+# Fetch all workouts
+hevy workouts --all
+
+# Show detailed workout
+hevy workout &lt;workout-id&gt;
+
+# JSON output
+hevy workouts --json
+hevy workout &lt;id&gt; --json
+
+# Show weights in kg (default is lbs)
+hevy workouts --kg
+</code></pre>
+<h3>Routines</h3>
+<pre><code class="language-bash"># List all routines
+hevy routines
+
+# Show detailed routine
+hevy routine &lt;routine-id&gt;
+
+# JSON output
+hevy routines --json
+</code></pre>
+<h3>Exercises</h3>
+<pre><code class="language-bash"># List all exercise templates
+hevy exercises
+
+# Search by name
+hevy exercises --search &quot;bench press&quot;
+
+# Filter by muscle group
+hevy exercises --muscle chest
+
+# Show only custom exercises
+hevy exercises --custom
+
+# JSON output
+hevy exercises --json
+</code></pre>
+<h3>Exercise History</h3>
+<pre><code class="language-bash"># Show history for specific exercise
+hevy history &lt;exercise-template-id&gt;
+hevy history &lt;exercise-template-id&gt; --limit 50
+
+# JSON output
+hevy history &lt;exercise-template-id&gt; --json
+</code></pre>
+<h3>Creating Routines</h3>
+<pre><code class="language-bash"># Create routine from JSON (stdin)
+echo &#39;{&quot;routine&quot;: {...}}&#39; | hevy create-routine
+
+# Create routine from file
+hevy create-routine --file routine.json
+
+# Create a routine folder
+hevy create-folder &quot;Push Pull Legs&quot;
+
+# Update existing routine
+echo &#39;{&quot;routine&quot;: {...}}&#39; | hevy update-routine &lt;routine-id&gt;
+
+# Create custom exercise (checks for duplicates first!)
+hevy create-exercise --title &quot;My Exercise&quot; --muscle chest --type weight_reps
+
+# Force create even if duplicate exists
+hevy create-exercise --title &quot;My Exercise&quot; --muscle chest --force
+</code></pre>
+<p><strong>⚠️ Duplicate Prevention:</strong> <code>create-exercise</code> checks if an exercise with the same name already exists and will error if found. Use <code>--force</code> to create anyway (not recommended).</p>
+<p><strong>Routine JSON format:</strong></p>
+<pre><code class="language-json">{
+  &quot;routine&quot;: {
+    &quot;title&quot;: &quot;Push Day 💪&quot;,
+    &quot;folder_id&quot;: null,
+    &quot;notes&quot;: &quot;Chest, shoulders, triceps&quot;,
+    &quot;exercises&quot;: [
+      {
+        &quot;exercise_template_id&quot;: &quot;79D0BB3A&quot;,
+        &quot;notes&quot;: &quot;Focus on form&quot;,
+        &quot;rest_seconds&quot;: 90,
+        &quot;sets&quot;: [
+          { &quot;type&quot;: &quot;warmup&quot;, &quot;weight_kg&quot;: 20, &quot;reps&quot;: 15 },
+          { &quot;type&quot;: &quot;normal&quot;, &quot;weight_kg&quot;: 60, &quot;reps&quot;: 8 }
+        ]
+      }
+    ]
+  }
+}
+</code></pre>
+<h3>Other</h3>
+<pre><code class="language-bash"># Total workout count
+hevy count
+
+# List routine folders
+hevy folders
+</code></pre>
+<h2>Usage Examples</h2>
+<p><strong>User asks &quot;What did I do at the gym?&quot;</strong></p>
+<pre><code class="language-bash">hevy workouts
+</code></pre>
+<p><strong>User asks &quot;Show me my last chest workout&quot;</strong></p>
+<pre><code class="language-bash">hevy workouts --limit 10  # Find relevant workout ID
+hevy workout &lt;id&gt;         # Get details
+</code></pre>
+<p><strong>User asks &quot;How am I progressing on bench press?&quot;</strong></p>
+<pre><code class="language-bash">hevy exercises --search &quot;bench press&quot;  # Get exercise template ID
+hevy history &lt;exercise-id&gt;              # View progression
+</code></pre>
+<p><strong>User asks &quot;What routines do I have?&quot;</strong></p>
+<pre><code class="language-bash">hevy routines
+hevy routine &lt;id&gt;  # For details
+</code></pre>
+<p><strong>User asks &quot;Find leg exercises&quot;</strong></p>
+<pre><code class="language-bash">hevy exercises --muscle quadriceps
+hevy exercises --muscle hamstrings
+hevy exercises --muscle glutes
+</code></pre>
+<p><strong>User asks &quot;Create a push day routine&quot;</strong></p>
+<pre><code class="language-bash"># 1. Find exercise IDs
+hevy exercises --search &quot;bench press&quot;
+hevy exercises --search &quot;shoulder press&quot;
+# 2. Create routine JSON with those IDs and pipe to create-routine
+</code></pre>
+<h2>Notes</h2>
+<ul>
+<li><strong>Duplicate Prevention:</strong> <code>create-exercise</code> checks for existing exercises with the same name before creating. Use <code>--force</code> to override (not recommended).</li>
+<li><strong>API Limitations:</strong> Hevy API does NOT support deleting or editing exercise templates - only creating. Delete exercises manually in the app.</li>
+<li><strong>API Rate Limits:</strong> Be mindful when fetching all data (--all flag)</li>
+<li><strong>Weights:</strong> Defaults to lbs, use --kg for kilograms</li>
+<li><strong>Pagination:</strong> Most commands auto-paginate, but limit flags help reduce API calls</li>
+<li><strong>IDs:</strong> Workout/routine/exercise IDs are UUIDs, shown in detailed views</li>
+</ul>
+<h2>API Reference</h2>
+<p>Full API docs: <a href="https://api.hevyapp.com/docs/">https://api.hevyapp.com/docs/</a></p>
+<h3>Available Endpoints</h3>
+<ul>
+<li><code>GET /v1/workouts</code> - List workouts (paginated)</li>
+<li><code>GET /v1/workouts/{id}</code> - Get single workout</li>
+<li><code>GET /v1/workouts/count</code> - Total workout count</li>
+<li><code>GET /v1/routines</code> - List routines</li>
+<li><code>GET /v1/routines/{id}</code> - Get single routine</li>
+<li><code>GET /v1/exercise_templates</code> - List exercises</li>
+<li><code>GET /v1/exercise_templates/{id}</code> - Get single exercise</li>
+<li><code>GET /v1/exercise_history/{id}</code> - Exercise history</li>
+<li><code>GET /v1/routine_folders</code> - List folders</li>
+</ul>
+<h3>Write Operations (supported but use carefully)</h3>
+<ul>
+<li><code>POST /v1/workouts</code> - Create workout</li>
+<li><code>PUT /v1/workouts/{id}</code> - Update workout</li>
+<li><code>POST /v1/routines</code> - Create routine</li>
+<li><code>PUT /v1/routines/{id}</code> - Update routine</li>
+<li><code>POST /v1/exercise_templates</code> - Create custom exercise</li>
+<li><code>POST /v1/routine_folders</code> - Create folder</li>
+</ul>
+<p>The CLI focuses on read operations. Write operations are available via the API client for programmatic use.</p>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/mjrussell/hevy/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/mjrussell/hevy" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/mjrussell/hevy/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@mjrussell</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Health & Fitness</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

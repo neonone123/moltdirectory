@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Schweizer Geodaten, POIs und Tourismus. Orte/Adressen suchen, Höhen abfragen">
+  <title>swiss-geo - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Transportation</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Transportation</a>
+                <span class="skill-page-author">by @mbjoern</span>
+              </div>
+              <h1 class="skill-page-title">swiss-geo</h1>
+              <p class="skill-page-desc">Schweizer Geodaten, POIs und Tourismus. Orte/Adressen suchen, Höhen abfragen</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Swiss Geo Skill</h1>
+<p>Zugriff auf Swisstopo-Geodaten für die Schweiz.</p>
+<h2>Funktionen</h2>
+<h3>1. Orts-/Adresssuche</h3>
+<pre><code class="language-bash">curl -s &quot;https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=SUCHTEXT&amp;type=locations&amp;sr=4326&quot;
+</code></pre>
+<ul>
+<li>Gibt lat/lon (WGS84), Label, Gemeinde zurück</li>
+<li><code>type=locations</code> für Adressen/Orte, <code>type=layers</code> für Layer-Suche</li>
+</ul>
+<h3>2. Höhenabfrage</h3>
+<p>Zuerst Koordinaten via Suche holen, dann in LV95 umrechnen:</p>
+<pre><code class="language-bash"># Umrechnung WGS84 → LV95 (grobe Näherung für Schweiz):
+# easting = 2600000 + (lon - 7.4) * 73000
+# northing = 1200000 + (lat - 46.95) * 111000
+
+curl -s &quot;https://api3.geo.admin.ch/rest/services/height?easting=EASTING&amp;northing=NORTHING&amp;sr=2056&quot;
+</code></pre>
+<p>Gibt Höhe in Metern über Meer zurück.</p>
+<h3>3. Feature-Identifikation (Gemeinde, Kanton, etc.)</h3>
+<pre><code class="language-bash">curl -s &quot;https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryPoint&amp;geometry=LON,LAT&amp;tolerance=0&amp;layers=all:LAYER_ID&amp;sr=4326&quot;
+</code></pre>
+<p>Wichtige Layer-IDs:</p>
+<ul>
+<li><code>ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill</code> — Gemeindegrenzen</li>
+<li><code>ch.swisstopo.swissboundaries3d-kanton-flaeche.fill</code> — Kantonsgrenzen</li>
+<li><code>ch.bafu.bundesinventare-flachmoore</code> — Flachmoore</li>
+<li><code>ch.bafu.schutzgebiete-paerke_nationaler_bedeutung</code> — Naturpärke</li>
+</ul>
+<h3>4. Kartenlink generieren</h3>
+<pre><code>https://map.geo.admin.ch/?lang=de&amp;topic=ech&amp;bgLayer=ch.swisstopo.pixelkarte-farbe&amp;E=LON&amp;N=LAT&amp;zoom=ZOOM
+</code></pre>
+<ul>
+<li><code>zoom</code>: 0-13 (13 = max Detail)</li>
+<li><code>E</code>/<code>N</code>: WGS84 Koordinaten</li>
+<li><code>layers</code>: Komma-getrennte Layer-IDs zum Einblenden</li>
+</ul>
+<h2>Beispiel-Workflow: &quot;Wo liegt Matterhorn und wie hoch ist es?&quot;</h2>
+<ol>
+<li><strong>Suchen:</strong></li>
+</ol>
+<pre><code class="language-bash">curl -s &quot;https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=Matterhorn&amp;type=locations&amp;sr=4326&quot;
+</code></pre>
+<p>→ lat=45.9766, lon=7.6586</p>
+<ol start="2">
+<li><strong>Höhe abfragen (LV95):</strong></li>
+</ol>
+<pre><code class="language-bash"># easting ≈ 2600000 + (7.6586-7.4)*73000 = 2618878
+# northing ≈ 1200000 + (45.9766-46.95)*111000 = 1091893
+curl -s &quot;https://api3.geo.admin.ch/rest/services/height?easting=2618878&amp;northing=1091893&amp;sr=2056&quot;
+</code></pre>
+<p>→ 4477.5m</p>
+<ol start="3">
+<li><strong>Kartenlink:</strong></li>
+</ol>
+<pre><code>https://map.geo.admin.ch/?lang=de&amp;E=7.6586&amp;N=45.9766&amp;zoom=10
+</code></pre>
+<h3>5. Wanderwege abfragen</h3>
+<pre><code class="language-bash"># Wanderwege in einem Gebiet finden (bbox = west,south,east,north)
+curl -s &quot;https://api3.geo.admin.ch/rest/services/api/MapServer/find?layer=ch.swisstopo.swisstlm3d-wanderwege&amp;searchText=ORTSNAME&amp;searchField=name&quot;
+
+# Wanderwege an einem Punkt identifizieren
+curl -s &quot;https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryPoint&amp;geometry=LON,LAT&amp;tolerance=50&amp;layers=all:ch.swisstopo.swisstlm3d-wanderwege&amp;sr=4326&amp;imageDisplay=500,500,96&amp;mapExtent=5.9,45.8,10.5,47.8&quot;
+</code></pre>
+<p><strong>Wanderweg-Kategorien:</strong></p>
+<ul>
+<li><code>wanderweg</code> — Gelb markiert (T1)</li>
+<li><code>bergwanderweg</code> — Weiss-rot-weiss (T2-T3)</li>
+<li><code>alpinwanderweg</code> — Weiss-blau-weiss (T4-T6)</li>
+</ul>
+<p><strong>Kartenlink mit Wanderwegen:</strong></p>
+<pre><code>https://map.geo.admin.ch/?lang=de&amp;E=LON&amp;N=LAT&amp;zoom=10&amp;layers=ch.swisstopo.swisstlm3d-wanderwege&amp;bgLayer=ch.swisstopo.pixelkarte-farbe
+</code></pre>
+<h3>6. Berghütten &amp; Unterkünfte</h3>
+<pre><code class="language-bash">curl -s &quot;https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryPoint&amp;geometry=LON,LAT&amp;tolerance=5000&amp;layers=all:ch.swisstopo.unterkuenfte-winter&amp;sr=4326&amp;imageDisplay=500,500,96&amp;mapExtent=5.9,45.8,10.5,47.8&quot;
+</code></pre>
+<p><strong>Kartenlink mit Hütten:</strong></p>
+<pre><code>https://map.geo.admin.ch/?lang=de&amp;E=LON&amp;N=LAT&amp;zoom=11&amp;layers=ch.swisstopo.unterkuenfte-winter&amp;bgLayer=ch.swisstopo.pixelkarte-farbe
+</code></pre>
+<h3>7. Bergbahnen &amp; Seilbahnen</h3>
+<pre><code class="language-bash"># Seilbahnen mit Bundeskonzession
+curl -s &quot;https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryPoint&amp;geometry=LON,LAT&amp;tolerance=2000&amp;layers=all:ch.bav.seilbahnen-bundeskonzession&amp;sr=4326&amp;imageDisplay=500,500,96&amp;mapExtent=5.9,45.8,10.5,47.8&quot;
+
+# Alle Seilbahnen (swissTLM3D)
+curl -s &quot;https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryPoint&amp;geometry=LON,LAT&amp;tolerance=2000&amp;layers=all:ch.swisstopo.swisstlm3d-uebrigerverkehr&amp;sr=4326&amp;imageDisplay=500,500,96&amp;mapExtent=5.9,45.8,10.5,47.8&quot;
+</code></pre>
+<p><strong>Kartenlink mit Bergbahnen:</strong></p>
+<pre><code>https://map.geo.admin.ch/?lang=de&amp;E=LON&amp;N=LAT&amp;zoom=11&amp;layers=ch.bav.seilbahnen-bundeskonzession&amp;bgLayer=ch.swisstopo.pixelkarte-farbe
+</code></pre>
+<h3>8. Naturgefahren</h3>
+<pre><code class="language-bash"># Lawinengefahr
+curl -s &quot;https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryPoint&amp;geometry=LON,LAT&amp;tolerance=100&amp;layers=all:ch.bafu.silvaprotect-lawinen&amp;sr=4326&amp;imageDisplay=500,500,96&amp;mapExtent=5.9,45.8,10.5,47.8&quot;
+
+# Sturzgefahr (Steinschlag, Felssturz)
+curl -s &quot;https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryPoint&amp;geometry=LON,LAT&amp;tolerance=100&amp;layers=all:ch.bafu.silvaprotect-sturz&amp;sr=4326&amp;imageDisplay=500,500,96&amp;mapExtent=5.9,45.8,10.5,47.8&quot;
+
+# Hochwasser-Warnkarte (aktuell)
+curl -s &quot;https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryPoint&amp;geometry=LON,LAT&amp;tolerance=500&amp;layers=all:ch.bafu.hydroweb-warnkarte_national&amp;sr=4326&amp;imageDisplay=500,500,96&amp;mapExtent=5.9,45.8,10.5,47.8&quot;
+</code></pre>
+<p><strong>Gefahren-Layer:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Layer-ID</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ch.bafu.silvaprotect-lawinen</code></td>
+<td>Lawinengebiete</td>
+</tr>
+<tr>
+<td><code>ch.bafu.silvaprotect-sturz</code></td>
+<td>Sturzgebiete</td>
+</tr>
+<tr>
+<td><code>ch.bafu.hydroweb-warnkarte_national</code></td>
+<td>Hochwasser aktuell</td>
+</tr>
+<tr>
+<td><code>ch.bafu.gefahren-waldbrand_warnung</code></td>
+<td>Waldbrandgefahr</td>
+</tr>
+<tr>
+<td><code>ch.vbs.sperr-gefahrenzonenkarte</code></td>
+<td>Militärische Sperrzonen</td>
+</tr>
+</tbody></table>
+<p><strong>Kartenlink mit Naturgefahren:</strong></p>
+<pre><code>https://map.geo.admin.ch/?lang=de&amp;E=LON&amp;N=LAT&amp;zoom=12&amp;layers=ch.bafu.silvaprotect-lawinen,ch.bafu.silvaprotect-sturz&amp;bgLayer=ch.swisstopo.pixelkarte-farbe
+</code></pre>
+<h3>9. Wetter (Schweiz)</h3>
+<p><strong>Aktuelles Wetter (via wttr.in):</strong></p>
+<pre><code class="language-bash">curl -s &quot;wttr.in/Zürich?format=%l:+%c+%t+%h+%w&amp;lang=de&quot;
+# Zürich: ⛅️ +5°C 78% ↙12km/h
+</code></pre>
+<p><strong>MeteoSwiss Warnungen (Karte):</strong></p>
+<pre><code>https://map.geo.admin.ch/?lang=de&amp;layers=ch.meteoschweiz.gefahren-warnungen
+</code></pre>
+<p><strong>Lawinenbulletin SLF:</strong></p>
+<ul>
+<li>Aktuell: <a href="https://www.slf.ch/de/lawinenbulletin-und-schneesituation.html">https://www.slf.ch/de/lawinenbulletin-und-schneesituation.html</a></li>
+<li>API (experimentell): <a href="https://www.slf.ch/avalanche/mobile/bulletin_de.json">https://www.slf.ch/avalanche/mobile/bulletin_de.json</a></li>
+</ul>
+<p><strong>Hochwasser BAFU (aktuelle Pegel):</strong></p>
+<pre><code>https://map.geo.admin.ch/?lang=de&amp;layers=ch.bafu.hydroweb-messstationen_gefahren
+</code></pre>
+<h3>10. ÖV-Fahrplan (transport.opendata.ch)</h3>
+<p><strong>Verbindung suchen:</strong></p>
+<pre><code class="language-bash">curl -s &quot;https://transport.opendata.ch/v1/connections?from=Zürich&amp;to=Bern&amp;limit=3&quot;
+</code></pre>
+<p><strong>Abfahrtstafel:</strong></p>
+<pre><code class="language-bash">curl -s &quot;https://transport.opendata.ch/v1/stationboard?station=Zürich+HB&amp;limit=5&quot;
+</code></pre>
+<p><strong>Haltestelle suchen:</strong></p>
+<pre><code class="language-bash">curl -s &quot;https://transport.opendata.ch/v1/locations?query=Paradeplatz&quot;
+</code></pre>
+<p><strong>Beispiel-Output parsen:</strong></p>
+<pre><code class="language-bash">curl -s &quot;https://transport.opendata.ch/v1/stationboard?station=Bern&amp;limit=3&quot; | python3 -c &quot;
+import sys,json
+data = json.load(sys.stdin)
+for s in data.get(&#39;stationboard&#39;, []):
+    time = s.get(&#39;stop&#39;, {}).get(&#39;departure&#39;, &#39;&#39;)[11:16]
+    cat = s.get(&#39;category&#39;, &#39;&#39;) + s.get(&#39;number&#39;, &#39;&#39;)
+    print(f\&quot;{time} {cat} → {s.get(&#39;to&#39;, &#39;&#39;)}\&quot;)&quot;
+</code></pre>
+<p><strong>Parameter:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>from</code> / <code>to</code></td>
+<td>Start/Ziel (Name oder ID)</td>
+</tr>
+<tr>
+<td><code>station</code></td>
+<td>Haltestelle für Abfahrtstafel</td>
+</tr>
+<tr>
+<td><code>limit</code></td>
+<td>Max. Ergebnisse</td>
+</tr>
+<tr>
+<td><code>date</code></td>
+<td>Datum (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code>time</code></td>
+<td>Zeit (HH:MM)</td>
+</tr>
+<tr>
+<td><code>isArrivalTime</code></td>
+<td>1 = Ankunftszeit statt Abfahrt</td>
+</tr>
+</tbody></table>
+<h3>11. Weitere nützliche Daten</h3>
+<p><strong>ÖV-Haltestellen:</strong></p>
+<pre><code class="language-bash">curl -s &quot;https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryPoint&amp;geometry=LON,LAT&amp;tolerance=500&amp;layers=all:ch.bav.haltestellen-oev&amp;sr=4326&amp;imageDisplay=500,500,96&amp;mapExtent=5.9,45.8,10.5,47.8&quot;
+</code></pre>
+<p><strong>Skitouren &amp; Schneeschuhrouten:</strong></p>
+<pre><code>https://map.geo.admin.ch/?lang=de&amp;E=LON&amp;N=LAT&amp;zoom=11&amp;layers=ch.swisstopo-karto.skitouren,ch.swisstopo-karto.schneeschuhrouten&amp;bgLayer=ch.swisstopo.pixelkarte-farbe
+</code></pre>
+<p><strong>Hangneigung (für Touren):</strong></p>
+<pre><code>https://map.geo.admin.ch/?lang=de&amp;E=LON&amp;N=LAT&amp;zoom=13&amp;layers=ch.swisstopo-karto.hangneigung&amp;bgLayer=ch.swisstopo.pixelkarte-farbe
+</code></pre>
+<h3>12. Städtische POIs via OpenStreetMap (Overpass API)</h3>
+<p><strong>Kostenlos, kein API-Key nötig.</strong> Ideal für Restaurants, Cafés, Eisdielen, Museen, Sehenswürdigkeiten in Städten.</p>
+<h4>Basis-Query (Bounding Box)</h4>
+<pre><code class="language-bash"># POIs in einem Gebiet suchen (south,west,north,east)
+# Beispiel: Eisdielen in Zürich-Zentrum
+curl -s &quot;https://overpass-api.de/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A10%5D%3Bnode%5B%22amenity%22%3D%22ice_cream%22%5D%2847.36%2C8.52%2C47.39%2C8.56%29%3Bout%3B&quot;
+</code></pre>
+<h4>Query mit Stadt-Area (empfohlen)</h4>
+<pre><code class="language-bash"># Alle Eisdielen in der Stadt Zürich
+curl -s &quot;https://overpass-api.de/api/interpreter&quot; --data-urlencode &#39;data=[out:json][timeout:15];
+area[&quot;name&quot;=&quot;Zürich&quot;][&quot;admin_level&quot;=&quot;8&quot;]-&gt;.city;
+(
+  node[&quot;amenity&quot;=&quot;ice_cream&quot;](area.city);
+  node[&quot;shop&quot;=&quot;ice_cream&quot;](area.city);
+);
+out body;&#39;
+</code></pre>
+<h4>Wichtige POI-Tags</h4>
+<table>
+<thead>
+<tr>
+<th>Kategorie</th>
+<th>OSM-Tag</th>
+<th>Beispiel</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>🍦 Eisdiele</td>
+<td><code>amenity=ice_cream</code></td>
+<td>Gelateria</td>
+</tr>
+<tr>
+<td>🍕 Restaurant</td>
+<td><code>amenity=restaurant</code></td>
+<td>+ <code>cuisine=*</code></td>
+</tr>
+<tr>
+<td>☕ Café</td>
+<td><code>amenity=cafe</code></td>
+<td></td>
+</tr>
+<tr>
+<td>🍺 Bar/Pub</td>
+<td><code>amenity=bar</code> / <code>pub</code></td>
+<td></td>
+</tr>
+<tr>
+<td>🏛️ Museum</td>
+<td><code>tourism=museum</code></td>
+<td></td>
+</tr>
+<tr>
+<td>🎭 Theater</td>
+<td><code>amenity=theatre</code></td>
+<td></td>
+</tr>
+<tr>
+<td>⛪ Kirche</td>
+<td><code>amenity=place_of_worship</code></td>
+<td></td>
+</tr>
+<tr>
+<td>🏰 Sehenswürdigkeit</td>
+<td><code>tourism=attraction</code></td>
+<td></td>
+</tr>
+<tr>
+<td>👁️ Aussichtspunkt</td>
+<td><code>tourism=viewpoint</code></td>
+<td></td>
+</tr>
+<tr>
+<td>🎡 Freizeitpark</td>
+<td><code>leisure=amusement_arcade</code></td>
+<td></td>
+</tr>
+<tr>
+<td>🏊 Schwimmbad</td>
+<td><code>leisure=swimming_pool</code></td>
+<td>+ <code>access=yes</code></td>
+</tr>
+<tr>
+<td>🎮 Spielplatz</td>
+<td><code>leisure=playground</code></td>
+<td></td>
+</tr>
+<tr>
+<td>🌳 Park</td>
+<td><code>leisure=park</code></td>
+<td></td>
+</tr>
+</tbody></table>
+<h4>Beispiel: Museen &amp; Sehenswürdigkeiten in Zürich Altstadt</h4>
+<pre><code class="language-bash">curl -s &quot;https://overpass-api.de/api/interpreter&quot; --data-urlencode &#39;data=[out:json][timeout:15];
+(
+  node[&quot;tourism&quot;=&quot;museum&quot;](47.366,8.538,47.378,8.548);
+  node[&quot;tourism&quot;=&quot;attraction&quot;](47.366,8.538,47.378,8.548);
+  node[&quot;historic&quot;](47.366,8.538,47.378,8.548);
+);
+out body;&#39;
+</code></pre>
+<h4>Beispiel: Familienfreundliche Orte (Spielplätze, Parks)</h4>
+<pre><code class="language-bash">curl -s &quot;https://overpass-api.de/api/interpreter&quot; --data-urlencode &#39;data=[out:json][timeout:15];
+area[&quot;name&quot;=&quot;Zürich&quot;][&quot;admin_level&quot;=&quot;8&quot;]-&gt;.city;
+(
+  node[&quot;leisure&quot;=&quot;playground&quot;](area.city);
+  way[&quot;leisure&quot;=&quot;playground&quot;](area.city);
+);
+out center body;&#39;
+</code></pre>
+<h4>Response parsen (Python)</h4>
+<pre><code class="language-bash">curl -s &quot;https://overpass-api.de/api/interpreter?data=...&quot; | python3 -c &quot;
+import sys, json
+data = json.load(sys.stdin)
+for el in data.get(&#39;elements&#39;, []):
+    tags = el.get(&#39;tags&#39;, {})
+    name = tags.get(&#39;name&#39;, &#39;Unbenannt&#39;)
+    lat, lon = el.get(&#39;lat&#39;, el.get(&#39;center&#39;, {}).get(&#39;lat&#39;, &#39;&#39;)), el.get(&#39;lon&#39;, el.get(&#39;center&#39;, {}).get(&#39;lon&#39;, &#39;&#39;))
+    addr = tags.get(&#39;addr:street&#39;, &#39;&#39;)
+    website = tags.get(&#39;website&#39;, &#39;&#39;)
+    opening = tags.get(&#39;opening_hours&#39;, &#39;&#39;)
+    print(f&#39;{name}&#39;)
+    if addr: print(f&#39;  📍 {addr} {tags.get(\&quot;addr:housenumber\&quot;, \&quot;\&quot;)}&#39;)
+    if opening: print(f&#39;  🕐 {opening}&#39;)
+    if website: print(f&#39;  🔗 {website}&#39;)
+    print()
+&quot;
+</code></pre>
+<h4>Koordinaten für Schweizer Städte (Bbox)</h4>
+<table>
+<thead>
+<tr>
+<th>Stadt</th>
+<th>South</th>
+<th>West</th>
+<th>North</th>
+<th>East</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Zürich Zentrum</td>
+<td>47.36</td>
+<td>8.52</td>
+<td>47.39</td>
+<td>8.56</td>
+</tr>
+<tr>
+<td>Zürich Altstadt</td>
+<td>47.366</td>
+<td>8.538</td>
+<td>47.378</td>
+<td>8.548</td>
+</tr>
+<tr>
+<td>Bern Zentrum</td>
+<td>46.94</td>
+<td>7.43</td>
+<td>46.96</td>
+<td>7.46</td>
+</tr>
+<tr>
+<td>Basel Zentrum</td>
+<td>47.55</td>
+<td>7.58</td>
+<td>47.57</td>
+<td>7.61</td>
+</tr>
+<tr>
+<td>Luzern Zentrum</td>
+<td>47.04</td>
+<td>8.29</td>
+<td>47.06</td>
+<td>8.32</td>
+</tr>
+<tr>
+<td>Genf Zentrum</td>
+<td>46.19</td>
+<td>6.13</td>
+<td>46.21</td>
+<td>6.16</td>
+</tr>
+</tbody></table>
+<h3>13. Schweiz Tourismus API (MySwitzerland)</h3>
+<p><strong>⚠️ Benötigt API-Key</strong> (Header: <code>x-api-key</code>)</p>
+<p><strong>Hinweis:</strong> Diese API ist primär für Outdoor-Tourismus (Wandern, Bergtouren, Regionen) geeignet. Für städtische POIs (Restaurants, Cafés, Museen) ist die Overpass API (Abschnitt 12) besser.</p>
+<p><strong>Sehenswürdigkeiten suchen:</strong></p>
+<pre><code class="language-bash">curl -s &quot;https://opendata.myswitzerland.io/v1/attractions/?lang=de&amp;limit=5&quot; \
+  -H &quot;x-api-key: $MYSWITZERLAND_API_KEY&quot;
+</code></pre>
+<p><strong>Touren suchen:</strong></p>
+<pre><code class="language-bash">curl -s &quot;https://opendata.myswitzerland.io/v1/tours/?lang=de&amp;limit=5&quot; \
+  -H &quot;x-api-key: $MYSWITZERLAND_API_KEY&quot;
+</code></pre>
+<p><strong>Geodaten einer Tour (GeoJSON):</strong></p>
+<pre><code class="language-bash">curl -s &quot;https://opendata.myswitzerland.io/v1/tours/TOUR_ID/geodata&quot; \
+  -H &quot;x-api-key: $MYSWITZERLAND_API_KEY&quot;
+</code></pre>
+<p><strong>Destinationen:</strong></p>
+<pre><code class="language-bash">curl -s &quot;https://opendata.myswitzerland.io/v1/destinations/?lang=de&quot; \
+  -H &quot;x-api-key: $MYSWITZERLAND_API_KEY&quot;
+</code></pre>
+<p><strong>Response-Felder:</strong></p>
+<ul>
+<li><code>name</code> — Name der Attraktion/Tour</li>
+<li><code>abstract</code> — Kurzbeschreibung</li>
+<li><code>geo.latitude</code>, <code>geo.longitude</code> — Koordinaten</li>
+<li><code>classification</code> — Kategorien (Saison, Typ, etc.)</li>
+</ul>
+<h2>Beispiel-Workflows</h2>
+<h3>&quot;Wo kann ich mit Kindern in Zürich Eis essen und was gibt&#39;s in der Nähe?&quot;</h3>
+<ol>
+<li>Eisdielen via Overpass API suchen (Abschnitt 12)</li>
+<li>Sehenswürdigkeiten/Spielplätze in der Nähe finden</li>
+<li>ÖV-Verbindung dorthin (Abschnitt 10)</li>
+<li>Kartenlink generieren (Abschnitt 4)</li>
+</ol>
+<h3>&quot;Wanderung mit Bergbahn und Hütte im Engadin?&quot;</h3>
+<ol>
+<li>Bergbahnen suchen (Abschnitt 7)</li>
+<li>Wanderwege finden (Abschnitt 5)</li>
+<li>Berghütten identifizieren (Abschnitt 6)</li>
+<li>MySwitzerland Touren abfragen (Abschnitt 13)</li>
+</ol>
+<h2>Tipps</h2>
+<ul>
+<li><strong>Städtische POIs</strong> → Overpass API (kostenlos, detailliert)</li>
+<li><strong>Outdoor-Tourismus</strong> → MySwitzerland API (braucht Key)</li>
+<li><strong>Karten &amp; Geodaten</strong> → Swisstopo (kostenlos)</li>
+<li><strong>ÖV-Fahrplan</strong> → transport.opendata.ch (kostenlos)</li>
+<li>Suchergebnisse enthalten <code>origin</code> (address, sn25, gg25, etc.) zur Kategorisierung</li>
+<li>Für genaue LV95-Koordinaten siehe <a href="references/api.md">references/api.md</a></li>
+<li>Kombiniere Swisstopo-Layer mit Komma: <code>layers=layer1,layer2,layer3</code></li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/mbjoern/swiss-geo-and-tourism-assistant/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/mbjoern/swiss-geo" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/mbjoern/swiss-geo-and-tourism-assistant/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@mbjoern</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Transportation</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

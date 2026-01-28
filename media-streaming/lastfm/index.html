@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Access Last.fm listening history, music stats, and discovery">
+  <title>lastfm - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Media & Streaming</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Media & Streaming</a>
+                <span class="skill-page-author">by @gumadeiras</span>
+              </div>
+              <h1 class="skill-page-title">lastfm</h1>
+              <p class="skill-page-desc">Access Last.fm listening history, music stats, and discovery</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Last.fm API Skill</h1>
+<p>Access Last.fm listening history, music stats, and discovery.</p>
+<h2>Configuration</h2>
+<p><strong>Required env vars</strong> (add to your shell profile or optionally <code>~/.clawdbot/.env</code>):</p>
+<ul>
+<li><code>LASTFM_API_KEY</code> — your Last.fm API key (<a href="https://www.last.fm/api/account/create">get one here</a>)</li>
+<li><code>LASTFM_USER</code> — your Last.fm username</li>
+</ul>
+<p><strong>Base URL</strong>: <code>http://ws.audioscrobbler.com/2.0/</code><br><strong>Docs</strong>: <a href="https://lastfm-docs.github.io/api-docs/">https://lastfm-docs.github.io/api-docs/</a></p>
+<h2>Example Output</h2>
+<p>Here&#39;s what 17+ years of scrobbling looks like:</p>
+<pre><code>Total scrobbles: 519,778
+Unique artists: 13,763
+Unique tracks: 68,435
+Unique albums: 33,637
+
+Top Artists (all time):
+• System of a Down (52,775 plays)
+• Eminem (15,400 plays)
+• Dashboard Confessional (10,166 plays)
+• Edguy (10,161 plays)
+• Metallica (9,927 plays)
+
+Top Tracks (all time):
+• System of a Down - Aerials (1,405 plays)
+• System of a Down - Toxicity (1,215 plays)
+• System of a Down - Sugar (1,149 plays)
+• System of a Down - Chop Suey (1,116 plays)
+• System of a Down - Prison Song (1,102 plays)
+</code></pre>
+<h2>Quick Reference</h2>
+<p>All requests use GET with these base params:</p>
+<pre><code>?api_key=$LASTFM_API_KEY&amp;format=json&amp;user=$LASTFM_USER
+</code></pre>
+<h3>User Endpoints</h3>
+<h4>Recent Tracks (what&#39;s playing / recently played)</h4>
+<pre><code class="language-bash">curl -s &quot;http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&amp;user=$LASTFM_USER&amp;api_key=$LASTFM_API_KEY&amp;format=json&amp;limit=10&quot;
+</code></pre>
+<ul>
+<li>First track with <code>@attr.nowplaying=true</code> is currently playing</li>
+<li>Returns: artist, track name, album, timestamp, images</li>
+</ul>
+<h4>User Info (profile stats)</h4>
+<pre><code class="language-bash">curl -s &quot;http://ws.audioscrobbler.com/2.0/?method=user.getinfo&amp;user=$LASTFM_USER&amp;api_key=$LASTFM_API_KEY&amp;format=json&quot;
+</code></pre>
+<ul>
+<li>Returns: playcount, artist_count, track_count, album_count, registered date</li>
+</ul>
+<h4>Top Artists</h4>
+<pre><code class="language-bash">curl -s &quot;http://ws.audioscrobbler.com/2.0/?method=user.gettopartists&amp;user=$LASTFM_USER&amp;api_key=$LASTFM_API_KEY&amp;format=json&amp;period=7day&amp;limit=10&quot;
+</code></pre>
+<ul>
+<li><code>period</code>: overall | 7day | 1month | 3month | 6month | 12month</li>
+</ul>
+<h4>Top Albums</h4>
+<pre><code class="language-bash">curl -s &quot;http://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&amp;user=$LASTFM_USER&amp;api_key=$LASTFM_API_KEY&amp;format=json&amp;period=7day&amp;limit=10&quot;
+</code></pre>
+<h4>Top Tracks</h4>
+<pre><code class="language-bash">curl -s &quot;http://ws.audioscrobbler.com/2.0/?method=user.gettoptracks&amp;user=$LASTFM_USER&amp;api_key=$LASTFM_API_KEY&amp;format=json&amp;period=7day&amp;limit=10&quot;
+</code></pre>
+<h4>Loved Tracks</h4>
+<pre><code class="language-bash">curl -s &quot;http://ws.audioscrobbler.com/2.0/?method=user.getlovedtracks&amp;user=$LASTFM_USER&amp;api_key=$LASTFM_API_KEY&amp;format=json&amp;limit=10&quot;
+</code></pre>
+<h4>Weekly Charts</h4>
+<pre><code class="language-bash"># Weekly artist chart
+curl -s &quot;http://ws.audioscrobbler.com/2.0/?method=user.getweeklyartistchart&amp;user=$LASTFM_USER&amp;api_key=$LASTFM_API_KEY&amp;format=json&quot;
+
+# Weekly track chart
+curl -s &quot;http://ws.audioscrobbler.com/2.0/?method=user.getweeklytrackchart&amp;user=$LASTFM_USER&amp;api_key=$LASTFM_API_KEY&amp;format=json&quot;
+
+# Weekly album chart
+curl -s &quot;http://ws.audioscrobbler.com/2.0/?method=user.getweeklyalbumchart&amp;user=$LASTFM_USER&amp;api_key=$LASTFM_API_KEY&amp;format=json&quot;
+</code></pre>
+<h3>Artist/Track/Album Info</h3>
+<h4>Artist Info</h4>
+<pre><code class="language-bash">curl -s &quot;http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&amp;artist=Tame+Impala&amp;api_key=$LASTFM_API_KEY&amp;format=json&amp;username=$LASTFM_USER&quot;
+</code></pre>
+<ul>
+<li>Adding <code>username</code> includes user&#39;s playcount for that artist</li>
+</ul>
+<h4>Similar Artists</h4>
+<pre><code class="language-bash">curl -s &quot;http://ws.audioscrobbler.com/2.0/?method=artist.getsimilar&amp;artist=Tame+Impala&amp;api_key=$LASTFM_API_KEY&amp;format=json&amp;limit=10&quot;
+</code></pre>
+<h4>Artist Top Tracks</h4>
+<pre><code class="language-bash">curl -s &quot;http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks&amp;artist=Tame+Impala&amp;api_key=$LASTFM_API_KEY&amp;format=json&amp;limit=10&quot;
+</code></pre>
+<h4>Track Info</h4>
+<pre><code class="language-bash">curl -s &quot;http://ws.audioscrobbler.com/2.0/?method=track.getinfo&amp;artist=Tame+Impala&amp;track=The+Less+I+Know+The+Better&amp;api_key=$LASTFM_API_KEY&amp;format=json&amp;username=$LASTFM_USER&quot;
+</code></pre>
+<h4>Similar Tracks</h4>
+<pre><code class="language-bash">curl -s &quot;http://ws.audioscrobbler.com/2.0/?method=track.getsimilar&amp;artist=Tame+Impala&amp;track=Elephant&amp;api_key=$LASTFM_API_KEY&amp;format=json&amp;limit=10&quot;
+</code></pre>
+<h4>Album Info</h4>
+<pre><code class="language-bash">curl -s &quot;http://ws.audioscrobbler.com/2.0/?method=album.getinfo&amp;artist=Tame+Impala&amp;album=Currents&amp;api_key=$LASTFM_API_KEY&amp;format=json&amp;username=$LASTFM_USER&quot;
+</code></pre>
+<h3>Search</h3>
+<h4>Search Artists</h4>
+<pre><code class="language-bash">curl -s &quot;http://ws.audioscrobbler.com/2.0/?method=artist.search&amp;artist=tame&amp;api_key=$LASTFM_API_KEY&amp;format=json&amp;limit=5&quot;
+</code></pre>
+<h4>Search Tracks</h4>
+<pre><code class="language-bash">curl -s &quot;http://ws.audioscrobbler.com/2.0/?method=track.search&amp;track=elephant&amp;api_key=$LASTFM_API_KEY&amp;format=json&amp;limit=5&quot;
+</code></pre>
+<h4>Search Albums</h4>
+<pre><code class="language-bash">curl -s &quot;http://ws.audioscrobbler.com/2.0/?method=album.search&amp;album=currents&amp;api_key=$LASTFM_API_KEY&amp;format=json&amp;limit=5&quot;
+</code></pre>
+<h3>Charts (Global)</h3>
+<pre><code class="language-bash"># Top artists globally
+curl -s &quot;http://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&amp;api_key=$LASTFM_API_KEY&amp;format=json&amp;limit=10&quot;
+
+# Top tracks globally
+curl -s &quot;http://ws.audioscrobbler.com/2.0/?method=chart.gettoptracks&amp;api_key=$LASTFM_API_KEY&amp;format=json&amp;limit=10&quot;
+</code></pre>
+<h3>Tags</h3>
+<pre><code class="language-bash"># Top albums for a tag/genre
+curl -s &quot;http://ws.audioscrobbler.com/2.0/?method=tag.gettopalbums&amp;tag=psychedelic&amp;api_key=$LASTFM_API_KEY&amp;format=json&amp;limit=10&quot;
+
+# Top artists for a tag
+curl -s &quot;http://ws.audioscrobbler.com/2.0/?method=tag.gettopartists&amp;tag=brazilian&amp;api_key=$LASTFM_API_KEY&amp;format=json&amp;limit=10&quot;
+</code></pre>
+<h2>Useful jq Filters</h2>
+<p>For JSON processing, see the <a href="https://clawdhub.com/skills/jq">jq skill on ClawdHub</a>.</p>
+<pre><code class="language-bash"># Recent tracks: artist - track
+jq &#39;.recenttracks.track[] | &quot;\(.artist[&quot;#text&quot;]) - \(.name)&quot;&#39;
+
+# Top artists: name (playcount)
+jq &#39;.topartists.artist[] | &quot;\(.name) (\(.playcount))&quot;&#39;
+
+# Check if currently playing
+jq &#39;.recenttracks.track[0] | if .[&quot;@attr&quot;].nowplaying == &quot;true&quot; then &quot;Now playing: \(.artist[&quot;#text&quot;]) - \(.name)&quot; else &quot;Last played: \(.artist[&quot;#text&quot;]) - \(.name)&quot; end&#39;
+</code></pre>
+<h2>Notes</h2>
+<ul>
+<li>No auth needed for read-only endpoints (just API key)</li>
+<li>Rate limit: be reasonable, no hard limit documented</li>
+<li>URL-encode artist/track/album names (spaces → <code>+</code> or <code>%20</code>)</li>
+<li>Images come in sizes: small, medium, large, extralarge</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/gumadeiras/lastfm/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/gumadeiras/lastfm" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/gumadeiras/lastfm/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@gumadeiras</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Media & Streaming</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

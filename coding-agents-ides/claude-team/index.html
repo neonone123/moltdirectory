@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Orchestrate multiple Claude Code workers via iTerm2 using the claude-team MCP server">
+  <title>claude-team - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Coding Agents & IDEs</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Coding Agents & IDEs</a>
+                <span class="skill-page-author">by @jalehman</span>
+              </div>
+              <h1 class="skill-page-title">claude-team</h1>
+              <p class="skill-page-desc">Orchestrate multiple Claude Code workers via iTerm2 using the claude-team MCP server</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Claude Team</h1>
+<p>Claude-team is an MCP server that lets you spawn and manage teams of Claude Code sessions via iTerm2. Each worker gets their own terminal pane, optional git worktree, and can be assigned beads issues.</p>
+<h2>Why Use Claude Team?</h2>
+<ul>
+<li><strong>Parallelism</strong>: Fan out work to multiple agents working simultaneously</li>
+<li><strong>Context isolation</strong>: Each worker has fresh context, keeps coordinator context clean</li>
+<li><strong>Visibility</strong>: Real Claude Code sessions you can watch, interrupt, or take over</li>
+<li><strong>Git worktrees</strong>: Each worker can have an isolated branch for their work</li>
+</ul>
+<h2>⚠️ Important Rule</h2>
+<p><strong>NEVER make code changes directly.</strong> Always spawn workers for code changes. This keeps your context clean and provides proper git workflow with worktrees.</p>
+<h2>Prerequisites</h2>
+<ul>
+<li>macOS with iTerm2 (Python API enabled: Preferences → General → Magic → Enable Python API)</li>
+<li>claude-team MCP server configured in <code>~/.claude.json</code></li>
+</ul>
+<h2>Using via mcporter</h2>
+<p>All tools are called through <code>mcporter call claude-team.&lt;tool&gt;</code>:</p>
+<pre><code class="language-bash">mcporter call claude-team.list_workers
+mcporter call claude-team.spawn_workers workers=&#39;[{&quot;project_path&quot;:&quot;/path/to/repo&quot;,&quot;bead&quot;:&quot;cp-123&quot;}]&#39;
+</code></pre>
+<h2>Core Tools</h2>
+<h3>spawn_workers</h3>
+<p>Create new Claude Code worker sessions.</p>
+<pre><code class="language-bash">mcporter call claude-team.spawn_workers \
+  workers=&#39;[{
+    &quot;project_path&quot;: &quot;/path/to/repo&quot;,
+    &quot;bead&quot;: &quot;cp-123&quot;,
+    &quot;annotation&quot;: &quot;Fix auth bug&quot;,
+    &quot;use_worktree&quot;: true,
+    &quot;skip_permissions&quot;: true
+  }]&#39; \
+  layout=&quot;auto&quot;
+</code></pre>
+<p><strong>Worker config fields:</strong></p>
+<ul>
+<li><code>project_path</code>: Required. Path to repo or &quot;auto&quot; (uses CLAUDE_TEAM_PROJECT_DIR)</li>
+<li><code>bead</code>: Optional beads issue ID — worker will follow beads workflow</li>
+<li><code>annotation</code>: Task description (shown on badge, used in branch name)</li>
+<li><code>prompt</code>: Additional instructions (if no bead, this is their assignment)</li>
+<li><code>use_worktree</code>: Create isolated git worktree (default: true)</li>
+<li><code>skip_permissions</code>: Start with --dangerously-skip-permissions (default: false)</li>
+<li><code>name</code>: Optional worker name override (auto-picks from themed sets otherwise)</li>
+</ul>
+<p><strong>Layout options:</strong></p>
+<ul>
+<li><code>&quot;auto&quot;</code>: Reuse existing claude-team windows, split into available space</li>
+<li><code>&quot;new&quot;</code>: Always create fresh window (1-4 workers in grid layout)</li>
+</ul>
+<h3>list_workers</h3>
+<p>See all managed workers:</p>
+<pre><code class="language-bash">mcporter call claude-team.list_workers
+mcporter call claude-team.list_workers status_filter=&quot;ready&quot;
+</code></pre>
+<p>Status values: <code>spawning</code>, <code>ready</code>, <code>busy</code>, <code>closed</code></p>
+<h3>message_workers</h3>
+<p>Send messages to one or more workers:</p>
+<pre><code class="language-bash">mcporter call claude-team.message_workers \
+  session_ids=&#39;[&quot;Groucho&quot;]&#39; \
+  message=&quot;Please also add unit tests&quot; \
+  wait_mode=&quot;none&quot;
+</code></pre>
+<p><strong>wait_mode options:</strong></p>
+<ul>
+<li><code>&quot;none&quot;</code>: Fire and forget (default)</li>
+<li><code>&quot;any&quot;</code>: Return when any worker is idle</li>
+<li><code>&quot;all&quot;</code>: Return when all workers are idle</li>
+</ul>
+<h3>check_idle_workers / wait_idle_workers</h3>
+<p>Check or wait for workers to finish:</p>
+<pre><code class="language-bash"># Quick poll
+mcporter call claude-team.check_idle_workers session_ids=&#39;[&quot;Groucho&quot;,&quot;Harpo&quot;]&#39;
+
+# Blocking wait
+mcporter call claude-team.wait_idle_workers \
+  session_ids=&#39;[&quot;Groucho&quot;,&quot;Harpo&quot;]&#39; \
+  mode=&quot;all&quot; \
+  timeout=600
+</code></pre>
+<h3>read_worker_logs</h3>
+<p>Get conversation history:</p>
+<pre><code class="language-bash">mcporter call claude-team.read_worker_logs \
+  session_id=&quot;Groucho&quot; \
+  pages=2
+</code></pre>
+<h3>examine_worker</h3>
+<p>Get detailed status including conversation stats:</p>
+<pre><code class="language-bash">mcporter call claude-team.examine_worker session_id=&quot;Groucho&quot;
+</code></pre>
+<h3>close_workers</h3>
+<p>Terminate workers when done:</p>
+<pre><code class="language-bash">mcporter call claude-team.close_workers session_ids=&#39;[&quot;Groucho&quot;,&quot;Harpo&quot;]&#39;
+</code></pre>
+<p>⚠️ <strong>Worktree cleanup</strong>: Workers with worktrees commit to ephemeral branches. After closing:</p>
+<ol>
+<li>Review commits on the worker&#39;s branch</li>
+<li>Merge or cherry-pick to a persistent branch</li>
+<li>Delete the branch: <code>git branch -D &lt;branch-name&gt;</code></li>
+</ol>
+<h3>bd_help</h3>
+<p>Quick reference for beads commands:</p>
+<pre><code class="language-bash">mcporter call claude-team.bd_help
+</code></pre>
+<h2>Worker Identification</h2>
+<p>Workers can be referenced by any of:</p>
+<ul>
+<li><strong>Internal ID</strong>: Short hex string (e.g., <code>3962c5c4</code>)</li>
+<li><strong>Terminal ID</strong>: <code>iterm:UUID</code> format</li>
+<li><strong>Worker name</strong>: Human-friendly name (e.g., <code>Groucho</code>, <code>Aragorn</code>)</li>
+</ul>
+<h2>Workflow: Assigning a Beads Issue</h2>
+<pre><code class="language-bash"># 1. Spawn worker with a bead assignment
+mcporter call claude-team.spawn_workers \
+  workers=&#39;[{
+    &quot;project_path&quot;: &quot;/Users/phaedrus/Projects/myrepo&quot;,
+    &quot;bead&quot;: &quot;proj-abc&quot;,
+    &quot;annotation&quot;: &quot;Implement config schemas&quot;,
+    &quot;use_worktree&quot;: true,
+    &quot;skip_permissions&quot;: true
+  }]&#39;
+
+# 2. Worker automatically:
+#    - Creates worktree with branch named after bead
+#    - Runs `bd show proj-abc` to understand the task
+#    - Marks issue in_progress
+#    - Implements the work
+#    - Closes the issue
+#    - Commits with issue reference
+
+# 3. Monitor progress
+mcporter call claude-team.check_idle_workers session_ids=&#39;[&quot;Groucho&quot;]&#39;
+mcporter call claude-team.read_worker_logs session_id=&quot;Groucho&quot;
+
+# 4. When done, close and merge
+mcporter call claude-team.close_workers session_ids=&#39;[&quot;Groucho&quot;]&#39;
+# Then: git merge or cherry-pick from worker&#39;s branch
+</code></pre>
+<h2>Workflow: Parallel Fan-Out</h2>
+<pre><code class="language-bash"># Spawn multiple workers for parallel tasks
+mcporter call claude-team.spawn_workers \
+  workers=&#39;[
+    {&quot;project_path&quot;: &quot;auto&quot;, &quot;bead&quot;: &quot;cp-123&quot;, &quot;annotation&quot;: &quot;Auth module&quot;},
+    {&quot;project_path&quot;: &quot;auto&quot;, &quot;bead&quot;: &quot;cp-124&quot;, &quot;annotation&quot;: &quot;API routes&quot;},
+    {&quot;project_path&quot;: &quot;auto&quot;, &quot;bead&quot;: &quot;cp-125&quot;, &quot;annotation&quot;: &quot;Unit tests&quot;}
+  ]&#39; \
+  layout=&quot;new&quot;
+
+# Wait for all to complete
+mcporter call claude-team.wait_idle_workers \
+  session_ids=&#39;[&quot;Groucho&quot;,&quot;Harpo&quot;,&quot;Chico&quot;]&#39; \
+  mode=&quot;all&quot;
+
+# Review and close
+mcporter call claude-team.close_workers \
+  session_ids=&#39;[&quot;Groucho&quot;,&quot;Harpo&quot;,&quot;Chico&quot;]&#39;
+</code></pre>
+<h2>Best Practices</h2>
+<ol>
+<li><strong>Use beads</strong>: Assign <code>bead</code> IDs so workers follow proper issue workflow</li>
+<li><strong>Use worktrees</strong>: Keeps work isolated, enables parallel commits</li>
+<li><strong>Skip permissions</strong>: Workers need <code>skip_permissions: true</code> to write files</li>
+<li><strong>Monitor, don&#39;t micromanage</strong>: Let workers complete, then review</li>
+<li><strong>Merge carefully</strong>: Review worker branches before merging to main</li>
+<li><strong>Close workers</strong>: Always close when done to clean up worktrees</li>
+</ol>
+<h2>HTTP Mode (Streamable HTTP Transport)</h2>
+<p>For persistent server operation, claude-team can run as an HTTP server. This keeps the MCP server running continuously with persistent state, avoiding cold starts.</p>
+<h3>Starting the HTTP Server</h3>
+<p>Run the claude-team HTTP server directly:</p>
+<pre><code class="language-bash"># From the claude-team directory
+uv run python -m claude_team_mcp --http --port 8766
+
+# Or specify the directory explicitly
+uv run --directory /path/to/claude-team python -m claude_team_mcp --http --port 8766
+</code></pre>
+<p>For automatic startup on login, use launchd (see the &quot;launchd Auto-Start&quot; section below).</p>
+<h3>mcporter.json Configuration</h3>
+<p>Once the HTTP server is running, configure mcporter to connect to it. Create <code>~/.mcporter/mcporter.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;mcpServers&quot;: {
+    &quot;claude-team&quot;: {
+      &quot;transport&quot;: &quot;streamable-http&quot;,
+      &quot;url&quot;: &quot;http://127.0.0.1:8766/mcp&quot;,
+      &quot;lifecycle&quot;: &quot;keep-alive&quot;
+    }
+  }
+}
+</code></pre>
+<h3>Benefits of HTTP Mode</h3>
+<ul>
+<li><strong>Persistent state</strong>: Worker registry survives across CLI invocations</li>
+<li><strong>Faster responses</strong>: No Python environment startup on each call</li>
+<li><strong>External access</strong>: Can be accessed by cron jobs, scripts, or other tools</li>
+<li><strong>Session recovery</strong>: Server tracks sessions even if coordinator disconnects</li>
+</ul>
+<h3>Connecting from Claude Code</h3>
+<p>Update your <code>.mcp.json</code> to use HTTP transport:</p>
+<pre><code class="language-json">{
+  &quot;mcpServers&quot;: {
+    &quot;claude-team&quot;: {
+      &quot;transport&quot;: &quot;streamable-http&quot;,
+      &quot;url&quot;: &quot;http://127.0.0.1:8766/mcp&quot;
+    }
+  }
+}
+</code></pre>
+<h2>launchd Auto-Start</h2>
+<p>To automatically start the claude-team server on login, use the bundled setup script.</p>
+<h3>Quick Setup</h3>
+<p>Run the setup script from the skill&#39;s assets directory:</p>
+<pre><code class="language-bash"># From the skill directory
+./assets/setup.sh
+
+# Or specify a custom claude-team location
+CLAUDE_TEAM_DIR=/path/to/claude-team ./assets/setup.sh
+</code></pre>
+<h3>What the Setup Does</h3>
+<p>The setup script:</p>
+<ol>
+<li>Detects your <code>uv</code> installation path</li>
+<li>Creates the log directory at <code>~/.claude-team/logs/</code></li>
+<li>Generates a launchd plist from <code>assets/com.claude-team.plist.template</code></li>
+<li>Installs it to <code>~/Library/LaunchAgents/com.claude-team.plist</code></li>
+<li>Loads the service to start immediately</li>
+</ol>
+<p>The plist template uses <code>uv run</code> to start the HTTP server on port 8766, configured for iTerm2 Python API access (Aqua session type).</p>
+<h3>Managing the Service</h3>
+<pre><code class="language-bash"># Stop the service
+launchctl unload ~/Library/LaunchAgents/com.claude-team.plist
+
+# Restart (re-run setup)
+./assets/setup.sh
+
+# Check if running
+launchctl list | grep claude-team
+
+# View logs
+tail -f ~/.claude-team/logs/stdout.log
+tail -f ~/.claude-team/logs/stderr.log
+</code></pre>
+<h3>Troubleshooting launchd</h3>
+<pre><code class="language-bash"># Check for load errors
+launchctl print gui/$UID/com.claude-team
+
+# Force restart
+launchctl kickstart -k gui/$UID/com.claude-team
+
+# Remove and reload (if plist changed)
+launchctl bootout gui/$UID/com.claude-team
+launchctl bootstrap gui/$UID ~/Library/LaunchAgents/com.claude-team.plist
+</code></pre>
+<h2>Cron Integration</h2>
+<p>For background monitoring and notifications, claude-team supports cron-based worker tracking.</p>
+<h3>Worker Tracking File</h3>
+<p>Claude-team writes worker state to <code>~/.claude-team/memory/worker-tracking.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;workers&quot;: {
+    &quot;Groucho&quot;: {
+      &quot;session_id&quot;: &quot;3962c5c4&quot;,
+      &quot;bead&quot;: &quot;cp-123&quot;,
+      &quot;annotation&quot;: &quot;Fix auth bug&quot;,
+      &quot;status&quot;: &quot;busy&quot;,
+      &quot;project_path&quot;: &quot;/Users/phaedrus/Projects/myrepo&quot;,
+      &quot;started_at&quot;: &quot;2025-01-05T10:30:00Z&quot;,
+      &quot;last_activity&quot;: &quot;2025-01-05T11:45:00Z&quot;
+    },
+    &quot;Harpo&quot;: {
+      &quot;session_id&quot;: &quot;a1b2c3d4&quot;,
+      &quot;bead&quot;: &quot;cp-124&quot;,
+      &quot;annotation&quot;: &quot;Add API routes&quot;,
+      &quot;status&quot;: &quot;idle&quot;,
+      &quot;project_path&quot;: &quot;/Users/phaedrus/Projects/myrepo&quot;,
+      &quot;started_at&quot;: &quot;2025-01-05T10:30:00Z&quot;,
+      &quot;last_activity&quot;: &quot;2025-01-05T11:50:00Z&quot;,
+      &quot;completed_at&quot;: &quot;2025-01-05T11:50:00Z&quot;
+    }
+  },
+  &quot;last_updated&quot;: &quot;2025-01-05T11:50:00Z&quot;
+}
+</code></pre>
+<h3>Cron Job for Monitoring Completions</h3>
+<p>Create a monitoring script at <code>~/.claude-team/scripts/check-workers.sh</code>:</p>
+<pre><code class="language-bash">#!/bin/bash
+# Check for completed workers and send notifications
+
+TRACKING_FILE=&quot;$HOME/.claude-team/memory/worker-tracking.json&quot;
+NOTIFIED_FILE=&quot;$HOME/.claude-team/memory/notified-workers.json&quot;
+TELEGRAM_BOT_TOKEN=&quot;${TELEGRAM_BOT_TOKEN}&quot;
+TELEGRAM_CHAT_ID=&quot;${TELEGRAM_CHAT_ID}&quot;
+
+# Exit if tracking file doesn&#39;t exist
+[ -f &quot;$TRACKING_FILE&quot; ] || exit 0
+
+# Initialize notified file if needed
+[ -f &quot;$NOTIFIED_FILE&quot; ] || echo &#39;{&quot;notified&quot;:[]}&#39; &gt; &quot;$NOTIFIED_FILE&quot;
+
+# Find idle workers that haven&#39;t been notified
+IDLE_WORKERS=$(jq -r &#39;
+  .workers | to_entries[] |
+  select(.value.status == &quot;idle&quot;) |
+  .key
+&#39; &quot;$TRACKING_FILE&quot;)
+
+for worker in $IDLE_WORKERS; do
+  # Check if already notified
+  ALREADY_NOTIFIED=$(jq -r --arg w &quot;$worker&quot; &#39;.notified | index($w) != null&#39; &quot;$NOTIFIED_FILE&quot;)
+
+  if [ &quot;$ALREADY_NOTIFIED&quot; = &quot;false&quot; ]; then
+    # Get worker details
+    BEAD=$(jq -r --arg w &quot;$worker&quot; &#39;.workers[$w].bead // &quot;no-bead&quot;&#39; &quot;$TRACKING_FILE&quot;)
+    ANNOTATION=$(jq -r --arg w &quot;$worker&quot; &#39;.workers[$w].annotation // &quot;no annotation&quot;&#39; &quot;$TRACKING_FILE&quot;)
+
+    # Send Telegram notification
+    MESSAGE=&quot;🤖 Worker *${worker}* completed
+📋 Bead: \`${BEAD}\`
+📝 ${ANNOTATION}&quot;
+
+    curl -s -X POST &quot;https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage&quot; \
+      -d chat_id=&quot;$TELEGRAM_CHAT_ID&quot; \
+      -d text=&quot;$MESSAGE&quot; \
+      -d parse_mode=&quot;Markdown&quot; &gt; /dev/null
+
+    # Mark as notified
+    jq --arg w &quot;$worker&quot; &#39;.notified += [$w]&#39; &quot;$NOTIFIED_FILE&quot; &gt; &quot;${NOTIFIED_FILE}.tmp&quot;
+    mv &quot;${NOTIFIED_FILE}.tmp&quot; &quot;$NOTIFIED_FILE&quot;
+  fi
+done
+</code></pre>
+<p>Make it executable:</p>
+<pre><code class="language-bash">chmod +x ~/.claude-team/scripts/check-workers.sh
+</code></pre>
+<h3>Crontab Entry</h3>
+<p>Add to crontab (<code>crontab -e</code>):</p>
+<pre><code class="language-cron"># Check claude-team workers every 2 minutes
+*/2 * * * * TELEGRAM_BOT_TOKEN=&quot;your-bot-token&quot; TELEGRAM_CHAT_ID=&quot;your-chat-id&quot; ~/.claude-team/scripts/check-workers.sh
+</code></pre>
+<h3>Environment Setup</h3>
+<p>Set Telegram credentials in your shell profile (<code>~/.zshrc</code>):</p>
+<pre><code class="language-bash">export TELEGRAM_BOT_TOKEN=&quot;123456789:ABCdefGHIjklMNOpqrsTUVwxyz&quot;
+export TELEGRAM_CHAT_ID=&quot;-1001234567890&quot;
+</code></pre>
+<h3>Alternative: Using clawdbot for Notifications</h3>
+<p>If you have clawdbot configured, you can send notifications through it instead:</p>
+<pre><code class="language-bash"># In check-workers.sh, replace the curl command with:
+clawdbot send --to &quot;$TELEGRAM_CHAT_ID&quot; --message &quot;$MESSAGE&quot; --provider telegram
+</code></pre>
+<h3>Clearing Notification State</h3>
+<p>When starting a fresh batch of workers, clear the notified list:</p>
+<pre><code class="language-bash">echo &#39;{&quot;notified&quot;:[]}&#39; &gt; ~/.claude-team/memory/notified-workers.json
+</code></pre>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/jalehman/claude-team/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/jalehman/claude-team" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/jalehman/claude-team/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@jalehman</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Coding Agents & IDEs</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

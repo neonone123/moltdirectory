@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Unified search skill with Intelligent Auto-Routing">
+  <title>web-search-plus - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Search & Research</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Search & Research</a>
+                <span class="skill-page-author">by @robbyczgw-cla</span>
+              </div>
+              <h1 class="skill-page-title">web-search-plus</h1>
+              <p class="skill-page-desc">Unified search skill with Intelligent Auto-Routing</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Web Search Plus</h1>
+<p>Multi-provider web search with <strong>Intelligent Auto-Routing</strong>: Serper (Google), Tavily (Research), Exa (Neural).</p>
+<p><strong>NEW in v2.1.0</strong>: Intelligent multi-signal analysis with confidence scoring!</p>
+<hr>
+<h2>⚠️ Important: Don&#39;t Modify Core Clawdbot Config</h2>
+<p><strong>Tavily, Serper, and Exa are NOT core Clawdbot providers.</strong></p>
+<p>❌ <strong>DON&#39;T</strong> add this to <code>~/.clawdbot/clawdbot.json</code>:</p>
+<pre><code class="language-json">&quot;tools&quot;: {
+  &quot;web&quot;: {
+    &quot;search&quot;: {
+      &quot;provider&quot;: &quot;tavily&quot;  // WRONG - will cause errors!
+    }
+  }
+}
+</code></pre>
+<p>✅ <strong>DO</strong> use this skill&#39;s scripts with environment variables:</p>
+<pre><code class="language-bash">export TAVILY_API_KEY=&quot;your-key&quot;
+python3 scripts/search.py -q &quot;your query&quot;
+</code></pre>
+<p>Core Clawdbot only supports <code>brave</code> as the built-in web search provider. This skill adds Serper, Tavily, and Exa as <strong>additional</strong> options via its own scripts.</p>
+<hr>
+<h2>🧠 Intelligent Auto-Routing</h2>
+<p>No need to choose a provider — just search! The skill uses <strong>multi-signal analysis</strong> to understand your query intent:</p>
+<pre><code class="language-bash"># These queries are intelligently routed with confidence scoring:
+python3 scripts/search.py -q &quot;how much does iPhone 16 cost&quot;     # → Serper (68% MEDIUM)
+python3 scripts/search.py -q &quot;how does quantum entanglement work&quot;  # → Tavily (86% HIGH)
+python3 scripts/search.py -q &quot;startups similar to Notion&quot;       # → Exa (76% HIGH)
+python3 scripts/search.py -q &quot;MacBook Pro M3 specs review&quot;      # → Serper (70% HIGH)
+python3 scripts/search.py -q &quot;explain pros and cons of React&quot;   # → Tavily (85% HIGH)
+python3 scripts/search.py -q &quot;companies like stripe.com&quot;        # → Exa (100% HIGH)
+</code></pre>
+<h3>How It Works</h3>
+<p>The routing engine analyzes multiple signals:</p>
+<h4>🛒 Shopping Intent → Serper</h4>
+<table>
+<thead>
+<tr>
+<th>Signal Type</th>
+<th>Examples</th>
+<th>Weight</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Price patterns</td>
+<td>&quot;how much&quot;, &quot;price of&quot;, &quot;cost of&quot;</td>
+<td>HIGH</td>
+</tr>
+<tr>
+<td>Purchase intent</td>
+<td>&quot;buy&quot;, &quot;purchase&quot;, &quot;order&quot;, &quot;where to buy&quot;</td>
+<td>HIGH</td>
+</tr>
+<tr>
+<td>Deal signals</td>
+<td>&quot;deal&quot;, &quot;discount&quot;, &quot;cheap&quot;, &quot;best price&quot;</td>
+<td>MEDIUM</td>
+</tr>
+<tr>
+<td>Product + Brand</td>
+<td>&quot;iPhone 16&quot;, &quot;Sony headphones&quot; + specs/review</td>
+<td>HIGH</td>
+</tr>
+<tr>
+<td>Local business</td>
+<td>&quot;near me&quot;, &quot;restaurants&quot;, &quot;hotels&quot;</td>
+<td>HIGH</td>
+</tr>
+</tbody></table>
+<h4>📚 Research Intent → Tavily</h4>
+<table>
+<thead>
+<tr>
+<th>Signal Type</th>
+<th>Examples</th>
+<th>Weight</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Explanation</td>
+<td>&quot;how does&quot;, &quot;why does&quot;, &quot;explain&quot;, &quot;what is&quot;</td>
+<td>HIGH</td>
+</tr>
+<tr>
+<td>Analysis</td>
+<td>&quot;compare&quot;, &quot;pros and cons&quot;, &quot;difference between&quot;</td>
+<td>HIGH</td>
+</tr>
+<tr>
+<td>Learning</td>
+<td>&quot;tutorial&quot;, &quot;guide&quot;, &quot;understand&quot;, &quot;learn&quot;</td>
+<td>MEDIUM</td>
+</tr>
+<tr>
+<td>Depth</td>
+<td>&quot;in-depth&quot;, &quot;comprehensive&quot;, &quot;detailed&quot;</td>
+<td>MEDIUM</td>
+</tr>
+<tr>
+<td>Complex queries</td>
+<td>Long, multi-clause questions</td>
+<td>BONUS</td>
+</tr>
+</tbody></table>
+<h4>🔍 Discovery Intent → Exa</h4>
+<table>
+<thead>
+<tr>
+<th>Signal Type</th>
+<th>Examples</th>
+<th>Weight</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Similarity</td>
+<td>&quot;similar to&quot;, &quot;alternatives to&quot;, &quot;competitors&quot;</td>
+<td>VERY HIGH</td>
+</tr>
+<tr>
+<td>Company discovery</td>
+<td>&quot;companies like&quot;, &quot;startups doing&quot;, &quot;who else&quot;</td>
+<td>HIGH</td>
+</tr>
+<tr>
+<td>URL detection</td>
+<td>Any URL or domain (stripe.com)</td>
+<td>VERY HIGH</td>
+</tr>
+<tr>
+<td>Academic</td>
+<td>&quot;arxiv&quot;, &quot;research papers&quot;, &quot;github projects&quot;</td>
+<td>HIGH</td>
+</tr>
+<tr>
+<td>Funding</td>
+<td>&quot;Series A&quot;, &quot;YC&quot;, &quot;funded startup&quot;</td>
+<td>HIGH</td>
+</tr>
+</tbody></table>
+<h3>Confidence Scoring</h3>
+<p>Every routing decision includes a confidence level:</p>
+<table>
+<thead>
+<tr>
+<th>Confidence</th>
+<th>Level</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>70-100%</td>
+<td><strong>HIGH</strong></td>
+<td>Strong signal match, very reliable</td>
+</tr>
+<tr>
+<td>40-69%</td>
+<td><strong>MEDIUM</strong></td>
+<td>Good match, should work well</td>
+</tr>
+<tr>
+<td>0-39%</td>
+<td><strong>LOW</strong></td>
+<td>Ambiguous query, using fallback</td>
+</tr>
+</tbody></table>
+<h3>Debug Routing Decisions</h3>
+<p>See the full analysis:</p>
+<pre><code class="language-bash">python3 scripts/search.py --explain-routing -q &quot;how much does iPhone 16 Pro cost&quot;
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-json">{
+  &quot;query&quot;: &quot;how much does iPhone 16 Pro cost&quot;,
+  &quot;routing_decision&quot;: {
+    &quot;provider&quot;: &quot;serper&quot;,
+    &quot;confidence&quot;: 0.68,
+    &quot;confidence_level&quot;: &quot;medium&quot;,
+    &quot;reason&quot;: &quot;moderate_confidence_match&quot;
+  },
+  &quot;scores&quot;: {&quot;serper&quot;: 7.0, &quot;tavily&quot;: 0.0, &quot;exa&quot;: 0.0},
+  &quot;top_signals&quot;: [
+    {&quot;matched&quot;: &quot;how much&quot;, &quot;weight&quot;: 4.0},
+    {&quot;matched&quot;: &quot;brand + product detected&quot;, &quot;weight&quot;: 3.0}
+  ],
+  &quot;query_analysis&quot;: {
+    &quot;word_count&quot;: 7,
+    &quot;is_complex&quot;: false,
+    &quot;has_url&quot;: null,
+    &quot;recency_focused&quot;: false
+  }
+}
+</code></pre>
+<hr>
+<h2>🔍 When to Use This Skill vs Built-in Brave Search</h2>
+<h3>Use <strong>Built-in Brave Search</strong> when:</h3>
+<ul>
+<li>✅ General web searches (news, info, questions)</li>
+<li>✅ Privacy is important</li>
+<li>✅ Quick lookups without specific requirements</li>
+</ul>
+<h3>Use <strong>web-search-plus</strong> when:</h3>
+<h4>→ <strong>Serper</strong> (Google results):</h4>
+<ul>
+<li>🛍️ <strong>Product specs, prices, shopping</strong> - &quot;Compare iPhone 16 vs Samsung S24&quot;</li>
+<li>📍 <strong>Local businesses, places</strong> - &quot;Best pizza in Vienna&quot;</li>
+<li>🎯 <strong>&quot;Google it&quot;</strong> - Explicitly wants Google results</li>
+<li>📰 <strong>Shopping/images/news</strong> - <code>--type shopping/images/news</code></li>
+<li>🏆 <strong>Knowledge Graph</strong> - Structured info (prices, ratings, etc.)</li>
+</ul>
+<h4>→ <strong>Tavily</strong> (AI-optimized research):</h4>
+<ul>
+<li>📚 <strong>Research questions</strong> - &quot;How does quantum computing work?&quot;</li>
+<li>🔬 <strong>Deep dives</strong> - Complex multi-part questions</li>
+<li>📄 <strong>Full page content</strong> - Not just snippets (<code>--raw-content</code>)</li>
+<li>🎓 <strong>Academic research</strong> - Synthesized answers</li>
+<li>🔒 <strong>Domain filtering</strong> - <code>--include-domains</code> for trusted sources</li>
+</ul>
+<h4>→ <strong>Exa</strong> (Neural semantic search):</h4>
+<ul>
+<li>🔗 <strong>Similar pages</strong> - &quot;Sites like OpenAI.com&quot; (<code>--similar-url</code>)</li>
+<li>🏢 <strong>Company discovery</strong> - &quot;AI companies like Anthropic&quot;</li>
+<li>📝 <strong>Research papers</strong> - <code>--category &quot;research paper&quot;</code></li>
+<li>💻 <strong>GitHub projects</strong> - <code>--category github</code></li>
+<li>📅 <strong>Date-specific</strong> - <code>--start-date</code> / <code>--end-date</code></li>
+</ul>
+<hr>
+<h2>Provider Comparison</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th align="center">Serper</th>
+<th align="center">Tavily</th>
+<th align="center">Exa</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Speed</td>
+<td align="center">⚡⚡⚡</td>
+<td align="center">⚡⚡</td>
+<td align="center">⚡⚡</td>
+</tr>
+<tr>
+<td>Factual Accuracy</td>
+<td align="center">⭐⭐⭐</td>
+<td align="center">⭐⭐⭐</td>
+<td align="center">⭐⭐</td>
+</tr>
+<tr>
+<td>Semantic Understanding</td>
+<td align="center">⭐</td>
+<td align="center">⭐⭐</td>
+<td align="center">⭐⭐⭐</td>
+</tr>
+<tr>
+<td>Research Quality</td>
+<td align="center">⭐⭐</td>
+<td align="center">⭐⭐⭐</td>
+<td align="center">⭐⭐</td>
+</tr>
+<tr>
+<td>Full Page Content</td>
+<td align="center">✗</td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Shopping/Local</td>
+<td align="center">✓</td>
+<td align="center">✗</td>
+<td align="center">✗</td>
+</tr>
+<tr>
+<td>Similar Pages</td>
+<td align="center">✗</td>
+<td align="center">✗</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Knowledge Graph</td>
+<td align="center">✓</td>
+<td align="center">✗</td>
+<td align="center">✗</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Usage Examples</h2>
+<h3>Auto-Routed (Recommended)</h3>
+<pre><code class="language-bash">python3 scripts/search.py -q &quot;iPhone 16 Pro Max price&quot;          # → Serper
+python3 scripts/search.py -q &quot;how does HTTPS encryption work&quot;   # → Tavily
+python3 scripts/search.py -q &quot;startups similar to Notion&quot;       # → Exa
+</code></pre>
+<h3>Explicit Provider</h3>
+<pre><code class="language-bash">python3 scripts/search.py -p serper -q &quot;weather Vienna&quot; --type weather
+python3 scripts/search.py -p tavily -q &quot;quantum computing&quot; --depth advanced
+python3 scripts/search.py -p exa --similar-url &quot;https://stripe.com&quot; --category company
+</code></pre>
+<hr>
+<h2>Configuration</h2>
+<h3>config.json</h3>
+<pre><code class="language-json">{
+  &quot;auto_routing&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;fallback_provider&quot;: &quot;serper&quot;,
+    &quot;confidence_threshold&quot;: 0.3,
+    &quot;disabled_providers&quot;: []
+  },
+  &quot;serper&quot;: {&quot;country&quot;: &quot;us&quot;, &quot;language&quot;: &quot;en&quot;},
+  &quot;tavily&quot;: {&quot;depth&quot;: &quot;advanced&quot;},
+  &quot;exa&quot;: {&quot;type&quot;: &quot;neural&quot;}
+}
+</code></pre>
+<hr>
+<h2>Output Format</h2>
+<pre><code class="language-json">{
+  &quot;provider&quot;: &quot;serper&quot;,
+  &quot;query&quot;: &quot;iPhone 16 price&quot;,
+  &quot;results&quot;: [{&quot;title&quot;: &quot;...&quot;, &quot;url&quot;: &quot;...&quot;, &quot;snippet&quot;: &quot;...&quot;, &quot;score&quot;: 0.95}],
+  &quot;answer&quot;: &quot;Synthesized answer...&quot;,
+  &quot;routing&quot;: {
+    &quot;auto_routed&quot;: true,
+    &quot;provider&quot;: &quot;serper&quot;,
+    &quot;confidence&quot;: 0.78,
+    &quot;confidence_level&quot;: &quot;high&quot;,
+    &quot;reason&quot;: &quot;high_confidence_match&quot;,
+    &quot;top_signals&quot;: [{&quot;matched&quot;: &quot;price&quot;, &quot;weight&quot;: 3.0}]
+  }
+}
+</code></pre>
+<hr>
+<h2>Environment Setup</h2>
+<pre><code class="language-bash"># In your .env file (use &#39;export&#39; prefix!):
+export SERPER_API_KEY=&quot;your-key&quot;   # https://serper.dev
+export TAVILY_API_KEY=&quot;your-key&quot;   # https://tavily.com  
+export EXA_API_KEY=&quot;your-key&quot;      # https://exa.ai
+
+# Then load with: source .env
+</code></pre>
+<hr>
+<h2>FAQ</h2>
+<h3>General</h3>
+<p><strong>Q: How does auto-routing decide which provider to use?</strong></p>
+<blockquote>
+<p>Multi-signal analysis scores each provider based on: price patterns, explanation phrases, similarity keywords, URLs, product+brand combos, and query complexity. Highest score wins. Use <code>--explain-routing</code> to see the decision breakdown.</p>
+</blockquote>
+<p><strong>Q: What if it picks the wrong provider?</strong></p>
+<blockquote>
+<p>Override with <code>-p serper/tavily/exa</code>. Check <code>--explain-routing</code> to understand why it chose differently.</p>
+</blockquote>
+<p><strong>Q: What does &quot;low confidence&quot; mean?</strong></p>
+<blockquote>
+<p>Query is ambiguous (e.g., &quot;Tesla&quot; could be cars, stock, or company). Falls back to Serper. Results may vary.</p>
+</blockquote>
+<p><strong>Q: Can I disable a provider?</strong></p>
+<blockquote>
+<p>Yes! In config.json: <code>&quot;disabled_providers&quot;: [&quot;exa&quot;]</code></p>
+</blockquote>
+<h3>API Keys</h3>
+<p><strong>Q: Which API keys do I need?</strong></p>
+<blockquote>
+<p>At minimum ONE key. You can use just Serper, just Tavily, or all three. Missing keys = that provider is skipped.</p>
+</blockquote>
+<p><strong>Q: Where do I get API keys?</strong></p>
+<blockquote>
+<ul>
+<li>Serper: <a href="https://serper.dev">https://serper.dev</a> (2,500 free queries, no credit card)</li>
+<li>Tavily: <a href="https://tavily.com">https://tavily.com</a> (1,000 free searches/month)</li>
+<li>Exa: <a href="https://exa.ai">https://exa.ai</a> (1,000 free searches/month)</li>
+</ul>
+</blockquote>
+<p><strong>Q: How do I set API keys?</strong></p>
+<blockquote>
+<p>Create <code>.env</code> in your workspace:</p>
+<pre><code class="language-bash">export SERPER_API_KEY=&quot;your-key&quot;
+export TAVILY_API_KEY=&quot;your-key&quot;
+export EXA_API_KEY=&quot;your-key&quot;
+</code></pre>
+<p>Then <code>source .env</code> or add to your shell profile.</p>
+</blockquote>
+<h3>Routing Details</h3>
+<p><strong>Q: How do I know which provider handled my search?</strong></p>
+<blockquote>
+<p>Check <code>routing.provider</code> in JSON output, or <code>[🔍 Searched with: Provider]</code> in chat responses.</p>
+</blockquote>
+<p><strong>Q: Why does it sometimes choose Serper for research questions?</strong></p>
+<blockquote>
+<p>If the query has brand/product signals (e.g., &quot;how does Tesla FSD work&quot;), shopping intent may outweigh research intent. Override with <code>-p tavily</code>.</p>
+</blockquote>
+<p><strong>Q: What&#39;s the confidence threshold?</strong></p>
+<blockquote>
+<p>Default: 0.3 (30%). Below this = low confidence, uses fallback. Adjustable in config.json.</p>
+</blockquote>
+<h3>Troubleshooting</h3>
+<p><strong>Q: &quot;No API key found&quot; error?</strong></p>
+<blockquote>
+<p>Make sure keys are exported (not just set): <code>export SERPER_API_KEY=&quot;...&quot;</code> and sourced.</p>
+</blockquote>
+<p><strong>Q: Getting empty results?</strong></p>
+<blockquote>
+<ol>
+<li>Check API key is valid</li>
+<li>Try a different provider with <code>-p</code></li>
+<li>Some queries have no results (very niche topics)</li>
+</ol>
+</blockquote>
+<p><strong>Q: Rate limited?</strong></p>
+<blockquote>
+<p>Each provider has limits. Spread queries across providers or wait. Serper: 2,500 free total, Tavily: 1,000/month free.</p>
+</blockquote>
+<h3>For Clawdbot Users</h3>
+<p><strong>Q: How do I use this in chat?</strong></p>
+<blockquote>
+<p>Just ask! Clawdbot auto-detects search intent. Or explicitly: &quot;search with web-search-plus for...&quot;</p>
+</blockquote>
+<p><strong>Q: Does it replace built-in Brave Search?</strong></p>
+<blockquote>
+<p>No, it&#39;s complementary. Use Brave for quick lookups, web-search-plus for research/shopping/discovery.</p>
+</blockquote>
+<p><strong>Q: Can I see which provider was used?</strong></p>
+<blockquote>
+<p>Yes! SOUL.md can include attribution: <code>[🔍 Searched with: Serper/Tavily/Exa]</code></p>
+</blockquote>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/robbyczgw-cla/web-search-plus/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/robbyczgw-cla/web-search-plus" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/robbyczgw-cla/web-search-plus/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@robbyczgw-cla</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Search & Research</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Read, write, edit, and format Excel files (.xlsx)">
+  <title>excel - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to PDF & Documents</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">PDF & Documents</a>
+                <span class="skill-page-author">by @dbhurley</span>
+              </div>
+              <h1 class="skill-page-title">excel</h1>
+              <p class="skill-page-desc">Read, write, edit, and format Excel files (.xlsx)</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Excel</h1>
+<p>Comprehensive Excel file manipulation - read, write, edit, format, and export.</p>
+<h2>Setup</h2>
+<pre><code class="language-bash">pip install openpyxl
+
+# Or use uv (recommended)
+uv run --with openpyxl python3 scripts/excel.py --help
+</code></pre>
+<h2>Quick Reference</h2>
+<pre><code class="language-bash">cd skills/excel
+
+# Get file info
+python3 scripts/excel.py info report.xlsx
+
+# Read entire sheet
+python3 scripts/excel.py read report.xlsx
+python3 scripts/excel.py read report.xlsx --format markdown
+python3 scripts/excel.py read report.xlsx --sheet &quot;Sales&quot; --range A1:D10
+
+# Read specific cell
+python3 scripts/excel.py cell report.xlsx B5
+
+# Create new workbook
+python3 scripts/excel.py create output.xlsx
+python3 scripts/excel.py create output.xlsx --sheets &quot;Data,Summary,Charts&quot;
+
+# Write data
+python3 scripts/excel.py write output.xlsx --data &#39;[[1,2,3],[4,5,6]]&#39;
+python3 scripts/excel.py write output.xlsx --data &#39;{&quot;headers&quot;:[&quot;Name&quot;,&quot;Age&quot;],&quot;rows&quot;:[[&quot;Alice&quot;,30],[&quot;Bob&quot;,25]]}&#39;
+
+# Edit a cell
+python3 scripts/excel.py edit report.xlsx A1 &quot;New Value&quot;
+python3 scripts/excel.py edit report.xlsx B2 &quot;SUM(A1:A10)&quot; --formula
+
+# Export
+python3 scripts/excel.py to-csv report.xlsx output.csv
+python3 scripts/excel.py to-json report.xlsx output.json
+python3 scripts/excel.py to-markdown report.xlsx
+</code></pre>
+<h2>Commands</h2>
+<h3>Reading Data</h3>
+<p><strong>info</strong> - Get workbook metadata</p>
+<pre><code class="language-bash">python3 scripts/excel.py info report.xlsx
+# Returns: sheets, dimensions, row/column counts
+</code></pre>
+<p><strong>read</strong> - Read sheet data</p>
+<pre><code class="language-bash">python3 scripts/excel.py read file.xlsx                     # JSON output
+python3 scripts/excel.py read file.xlsx --format csv        # CSV output
+python3 scripts/excel.py read file.xlsx --format markdown   # Markdown table
+python3 scripts/excel.py read file.xlsx --sheet &quot;Sheet2&quot;    # Specific sheet
+python3 scripts/excel.py read file.xlsx --range A1:D10      # Specific range
+</code></pre>
+<p><strong>cell</strong> - Read a specific cell</p>
+<pre><code class="language-bash">python3 scripts/excel.py cell file.xlsx A1
+python3 scripts/excel.py cell file.xlsx B5 --sheet &quot;Data&quot;
+# Returns: value, formula (if any), data type, merge status
+</code></pre>
+<h3>Creating &amp; Writing</h3>
+<p><strong>create</strong> - Create new workbook</p>
+<pre><code class="language-bash">python3 scripts/excel.py create new.xlsx
+python3 scripts/excel.py create new.xlsx --sheets &quot;Sheet1,Sheet2,Summary&quot;
+</code></pre>
+<p><strong>write</strong> - Write data to cells</p>
+<pre><code class="language-bash"># 2D array
+python3 scripts/excel.py write file.xlsx --data &#39;[[1,2,3],[4,5,6]]&#39;
+
+# With headers
+python3 scripts/excel.py write file.xlsx --data &#39;{&quot;headers&quot;:[&quot;A&quot;,&quot;B&quot;],&quot;rows&quot;:[[1,2],[3,4]]}&#39;
+
+# Start at specific cell
+python3 scripts/excel.py write file.xlsx --data &#39;[[1,2]]&#39; --start C5
+
+# Key-value pairs
+python3 scripts/excel.py write file.xlsx --data &#39;{&quot;Name&quot;:&quot;Alice&quot;,&quot;Age&quot;:30}&#39;
+</code></pre>
+<p><strong>from-csv</strong> - Create Excel from CSV</p>
+<pre><code class="language-bash">python3 scripts/excel.py from-csv data.csv output.xlsx
+python3 scripts/excel.py from-csv data.csv output.xlsx --sheet &quot;Imported&quot;
+</code></pre>
+<p><strong>from-json</strong> - Create Excel from JSON</p>
+<pre><code class="language-bash">python3 scripts/excel.py from-json data.json output.xlsx
+# Supports: array of objects, array of arrays, headers+rows format
+</code></pre>
+<h3>Editing</h3>
+<p><strong>edit</strong> - Edit a cell value or formula</p>
+<pre><code class="language-bash">python3 scripts/excel.py edit file.xlsx A1 &quot;New Value&quot;
+python3 scripts/excel.py edit file.xlsx B2 100
+python3 scripts/excel.py edit file.xlsx C3 &quot;SUM(A1:B2)&quot; --formula
+python3 scripts/excel.py edit file.xlsx D4 &quot;=VLOOKUP(A1,Data!A:B,2,FALSE)&quot; --formula
+</code></pre>
+<p><strong>find</strong> - Search for text</p>
+<pre><code class="language-bash">python3 scripts/excel.py find file.xlsx &quot;search term&quot;
+python3 scripts/excel.py find file.xlsx &quot;error&quot; --sheet &quot;Log&quot;
+# Returns: list of cells containing the text
+</code></pre>
+<p><strong>replace</strong> - Find and replace</p>
+<pre><code class="language-bash">python3 scripts/excel.py replace file.xlsx &quot;old&quot; &quot;new&quot;
+python3 scripts/excel.py replace file.xlsx &quot;2024&quot; &quot;2025&quot; --sheet &quot;Dates&quot;
+</code></pre>
+<h3>Sheet Management</h3>
+<p><strong>add-sheet</strong> - Add a new sheet</p>
+<pre><code class="language-bash">python3 scripts/excel.py add-sheet file.xlsx &quot;NewSheet&quot;
+python3 scripts/excel.py add-sheet file.xlsx &quot;First&quot; --position 0  # Insert at beginning
+</code></pre>
+<p><strong>rename-sheet</strong> - Rename a sheet</p>
+<pre><code class="language-bash">python3 scripts/excel.py rename-sheet file.xlsx &quot;Sheet1&quot; &quot;Data&quot;
+</code></pre>
+<p><strong>delete-sheet</strong> - Delete a sheet</p>
+<pre><code class="language-bash">python3 scripts/excel.py delete-sheet file.xlsx &quot;OldSheet&quot;
+</code></pre>
+<p><strong>copy-sheet</strong> - Copy a sheet</p>
+<pre><code class="language-bash">python3 scripts/excel.py copy-sheet file.xlsx &quot;Template&quot; &quot;January&quot;
+</code></pre>
+<h3>Row &amp; Column Operations</h3>
+<p><strong>insert-rows</strong> - Insert rows</p>
+<pre><code class="language-bash">python3 scripts/excel.py insert-rows file.xlsx 5              # Insert 1 row at row 5
+python3 scripts/excel.py insert-rows file.xlsx 5 --count 3    # Insert 3 rows
+</code></pre>
+<p><strong>insert-cols</strong> - Insert columns</p>
+<pre><code class="language-bash">python3 scripts/excel.py insert-cols file.xlsx C              # Insert at column C
+python3 scripts/excel.py insert-cols file.xlsx 3 --count 2    # Insert 2 cols at position 3
+</code></pre>
+<p><strong>delete-rows</strong> - Delete rows</p>
+<pre><code class="language-bash">python3 scripts/excel.py delete-rows file.xlsx 5
+python3 scripts/excel.py delete-rows file.xlsx 5 --count 3
+</code></pre>
+<p><strong>delete-cols</strong> - Delete columns</p>
+<pre><code class="language-bash">python3 scripts/excel.py delete-cols file.xlsx C
+python3 scripts/excel.py delete-cols file.xlsx B --count 2
+</code></pre>
+<h3>Cell Operations</h3>
+<p><strong>merge</strong> - Merge cells</p>
+<pre><code class="language-bash">python3 scripts/excel.py merge file.xlsx A1:C1
+python3 scripts/excel.py merge file.xlsx A1:A5 --sheet &quot;Header&quot;
+</code></pre>
+<p><strong>unmerge</strong> - Unmerge cells</p>
+<pre><code class="language-bash">python3 scripts/excel.py unmerge file.xlsx A1:C1
+</code></pre>
+<h3>Formatting</h3>
+<p><strong>format</strong> - Apply cell formatting</p>
+<pre><code class="language-bash"># Bold and italic
+python3 scripts/excel.py format file.xlsx A1:D1 --bold --italic
+
+# Font settings
+python3 scripts/excel.py format file.xlsx A1:D1 --font-size 14 --font-color RED --font-name &quot;Arial&quot;
+
+# Background color
+python3 scripts/excel.py format file.xlsx A1:D1 --bg-color YELLOW
+
+# Alignment
+python3 scripts/excel.py format file.xlsx A:A --align center --valign top
+
+# Text wrapping
+python3 scripts/excel.py format file.xlsx B2:B100 --wrap
+
+# Borders
+python3 scripts/excel.py format file.xlsx A1:D10 --border thin
+# Border styles: thin, medium, thick, double
+
+# Combined
+python3 scripts/excel.py format file.xlsx A1:D1 --bold --bg-color &quot;#4472C4&quot; --font-color WHITE --align center
+</code></pre>
+<p><strong>resize</strong> - Resize rows and columns</p>
+<pre><code class="language-bash">python3 scripts/excel.py resize file.xlsx --row 1:30          # Row 1 height = 30
+python3 scripts/excel.py resize file.xlsx --col A:20          # Column A width = 20
+python3 scripts/excel.py resize file.xlsx --row 1:30 --col A:15 --col B:25
+</code></pre>
+<p><strong>freeze</strong> - Freeze panes</p>
+<pre><code class="language-bash">python3 scripts/excel.py freeze file.xlsx A2    # Freeze row 1
+python3 scripts/excel.py freeze file.xlsx B1    # Freeze column A
+python3 scripts/excel.py freeze file.xlsx B2    # Freeze row 1 and column A
+</code></pre>
+<h3>Export</h3>
+<p><strong>to-csv</strong> - Export to CSV</p>
+<pre><code class="language-bash">python3 scripts/excel.py to-csv file.xlsx output.csv
+python3 scripts/excel.py to-csv file.xlsx data.csv --sheet &quot;Data&quot;
+</code></pre>
+<p><strong>to-json</strong> - Export to JSON (first row as headers)</p>
+<pre><code class="language-bash">python3 scripts/excel.py to-json file.xlsx output.json
+# Outputs: [{&quot;Header1&quot;: &quot;val1&quot;, &quot;Header2&quot;: &quot;val2&quot;}, ...]
+</code></pre>
+<p><strong>to-markdown</strong> - Export to markdown table</p>
+<pre><code class="language-bash">python3 scripts/excel.py to-markdown file.xlsx
+python3 scripts/excel.py to-markdown file.xlsx --sheet &quot;Summary&quot;
+</code></pre>
+<h2>Colors</h2>
+<p>Named colors: <code>RED</code>, <code>GREEN</code>, <code>BLUE</code>, <code>YELLOW</code>, <code>WHITE</code>, <code>BLACK</code>, <code>GRAY</code>, <code>ORANGE</code>, <code>PURPLE</code>, <code>PINK</code>, <code>CYAN</code></p>
+<p>Hex colors: <code>#FF0000</code>, <code>#4472C4</code>, <code>00FF00</code> (with or without #)</p>
+<h2>Common Workflows</h2>
+<h3>Create a report from data</h3>
+<pre><code class="language-bash"># Create workbook with data
+python3 scripts/excel.py from-json sales.json report.xlsx --sheet &quot;Sales&quot;
+
+# Format headers
+python3 scripts/excel.py format report.xlsx A1:E1 --bold --bg-color &quot;#4472C4&quot; --font-color WHITE
+
+# Freeze header row
+python3 scripts/excel.py freeze report.xlsx A2
+
+# Resize columns
+python3 scripts/excel.py resize report.xlsx --col A:15 --col B:25 --col C:12
+</code></pre>
+<h3>Update existing report</h3>
+<pre><code class="language-bash"># Add new row
+python3 scripts/excel.py insert-rows report.xlsx 2
+python3 scripts/excel.py write report.xlsx --data &#39;[[&quot;New Item&quot;, 100, 50]]&#39; --start A2
+
+# Update specific cell
+python3 scripts/excel.py edit report.xlsx D10 &quot;=SUM(D2:D9)&quot; --formula
+
+# Find and replace dates
+python3 scripts/excel.py replace report.xlsx &quot;2024&quot; &quot;2025&quot;
+</code></pre>
+<h3>Extract data for analysis</h3>
+<pre><code class="language-bash"># Read as JSON for processing
+python3 scripts/excel.py read data.xlsx --format json &gt; data.json
+
+# Read specific range as markdown
+python3 scripts/excel.py read data.xlsx --range A1:D20 --format markdown
+
+# Export specific sheet to CSV
+python3 scripts/excel.py to-csv data.xlsx --sheet &quot;Raw Data&quot; export.csv
+</code></pre>
+<h2>Output Format</h2>
+<p>All commands output JSON with <code>success: true/false</code>:</p>
+<pre><code class="language-json">{
+  &quot;success&quot;: true,
+  &quot;file&quot;: &quot;report.xlsx&quot;,
+  &quot;sheet&quot;: &quot;Sheet1&quot;,
+  ...
+}
+</code></pre>
+<p>Use <code>--format markdown</code> or <code>--format csv</code> with <code>read</code> command for alternative output.</p>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/dbhurley/excel/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/dbhurley/excel" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/dbhurley/excel/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@dbhurley</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">PDF & Documents</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

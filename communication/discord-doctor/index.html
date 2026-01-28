@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Quick diagnosis and repair for Discord bot, Gateway, OAuth token, and legacy config issues">
+  <title>discord-doctor - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Communication</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Communication</a>
+                <span class="skill-page-author">by @jhillock</span>
+              </div>
+              <h1 class="skill-page-title">discord-doctor</h1>
+              <p class="skill-page-desc">Quick diagnosis and repair for Discord bot, Gateway, OAuth token, and legacy config issues</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Discord Doctor</h1>
+<p>Quick diagnosis and repair for Discord/Gateway availability issues, OAuth token problems, and legacy Clawdis configuration conflicts.</p>
+<h2>Usage</h2>
+<pre><code class="language-bash"># Check status (diagnostic only)
+discord-doctor
+
+# Check and auto-fix issues
+discord-doctor --fix
+</code></pre>
+<h2>What It Checks</h2>
+<ol>
+<li><strong>Discord App</strong> - Is the Discord desktop app running (optional, for monitoring)</li>
+<li><strong>Gateway Process</strong> - Is the Clawdbot gateway daemon running</li>
+<li><strong>Gateway HTTP</strong> - Is the gateway responding on port 18789</li>
+<li><strong>Discord Connection</strong> - Is the bot actually connected to Discord (via <code>clawdbot health</code>)</li>
+<li><strong>Anthropic OAuth</strong> - Is your OAuth token valid or expired</li>
+<li><strong>Legacy Clawdis</strong> - Detects old launchd services and config directories that cause conflicts</li>
+<li><strong>Recent Activity</strong> - Shows recent Discord sessions</li>
+</ol>
+<h2>Auto-Fix Capabilities</h2>
+<p>When run with <code>--fix</code>, it can:</p>
+<ul>
+<li><strong>Start gateway</strong> if not running</li>
+<li><strong>Install missing npm packages</strong> (like discord.js, strip-ansi)</li>
+<li><strong>Restart gateway</strong> after fixing dependencies</li>
+<li><strong>Remove legacy launchd service</strong> (<code>com.clawdis.gateway.plist</code>)</li>
+<li><strong>Backup legacy config</strong> (moves <code>~/.clawdis</code> to <code>~/.clawdis-backup</code>)</li>
+</ul>
+<h2>Common Issues &amp; Fixes</h2>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Auto-Fix Action</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Gateway not running</td>
+<td>Starts gateway on port 18789</td>
+</tr>
+<tr>
+<td>Missing npm packages</td>
+<td>Runs <code>npm install</code> + installs specific package</td>
+</tr>
+<tr>
+<td>Discord disconnected</td>
+<td>Restarts gateway to reconnect</td>
+</tr>
+<tr>
+<td>OAuth token expired</td>
+<td>Shows instructions to re-authenticate</td>
+</tr>
+<tr>
+<td>Legacy launchd service</td>
+<td>Removes old <code>com.clawdis.gateway.plist</code></td>
+</tr>
+<tr>
+<td>Legacy ~/.clawdis config</td>
+<td>Moves to <code>~/.clawdis-backup</code></td>
+</tr>
+</tbody></table>
+<h2>OAuth Token Issues</h2>
+<p>If you see &quot;Access token EXPIRED&quot;, run:</p>
+<pre><code class="language-bash">cd ~/Clawdis &amp;&amp; npx clawdbot configure
+</code></pre>
+<p>Then select &quot;Anthropic OAuth (Claude Pro/Max)&quot; to re-authenticate.</p>
+<h2>Legacy Clawdis Migration</h2>
+<p>If you upgraded from Clawdis to Clawdbot, you may have legacy artifacts causing OAuth token conflicts:</p>
+<ul>
+<li><strong>Old launchd service</strong>: <code>~/Library/LaunchAgents/com.clawdis.gateway.plist</code></li>
+<li><strong>Old config directory</strong>: <code>~/.clawdis/</code></li>
+</ul>
+<p>Run <code>discord-doctor --fix</code> to clean these up automatically.</p>
+<h2>Example Output</h2>
+<pre><code>Discord Doctor
+Checking Discord and Gateway health...
+
+1. Discord App
+   Running (6 processes)
+
+2. Gateway Process
+   Running (PID: 66156, uptime: 07:45)
+
+3. Gateway HTTP
+   Responding on port 18789
+
+4. Discord Connection
+   Discord: ok (@Clawdis) (321ms)
+
+5. Anthropic OAuth
+   Valid (expires in 0h 45m)
+
+6. Legacy Clawdis
+   No legacy launchd service
+   No legacy config directory
+
+7. Recent Discord Activity
+   - discord:group:123456789012345678 (21h ago)
+
+Summary
+All checks passed! Discord is healthy.
+</code></pre>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/jhillock/discord-doctor/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/jhillock/discord-doctor" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/jhillock/discord-doctor/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@jhillock</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Communication</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Access Guru knowledge base via MCP - ask AI questions, search documents, create drafts">
+  <title>guru-mcp - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Browser & Automation</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Browser & Automation</a>
+                <span class="skill-page-author">by @pvoo</span>
+              </div>
+              <h1 class="skill-page-title">guru-mcp</h1>
+              <p class="skill-page-desc">Access Guru knowledge base via MCP - ask AI questions, search documents, create drafts</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Guru MCP</h1>
+<p>Access your Guru knowledge base via the official MCP server. Ask AI-powered questions, search documents, create drafts, and update cards.</p>
+<h2>Features</h2>
+<ul>
+<li><strong>AI-Powered Answers</strong> — Get comprehensive answers from Knowledge Agents</li>
+<li><strong>Document Search</strong> — Find cards and content across your knowledge base</li>
+<li><strong>Create Drafts</strong> — Generate new card drafts from AI tools</li>
+<li><strong>Update Cards</strong> — Modify existing cards directly</li>
+<li><strong>Connected Sources</strong> — Access Salesforce, Slack, Google Drive, Confluence, SharePoint through Guru</li>
+<li><strong>Permission-Aware</strong> — Respects all existing Guru permissions</li>
+<li><strong>Analytics</strong> — All queries logged in AI Agent Center</li>
+</ul>
+<h2>Setup</h2>
+<h3>1. Get API Token</h3>
+<ol>
+<li>Go to <strong>Guru Admin → API Tokens</strong></li>
+<li>Create a new token</li>
+<li>Note your email and token</li>
+</ol>
+<h3>2. Configure Environment</h3>
+<p>Add to <code>~/.clawdbot/.env</code>:</p>
+<pre><code class="language-bash">GURU_API_TOKEN=your.email@company.com:your-api-token
+</code></pre>
+<h3>3. Configure mcporter</h3>
+<p>Add to <code>config/mcporter.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;mcpServers&quot;: {
+    &quot;guru&quot;: {
+      &quot;baseUrl&quot;: &quot;https://mcp.api.getguru.com/mcp&quot;,
+      &quot;headers&quot;: {
+        &quot;Authorization&quot;: &quot;Bearer ${GURU_API_TOKEN}&quot;
+      }
+    }
+  }
+}
+</code></pre>
+<h3>4. Verify</h3>
+<pre><code class="language-bash">mcporter list guru
+</code></pre>
+<h2>Available Tools</h2>
+<h3><code>guru_list_knowledge_agents</code></h3>
+<p>List all Knowledge Agents in your workspace. <strong>Always call this first</strong> to get agent IDs for other tools.</p>
+<pre><code class="language-bash">mcporter call &#39;guru.guru_list_knowledge_agents()&#39;
+</code></pre>
+<p>Returns:</p>
+<pre><code class="language-json">[
+  {&quot;id&quot;: &quot;08de66e8-...&quot;, &quot;name&quot;: &quot;Guru&quot;},
+  {&quot;id&quot;: &quot;abc123...&quot;, &quot;name&quot;: &quot;Engineering Docs&quot;}
+]
+</code></pre>
+<h3><code>guru_answer_generation</code></h3>
+<p>Get AI-powered answers from a Knowledge Agent. Best for specific questions like &quot;What is X?&quot; or &quot;How do I Y?&quot;.</p>
+<pre><code class="language-bash">mcporter call &#39;guru.guru_answer_generation(
+  agentId: &quot;YOUR_AGENT_ID&quot;,
+  question: &quot;How do I submit expenses?&quot;
+)&#39;
+</code></pre>
+<p>Optional filters:</p>
+<ul>
+<li><code>collectionIds</code> — Limit to specific collections</li>
+<li><code>sourceIds</code> — Limit to specific sources</li>
+</ul>
+<p>Returns comprehensive answer with sources.</p>
+<h3><code>guru_search_documents</code></h3>
+<p>Find documents, cards, and sources. Best for browsing content like &quot;find docs on X&quot; or &quot;do we have cards about Y?&quot;.</p>
+<pre><code class="language-bash">mcporter call &#39;guru.guru_search_documents(
+  agentId: &quot;YOUR_AGENT_ID&quot;,
+  query: &quot;onboarding process&quot;
+)&#39;
+</code></pre>
+<p>Returns list of matching documents with snippets.</p>
+<h3><code>guru_get_card_by_id</code></h3>
+<p>Get full card content in HTML format.</p>
+<pre><code class="language-bash">mcporter call &#39;guru.guru_get_card_by_id(id: &quot;CARD_ID&quot;)&#39;
+</code></pre>
+<p>Returns card ID, title, and HTML content.</p>
+<h3><code>guru_create_draft</code></h3>
+<p>Create a new card draft.</p>
+<pre><code class="language-bash">mcporter call &#39;guru.guru_create_draft(
+  title: &quot;New Process Guide&quot;,
+  content: &quot;&lt;h2&gt;Overview&lt;/h2&gt;&lt;p&gt;This guide covers...&lt;/p&gt;&quot;
+)&#39;
+</code></pre>
+<p>Returns draft ID and URL.</p>
+<h3><code>guru_update_card</code></h3>
+<p>Update an existing card. First retrieve current content with <code>guru_get_card_by_id</code>, then modify.</p>
+<pre><code class="language-bash">mcporter call &#39;guru.guru_update_card(
+  cardId: &quot;CARD_ID&quot;,
+  title: &quot;Updated Title&quot;,
+  content: &quot;&lt;p&gt;Updated HTML content...&lt;/p&gt;&quot;
+)&#39;
+</code></pre>
+<p><strong>Important:</strong> Preserve HTML structure when updating. Insert/replace content within existing DOM hierarchy.</p>
+<h2>Usage Patterns</h2>
+<h3>Ask a Question</h3>
+<pre><code class="language-bash"># 1. Get agent ID
+mcporter call &#39;guru.guru_list_knowledge_agents()&#39;
+
+# 2. Ask question
+mcporter call &#39;guru.guru_answer_generation(
+  agentId: &quot;08de66e8-...&quot;,
+  question: &quot;What is the PTO policy?&quot;
+)&#39;
+</code></pre>
+<h3>Find and Read a Card</h3>
+<pre><code class="language-bash"># 1. Search for cards
+mcporter call &#39;guru.guru_search_documents(
+  agentId: &quot;08de66e8-...&quot;,
+  query: &quot;expense report&quot;
+)&#39;
+
+# 2. Get full content
+mcporter call &#39;guru.guru_get_card_by_id(id: &quot;CARD_ID_FROM_SEARCH&quot;)&#39;
+</code></pre>
+<h3>Create New Documentation</h3>
+<pre><code class="language-bash">mcporter call &#39;guru.guru_create_draft(
+  title: &quot;API Authentication Guide&quot;,
+  content: &quot;&lt;h2&gt;Overview&lt;/h2&gt;&lt;p&gt;This guide explains how to authenticate with our API.&lt;/p&gt;&lt;h2&gt;Steps&lt;/h2&gt;&lt;ol&gt;&lt;li&gt;Generate API key&lt;/li&gt;&lt;li&gt;Add to headers&lt;/li&gt;&lt;/ol&gt;&quot;
+)&#39;
+</code></pre>
+<h2>Choosing the Right Tool</h2>
+<table>
+<thead>
+<tr>
+<th>Use Case</th>
+<th>Tool</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&quot;What is X?&quot; / &quot;How do I Y?&quot;</td>
+<td><code>guru_answer_generation</code></td>
+</tr>
+<tr>
+<td>&quot;Find docs about X&quot;</td>
+<td><code>guru_search_documents</code></td>
+</tr>
+<tr>
+<td>&quot;Show me card XYZ&quot;</td>
+<td><code>guru_get_card_by_id</code></td>
+</tr>
+<tr>
+<td>&quot;Create a new guide for X&quot;</td>
+<td><code>guru_create_draft</code></td>
+</tr>
+<tr>
+<td>&quot;Update this card with...&quot;</td>
+<td><code>guru_update_card</code></td>
+</tr>
+</tbody></table>
+<h2>Token Format</h2>
+<p>The <code>GURU_API_TOKEN</code> must be in format <code>email:token</code>:</p>
+<pre><code>your.email@company.com:a1b2c3d4-e5f6-7890-abcd-ef1234567890
+</code></pre>
+<h2>Notes</h2>
+<ul>
+<li>Questions appear in Guru&#39;s <strong>AI Agent Center</strong> analytics</li>
+<li>All permissions enforced (users only see what they have access to)</li>
+<li>Knowledge Agents can be domain-specific — choose the right one for your question</li>
+<li>Card content is HTML — preserve structure when updating</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://help.getguru.com/docs/connecting-gurus-mcp-server">Guru MCP Documentation</a></li>
+<li><a href="https://developer.getguru.com">Guru API Reference</a></li>
+<li><a href="https://app.getguru.com/ai-agent-center">AI Agent Center</a></li>
+<li><a href="https://help.getguru.com/docs/connecting-gurus-mcp-server#feedback">MCP Feedback</a></li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/pvoo/guru-mcp/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/pvoo/guru-mcp" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/pvoo/guru-mcp/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@pvoo</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Browser & Automation</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Control Alexa devices via VoiceMonkey API v2 - make announcements, trigger routines, start flows">
+  <title>voicemonkey - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Smart Home & IoT</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Smart Home & IoT</a>
+                <span class="skill-page-author">by @jayakumark</span>
+              </div>
+              <h1 class="skill-page-title">voicemonkey</h1>
+              <p class="skill-page-desc">Control Alexa devices via VoiceMonkey API v2 - make announcements, trigger routines, start flows</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>VoiceMonkey</h1>
+<p>Control Alexa/Echo devices via VoiceMonkey API v2. Make TTS announcements, trigger Alexa routines, start flows, and display images/videos on Echo Show devices.</p>
+<h2>Setup</h2>
+<ol>
+<li>Get your secret token from <a href="https://console.voicemonkey.io">Voice Monkey Console</a> → Settings → API Credentials</li>
+<li>Set environment variable:<pre><code class="language-bash">export VOICEMONKEY_TOKEN=&quot;your-secret-token&quot;
+</code></pre>
+Or add to <code>~/.clawdbot/clawdbot.json</code>:<pre><code class="language-json">{
+  &quot;skills&quot;: {
+    &quot;entries&quot;: {
+      &quot;voicemonkey&quot;: {
+        &quot;env&quot;: { &quot;VOICEMONKEY_TOKEN&quot;: &quot;your-secret-token&quot; }
+      }
+    }
+  }
+}
+</code></pre>
+</li>
+<li>Find your Device IDs in the Voice Monkey Console → Settings → Devices</li>
+</ol>
+<h2>API Base URL</h2>
+<pre><code>https://api-v2.voicemonkey.io
+</code></pre>
+<h2>Announcement API</h2>
+<p>Make TTS announcements, play audio/video, or display images on Alexa devices.</p>
+<p><strong>Endpoint:</strong> <code>https://api-v2.voicemonkey.io/announcement</code></p>
+<h3>Basic TTS Announcement</h3>
+<pre><code class="language-bash">curl -X GET &quot;https://api-v2.voicemonkey.io/announcement?token=$VOICEMONKEY_TOKEN&amp;device=YOUR_DEVICE_ID&amp;text=Hello%20from%20Echo&quot;
+</code></pre>
+<h3>With Authorization Header (recommended)</h3>
+<pre><code class="language-bash">curl -X POST &quot;https://api-v2.voicemonkey.io/announcement&quot; \
+  -H &quot;Authorization: $VOICEMONKEY_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;device&quot;: &quot;YOUR_DEVICE_ID&quot;,
+    &quot;text&quot;: &quot;Hello from Echo the Fox!&quot;
+  }&#39;
+</code></pre>
+<h3>With Voice and Chime</h3>
+<pre><code class="language-bash">curl -X POST &quot;https://api-v2.voicemonkey.io/announcement&quot; \
+  -H &quot;Authorization: $VOICEMONKEY_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;device&quot;: &quot;YOUR_DEVICE_ID&quot;,
+    &quot;text&quot;: &quot;Dinner is ready!&quot;,
+    &quot;voice&quot;: &quot;Brian&quot;,
+    &quot;chime&quot;: &quot;soundbank://soundlibrary/alarms/beeps_and_bloops/bell_02&quot;
+  }&#39;
+</code></pre>
+<h3>Display Image on Echo Show</h3>
+<pre><code class="language-bash">curl -X POST &quot;https://api-v2.voicemonkey.io/announcement&quot; \
+  -H &quot;Authorization: $VOICEMONKEY_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;device&quot;: &quot;YOUR_DEVICE_ID&quot;,
+    &quot;text&quot;: &quot;Check out this image&quot;,
+    &quot;image&quot;: &quot;https://example.com/image.jpg&quot;,
+    &quot;media_width&quot;: &quot;100&quot;,
+    &quot;media_height&quot;: &quot;100&quot;,
+    &quot;media_scaling&quot;: &quot;best-fit&quot;
+  }&#39;
+</code></pre>
+<h3>Play Audio File</h3>
+<pre><code class="language-bash">curl -X POST &quot;https://api-v2.voicemonkey.io/announcement&quot; \
+  -H &quot;Authorization: $VOICEMONKEY_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;device&quot;: &quot;YOUR_DEVICE_ID&quot;,
+    &quot;audio&quot;: &quot;https://example.com/sound.mp3&quot;
+  }&#39;
+</code></pre>
+<h3>Play Video on Echo Show</h3>
+<pre><code class="language-bash">curl -X POST &quot;https://api-v2.voicemonkey.io/announcement&quot; \
+  -H &quot;Authorization: $VOICEMONKEY_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;device&quot;: &quot;YOUR_DEVICE_ID&quot;,
+    &quot;video&quot;: &quot;https://example.com/video.mp4&quot;,
+    &quot;video_repeat&quot;: 1
+  }&#39;
+</code></pre>
+<h3>Open Website on Echo Show</h3>
+<pre><code class="language-bash">curl -X POST &quot;https://api-v2.voicemonkey.io/announcement&quot; \
+  -H &quot;Authorization: $VOICEMONKEY_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;device&quot;: &quot;YOUR_DEVICE_ID&quot;,
+    &quot;website&quot;: &quot;https://example.com&quot;,
+    &quot;no_bg&quot;: &quot;true&quot;
+  }&#39;
+</code></pre>
+<h3>Announcement Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>token</code></td>
+<td>Yes*</td>
+<td>Secret token (*or use Authorization header)</td>
+</tr>
+<tr>
+<td><code>device</code></td>
+<td>Yes</td>
+<td>Device ID from Voice Monkey console</td>
+</tr>
+<tr>
+<td><code>text</code></td>
+<td>No</td>
+<td>TTS text (supports SSML)</td>
+</tr>
+<tr>
+<td><code>voice</code></td>
+<td>No</td>
+<td>Voice for TTS (see API Playground for options)</td>
+</tr>
+<tr>
+<td><code>language</code></td>
+<td>No</td>
+<td>Language code for better pronunciation</td>
+</tr>
+<tr>
+<td><code>chime</code></td>
+<td>No</td>
+<td>Sound URL or Alexa sound library reference</td>
+</tr>
+<tr>
+<td><code>audio</code></td>
+<td>No</td>
+<td>HTTPS URL of audio file to play</td>
+</tr>
+<tr>
+<td><code>background_audio</code></td>
+<td>No</td>
+<td>Audio to play behind TTS</td>
+</tr>
+<tr>
+<td><code>image</code></td>
+<td>No</td>
+<td>HTTPS URL of image for Echo Show</td>
+</tr>
+<tr>
+<td><code>video</code></td>
+<td>No</td>
+<td>HTTPS URL of MP4 video for Echo Show</td>
+</tr>
+<tr>
+<td><code>video_repeat</code></td>
+<td>No</td>
+<td>Number of times to loop video</td>
+</tr>
+<tr>
+<td><code>website</code></td>
+<td>No</td>
+<td>URL to open on Echo Show</td>
+</tr>
+<tr>
+<td><code>no_bg</code></td>
+<td>No</td>
+<td>Set &quot;true&quot; to hide Voice Monkey branding</td>
+</tr>
+<tr>
+<td><code>media_width</code></td>
+<td>No</td>
+<td>Image width</td>
+</tr>
+<tr>
+<td><code>media_height</code></td>
+<td>No</td>
+<td>Image height</td>
+</tr>
+<tr>
+<td><code>media_scaling</code></td>
+<td>No</td>
+<td>Image scaling mode</td>
+</tr>
+<tr>
+<td><code>media_align</code></td>
+<td>No</td>
+<td>Image alignment</td>
+</tr>
+<tr>
+<td><code>media_radius</code></td>
+<td>No</td>
+<td>Corner radius for image clipping</td>
+</tr>
+<tr>
+<td><code>var-[name]</code></td>
+<td>No</td>
+<td>Update Voice Monkey variables</td>
+</tr>
+</tbody></table>
+<h2>Routine Trigger API</h2>
+<p>Trigger Voice Monkey devices to start Alexa Routines.</p>
+<p><strong>Endpoint:</strong> <code>https://api-v2.voicemonkey.io/trigger</code></p>
+<pre><code class="language-bash">curl -X POST &quot;https://api-v2.voicemonkey.io/trigger&quot; \
+  -H &quot;Authorization: $VOICEMONKEY_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;device&quot;: &quot;YOUR_TRIGGER_DEVICE_ID&quot;
+  }&#39;
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>token</code></td>
+<td>Yes*</td>
+<td>Secret token (*or use Authorization header)</td>
+</tr>
+<tr>
+<td><code>device</code></td>
+<td>Yes</td>
+<td>Trigger Device ID from Voice Monkey console</td>
+</tr>
+</tbody></table>
+<h2>Flows Trigger API</h2>
+<p>Start Voice Monkey Flows.</p>
+<p><strong>Endpoint:</strong> <code>https://api-v2.voicemonkey.io/flows</code></p>
+<pre><code class="language-bash">curl -X POST &quot;https://api-v2.voicemonkey.io/flows&quot; \
+  -H &quot;Authorization: $VOICEMONKEY_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;device&quot;: &quot;YOUR_DEVICE_ID&quot;,
+    &quot;flow&quot;: 12345
+  }&#39;
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>token</code></td>
+<td>Yes*</td>
+<td>Secret token (*or use Authorization header)</td>
+</tr>
+<tr>
+<td><code>device</code></td>
+<td>Yes</td>
+<td>Device ID</td>
+</tr>
+<tr>
+<td><code>flow</code></td>
+<td>Yes</td>
+<td>Numeric Flow ID from Voice Monkey console</td>
+</tr>
+</tbody></table>
+<h2>Media Requirements</h2>
+<h3>Images</h3>
+<ul>
+<li>Most common formats supported (JPG, PNG, etc.)</li>
+<li><strong>No animated GIFs</strong></li>
+<li>Optimize file size for faster loading</li>
+<li>Must be hosted at HTTPS URL with valid SSL</li>
+<li>CORS must allow wildcard: <code>Access-Control-Allow-Origin: *</code></li>
+</ul>
+<h3>Videos</h3>
+<ul>
+<li><strong>MP4 format only</strong> (MPEG-4 Part-14)</li>
+<li>Audio codecs: AAC, MP3</li>
+<li>Max resolution: 1080p @30fps or @60fps</li>
+<li>Must be hosted at HTTPS URL with valid SSL</li>
+</ul>
+<h3>Audio</h3>
+<ul>
+<li>Formats: AAC, MP3, OGG, Opus, WAV</li>
+<li>Bit rate: ≤ 1411.20 kbps</li>
+<li>Sample rate: ≤ 48kHz</li>
+<li>File size: ≤ 10MB</li>
+<li>Total response length: ≤ 240 seconds</li>
+</ul>
+<h2>SSML Examples</h2>
+<p>Use SSML in the <code>text</code> parameter for richer announcements:</p>
+<pre><code class="language-xml">&lt;speak&gt;
+  &lt;amazon:emotion name=&quot;excited&quot; intensity=&quot;high&quot;&gt;
+    This is exciting news!
+  &lt;/amazon:emotion&gt;
+&lt;/speak&gt;
+</code></pre>
+<pre><code class="language-xml">&lt;speak&gt;
+  The time is &lt;say-as interpret-as=&quot;time&quot;&gt;3:30pm&lt;/say-as&gt;
+&lt;/speak&gt;
+</code></pre>
+<h2>Notes</h2>
+<ul>
+<li>Keep your token secure; rotate via Console → Settings → API Credentials if compromised</li>
+<li>Use the <a href="https://console.voicemonkey.io">API Playground</a> to test and explore options</li>
+<li>Premium members can upload media directly in the Voice Monkey console</li>
+<li>Always confirm before sending announcements to avoid unexpected noise</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/jayakumark/voicemonkey/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/jayakumark/voicemonkey" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/jayakumark/voicemonkey/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@jayakumark</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Smart Home & IoT</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

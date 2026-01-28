@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Query, audit, and optimize Google Ads campaigns">
+  <title>google-ads - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Marketing & Sales</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Marketing & Sales</a>
+                <span class="skill-page-author">by @jdrhyne</span>
+              </div>
+              <h1 class="skill-page-title">google-ads</h1>
+              <p class="skill-page-desc">Query, audit, and optimize Google Ads campaigns</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Google Ads Skill</h1>
+<p>Manage Google Ads accounts via API or browser automation.</p>
+<h2>Mode Selection</h2>
+<p><strong>Check which mode to use:</strong></p>
+<ol>
+<li><strong>API Mode</strong> - If user has <code>google-ads.yaml</code> configured or <code>GOOGLE_ADS_*</code> env vars</li>
+<li><strong>Browser Mode</strong> - If user says &quot;I don&#39;t have API access&quot; or just wants quick checks</li>
+</ol>
+<pre><code class="language-bash"># Check for API config
+ls ~/.google-ads.yaml 2&gt;/dev/null || ls google-ads.yaml 2&gt;/dev/null
+</code></pre>
+<p>If no config found, ask: &quot;Do you have Google Ads API credentials, or should I use browser automation?&quot;</p>
+<hr>
+<h2>Browser Automation Mode (Universal)</h2>
+<p><strong>Requirements:</strong> User logged into ads.google.com in browser</p>
+<h3>Setup</h3>
+<ol>
+<li>User opens ads.google.com and logs in</li>
+<li>User clicks Clawdbot Browser Relay toolbar icon (badge ON)</li>
+<li>Use <code>browser</code> tool with <code>profile=&quot;chrome&quot;</code></li>
+</ol>
+<h3>Common Workflows</h3>
+<h4>Get Campaign Performance</h4>
+<pre><code>1. Navigate to: ads.google.com/aw/campaigns
+2. Set date range (top right date picker)
+3. Snapshot the campaigns table
+4. Parse: Campaign, Status, Budget, Cost, Conversions, Cost/Conv
+</code></pre>
+<h4>Find Zero-Conversion Keywords (Wasted Spend)</h4>
+<pre><code>1. Navigate to: ads.google.com/aw/keywords
+2. Click &quot;Add filter&quot; → Conversions → Less than → 1
+3. Click &quot;Add filter&quot; → Cost → Greater than → [threshold, e.g., $500]
+4. Sort by Cost descending
+5. Snapshot table for analysis
+</code></pre>
+<h4>Pause Keywords/Campaigns</h4>
+<pre><code>1. Navigate to keywords or campaigns view
+2. Check boxes for items to pause
+3. Click &quot;Edit&quot; dropdown → &quot;Pause&quot;
+4. Confirm action
+</code></pre>
+<h4>Download Reports</h4>
+<pre><code>1. Navigate to desired view (campaigns, keywords, etc.)
+2. Click &quot;Download&quot; icon (top right of table)
+3. Select format (CSV recommended)
+4. File downloads to user&#39;s Downloads folder
+</code></pre>
+<p><strong>For detailed browser selectors:</strong> See <code>references/browser-workflows.md</code></p>
+<hr>
+<h2>API Mode (Power Users)</h2>
+<p><strong>Requirements:</strong> Google Ads API developer token + OAuth credentials</p>
+<h3>Setup Check</h3>
+<pre><code class="language-bash"># Verify google-ads SDK
+python -c &quot;from google.ads.googleads.client import GoogleAdsClient; print(&#39;OK&#39;)&quot;
+
+# Check config
+cat ~/.google-ads.yaml
+</code></pre>
+<h3>Common Operations</h3>
+<h4>Query Campaign Performance</h4>
+<pre><code class="language-python">from google.ads.googleads.client import GoogleAdsClient
+
+client = GoogleAdsClient.load_from_storage()
+ga_service = client.get_service(&quot;GoogleAdsService&quot;)
+
+query = &quot;&quot;&quot;
+    SELECT campaign.name, campaign.status,
+           metrics.cost_micros, metrics.conversions,
+           metrics.cost_per_conversion
+    FROM campaign
+    WHERE segments.date DURING LAST_30_DAYS
+    ORDER BY metrics.cost_micros DESC
+&quot;&quot;&quot;
+
+response = ga_service.search(customer_id=CUSTOMER_ID, query=query)
+</code></pre>
+<h4>Find Zero-Conversion Keywords</h4>
+<pre><code class="language-python">query = &quot;&quot;&quot;
+    SELECT ad_group_criterion.keyword.text,
+           campaign.name, metrics.cost_micros
+    FROM keyword_view
+    WHERE metrics.conversions = 0
+      AND metrics.cost_micros &gt; 500000000
+      AND segments.date DURING LAST_90_DAYS
+    ORDER BY metrics.cost_micros DESC
+&quot;&quot;&quot;
+</code></pre>
+<h4>Pause Keywords</h4>
+<pre><code class="language-python">operations = []
+for keyword_id in keywords_to_pause:
+    operation = client.get_type(&quot;AdGroupCriterionOperation&quot;)
+    operation.update.resource_name = f&quot;customers/{customer_id}/adGroupCriteria/{ad_group_id}~{keyword_id}&quot;
+    operation.update.status = client.enums.AdGroupCriterionStatusEnum.PAUSED
+    operations.append(operation)
+
+service.mutate_ad_group_criteria(customer_id=customer_id, operations=operations)
+</code></pre>
+<p><strong>For full API reference:</strong> See <code>references/api-setup.md</code></p>
+<hr>
+<h2>Audit Checklist</h2>
+<p>Quick health check for any Google Ads account:</p>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Browser Path</th>
+<th>What to Look For</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Zero-conv keywords</td>
+<td>Keywords → Filter: Conv&lt;1, Cost&gt;$500</td>
+<td>Wasted spend</td>
+</tr>
+<tr>
+<td>Empty ad groups</td>
+<td>Ad Groups → Filter: Ads=0</td>
+<td>No creative running</td>
+</tr>
+<tr>
+<td>Policy violations</td>
+<td>Campaigns → Status column</td>
+<td>Yellow warning icons</td>
+</tr>
+<tr>
+<td>Optimization Score</td>
+<td>Overview page (top right)</td>
+<td>Below 70% = action needed</td>
+</tr>
+<tr>
+<td>Conversion tracking</td>
+<td>Tools → Conversions</td>
+<td>Inactive/no recent data</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Output Formats</h2>
+<p>When reporting findings, use tables:</p>
+<pre><code class="language-markdown">## Campaign Performance (Last 30 Days)
+| Campaign | Cost | Conv | CPA | Status |
+|----------|------|------|-----|--------|
+| Branded  | $5K  | 50   | $100| ✅ Good |
+| SDK Web  | $10K | 2    | $5K | ❌ Pause |
+
+## Recommended Actions
+1. **PAUSE**: SDK Web campaign ($5K CPA)
+2. **INCREASE**: Branded budget (strong performer)
+</code></pre>
+<hr>
+<h2>Troubleshooting</h2>
+<h3>Browser Mode Issues</h3>
+<ul>
+<li><strong>Can&#39;t see data</strong>: Check user is on correct account (top right account selector)</li>
+<li><strong>Slow loading</strong>: Google Ads UI is heavy; wait for tables to fully load</li>
+<li><strong>Session expired</strong>: User needs to re-login to ads.google.com</li>
+</ul>
+<h3>API Mode Issues</h3>
+<ul>
+<li><strong>Authentication failed</strong>: Refresh OAuth token, check <code>google-ads.yaml</code></li>
+<li><strong>Developer token rejected</strong>: Ensure token is approved (not test mode)</li>
+<li><strong>Customer ID error</strong>: Use 10-digit ID without dashes</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/jdrhyne/google-ads/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/jdrhyne/google-ads" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/jdrhyne/google-ads/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@jdrhyne</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Marketing & Sales</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

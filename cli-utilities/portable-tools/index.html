@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Build cross-device tools without hardcoding paths or account names">
+  <title>portable-tools - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to CLI Utilities</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">CLI Utilities</a>
+                <span class="skill-page-author">by @tunaissacoding</span>
+              </div>
+              <h1 class="skill-page-title">portable-tools</h1>
+              <p class="skill-page-desc">Build cross-device tools without hardcoding paths or account names</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Portable Tools - Cross-Device Development Methodology</h1>
+<p>Methodology for building tools that work across different devices, naming schemes, and configurations. Based on lessons from OAuth refresher debugging session (2026-01-23).</p>
+<h2>Core Principle</h2>
+<p><strong>Never assume your device is the only device.</strong></p>
+<p>Your local setup is just one of many possible configurations. Build for the general case, not the specific instance.</p>
+<hr>
+<h2>The Three Questions (Before Writing Code)</h2>
+<h3>1. &quot;What varies between devices?&quot;</h3>
+<p>Before writing any code that reads configuration, data, or credentials:</p>
+<p><strong>Ask:</strong></p>
+<ul>
+<li>File paths? (macOS vs Linux, different home dirs)</li>
+<li>Account names? (user123 vs default vs oauth)</li>
+<li>Service names? (slight variations in spelling/capitalization)</li>
+<li>Data structure? (different versions, different formats)</li>
+<li>Environment? (different shells, different tools available)</li>
+</ul>
+<p><strong>Example from OAuth refresher:</strong></p>
+<ul>
+<li>❌ Assumed: Account is always &quot;claude&quot;</li>
+<li>✅ Reality: Could be &quot;claude&quot;, &quot;Claude Code&quot;, &quot;default&quot;, etc.</li>
+</ul>
+<p><strong>Action:</strong> List variables, make them configurable or auto-discoverable</p>
+<hr>
+<h3>2. &quot;How do I prove this works?&quot;</h3>
+<p>Before claiming success:</p>
+<p><strong>Require:</strong></p>
+<ul>
+<li>Concrete BEFORE state (exact values)</li>
+<li>Concrete AFTER state (exact values)</li>
+<li>Proof they&#39;re different (side-by-side comparison)</li>
+</ul>
+<p><strong>Example from OAuth refresher:</strong></p>
+<pre><code>BEFORE:
+- Access Token: POp5z1fi...eSN9VAAA
+- Expires: 1769189639000
+
+AFTER:
+- Access Token: 01v0RrFG...eOE9QAA ✅ Different
+- Expires: 1769190268000 ✅ Extended
+</code></pre>
+<p><strong>Action:</strong> Always show data transformation with real values</p>
+<hr>
+<h3>3. &quot;What happens when it breaks?&quot;</h3>
+<p>Before pushing to production:</p>
+<p><strong>Test:</strong></p>
+<ul>
+<li>Wrong configuration (intentionally break config)</li>
+<li>Missing data (remove expected fields)</li>
+<li>Multiple entries (ambiguous case)</li>
+<li>Edge cases (empty values, special characters)</li>
+</ul>
+<p><strong>Example from OAuth refresher:</strong></p>
+<ul>
+<li>Test with <code>keychain_account: &quot;wrong-name&quot;</code> → Fallback should work</li>
+<li>Test with incomplete keychain data → Should fail gracefully with helpful error</li>
+</ul>
+<p><strong>Action:</strong> Test failure modes, not just happy path</p>
+<hr>
+<h2>Mandatory Patterns</h2>
+<h3>Pattern 1: Explicit Over Implicit</h3>
+<p><strong>❌ Wrong:</strong></p>
+<pre><code class="language-bash"># Ambiguous - returns first match
+security find-generic-password -s &quot;Service&quot; -w
+</code></pre>
+<p><strong>✅ Correct:</strong></p>
+<pre><code class="language-bash"># Explicit - returns specific entry
+security find-generic-password -s &quot;Service&quot; -a &quot;account&quot; -w
+</code></pre>
+<p><strong>Rule:</strong> If a command can be ambiguous, make it explicit.</p>
+<hr>
+<h3>Pattern 2: Validate Before Use</h3>
+<p><strong>❌ Wrong:</strong></p>
+<pre><code class="language-bash">DATA=$(read_config)
+USE_VALUE=&quot;$DATA&quot;  # Hope it&#39;s valid
+</code></pre>
+<p><strong>✅ Correct:</strong></p>
+<pre><code class="language-bash">DATA=$(read_config)
+if ! validate_structure &quot;$DATA&quot;; then
+    error &quot;Invalid data structure&quot;
+fi
+USE_VALUE=&quot;$DATA&quot;
+</code></pre>
+<p><strong>Rule:</strong> Never assume data has expected structure.</p>
+<hr>
+<h3>Pattern 3: Fallback Chains</h3>
+<p><strong>❌ Wrong:</strong></p>
+<pre><code class="language-bash">ACCOUNT=&quot;claude&quot;  # Hardcoded
+</code></pre>
+<p><strong>✅ Correct:</strong></p>
+<pre><code class="language-bash"># Try configured → Try common → Error with help
+ACCOUNT=&quot;${CONFIG_ACCOUNT}&quot;
+if ! has_data &quot;$ACCOUNT&quot;; then
+    for fallback in &quot;claude&quot; &quot;default&quot; &quot;oauth&quot;; do
+        if has_data &quot;$fallback&quot;; then
+            ACCOUNT=&quot;$fallback&quot;
+            break
+        fi
+    done
+fi
+[[ -z &quot;$ACCOUNT&quot; ]] &amp;&amp; error &quot;No account found. Tried: ...&quot;
+</code></pre>
+<p><strong>Rule:</strong> Provide automatic fallbacks for common variations.</p>
+<hr>
+<h3>Pattern 4: Helpful Errors</h3>
+<p><strong>❌ Wrong:</strong></p>
+<pre><code class="language-bash">[[ -z &quot;$TOKEN&quot; ]] &amp;&amp; error &quot;No token&quot;
+</code></pre>
+<p><strong>✅ Correct:</strong></p>
+<pre><code class="language-bash">[[ -z &quot;$TOKEN&quot; ]] &amp;&amp; error &quot;No token found
+
+Checked:
+- Config: $CONFIG_FILE
+- Field: $FIELD_NAME
+- Expected: { \&quot;tokens\&quot;: { \&quot;refresh\&quot;: \&quot;...\&quot; } }
+
+Verify with:
+  cat $CONFIG_FILE | jq &#39;.tokens&#39;
+&quot;
+</code></pre>
+<p><strong>Rule:</strong> Error messages should help user diagnose and fix.</p>
+<hr>
+<h2>Debugging Methodology (Patrick&#39;s Approach)</h2>
+<h3>Step 1: Get Exact Data</h3>
+<p><strong>Don&#39;t ask:</strong> &quot;Is it broken?&quot;<br><strong>Ask:</strong> &quot;What exact values do you see? How many entries exist? Which one has the data?&quot;</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-bash"># Vague
+&quot;Check keychain&quot;
+
+# Specific
+&quot;Run: security find-generic-password -l &#39;Service&#39; | grep &#39;acct&#39;&quot;
+&quot;Tell me: 1. How many entries 2. Which has tokens 3. Last modified&quot;
+</code></pre>
+<hr>
+<h3>Step 2: Prove With Concrete Examples</h3>
+<p><strong>Don&#39;t say:</strong> &quot;It should work now&quot;<br><strong>Show:</strong> &quot;Here&#39;s the BEFORE token (POp5z...), here&#39;s AFTER (01v0R...), they&#39;re different&quot;</p>
+<p><strong>Template:</strong></p>
+<pre><code>BEFORE:
+- Field1: &lt;exact_value&gt;
+- Field2: &lt;exact_value&gt;
+
+AFTER:
+- Field1: &lt;new_value&gt; ✅ Changed
+- Field2: &lt;new_value&gt; ✅ Changed
+
+PROOF: Values are different
+</code></pre>
+<hr>
+<h3>Step 3: Think Cross-Device Immediately</h3>
+<p><strong>Don&#39;t think:</strong> &quot;Works on my machine&quot;<br><strong>Think:</strong> &quot;What if their setup differs in [X]?&quot;</p>
+<p><strong>Checklist:</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> Different account names?</li>
+<li><input disabled="" type="checkbox"> Different file paths?</li>
+<li><input disabled="" type="checkbox"> Different tools/versions?</li>
+<li><input disabled="" type="checkbox"> Different permissions?</li>
+<li><input disabled="" type="checkbox"> Different data formats?</li>
+</ul>
+<hr>
+<h2>Pre-Flight Checklist (Before Publishing)</h2>
+<h3>Discovery Phase</h3>
+<ul>
+<li><input disabled="" type="checkbox"> List all external dependencies (files, commands, services)</li>
+<li><input disabled="" type="checkbox"> Document what each dependency provides</li>
+<li><input disabled="" type="checkbox"> Identify which parts could vary between devices</li>
+</ul>
+<h3>Implementation Phase</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Make variations configurable (with sensible defaults)</li>
+<li><input disabled="" type="checkbox"> Add validation for each input</li>
+<li><input disabled="" type="checkbox"> Build fallback chains for common variations</li>
+<li><input disabled="" type="checkbox"> Add <code>--dry-run</code> or <code>--test</code> mode</li>
+</ul>
+<h3>Testing Phase</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Test with correct config → Should work</li>
+<li><input disabled="" type="checkbox"> Test with wrong config → Should fallback or fail gracefully</li>
+<li><input disabled="" type="checkbox"> Test with missing data → Should give helpful error</li>
+<li><input disabled="" type="checkbox"> Test with multiple entries → Should handle ambiguity</li>
+</ul>
+<h3>Documentation Phase</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Document default assumptions</li>
+<li><input disabled="" type="checkbox"> Document how to verify local setup</li>
+<li><input disabled="" type="checkbox"> Document common variations and how to handle them</li>
+<li><input disabled="" type="checkbox"> Include data flow diagram</li>
+<li><input disabled="" type="checkbox"> Add troubleshooting section</li>
+</ul>
+<hr>
+<h2>Real-World Example: OAuth Refresher</h2>
+<h3>Original (Broken)</h3>
+<pre><code class="language-bash"># Assumes single entry, no validation, no fallback
+KEYCHAIN_DATA=$(security find-generic-password -s &quot;Service&quot; -w)
+REFRESH_TOKEN=$(echo &quot;$KEYCHAIN_DATA&quot; | jq -r &#39;.refreshToken&#39;)
+# Use token (hope it&#39;s valid)
+</code></pre>
+<p><strong>Problems:</strong></p>
+<ul>
+<li>Returns first alphabetical match (wrong entry)</li>
+<li>No validation (could be empty/malformed)</li>
+<li>No fallback (fails if account name differs)</li>
+</ul>
+<hr>
+<h3>Fixed (Portable)</h3>
+<pre><code class="language-bash"># Explicit account with validation and fallback
+validate_data() {
+    echo &quot;$1&quot; | jq -e &#39;.claudeAiOauth.refreshToken&#39; &gt; /dev/null 2&gt;&amp;1
+}
+
+# Try configured account
+DATA=$(security find-generic-password -s &quot;$SERVICE&quot; -a &quot;$ACCOUNT&quot; -w 2&gt;&amp;1)
+if validate_data &quot;$DATA&quot;; then
+    log &quot;✓ Using account: $ACCOUNT&quot;
+else
+    log &quot;⚠ Trying fallback accounts...&quot;
+    for fallback in &quot;claude&quot; &quot;Claude Code&quot; &quot;default&quot;; do
+        DATA=$(security find-generic-password -s &quot;$SERVICE&quot; -a &quot;$fallback&quot; -w 2&gt;&amp;1)
+        if validate_data &quot;$DATA&quot;; then
+            ACCOUNT=&quot;$fallback&quot;
+            log &quot;✓ Found data in: $fallback&quot;
+            break
+        fi
+    done
+fi
+
+[[ -z &quot;$DATA&quot; ]] || ! validate_data &quot;$DATA&quot; &amp;&amp; error &quot;No valid data found
+Tried accounts: $ACCOUNT, claude, Claude Code, default
+Verify with: security find-generic-password -l &#39;$SERVICE&#39;&quot;
+
+REFRESH_TOKEN=$(echo &quot;$DATA&quot; | jq -r &#39;.claudeAiOauth.refreshToken&#39;)
+</code></pre>
+<p><strong>Improvements:</strong></p>
+<ul>
+<li>✅ Explicit account parameter</li>
+<li>✅ Validates data structure</li>
+<li>✅ Automatic fallback to common names</li>
+<li>✅ Helpful error with verification command</li>
+</ul>
+<hr>
+<h2>Common Anti-Patterns</h2>
+<h3>Anti-Pattern 1: &quot;Works On My Machine&quot;</h3>
+<pre><code class="language-bash">FILE=&quot;/Users/patrick/.config/app.json&quot;  # Hardcoded path
+</code></pre>
+<p><strong>Fix:</strong> Use <code>$HOME</code>, detect OS, or make configurable</p>
+<hr>
+<h3>Anti-Pattern 2: &quot;Hope It&#39;s There&quot;</h3>
+<pre><code class="language-bash">TOKEN=$(cat config.json | jq -r &#39;.token&#39;)
+# What if .token doesn&#39;t exist? Script continues with empty value
+</code></pre>
+<p><strong>Fix:</strong> Validate before using</p>
+<pre><code class="language-bash">TOKEN=$(cat config.json | jq -r &#39;.token // empty&#39;)
+[[ -z &quot;$TOKEN&quot; ]] &amp;&amp; error &quot;No token in config&quot;
+</code></pre>
+<hr>
+<h3>Anti-Pattern 3: &quot;First Match Is Right&quot;</h3>
+<pre><code class="language-bash"># If multiple entries exist, which one?
+ENTRY=$(find_entry &quot;service&quot;)
+</code></pre>
+<p><strong>Fix:</strong> Be explicit or enumerate all</p>
+<pre><code class="language-bash">ENTRY=$(find_entry &quot;service&quot; &quot;account&quot;)  # Specific
+# OR
+ALL=$(find_all_entries &quot;service&quot;)
+for entry in $ALL; do
+    validate_and_use &quot;$entry&quot;
+done
+</code></pre>
+<hr>
+<h3>Anti-Pattern 4: &quot;Silent Failures&quot;</h3>
+<pre><code class="language-bash">process_data || true  # Ignore errors
+</code></pre>
+<p><strong>Fix:</strong> Fail loudly with context</p>
+<pre><code class="language-bash">process_data || error &quot;Failed to process
+Data: $DATA
+Expected: { ... }
+Check: command_to_verify&quot;
+</code></pre>
+<hr>
+<h2>Integration With Existing Workflows</h2>
+<h3>With sprint-plan.md</h3>
+<p>Add to testing section:</p>
+<pre><code class="language-markdown">## Cross-Device Testing
+- [ ] Test with different account names
+- [ ] Test with wrong config values
+- [ ] Test with missing data
+- [ ] Document fallback behavior
+</code></pre>
+<h3>With PRIVACY-CHECKLIST.md</h3>
+<p>Add before publishing:</p>
+<pre><code class="language-markdown">## Portability Check
+- [ ] No hardcoded paths (use $HOME, detect OS)
+- [ ] No hardcoded names (use config or fallback)
+- [ ] Validation on all inputs
+- [ ] Helpful errors for common issues
+</code></pre>
+<h3>With skill-creator</h3>
+<p>When building new skills:</p>
+<ol>
+<li>List what varies between devices</li>
+<li>Make it configurable or auto-discoverable</li>
+<li>Test with wrong config</li>
+<li>Document troubleshooting</li>
+</ol>
+<hr>
+<h2>Quick Reference Card</h2>
+<p><strong>Before writing code:</strong></p>
+<ol>
+<li>What varies between devices?</li>
+<li>How do I prove this works?</li>
+<li>What happens when it breaks?</li>
+</ol>
+<p><strong>Mandatory patterns:</strong></p>
+<ul>
+<li>Explicit over implicit</li>
+<li>Validate before use</li>
+<li>Fallback chains</li>
+<li>Helpful errors</li>
+</ul>
+<p><strong>Testing:</strong></p>
+<ul>
+<li>Correct config → Works</li>
+<li>Wrong config → Fallback or helpful error</li>
+<li>Missing data → Clear diagnostic</li>
+</ul>
+<p><strong>Documentation:</strong></p>
+<ul>
+<li>Data flow diagram</li>
+<li>Common variations</li>
+<li>Troubleshooting guide</li>
+</ul>
+<hr>
+<h2>Success Criteria</h2>
+<p>A tool is <strong>portable</strong> when:</p>
+<ol>
+<li>✅ Works on different devices without modification</li>
+<li>✅ Auto-discovers common variations in setup</li>
+<li>✅ Fails gracefully with actionable error messages</li>
+<li>✅ Can be debugged by reading the error output</li>
+<li>✅ Documentation covers &quot;what if my setup differs&quot;</li>
+</ol>
+<p><strong>Test:</strong> Give it to someone with a different setup. If they need to ask you questions, the tool isn&#39;t portable yet.</p>
+<hr>
+<h2>Origin Story</h2>
+<p>This methodology emerged from debugging the OAuth refresher (2026-01-23):</p>
+<ul>
+<li>Script read wrong keychain entry (didn&#39;t specify account)</li>
+<li>Assumed single entry existed (multiple did)</li>
+<li>No validation (used empty data)</li>
+<li>No fallback (failed on different account names)</li>
+</ul>
+<p>Patrick&#39;s approach:</p>
+<ol>
+<li>Asked for exact data (how many entries, which has tokens)</li>
+<li>Demanded proof (show BEFORE/AFTER tokens)</li>
+<li>Thought cross-device (what if naming differs?)</li>
+</ol>
+<p>Result: Tool went from single-device/broken to universal/production-ready.</p>
+<p><strong>Key insight:</strong> The bugs weren&#39;t in the logic - they were in the assumptions.</p>
+<hr>
+<h2>When To Use This Skill</h2>
+<p><strong>Use when:</strong></p>
+<ul>
+<li>Building tools that read system configuration</li>
+<li>Working with keychains, credentials, environment variables</li>
+<li>Creating scripts that run on multiple machines</li>
+<li>Publishing skills to ClawdHub (others will use them)</li>
+</ul>
+<p><strong>Apply:</strong></p>
+<ol>
+<li>Before implementing: Answer the three questions</li>
+<li>During implementation: Use mandatory patterns</li>
+<li>Before testing: Run pre-flight checklist</li>
+<li>After testing: Document variations and troubleshooting</li>
+</ol>
+<p><strong>Remember:</strong> Your device is just one case. Build for the general case.</p>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/tunaissacoding/portable-tools/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/tunaissacoding/portable-tools" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/tunaissacoding/portable-tools/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@tunaissacoding</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">CLI Utilities</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

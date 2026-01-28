@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Query Find My locations and battery status for family devices via iCloud">
+  <title>icloud-findmy - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Apple Apps & Services</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Apple Apps & Services</a>
+                <span class="skill-page-author">by @liamnichols</span>
+              </div>
+              <h1 class="skill-page-title">icloud-findmy</h1>
+              <p class="skill-page-desc">Query Find My locations and battery status for family devices via iCloud</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>iCloud Find My</h1>
+<p>Access Find My device locations and battery status via the iCloud CLI (pyicloud).</p>
+<h2>Setup</h2>
+<ol>
+<li><strong>Install pyicloud:</strong></li>
+</ol>
+<pre><code class="language-bash">brew install pipx
+pipx install pyicloud
+</code></pre>
+<ol start="2">
+<li><strong>Authenticate (one-time):</strong></li>
+</ol>
+<p>Ask the user for their Apple ID, then run:</p>
+<pre><code class="language-bash">icloud --username their.email@example.com --with-family --list
+</code></pre>
+<p>They&#39;ll need to enter their password and complete 2FA. The session will be saved and lasts 1-2 months.</p>
+<ol start="3">
+<li><strong>Store Apple ID:</strong></li>
+</ol>
+<p>Add the Apple ID to your TOOLS.md or workspace config so you remember it for future queries:</p>
+<pre><code class="language-markdown">## iCloud Find My
+Apple ID: their.email@example.com
+</code></pre>
+<h2>Usage</h2>
+<h3>List all devices</h3>
+<pre><code class="language-bash">icloud --username APPLE_ID --with-family --list
+</code></pre>
+<p><strong>Output format:</strong></p>
+<pre><code>------------------------------
+Name           - Liam&#39;s iPhone
+Display Name   - iPhone 15 Pro
+Location       - {&#39;latitude&#39;: 52.248, &#39;longitude&#39;: 0.761, &#39;timeStamp&#39;: 1767810759054, ...}
+Battery Level  - 0.72
+Battery Status - NotCharging
+Device Class   - iPhone
+------------------------------
+</code></pre>
+<p><strong>Parsing tips:</strong></p>
+<ul>
+<li>Devices are separated by <code>------------------------------</code></li>
+<li>Location is a Python dict (use <code>eval()</code> or parse with regex)</li>
+<li>Battery Level is 0.0-1.0 (multiply by 100 for percentage)</li>
+<li>Battery Status: &quot;Charging&quot; or &quot;NotCharging&quot;</li>
+<li>Location fields: <code>latitude</code>, <code>longitude</code>, <code>timeStamp</code> (milliseconds), <code>horizontalAccuracy</code></li>
+</ul>
+<h3>Get specific device</h3>
+<p>Find a specific device by grepping the output:</p>
+<pre><code class="language-bash">icloud --username APPLE_ID --with-family --list | grep -A 10 &quot;iPhone&quot;
+</code></pre>
+<h3>Parse location</h3>
+<p>Extract and format location data:</p>
+<pre><code class="language-bash">icloud --username APPLE_ID --with-family --list | \
+  grep -A 10 &quot;Device Name&quot; | \
+  grep &quot;Location&quot; | \
+  sed &quot;s/Location.*- //&quot;
+</code></pre>
+<p>Then parse the Python dict string with Python or extract coordinates with regex.</p>
+<h3>Parse battery</h3>
+<pre><code class="language-bash">icloud --username APPLE_ID --with-family --list | \
+  grep -A 10 &quot;Device Name&quot; | \
+  grep &quot;Battery Level&quot;
+</code></pre>
+<h2>Device Names</h2>
+<p>Device names come from iCloud and may include:</p>
+<ul>
+<li>Fancy Unicode apostrophes (U+2019 &#39;) instead of ASCII &#39;</li>
+<li>No apostrophes at all (e.g., &quot;Lindas iPhone&quot;)</li>
+</ul>
+<p>Use case-insensitive matching and normalize apostrophes if needed.</p>
+<h2>Session Management</h2>
+<ul>
+<li>Sessions last <strong>1-2 months</strong></li>
+<li>Stored in user&#39;s home directory</li>
+<li>When expired, re-run the authentication step</li>
+<li>PyiCloud validates automatically on each request</li>
+</ul>
+<h2>Common Patterns</h2>
+<p><strong>Check battery before going out:</strong></p>
+<pre><code class="language-bash"># Get battery for specific device
+icloud --username ID --with-family --list | \
+  grep -B 2 -A 5 &quot;iPhone&quot; | \
+  grep &quot;Battery Level&quot;
+</code></pre>
+<p><strong>Get current location:</strong></p>
+<pre><code class="language-bash"># Extract location dict and parse coordinates
+icloud --username ID --with-family --list | \
+  grep -A 10 &quot;iPhone&quot; | \
+  grep &quot;Location&quot; | \
+  sed &quot;s/.*- //&quot; | \
+  python3 -c &quot;import sys; loc = eval(sys.stdin.read()); print(f\&quot;{loc[&#39;latitude&#39;]}, {loc[&#39;longitude&#39;]}\&quot;)&quot;
+</code></pre>
+<p><strong>Check if device is charging:</strong></p>
+<pre><code class="language-bash">icloud --username ID --with-family --list | \
+  grep -A 10 &quot;iPhone&quot; | \
+  grep &quot;Battery Status&quot;
+</code></pre>
+<h2>Proactive Use Cases</h2>
+<ul>
+<li><strong>Battery warnings:</strong> Check battery levels before calendar events (going out)</li>
+<li><strong>Location context:</strong> Answer &quot;near me&quot; queries by checking user&#39;s current location</li>
+<li><strong>Home/away detection:</strong> Check if user is at home based on coordinates</li>
+<li><strong>Low battery alerts:</strong> Warn if battery &lt;30% and not charging</li>
+</ul>
+<h2>Troubleshooting</h2>
+<p><strong>Authentication errors:</strong></p>
+<ul>
+<li>Session expired - re-authenticate</li>
+<li>Wrong Apple ID - check stored ID</li>
+<li>2FA required - complete 2FA flow</li>
+</ul>
+<p><strong>No location available:</strong></p>
+<ul>
+<li>Device offline</li>
+<li>Find My disabled</li>
+<li>Location Services off</li>
+</ul>
+<p><strong>Device not found:</strong></p>
+<ul>
+<li>Check exact device name with <code>--list</code></li>
+<li>Names are case-sensitive</li>
+<li>May have Unicode apostrophes</li>
+</ul>
+<h2>Notes</h2>
+<ul>
+<li>Requires macOS (iCloud API quirks)</li>
+<li>Family Sharing must be enabled to see family devices</li>
+<li>Location updates every ~1-5 minutes when device is active</li>
+<li>Battery readings may be cached (check timestamp)</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/liamnichols/icloud-findmy/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/liamnichols/icloud-findmy" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/liamnichols/icloud-findmy/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@liamnichols</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Apple Apps & Services</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

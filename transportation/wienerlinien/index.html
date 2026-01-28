@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Vienna public transport (Wiener Linien) real-time data">
+  <title>wienerlinien - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Transportation</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Transportation</a>
+                <span class="skill-page-author">by @hjanuschka</span>
+              </div>
+              <h1 class="skill-page-title">wienerlinien</h1>
+              <p class="skill-page-desc">Vienna public transport (Wiener Linien) real-time data</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Wiener Linien Real-Time API</h1>
+<p>Query Vienna&#39;s public transport for real-time departures, disruptions, elevator outages, and service information.</p>
+<h2>Quick Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>/monitor</code></td>
+<td>Real-time departures at a stop</td>
+</tr>
+<tr>
+<td><code>/trafficInfoList</code></td>
+<td>All current disruptions</td>
+</tr>
+<tr>
+<td><code>/trafficInfo</code></td>
+<td>Specific disruption details</td>
+</tr>
+<tr>
+<td><code>/newsList</code></td>
+<td>Service news &amp; elevator maintenance</td>
+</tr>
+</tbody></table>
+<p><strong>Base URL:</strong> <code>https://www.wienerlinien.at/ogd_realtime</code></p>
+<hr>
+<h2>Finding Stop IDs</h2>
+<p>Stops are identified by <strong>RBL numbers</strong> (Rechnergestütztes Betriebsleitsystem). Use the reference data:</p>
+<pre><code class="language-bash"># Search stops by name
+curl -s &quot;https://www.wienerlinien.at/ogd_realtime/doku/ogd/wienerlinien-ogd-haltepunkte.csv&quot; | grep -i &quot;stephansplatz&quot;
+
+# Format: StopID;DIVA;StopText;Municipality;MunicipalityID;Longitude;Latitude
+</code></pre>
+<p><strong>Common Stop IDs (RBL):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Stop</th>
+<th>RBL IDs</th>
+<th>Lines</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Stephansplatz</td>
+<td>252, 4116, 4119</td>
+<td>U1, U3</td>
+</tr>
+<tr>
+<td>Karlsplatz</td>
+<td>143, 144, 4101, 4102</td>
+<td>U1, U2, U4</td>
+</tr>
+<tr>
+<td>Westbahnhof</td>
+<td>1346, 1350, 1368</td>
+<td>U3, U6</td>
+</tr>
+<tr>
+<td>Praterstern</td>
+<td>4205, 4210</td>
+<td>U1, U2</td>
+</tr>
+<tr>
+<td>Schwedenplatz</td>
+<td>1489, 1490, 4103</td>
+<td>U1, U4</td>
+</tr>
+<tr>
+<td>Schottentor</td>
+<td>40, 41, 4118</td>
+<td>U2, Trams</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>1. Real-Time Departures (<code>/monitor</code>)</h2>
+<p>Get next departures at one or more stops.</p>
+<h3>Request</h3>
+<pre><code class="language-bash"># Single stop
+curl -s &quot;https://www.wienerlinien.at/ogd_realtime/monitor?stopId=252&quot;
+
+# Multiple stops
+curl -s &quot;https://www.wienerlinien.at/ogd_realtime/monitor?stopId=252&amp;stopId=4116&quot;
+
+# With disruption info
+curl -s &quot;https://www.wienerlinien.at/ogd_realtime/monitor?stopId=252&amp;activateTrafficInfo=stoerungkurz&amp;activateTrafficInfo=stoerunglang&amp;activateTrafficInfo=aufzugsinfo&quot;
+</code></pre>
+<h3>Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>stopId</code></td>
+<td>Yes (1-n)</td>
+<td>RBL stop ID(s)</td>
+</tr>
+<tr>
+<td><code>activateTrafficInfo</code></td>
+<td>No</td>
+<td>Include disruptions: <code>stoerungkurz</code>, <code>stoerunglang</code>, <code>aufzugsinfo</code></td>
+</tr>
+<tr>
+<td><code>aArea</code></td>
+<td>No</td>
+<td><code>1</code> = include all platforms with same DIVA number</td>
+</tr>
+</tbody></table>
+<h3>Response Structure</h3>
+<pre><code class="language-json">{
+  &quot;data&quot;: {
+    &quot;monitors&quot;: [{
+      &quot;locationStop&quot;: {
+        &quot;properties&quot;: {
+          &quot;name&quot;: &quot;60201234&quot;,      // DIVA number
+          &quot;title&quot;: &quot;Stephansplatz&quot;, // Stop name
+          &quot;attributes&quot;: { &quot;rbl&quot;: 252 }
+        },
+        &quot;geometry&quot;: {
+          &quot;coordinates&quot;: [16.3726, 48.2085]  // lon, lat (WGS84)
+        }
+      },
+      &quot;lines&quot;: [{
+        &quot;name&quot;: &quot;U1&quot;,
+        &quot;towards&quot;: &quot;Leopoldau&quot;,
+        &quot;direction&quot;: &quot;H&quot;,           // H=hin, R=retour
+        &quot;type&quot;: &quot;ptMetro&quot;,
+        &quot;barrierFree&quot;: true,
+        &quot;realtimeSupported&quot;: true,
+        &quot;trafficjam&quot;: false,
+        &quot;departures&quot;: {
+          &quot;departure&quot;: [{
+            &quot;departureTime&quot;: {
+              &quot;timePlanned&quot;: &quot;2025-01-08T19:30:00.000+0100&quot;,
+              &quot;timeReal&quot;: &quot;2025-01-08T19:31:30.000+0100&quot;,
+              &quot;countdown&quot;: 3  // minutes until departure
+            }
+          }]
+        }
+      }]
+    }]
+  },
+  &quot;message&quot;: { &quot;value&quot;: &quot;OK&quot;, &quot;messageCode&quot;: 1 }
+}
+</code></pre>
+<h3>Key Fields</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>countdown</code></td>
+<td>Minutes until departure</td>
+</tr>
+<tr>
+<td><code>timePlanned</code></td>
+<td>Scheduled departure</td>
+</tr>
+<tr>
+<td><code>timeReal</code></td>
+<td>Real-time prediction (if available)</td>
+</tr>
+<tr>
+<td><code>barrierFree</code></td>
+<td>Wheelchair accessible</td>
+</tr>
+<tr>
+<td><code>trafficjam</code></td>
+<td>Traffic jam affecting arrival</td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td><code>ptMetro</code>, <code>ptTram</code>, <code>ptBusCity</code>, <code>ptBusNight</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>2. Disruptions (<code>/trafficInfoList</code>)</h2>
+<p>Get all current service disruptions.</p>
+<h3>Request</h3>
+<pre><code class="language-bash"># All disruptions
+curl -s &quot;https://www.wienerlinien.at/ogd_realtime/trafficInfoList&quot;
+
+# Filter by line
+curl -s &quot;https://www.wienerlinien.at/ogd_realtime/trafficInfoList?relatedLine=U3&amp;relatedLine=U6&quot;
+
+# Filter by stop
+curl -s &quot;https://www.wienerlinien.at/ogd_realtime/trafficInfoList?relatedStop=252&quot;
+
+# Filter by type
+curl -s &quot;https://www.wienerlinien.at/ogd_realtime/trafficInfoList?name=aufzugsinfo&quot;
+</code></pre>
+<h3>Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>relatedLine</code></td>
+<td>Line name (U1, 13A, etc.) - can repeat</td>
+</tr>
+<tr>
+<td><code>relatedStop</code></td>
+<td>RBL stop ID - can repeat</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>Category: <code>stoerunglang</code>, <code>stoerungkurz</code>, <code>aufzugsinfo</code>, <code>fahrtreppeninfo</code></td>
+</tr>
+</tbody></table>
+<h3>Response</h3>
+<pre><code class="language-json">{
+  &quot;data&quot;: {
+    &quot;trafficInfos&quot;: [{
+      &quot;name&quot;: &quot;eD_23&quot;,
+      &quot;title&quot;: &quot;Gumpendorfer Straße&quot;,
+      &quot;description&quot;: &quot;U6 Bahnsteig Ri. Siebenhirten - Aufzug außer Betrieb&quot;,
+      &quot;priority&quot;: &quot;1&quot;,
+      &quot;time&quot;: {
+        &quot;start&quot;: &quot;2025-01-08T06:00:00.000+0100&quot;,
+        &quot;end&quot;: &quot;2025-01-08T22:00:00.000+0100&quot;
+      },
+      &quot;relatedLines&quot;: [&quot;U6&quot;],
+      &quot;relatedStops&quot;: [4611],
+      &quot;attributes&quot;: {
+        &quot;status&quot;: &quot;außer Betrieb&quot;,
+        &quot;station&quot;: &quot;Gumpendorfer Straße&quot;,
+        &quot;location&quot;: &quot;U6 Bahnsteig Ri. Siebenhirten&quot;
+      }
+    }],
+    &quot;trafficInfoCategories&quot;: [{
+      &quot;id&quot;: 1,
+      &quot;name&quot;: &quot;aufzugsinfo&quot;,
+      &quot;title&quot;: &quot;Aufzugsstörungen&quot;
+    }]
+  }
+}
+</code></pre>
+<h3>Disruption Categories</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>stoerunglang</code></td>
+<td>Long-term disruptions</td>
+</tr>
+<tr>
+<td><code>stoerungkurz</code></td>
+<td>Short-term disruptions</td>
+</tr>
+<tr>
+<td><code>aufzugsinfo</code></td>
+<td>Elevator outages</td>
+</tr>
+<tr>
+<td><code>fahrtreppeninfo</code></td>
+<td>Escalator outages</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>3. Specific Disruption (<code>/trafficInfo</code>)</h2>
+<p>Get details for a specific disruption by name.</p>
+<pre><code class="language-bash">curl -s &quot;https://www.wienerlinien.at/ogd_realtime/trafficInfo?name=eD_265&amp;name=eD_37&quot;
+</code></pre>
+<hr>
+<h2>4. Service News (<code>/newsList</code>)</h2>
+<p>Planned maintenance, elevator service windows, news.</p>
+<pre><code class="language-bash"># All news
+curl -s &quot;https://www.wienerlinien.at/ogd_realtime/newsList&quot;
+
+# Filter by line/stop/category
+curl -s &quot;https://www.wienerlinien.at/ogd_realtime/newsList?relatedLine=U6&amp;name=aufzugsservice&quot;
+</code></pre>
+<h3>Categories</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>aufzugsservice</code></td>
+<td>Planned elevator maintenance</td>
+</tr>
+<tr>
+<td><code>news</code></td>
+<td>General service news</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Reference Data (CSV)</h2>
+<h3>Stops (Haltepunkte) - Primary</h3>
+<pre><code class="language-bash">curl -s &quot;https://www.wienerlinien.at/ogd_realtime/doku/ogd/wienerlinien-ogd-haltepunkte.csv&quot;
+# StopID;DIVA;StopText;Municipality;MunicipalityID;Longitude;Latitude
+</code></pre>
+<p><strong>StopID is the RBL number used in API calls.</strong></p>
+<h3>Stations (Haltestellen)</h3>
+<pre><code class="language-bash">curl -s &quot;https://www.wienerlinien.at/ogd_realtime/doku/ogd/wienerlinien-ogd-haltestellen.csv&quot;
+# DIVA;PlatformText;Municipality;MunicipalityID;Longitude;Latitude
+</code></pre>
+<h3>Lines</h3>
+<pre><code class="language-bash">curl -s &quot;https://www.wienerlinien.at/ogd_realtime/doku/ogd/wienerlinien-ogd-linien.csv&quot;
+# LineID;LineText;SortingHelp;Realtime;MeansOfTransport
+</code></pre>
+<p><strong>MeansOfTransport:</strong> <code>ptMetro</code>, <code>ptTram</code>, <code>ptBusCity</code>, <code>ptBusNight</code></p>
+<hr>
+<h2>Common Use Cases</h2>
+<h3>&quot;When is the next U1 from Stephansplatz?&quot;</h3>
+<pre><code class="language-bash"># Stephansplatz U1 platform RBL: 4116
+curl -s &quot;https://www.wienerlinien.at/ogd_realtime/monitor?stopId=4116&quot; | jq &#39;.data.monitors[].lines[] | select(.name==&quot;U1&quot;) | {line: .name, towards: .towards, departures: [.departures.departure[].departureTime.countdown]}&#39;
+</code></pre>
+<h3>&quot;Are there any U-Bahn disruptions?&quot;</h3>
+<pre><code class="language-bash">curl -s &quot;https://www.wienerlinien.at/ogd_realtime/trafficInfoList?relatedLine=U1&amp;relatedLine=U2&amp;relatedLine=U3&amp;relatedLine=U4&amp;relatedLine=U6&quot; | jq &#39;.data.trafficInfos[] | {title, description, lines: .relatedLines}&#39;
+</code></pre>
+<h3>&quot;Which elevators are out of service?&quot;</h3>
+<pre><code class="language-bash">curl -s &quot;https://www.wienerlinien.at/ogd_realtime/trafficInfoList?name=aufzugsinfo&quot; | jq &#39;.data.trafficInfos[] | {station: .attributes.station, location: .attributes.location, status: .attributes.status}&#39;
+</code></pre>
+<h3>&quot;Departures from Karlsplatz with all disruption info&quot;</h3>
+<pre><code class="language-bash">curl -s &quot;https://www.wienerlinien.at/ogd_realtime/monitor?stopId=143&amp;stopId=144&amp;stopId=4101&amp;stopId=4102&amp;activateTrafficInfo=stoerungkurz&amp;activateTrafficInfo=stoerunglang&amp;activateTrafficInfo=aufzugsinfo&quot;
+</code></pre>
+<hr>
+<h2>Error Codes</h2>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>311</td>
+<td>Database unavailable</td>
+</tr>
+<tr>
+<td>312</td>
+<td>Stop does not exist</td>
+</tr>
+<tr>
+<td>316</td>
+<td>Rate limit exceeded</td>
+</tr>
+<tr>
+<td>320</td>
+<td>Invalid query parameter</td>
+</tr>
+<tr>
+<td>321</td>
+<td>Missing required parameter</td>
+</tr>
+<tr>
+<td>322</td>
+<td>No data in database</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Vehicle Types</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ptMetro</code></td>
+<td>U-Bahn</td>
+</tr>
+<tr>
+<td><code>ptTram</code></td>
+<td>Straßenbahn</td>
+</tr>
+<tr>
+<td><code>ptBusCity</code></td>
+<td>City bus</td>
+</tr>
+<tr>
+<td><code>ptBusNight</code></td>
+<td>Night bus (N lines)</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Tips</h2>
+<ol>
+<li><p><strong>Multiple platforms</strong>: A single station may have multiple RBL IDs (one per platform/direction). Query all for complete departures.</p>
+</li>
+<li><p><strong>Real-time availability</strong>: Check <code>realtimeSupported</code> - some lines only have scheduled times.</p>
+</li>
+<li><p><strong>Countdown vs timeReal</strong>: Use <code>countdown</code> for display, <code>timeReal</code> for precise timing.</p>
+</li>
+<li><p><strong>Barrier-free routing</strong>: Filter by <code>barrierFree: true</code> for wheelchair users.</p>
+</li>
+<li><p><strong>Find stop IDs</strong>: Search the CSV files by station name, then use the StopID as <code>stopId</code> parameter.</p>
+</li>
+</ol>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/hjanuschka/wienerlinien/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/hjanuschka/wienerlinien" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/hjanuschka/wienerlinien/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@hjanuschka</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Transportation</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

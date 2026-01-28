@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Get snow conditions, forecasts, and ski reports for any mountain resort worldwide">
+  <title>snow-report - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Weather</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Weather</a>
+                <span class="skill-page-author">by @davemorin</span>
+              </div>
+              <h1 class="skill-page-title">snow-report</h1>
+              <p class="skill-page-desc">Get snow conditions, forecasts, and ski reports for any mountain resort worldwide</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Snow Report</h1>
+<p>Fetch live snow conditions from OpenSnow for any ski resort worldwide.</p>
+<h2>SnowTick — Mountain Tickers</h2>
+<p>4-letter codes for quick mountain lookups, like stock tickers:</p>
+<table>
+<thead>
+<tr>
+<th>Ticker</th>
+<th>Resort</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>JHMR</code></td>
+<td>Jackson Hole</td>
+</tr>
+<tr>
+<td><code>TARG</code></td>
+<td>Grand Targhee</td>
+</tr>
+<tr>
+<td><code>MMTH</code></td>
+<td>Mammoth</td>
+</tr>
+<tr>
+<td><code>BIRD</code></td>
+<td>Snowbird</td>
+</tr>
+<tr>
+<td><code>ALTA</code></td>
+<td>Alta</td>
+</tr>
+<tr>
+<td><code>BOAT</code></td>
+<td>Steamboat</td>
+</tr>
+<tr>
+<td><code>WHIS</code></td>
+<td>Whistler</td>
+</tr>
+</tbody></table>
+<p>Full list in <code>references/resorts.md</code>. Use tickers anywhere you&#39;d use a resort name.</p>
+<h2>Commands</h2>
+<table>
+<thead>
+<tr>
+<th>User Says</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&quot;snowtick&quot;</td>
+<td>Quick ticker tape of all favorites</td>
+</tr>
+<tr>
+<td>&quot;snow report&quot; / &quot;how&#39;s the snow&quot;</td>
+<td>Pull default mountain from user config</td>
+</tr>
+<tr>
+<td>&quot;snow at Mammoth&quot; / &quot;Jackson snow&quot;</td>
+<td>Pull specific resort</td>
+</tr>
+<tr>
+<td>&quot;JHMR&quot; / &quot;what&#39;s TARG at&quot;</td>
+<td>Pull by SnowTick code</td>
+</tr>
+<tr>
+<td>&quot;compare Jackson and Targhee&quot;</td>
+<td>Multi-mountain comparison</td>
+</tr>
+<tr>
+<td>&quot;compare JHMR TARG MMTH&quot;</td>
+<td>Compare by tickers</td>
+</tr>
+<tr>
+<td>&quot;powder alert&quot; / &quot;where&#39;s it snowing&quot;</td>
+<td>Check forecasts across favorites</td>
+</tr>
+</tbody></table>
+<h2>User Configuration</h2>
+<p>Check <code>memory/snow-preferences.md</code> for user settings:</p>
+<pre><code class="language-markdown"># Snow Preferences
+
+## Default Mountain
+JHMR
+
+## Favorites
+- JHMR (Jackson Hole)
+- TARG (Grand Targhee)
+- MMTH (Mammoth)
+- ALTA (Alta)
+
+## Report Style
+- compact (default) | detailed
+- skip: parking
+</code></pre>
+<p>Tickers or slugs both work. If no config exists, ask user for their home mountain and create the file.</p>
+<h2>Resolving Tickers</h2>
+<p>When user provides a ticker (4 uppercase letters):</p>
+<ol>
+<li>Look up in <code>references/resorts.md</code></li>
+<li>Get the corresponding slug</li>
+<li>Use slug for OpenSnow URL</li>
+</ol>
+<p>Example: <code>JHMR</code> → <code>jacksonhole</code> → <code>opensnow.com/location/jacksonhole/snow-summary</code></p>
+<h2>Quick Usage</h2>
+<h3>SnowTick Command</h3>
+<pre><code>1. Read user favorites from memory/snow-preferences.md
+2. Open all favorite resort tabs in parallel
+3. Snapshot each tab for snow data
+4. Extract: base depth, 5-day forecast, current conditions
+5. Format as ticker tape with best bet arrow
+6. Close all tabs
+</code></pre>
+<h3>Single Mountain</h3>
+<pre><code>1. browser action=open targetUrl=https://opensnow.com/location/{slug}/snow-summary
+2. browser action=snapshot compact=true
+3. Extract key data, close tab
+</code></pre>
+<h3>Multi-Mountain Comparison</h3>
+<pre><code>1. Open all resort tabs in parallel (browser action=open for each)
+2. Snapshot all tabs
+3. Extract and format comparison table
+4. Close all tabs
+</code></pre>
+<h2>Data Extraction</h2>
+<p>From OpenSnow snapshot, find:</p>
+<h3>Snow Summary</h3>
+<ul>
+<li><code>Last 24 Hours</code> — reported snowfall + timestamp</li>
+<li><code>Next 1-5 Days</code> — forecasted snow</li>
+<li><code>Next 6-10 Days</code> — extended forecast</li>
+<li><code>Next 11-15 Days</code> — long range</li>
+</ul>
+<h3>Current Conditions (under &quot;Right Now&quot;)</h3>
+<ul>
+<li>Temperature + feels-like</li>
+<li>Wind speed, direction, gusts</li>
+<li>Conditions (Sunny, Snowy, etc.)</li>
+</ul>
+<h3>Local Expert (Daily Snow)</h3>
+<ul>
+<li>Expert name</li>
+<li>Forecast narrative</li>
+</ul>
+<h3>AI Overview</h3>
+<ul>
+<li>Quick conditions summary</li>
+</ul>
+<h2>Output Formats</h2>
+<h3>SnowTick (favorites dashboard)</h3>
+<pre><code>📈 SnowTick — {date}
+
+JHMR  12&quot;  ▲ 6&quot;   ❄️ snowing
+FISH   8&quot;  ▲ 2&quot;   ☀️ clear  
+SGAR  24&quot;  ▲ 12&quot;  ❄️ snowing ←
+BALD  36&quot;  ▲ 8&quot;   🌨️ flurries
+BRDG   6&quot;  ▲ 0&quot;   ☀️ clear
+ROCK   2&quot;  — 0&quot;   ☀️ clear
+
+▲ = next 5 days | ← = best bet
+</code></pre>
+<p>Columns: Ticker | Base depth | 5-day forecast | Current conditions</p>
+<h3>Compact (default)</h3>
+<pre><code>🏔️ {Resort} [{TICK}] — {date}
+
+**Snow:** {24hr}&quot; | Next 5d: {forecast}&quot;
+**Now:** {temp}°F, {conditions}, wind {speed} mph
+**Daily Snow:** {1 sentence summary}
+</code></pre>
+<h3>Detailed</h3>
+<pre><code>🏔️ {Resort} [{TICK}] — {date}
+
+**Now:** {temp}°F ({feels}°F), {conditions}, wind {speed} mph {dir}
+
+| Period | Snow |
+|--------|------|
+| Last 24hr | X&quot; |
+| Next 5 days | X&quot; |
+| Next 6-10 days | X&quot; |
+| Next 11-15 days | X&quot; |
+
+**Daily Snow ({expert}):** {full summary}
+
+**AI Overview:** {summary}
+</code></pre>
+<h3>Comparison Table</h3>
+<pre><code>📊 Snow Comparison — {date}
+
+| Ticker | Resort | 24hr | Next 5d | Next 10d | Temp |
+|--------|--------|------|---------|----------|------|
+| JHMR | Jackson Hole | 0&quot; | 0&quot; | 8&quot; | 11°F |
+| TARG | Grand Targhee | 0&quot; | 2&quot; | 12&quot; | 8°F |
+| ALTA | Alta | 0&quot; | 1&quot; | 6&quot; | 15°F |
+
+**Best Bet:** TARG — most snow coming
+</code></pre>
+<h3>Powder Alert</h3>
+<pre><code>🚨 Powder Alert — {date}
+
+Checking your favorites for incoming snow...
+
+| Ticker | Resort | Next 5d | Next 10d |
+|--------|--------|---------|----------|
+| TARG | Grand Targhee | 6&quot; | 18&quot; | ← Best
+| JHMR | Jackson Hole | 0&quot; | 8&quot; |
+| ALTA | Alta | 2&quot; | 10&quot; |
+
+**Verdict:** TARG looking best for next week
+</code></pre>
+<h2>Resort Slugs &amp; SnowTick Codes</h2>
+<p>See <code>references/resorts.md</code> for full list with tickers.</p>
+<p><strong>Quick reference:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Region</th>
+<th>Tickers</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Wyoming</td>
+<td><code>JHMR</code> <code>TARG</code> <code>SNWK</code></td>
+</tr>
+<tr>
+<td>Utah</td>
+<td><code>ALTA</code> <code>BIRD</code> <code>PCMR</code> <code>DEER</code></td>
+</tr>
+<tr>
+<td>Colorado</td>
+<td><code>VAIL</code> <code>AJAX</code> <code>TELL</code> <code>BOAT</code></td>
+</tr>
+<tr>
+<td>California</td>
+<td><code>MMTH</code> <code>PALI</code> <code>KIRK</code> <code>HVLY</code></td>
+</tr>
+<tr>
+<td>Montana</td>
+<td><code>BSKY</code> <code>FISH</code> <code>BRDG</code></td>
+</tr>
+<tr>
+<td>BC</td>
+<td><code>WHIS</code> <code>RVLK</code></td>
+</tr>
+<tr>
+<td>Japan</td>
+<td><code>NSKO</code> <code>HAKU</code></td>
+</tr>
+</tbody></table>
+<p>For unlisted resorts: search opensnow.com and grab slug from URL, then add ticker to references.</p>
+<h2>First-Time Setup</h2>
+<p>If user asks for snow report with no config:</p>
+<ol>
+<li>Ask: &quot;What&#39;s your home mountain? I&#39;ll set it as your default.&quot;</li>
+<li>Create <code>memory/snow-preferences.md</code> with their answer</li>
+<li>Ask: &quot;Any other favorites to add for comparisons?&quot;</li>
+<li>Pull their first report</li>
+</ol>
+<h2>Notes</h2>
+<ul>
+<li>OpenSnow is JS-rendered; browser required</li>
+<li>Data updates throughout day; morning reports freshest</li>
+<li>11-15 day forecast may be paywalled (show what&#39;s visible)</li>
+<li>For resort-specific data (lifts, groomed runs), check resort&#39;s own site</li>
+</ul>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/davemorin/snow-report/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/davemorin/snow-report" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/davemorin/snow-report/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@davemorin</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Weather</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>

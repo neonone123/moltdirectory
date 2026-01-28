@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Comprehensive backup, update, and restore workflow with dynamic workspace detection">
+  <title>clawdbot-skill-update - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Clawdbot Tools</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Clawdbot Tools</a>
+                <span class="skill-page-author">by @pasogott</span>
+              </div>
+              <h1 class="skill-page-title">clawdbot-skill-update</h1>
+              <p class="skill-page-desc">Comprehensive backup, update, and restore workflow with dynamic workspace detection</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="markdown-content">
+                <h1>Clawdbot Update Skill</h1>
+<p>Comprehensive backup, update, and restore workflow for Clawdbot installations.</p>
+<h2>Repository</h2>
+<ul>
+<li><strong>GitHub</strong>: <a href="https://github.com/clawdbot/clawdbot">https://github.com/clawdbot/clawdbot</a></li>
+<li><strong>Upstream</strong>: <code>origin/main</code></li>
+<li><strong>Local Clone</strong>: <code>~/code/clawdbot</code> (default)</li>
+</ul>
+<h2>Description</h2>
+<p>This skill provides a complete, <strong>modular</strong> update workflow for Clawdbot with <strong>dynamic workspace detection</strong>:</p>
+<ul>
+<li>Configuration files</li>
+<li>Agent states and sessions</li>
+<li>Credentials and auth tokens</li>
+<li><strong>All agent workspaces (auto-detected from config)</strong></li>
+<li>Cron jobs and sandboxes</li>
+<li>Git repository state</li>
+</ul>
+<h3>Key Features</h3>
+<p>✅ <strong>Dynamic Workspace Detection</strong> - Reads workspace paths from config<br>✅ <strong>Multi-Agent Support</strong> - Handles multiple agents automatically<br>✅ <strong>Safe Rollback</strong> - Full restore capability<br>✅ <strong>Git Integration</strong> - Tracks versions and remotes<br>✅ <strong>Validation</strong> - Pre/post checks included<br>✅ <strong>Dry Run</strong> - Preview before backup</p>
+<h2>Files</h2>
+<ul>
+<li><code>config.json</code> - Skill configuration (repo URLs, paths)</li>
+<li><code>backup-clawdbot-dryrun.sh</code> - <strong>Dry run</strong> preview (no changes)</li>
+<li><code>backup-clawdbot-full.sh</code> - <strong>Dynamic</strong> full backup script</li>
+<li><code>restore-clawdbot.sh</code> - <strong>Dynamic</strong> restore script</li>
+<li><code>validate-setup.sh</code> - Pre/post update validation</li>
+<li><code>check-upstream.sh</code> - Check for available updates</li>
+<li><code>UPDATE_CHECKLIST.md</code> - Step-by-step update checklist</li>
+<li><code>QUICK_REFERENCE.md</code> - Quick command reference</li>
+<li><code>SKILL.md</code> - This file</li>
+<li><code>README.md</code> - Quick start guide</li>
+</ul>
+<h3>Dynamic Features</h3>
+<p>Both backup and restore scripts now:</p>
+<ul>
+<li>Read workspace paths from <code>~/.clawdbot/clawdbot.json</code></li>
+<li>Support any number of agents</li>
+<li>Handle missing workspaces gracefully</li>
+<li>Generate safe filenames from agent IDs</li>
+</ul>
+<h2>When to Use</h2>
+<p>Trigger this skill when asked to:</p>
+<ul>
+<li>&quot;update clawdbot&quot;</li>
+<li>&quot;upgrade to latest version&quot;</li>
+<li>&quot;backup clawdbot before update&quot;</li>
+<li>&quot;restore clawdbot from backup&quot;</li>
+<li>&quot;rollback clawdbot update&quot;</li>
+</ul>
+<h2>Usage</h2>
+<h3>1. Preview Backup (Dry Run)</h3>
+<pre><code class="language-bash">~/.skills/clawdbot-update/backup-clawdbot-dryrun.sh
+</code></pre>
+<p><strong>Shows:</strong></p>
+<ul>
+<li>What files would be backed up</li>
+<li>Estimated backup size</li>
+<li>Workspace detection results</li>
+<li>Disk space availability</li>
+<li>Files that would be skipped</li>
+</ul>
+<p><strong>No files are created or modified!</strong></p>
+<h3>2. Create Full Backup</h3>
+<pre><code class="language-bash">~/.skills/clawdbot-update/backup-clawdbot-full.sh
+</code></pre>
+<p><strong>Backs up:</strong></p>
+<ul>
+<li><code>~/.clawdbot/clawdbot.json</code> (config)</li>
+<li><code>~/.clawdbot/sessions/</code> (session state)</li>
+<li><code>~/.clawdbot/agents/</code> (multi-agent state)</li>
+<li><code>~/.clawdbot/credentials/</code> (auth tokens)</li>
+<li><code>~/.clawdbot/cron/</code> (scheduled jobs)</li>
+<li><code>~/.clawdbot/sandboxes/</code> (sandbox state)</li>
+<li>All agent workspaces (dynamically detected!)</li>
+<li>Git commit and status</li>
+</ul>
+<p><strong>Output:</strong> <code>~/.clawdbot-backups/pre-update-YYYYMMDD-HHMMSS/</code></p>
+<h3>3. Update Clawdbot</h3>
+<p>Follow the checklist:</p>
+<pre><code class="language-bash">cat ~/.skills/clawdbot-update/UPDATE_CHECKLIST.md
+</code></pre>
+<p><strong>Key steps:</strong></p>
+<ol>
+<li>Create backup</li>
+<li>Stop gateway</li>
+<li>Pull latest code</li>
+<li>Adjust config for breaking changes</li>
+<li>Run doctor</li>
+<li>Test functionality</li>
+<li>Start gateway as daemon</li>
+</ol>
+<h3>4. Restore from Backup</h3>
+<pre><code class="language-bash">~/.skills/clawdbot-update/restore-clawdbot.sh ~/.clawdbot-backups/pre-update-YYYYMMDD-HHMMSS
+</code></pre>
+<p><strong>Restores:</strong></p>
+<ul>
+<li>All configuration</li>
+<li>All state files</li>
+<li>All workspaces</li>
+<li>Optionally: git version</li>
+</ul>
+<h2>Important Notes</h2>
+<h3>Multi-Agent Setup</h3>
+<p>This skill is designed for multi-agent setups with:</p>
+<ul>
+<li>Multiple agents with separate workspaces</li>
+<li>Sandbox configurations</li>
+<li>Provider routing (WhatsApp/Telegram/Discord/Slack/etc.)</li>
+</ul>
+<h3>Breaking Changes in v2026.1.8</h3>
+<p><strong>CRITICAL:</strong></p>
+<ul>
+<li><strong>DM Lockdown</strong>: DMs now default to <code>pairing</code> policy instead of open</li>
+<li><strong>Groups</strong>: <code>telegram.groups</code> and <code>whatsapp.groups</code> are now allowlists</li>
+<li><strong>Sandbox</strong>: Default scope changed to <code>&quot;agent&quot;</code> from implicit</li>
+<li><strong>Timestamps</strong>: Now UTC format in agent envelopes</li>
+</ul>
+<h3>Backup Validation</h3>
+<p>After backup, always verify:</p>
+<pre><code class="language-bash">BACKUP_DIR=~/.clawdbot-backups/pre-update-YYYYMMDD-HHMMSS
+cat &quot;$BACKUP_DIR/BACKUP_INFO.txt&quot;
+ls -lh &quot;$BACKUP_DIR&quot;
+</code></pre>
+<p>Should contain:</p>
+<ul>
+<li>✅ <code>clawdbot.json</code></li>
+<li>✅ <code>credentials.tar.gz</code></li>
+<li>✅ <code>workspace-*.tar.gz</code> (one per agent)</li>
+</ul>
+<h3>Config Changes Required</h3>
+<p><strong>Example: Switch WhatsApp to pairing:</strong></p>
+<pre><code class="language-bash">jq &#39;.whatsapp.dmPolicy = &quot;pairing&quot;&#39; ~/.clawdbot/clawdbot.json | sponge ~/.clawdbot/clawdbot.json
+</code></pre>
+<p><strong>Example: Set explicit sandbox scope:</strong></p>
+<pre><code class="language-bash">jq &#39;.agent.sandbox.scope = &quot;agent&quot;&#39; ~/.clawdbot/clawdbot.json | sponge ~/.clawdbot/clawdbot.json
+</code></pre>
+<h2>Workflow</h2>
+<h3>Standard Update Flow</h3>
+<pre><code class="language-bash"># 1. Check for updates
+~/.skills/clawdbot-update/check-upstream.sh
+
+# 2. Validate current setup
+~/.skills/clawdbot-update/validate-setup.sh
+
+# 3. Dry run
+~/.skills/clawdbot-update/backup-clawdbot-dryrun.sh
+
+# 4. Backup
+~/.skills/clawdbot-update/backup-clawdbot-full.sh
+
+# 5. Stop gateway
+cd ~/code/clawdbot
+pnpm clawdbot gateway stop
+
+# 6. Update code
+git checkout main
+git pull --rebase origin main
+pnpm install
+pnpm build
+
+# 7. Run doctor
+pnpm clawdbot doctor --yes
+
+# 8. Test
+pnpm clawdbot gateway start  # foreground for testing
+
+# 9. Deploy
+pnpm clawdbot gateway stop
+pnpm clawdbot gateway start --daemon
+</code></pre>
+<h3>Rollback Flow</h3>
+<pre><code class="language-bash"># Quick rollback
+~/.skills/clawdbot-update/restore-clawdbot.sh &lt;backup-dir&gt;
+
+# Manual rollback
+cd ~/code/clawdbot
+git checkout &lt;old-commit&gt;
+pnpm install &amp;&amp; pnpm build
+cp &lt;backup-dir&gt;/clawdbot.json ~/.clawdbot/
+pnpm clawdbot gateway restart
+</code></pre>
+<h2>Testing After Update</h2>
+<h3>Functionality Tests</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Provider DMs work (check pairing policy)</li>
+<li><input disabled="" type="checkbox"> Group mentions respond</li>
+<li><input disabled="" type="checkbox"> Typing indicators work</li>
+<li><input disabled="" type="checkbox"> Agent routing works</li>
+<li><input disabled="" type="checkbox"> Sandbox isolation works</li>
+<li><input disabled="" type="checkbox"> Tool restrictions enforced</li>
+</ul>
+<h3>New Features</h3>
+<pre><code class="language-bash">pnpm clawdbot agents list
+pnpm clawdbot logs --tail 50
+pnpm clawdbot providers list --usage
+pnpm clawdbot skills list
+</code></pre>
+<h3>Monitoring</h3>
+<pre><code class="language-bash"># Live logs
+pnpm clawdbot logs --follow
+
+# Or Web UI
+open http://localhost:3001/logs
+
+# Check status
+pnpm clawdbot status
+pnpm clawdbot gateway status
+</code></pre>
+<h2>Troubleshooting</h2>
+<h3>Common Issues</h3>
+<p><strong>Gateway won&#39;t start:</strong></p>
+<pre><code class="language-bash">pnpm clawdbot logs --grep error
+pnpm clawdbot doctor
+</code></pre>
+<p><strong>Auth errors:</strong></p>
+<pre><code class="language-bash"># OAuth profiles might need re-login
+pnpm clawdbot providers login &lt;provider&gt;
+</code></pre>
+<p><strong>Sandbox issues:</strong></p>
+<pre><code class="language-bash"># Check sandbox config
+jq &#39;.agent.sandbox&#39; ~/.clawdbot/clawdbot.json
+
+# Check per-agent sandbox
+jq &#39;.routing.agents[] | {name, sandbox}&#39; ~/.clawdbot/clawdbot.json
+</code></pre>
+<h3>Emergency Restore</h3>
+<p>If something goes wrong:</p>
+<pre><code class="language-bash"># 1. Stop gateway
+pnpm clawdbot gateway stop
+
+# 2. Full restore
+LATEST_BACKUP=$(ls -t ~/.clawdbot-backups/ | head -1)
+~/.skills/clawdbot-update/restore-clawdbot.sh ~/.clawdbot-backups/$LATEST_BACKUP
+
+# 3. Restart
+pnpm clawdbot gateway start
+</code></pre>
+<h2>Installation</h2>
+<h3>Via ClawdHub</h3>
+<pre><code class="language-bash">clawdbot skills install clawdbot-update
+</code></pre>
+<h3>Manual</h3>
+<pre><code class="language-bash">git clone &lt;repo-url&gt; ~/.skills/clawdbot-update
+chmod +x ~/.skills/clawdbot-update/*.sh
+</code></pre>
+<h2>License</h2>
+<p>MIT - see <a href="LICENSE">LICENSE</a></p>
+<h2>Author</h2>
+<p><strong>Pascal Schott</strong> (<a href="https://github.com/pasogott">@pasogott</a>)</p>
+<p>Contribution for Clawdbot<br><a href="https://github.com/clawdbot/clawdbot">https://github.com/clawdbot/clawdbot</a></p>
+
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/moltbot/skills/tree/main/skills/pasogott/clawdbot-skill-update/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/pasogott/clawdbot-skill-update" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/pasogott/clawdbot-skill-update/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@pasogott</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Clawdbot Tools</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+  </script>
+</body>
+</html>
