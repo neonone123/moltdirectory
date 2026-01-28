@@ -29,6 +29,7 @@
       </a>
       <nav class="header-links">
         <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
           <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
@@ -55,21 +56,59 @@
 <p>Multi-provider web search with <strong>Intelligent Auto-Routing</strong>: Serper (Google), Tavily (Research), Exa (Neural).</p>
 <p><strong>NEW in v2.1.0</strong>: Intelligent multi-signal analysis with confidence scoring!</p>
 <hr>
-<h2>⚠️ Important: Don&#39;t Modify Core Clawdbot Config</h2>
-<p><strong>Tavily, Serper, and Exa are NOT core Clawdbot providers.</strong></p>
-<p>❌ <strong>DON&#39;T</strong> add this to <code>~/.clawdbot/clawdbot.json</code>:</p>
-<pre><code class="language-json">&quot;tools&quot;: {
-  &quot;web&quot;: {
-    &quot;search&quot;: {
-      &quot;provider&quot;: &quot;tavily&quot;  // WRONG - will cause errors!
-    }
-  }
+<h2>🔑 API Keys Setup</h2>
+<p><strong>NEW in v2.2.0</strong>: The script <strong>auto-loads</strong> API keys from <code>.env</code> in the skill directory!</p>
+<h3>Quick Setup</h3>
+<p><strong>Option A: .env file</strong> (recommended)</p>
+<pre><code class="language-bash"># /path/to/skills/web-search-plus/.env
+export SERPER_API_KEY=&quot;your-key&quot;   # https://serper.dev
+export TAVILY_API_KEY=&quot;your-key&quot;   # https://tavily.com  
+export EXA_API_KEY=&quot;your-key&quot;      # https://exa.ai
+</code></pre>
+<p><strong>Option B: config.json</strong> (NEW in v2.2.1)</p>
+<pre><code class="language-json">{
+  &quot;serper&quot;: { &quot;api_key&quot;: &quot;your-serper-key&quot; },
+  &quot;tavily&quot;: { &quot;api_key&quot;: &quot;your-tavily-key&quot; },
+  &quot;exa&quot;: { &quot;api_key&quot;: &quot;your-exa-key&quot; }
 }
 </code></pre>
-<p>✅ <strong>DO</strong> use this skill&#39;s scripts with environment variables:</p>
-<pre><code class="language-bash">export TAVILY_API_KEY=&quot;your-key&quot;
-python3 scripts/search.py -q &quot;your query&quot;
+<p>Just run — keys load automatically:</p>
+<pre><code class="language-bash">python3 scripts/search.py -q &quot;your query&quot;
+# No need for &#39;source .env&#39; anymore! ✨
 </code></pre>
+<p><strong>Priority:</strong> config.json &gt; .env &gt; environment variable</p>
+<h3>Get Free API Keys</h3>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>Free Tier</th>
+<th>Sign Up</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Serper</td>
+<td>2,500 queries/mo</td>
+<td><a href="https://serper.dev">https://serper.dev</a></td>
+</tr>
+<tr>
+<td>Tavily</td>
+<td>1,000 queries/mo</td>
+<td><a href="https://tavily.com">https://tavily.com</a></td>
+</tr>
+<tr>
+<td>Exa</td>
+<td>1,000 queries/mo</td>
+<td><a href="https://exa.ai">https://exa.ai</a></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>⚠️ Don&#39;t Modify Core Clawdbot Config</h2>
+<p><strong>Tavily, Serper, and Exa are NOT core Clawdbot providers.</strong></p>
+<p>❌ <strong>DON&#39;T</strong> add to <code>~/.clawdbot/clawdbot.json</code>:</p>
+<pre><code class="language-json">&quot;tools&quot;: { &quot;web&quot;: { &quot;search&quot;: { &quot;provider&quot;: &quot;tavily&quot; }}}  // WRONG!
+</code></pre>
+<p>✅ <strong>DO</strong> use this skill&#39;s scripts — keys auto-load from <code>.env</code></p>
 <p>Core Clawdbot only supports <code>brave</code> as the built-in web search provider. This skill adds Serper, Tavily, and Exa as <strong>additional</strong> options via its own scripts.</p>
 <hr>
 <h2>🧠 Intelligent Auto-Routing</h2>
@@ -379,15 +418,6 @@ python3 scripts/search.py -p exa --similar-url &quot;https://stripe.com&quot; --
 }
 </code></pre>
 <hr>
-<h2>Environment Setup</h2>
-<pre><code class="language-bash"># In your .env file (use &#39;export&#39; prefix!):
-export SERPER_API_KEY=&quot;your-key&quot;   # https://serper.dev
-export TAVILY_API_KEY=&quot;your-key&quot;   # https://tavily.com  
-export EXA_API_KEY=&quot;your-key&quot;      # https://exa.ai
-
-# Then load with: source .env
-</code></pre>
-<hr>
 <h2>FAQ</h2>
 <h3>General</h3>
 <p><strong>Q: How does auto-routing decide which provider to use?</strong></p>
@@ -421,12 +451,13 @@ export EXA_API_KEY=&quot;your-key&quot;      # https://exa.ai
 </blockquote>
 <p><strong>Q: How do I set API keys?</strong></p>
 <blockquote>
-<p>Create <code>.env</code> in your workspace:</p>
+<p>Two options (both auto-load):</p>
+<p><strong>Option A: .env file</strong></p>
 <pre><code class="language-bash">export SERPER_API_KEY=&quot;your-key&quot;
-export TAVILY_API_KEY=&quot;your-key&quot;
-export EXA_API_KEY=&quot;your-key&quot;
 </code></pre>
-<p>Then <code>source .env</code> or add to your shell profile.</p>
+<p><strong>Option B: config.json</strong> (v2.2.1+)</p>
+<pre><code class="language-json">{ &quot;serper&quot;: { &quot;api_key&quot;: &quot;your-key&quot; } }
+</code></pre>
 </blockquote>
 <h3>Routing Details</h3>
 <p><strong>Q: How do I know which provider handled my search?</strong></p>
@@ -444,7 +475,11 @@ export EXA_API_KEY=&quot;your-key&quot;
 <h3>Troubleshooting</h3>
 <p><strong>Q: &quot;No API key found&quot; error?</strong></p>
 <blockquote>
-<p>Make sure keys are exported (not just set): <code>export SERPER_API_KEY=&quot;...&quot;</code> and sourced.</p>
+<ol>
+<li>Check <code>.env</code> exists in skill folder with <code>export VAR=value</code> format</li>
+<li>Keys auto-load from skill&#39;s <code>.env</code> since v2.2.0</li>
+<li>Or set in system environment: <code>export SERPER_API_KEY=&quot;...&quot;</code></li>
+</ol>
 </blockquote>
 <p><strong>Q: Getting empty results?</strong></p>
 <blockquote>
@@ -508,7 +543,8 @@ export EXA_API_KEY=&quot;your-key&quot;
         
   <footer class="footer">
     <div class="footer-inner">
-      <p class="footer-text" style="opacity: 0.6; margin-top: 8px; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
     </div>
   </footer>
   <script>

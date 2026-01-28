@@ -23,7 +23,7 @@ The largest community-curated directory of pre-built skills and personas for [Mo
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/moltdirectory.git
+git clone https://github.com/neonone123/moltdirectory.git
 cd moltdirectory
 
 # Install dependencies
@@ -94,9 +94,10 @@ Edit the `icons` object in `build.js` to add SVG icons for new categories.
 
 Contributions are welcome! Here's how you can help:
 
-1. **Report Bugs** - Open an issue describing the problem
-2. **Suggest Features** - Open an issue with your idea
-3. **Submit PRs** - Fork, make changes, and submit a pull request
+1. **Add a Skill** - [Submit a new skill](https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml) to the directory
+2. **Report Bugs** - [Open an issue](https://github.com/neonone123/moltdirectory/issues/new?template=bug-report.yml) describing the problem
+3. **Suggest Features** - Open an issue with your idea
+4. **Submit PRs** - Fork, make changes, and submit a pull request
 
 ### Development Guidelines
 
