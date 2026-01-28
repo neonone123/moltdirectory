@@ -195,12 +195,34 @@ async function build() {
   // 1. Generate Homepage
   const homeContent = `
     <section class="hero">
+      <!-- Animated background orbs -->
+      <div class="hero-orb hero-orb-1"></div>
+      <div class="hero-orb hero-orb-2"></div>
+      <div class="hero-orb hero-orb-3"></div>
+
       <div class="hero-content">
-        <h1 class="hero-title">Don't Build From Scratch. Molt It.</h1>
+        <div class="hero-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+          <span>The Agent Skills Directory</span>
+        </div>
+        <h1 class="hero-title">
+          <span class="hero-title-line">Don't Build From Scratch.</span>
+          <span class="hero-title-accent">Molt It.</span>
+        </h1>
         <p class="hero-subtitle">The largest directory of pre-built skills and personas for MoltBot. Find the logic you need to make your agent smarter, faster.</p>
-        <div class="stats">
-          <div class="stat"><div class="stat-value">${filteredSkills.length}</div><div class="stat-label">Skills</div></div>
-          <div class="stat"><div class="stat-value">${filteredCategories.length}</div><div class="stat-label">Categories</div></div>
+        
+        <div class="hero-stats">
+          <div class="hero-stat-card">
+            <div class="hero-stat-value">${filteredSkills.length}</div>
+            <div class="hero-stat-label">Skills</div>
+          </div>
+          <div class="hero-stat-divider"></div>
+          <div class="hero-stat-card">
+            <div class="hero-stat-value">${filteredCategories.length}</div>
+            <div class="hero-stat-label">Categories</div>
+          </div>
         </div>
       </div>
     </section>
