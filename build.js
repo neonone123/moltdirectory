@@ -124,6 +124,34 @@ const PAGE_TEMPLATE = (content, title, desc, depth = 0) => {
       }
       localStorage.setItem('theme', newTheme);
     }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
   </script>
 </body>
 </html>`;
@@ -139,40 +167,65 @@ async function build() {
   const skills = [];
 
   // Parse categories and skills from README
-  const sections = markdown.split('\n## ');
-  sections.shift(); // Remove intro
+  // Support both ## and ### for headers depending on README structure
+  // We'll normalize by splitting on newlines and processing line by line statefully
+  const lines = markdown.split('\n');
+  let currentCat = null;
+  let currentCatSkills = [];
 
-  for (const section of sections) {
-    const lines = section.split('\n');
-    const headerLine = lines.shift();
-    const catName = headerLine.replace(/ \(.*\)/, '').trim();
-    const catId = catName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  for (const line of lines) {
+    // Check for Category Header
+    // 1. Standard Markdown (## or ###)
+    let headerMatch = line.match(/^(#{2,3})\s+(.*)/);
 
-    const catDesc = lines.find(l => l.trim() && !l.startsWith('-'))?.trim() || `Skills for ${catName}`;
-
-    const catSkills = [];
-    for (const line of lines) {
-      const skillMatch = line.match(/^- \[(.*)\]\((.*)\) - (.*)/);
-      if (skillMatch) {
-        const [_, name, url, desc] = skillMatch;
-        // Robust author parsing: the author is the first folder after the LAST 'skills' segment in the URL
-        const author = url.split('/skills/').pop().split('/')[0] || 'VoltAgent';
-
-        const skill = {
-          name,
-          url,
-          desc: desc.replace(/\.$/, ''),
-          catId,
-          catName,
-          author,
-          id: name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
-        };
-        catSkills.push(skill);
-        skills.push(skill);
+    // 2. HTML Style (<summary><h3>...)
+    if (!headerMatch) {
+      const htmlMatch = line.match(/<summary><h3[^>]*>(.*?)<\/h3><\/summary>/);
+      if (htmlMatch) {
+        headerMatch = [line, '###', htmlMatch[1]]; // Mock the markdown match structure
       }
     }
 
-    categories.push({ id: catId, name: catName, desc: catDesc, count: catSkills.length });
+    if (headerMatch) {
+      // If we were processing a category, push it before starting new one
+      if (currentCat) {
+        categories.push({ ...currentCat, count: currentCatSkills.length });
+        currentCatSkills = [];
+      }
+
+      let catName = headerMatch[2].replace(/ \(.*\)/, '').trim();
+      // Remove any trailing colon or special chars if present
+      catName = catName.replace(/:$/, '');
+
+      const catId = catName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      // Default desc, might be refined if description lines follow (omitted for simplicity here)
+      const catDesc = `Skills for ${catName}`;
+
+      currentCat = { id: catId, name: catName, desc: catDesc };
+    } else if (currentCat) {
+      // Process Skills
+      // Format: - [Name](URL) - Description
+      const skillMatch = line.match(/^\s*-\s*\[(.*?)\]\((.*?)\)\s*-\s*(.*)/);
+      if (skillMatch) {
+        const [_, name, url, desc] = skillMatch;
+        const author = url.split('/skills/').pop().split('/')[0] || 'VoltAgent';
+        const skill = {
+          name,
+          url,
+          desc: desc.trim().replace(/\.$/, ''),
+          catId: currentCat.id,
+          catName: currentCat.name,
+          author,
+          id: name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+        };
+        currentCatSkills.push(skill);
+        skills.push(skill);
+      }
+    }
+  }
+  // Push the last category
+  if (currentCat) {
+    categories.push({ ...currentCat, count: currentCatSkills.length });
   }
 
   // Filter out non-skill categories
@@ -396,8 +449,17 @@ async function build() {
           </section>
           <div class="skill-page-body">
             <article class="skill-page-content">
-              <div class="markdown-content">
-                ${skillHtml}
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  ${skillHtml}
+                </div>
               </div>
             </article>
             <aside class="skill-page-sidebar">
@@ -415,6 +477,10 @@ async function build() {
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                   Download SKILL.md
                 </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
               </div>
               <div class="sidebar-card">
                 <div class="sidebar-title">Details</div>
