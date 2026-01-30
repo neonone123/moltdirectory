@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Manage tasks and projects in Todoist. Use when user asks about tasks, to-dos, reminders">
+  <meta name="description" content="Todoist CLI: list, add, modify, complete, delete tasks">
   <title>todoist - MoltDirectory</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,7 +29,7 @@
       </a>
       <nav class="header-links">
         <a href="../../start-here/index.html" class="header-link">Start Here</a>
-        <a href="../../security-auditor.html" class="header-link">Security Auditor</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
           <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -47,134 +47,154 @@
               <a href="../index.html" class="back-link">← Back to Productivity & Tasks</a>
               <div class="skill-page-meta">
                 <a href="../index.html" class="skill-page-category">Productivity & Tasks</a>
-                <span class="skill-page-author">by @mjrussell</span>
+                <span class="skill-page-author">by @2mawi2</span>
               </div>
               <h1 class="skill-page-title">todoist</h1>
-              <p class="skill-page-desc">Manage tasks and projects in Todoist. Use when user asks about tasks, to-dos, reminders</p>
+              <p class="skill-page-desc">Todoist CLI: list, add, modify, complete, delete tasks</p>
             </div>
           </section>
           <div class="skill-page-body">
             <article class="skill-page-content">
               <div class="skill-source-wrapper">
                 <div class="skill-source-header">
-                  <span class="skill-source-label">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                    SKILL.md
-                  </span>
-                  <button class="skill-source-copy" onclick="copySkillContent(this)">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                     Copy
                   </button>
                 </div>
-                <div class="skill-source-content">
-              <div class="markdown-content">
-                <h1>Todoist CLI</h1>
-<p>CLI for Todoist task management, built on the official TypeScript SDK.</p>
-<h2>Installation</h2>
-<pre><code class="language-bash"># Requires todoist-ts-cli &gt;= 0.2.0 (for --top / --order)
-npm install -g todoist-ts-cli@^0.2.0
-</code></pre>
+                <div class="markdown-content">
+                  <h1>Todoist CLI</h1>
+<p>Use <code>todoist</code> to manage Todoist tasks directly from the terminal.</p>
 <h2>Setup</h2>
 <ol>
-<li>Get API token from <a href="https://todoist.com/app/settings/integrations/developer">https://todoist.com/app/settings/integrations/developer</a></li>
-<li>Either:<pre><code class="language-bash">todoist auth &lt;your-token&gt;
-# or
-export TODOIST_API_TOKEN=&quot;your-token&quot;
-</code></pre>
-</li>
+<li>Install: <code>brew install todoist-cli</code></li>
+<li>Get your API token from <a href="https://app.todoist.com/app/settings/integrations/developer">https://app.todoist.com/app/settings/integrations/developer</a></li>
+<li>Create config:</li>
 </ol>
-<h2>Commands</h2>
-<h3>Tasks</h3>
-<pre><code class="language-bash">todoist                    # Show today&#39;s tasks (default)
-todoist today              # Same as above
-todoist tasks              # List tasks (today + overdue)
-todoist tasks --all        # All tasks
-todoist tasks -p &quot;Work&quot;    # Tasks in project
-todoist tasks -f &quot;p1&quot;      # Filter query (priority 1)
-todoist tasks --json
+<pre><code class="language-bash">mkdir -p ~/.config/todoist
+echo &#39;{&quot;token&quot;: &quot;YOUR_API_TOKEN&quot;}&#39; &gt; ~/.config/todoist/config.json
 </code></pre>
-<h3>Add Tasks</h3>
-<pre><code class="language-bash">todoist add &quot;Buy groceries&quot;
-todoist add &quot;Meeting&quot; --due &quot;tomorrow 10am&quot;
-todoist add &quot;Review PR&quot; --due &quot;today&quot; --priority 1 --project &quot;Work&quot;
-todoist add &quot;Prep slides&quot; --project &quot;Work&quot; --order 3  # add at a specific position (1-based)
-todoist add &quot;Triage inbox&quot; --project &quot;Work&quot; --order top  # add to top (alternative to --top)
-todoist add &quot;Call mom&quot; -d &quot;sunday&quot; -l &quot;family&quot;  # with label
+<ol start="4">
+<li>Sync: <code>todoist sync</code></li>
+</ol>
+<h2>List Tasks</h2>
+<pre><code class="language-bash">todoist list                           # All tasks
+todoist list --filter &quot;today&quot;          # Due today
+todoist list --filter &quot;overdue&quot;        # Overdue tasks
+todoist list --filter &quot;p1&quot;             # Priority 1 (highest)
+todoist list --filter &quot;tomorrow&quot;       # Due tomorrow
+todoist list --filter &quot;@work&quot;          # By label
+todoist list --filter &quot;#Project&quot;       # By project
+todoist list --filter &quot;(today | overdue) &amp; p1&quot;  # Combined filters
 </code></pre>
-<h3>Manage Tasks</h3>
-<pre><code class="language-bash">todoist view &lt;id&gt;          # View task details
-todoist done &lt;id&gt;          # Complete task
-todoist reopen &lt;id&gt;        # Reopen completed task
-todoist update &lt;id&gt; --due &quot;next week&quot;
-todoist move &lt;id&gt; -p &quot;Personal&quot;
-todoist delete &lt;id&gt;
+<h2>Add Tasks</h2>
+<pre><code class="language-bash">todoist add &quot;Buy milk&quot;                                    # Simple task
+todoist add &quot;Call mom&quot; --priority 1                       # With priority (1=highest, 4=lowest)
+todoist add &quot;Meeting&quot; --date &quot;tomorrow 3pm&quot;               # With due date
+todoist add &quot;Report&quot; --project-name &quot;Work&quot;                # To specific project
+todoist add &quot;Review&quot; --label-names &quot;urgent,review&quot;        # With labels
+todoist quick &quot;Buy eggs tomorrow p1 #Shopping @errands&quot;   # Natural language
 </code></pre>
-<h3>Search</h3>
-<pre><code class="language-bash">todoist search &quot;meeting&quot;
+<h2>Modify Tasks</h2>
+<pre><code class="language-bash">todoist modify TASK_ID --content &quot;New title&quot;
+todoist modify TASK_ID --priority 2
+todoist modify TASK_ID --date &quot;next monday&quot;
 </code></pre>
-<h3>Projects &amp; Labels</h3>
-<pre><code class="language-bash">todoist projects           # List projects
-todoist project-add &quot;New Project&quot;
-todoist labels             # List labels
-todoist label-add &quot;urgent&quot;
+<h2>Complete Tasks</h2>
+<pre><code class="language-bash">todoist close TASK_ID              # Complete a task
+todoist close TASK_ID TASK_ID2     # Complete multiple tasks
 </code></pre>
-<h3>Comments</h3>
-<pre><code class="language-bash">todoist comments &lt;task-id&gt;
-todoist comment &lt;task-id&gt; &quot;Note about this task&quot;
+<h2>Delete Tasks</h2>
+<pre><code class="language-bash">todoist delete TASK_ID
 </code></pre>
-<h2>Usage Examples</h2>
-<p><strong>User: &quot;What do I have to do today?&quot;</strong></p>
-<pre><code class="language-bash">todoist today
+<h2>View Details</h2>
+<pre><code class="language-bash">todoist show TASK_ID               # Show task details
+todoist projects                   # List all projects
+todoist labels                     # List all labels
 </code></pre>
-<p><strong>User: &quot;Add &#39;buy milk&#39; to my tasks&quot;</strong></p>
-<pre><code class="language-bash">todoist add &quot;Buy milk&quot; --due &quot;today&quot;
+<h2>Sync</h2>
+<pre><code class="language-bash">todoist sync                       # Sync local cache with Todoist
 </code></pre>
-<p><strong>User: &quot;Remind me to call the dentist tomorrow&quot;</strong></p>
-<pre><code class="language-bash">todoist add &quot;Call the dentist&quot; --due &quot;tomorrow&quot;
-</code></pre>
-<p><strong>User: &quot;Mark the grocery task as done&quot;</strong></p>
-<pre><code class="language-bash">todoist search &quot;grocery&quot;   # Find task ID
-todoist done &lt;id&gt;
-</code></pre>
-<p><strong>User: &quot;What&#39;s on my work project?&quot;</strong></p>
-<pre><code class="language-bash">todoist tasks -p &quot;Work&quot;
-</code></pre>
-<p><strong>User: &quot;Show my high priority tasks&quot;</strong></p>
-<pre><code class="language-bash">todoist tasks -f &quot;p1&quot;
+<h2>Output Formats</h2>
+<pre><code class="language-bash">todoist list --csv                 # CSV output for scripting
+todoist list --color               # Colorized output
+todoist list --namespace           # Show parent tasks as namespace
+todoist list --indent              # Indent subtasks
 </code></pre>
 <h2>Filter Syntax</h2>
-<p>Todoist supports powerful filter queries:</p>
-<ul>
-<li><code>p1</code>, <code>p2</code>, <code>p3</code>, <code>p4</code> - Priority levels</li>
-<li><code>today</code>, <code>tomorrow</code>, <code>overdue</code></li>
-<li><code>@label</code> - Tasks with label</li>
-<li><code>#project</code> - Tasks in project</li>
-<li><code>search: keyword</code> - Search</li>
-</ul>
+<p>Todoist CLI supports the <a href="https://todoist.com/help/articles/introduction-to-filters-V98wIH">official Todoist filter syntax</a>:</p>
+<table>
+<thead>
+<tr>
+<th>Filter</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>today</code></td>
+<td>Due today</td>
+</tr>
+<tr>
+<td><code>tomorrow</code></td>
+<td>Due tomorrow</td>
+</tr>
+<tr>
+<td><code>overdue</code></td>
+<td>Past due date</td>
+</tr>
+<tr>
+<td><code>no date</code></td>
+<td>No due date</td>
+</tr>
+<tr>
+<td><code>p1</code>, <code>p2</code>, <code>p3</code>, <code>p4</code></td>
+<td>Priority level</td>
+</tr>
+<tr>
+<td><code>@label</code></td>
+<td>By label</td>
+</tr>
+<tr>
+<td><code>#Project</code></td>
+<td>By project</td>
+</tr>
+<tr>
+<td><code>assigned to: me</code></td>
+<td>Assigned to you</td>
+</tr>
+<tr>
+<td><code>7 days</code></td>
+<td>Due in next 7 days</td>
+</tr>
+</tbody></table>
+<p>Combine with <code>&amp;</code> (and), <code>|</code> (or), <code>!</code> (not):</p>
+<pre><code class="language-bash">todoist list --filter &quot;(today | overdue) &amp; p1&quot;
+todoist list --filter &quot;#Work &amp; !@done&quot;
+</code></pre>
 <h2>Notes</h2>
 <ul>
-<li>Task IDs are shown in task listings</li>
-<li>Due dates support natural language (&quot;tomorrow&quot;, &quot;next monday&quot;, &quot;jan 15&quot;)</li>
-<li>Priority 1 is highest, 4 is lowest</li>
-<li>Use <code>--order &lt;n&gt;</code> (1-based) or <code>--order top</code> to insert a task at a specific position within a project/section</li>
+<li>Run <code>todoist sync</code> after making changes in the web/mobile app</li>
+<li>Task IDs are numeric (e.g., <code>12345678</code>)</li>
+<li>Config stored in <code>~/.config/todoist/config.json</code></li>
+<li>Cache stored in <code>~/.config/todoist/cache.json</code></li>
 </ul>
 
-              </div>
                 </div>
               </div>
             </article>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/moltbot/skills/tree/main/skills/mjrussell/todoist/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/tree/main/skills/2mawi2/todoist-task-manager/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
-                <a href="https://clawdhub.com/mjrussell/todoist" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                <a href="https://clawdhub.com/2mawi2/todoist" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/mjrussell/todoist/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/2mawi2/todoist-task-manager/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                   Download SKILL.md
                 </a>
@@ -188,7 +208,7 @@ todoist done &lt;id&gt;
                 <div class="sidebar-info">
                   <div class="sidebar-info-item">
                     <span class="sidebar-info-label">Author</span>
-                    <span class="sidebar-info-value">@mjrussell</span>
+                    <span class="sidebar-info-value">@2mawi2</span>
                   </div>
                   <div class="sidebar-info-item">
                     <span class="sidebar-info-label">Category</span>
@@ -202,10 +222,22 @@ todoist done &lt;id&gt;
   <footer class="footer">
     <div class="footer-inner">
       <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
-      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. Created by: <a href="https://x.com/neonone1234" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">NeonOne</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
     </div>
   </footer>
   <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
     function copySkillContent(btn) {
       const wrapper = btn.closest('.skill-source-wrapper');
       const content = wrapper.querySelector('.markdown-content');
@@ -221,34 +253,17 @@ todoist done &lt;id&gt;
         });
       }
     }
-    
+
     async function sendToSecurityAuditor() {
       try {
-        // Get content from the rendered markdown in the DOM
         const contentElement = document.querySelector('.markdown-content');
         if (!contentElement) throw new Error('Could not find markdown content');
-        
         const skillContent = contentElement.innerText || contentElement.textContent;
-        
-        // Store in localStorage
         localStorage.setItem('skillAuditContent', skillContent);
-        
-        // Open security auditor in new tab (go up two levels)
-        window.open('../../security-auditor.html', '_blank');
+        window.open('/security-auditor', '_blank'); 
       } catch (error) {
         alert('Error: ' + error.message);
       }
-    }
-    function toggleTheme() {
-      const html = document.documentElement;
-      const currentTheme = html.getAttribute('data-theme');
-      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-      if (newTheme === 'light') {
-        html.setAttribute('data-theme', 'light');
-      } else {
-        html.removeAttribute('data-theme');
-      }
-      localStorage.setItem('theme', newTheme);
     }
   </script>
 </body>

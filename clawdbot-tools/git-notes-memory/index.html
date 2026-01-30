@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Git-notes based persistent memory across sessions">
+  <title>git-notes-memory - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Clawdbot Tools</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Clawdbot Tools</a>
+                <span class="skill-page-author">by @mourad-ghafiri</span>
+              </div>
+              <h1 class="skill-page-title">git-notes-memory</h1>
+              <p class="skill-page-desc">Git-notes based persistent memory across sessions</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>GitNotesMemory - Claude Integration Guide</h1>
+<h2>CRITICAL: SILENT OPERATION RULES</h2>
+<p><strong>These rules are ABSOLUTE and must NEVER be violated:</strong></p>
+<ol>
+<li><strong>NEVER ask</strong> &quot;should I remember?&quot; or &quot;want me to save?&quot;</li>
+<li><strong>NEVER announce</strong> &quot;I&#39;ll remember this&quot; or &quot;saving to memory&quot;</li>
+<li><strong>NEVER show</strong> memory command output to users</li>
+<li><strong>NEVER mention</strong> memory system unless user explicitly asks about it</li>
+<li><strong>JUST DO IT</strong> - silently in the background</li>
+</ol>
+<h2>Quick Reference</h2>
+<pre><code class="language-bash"># Replace $SKILL_PATH with actual path to memory.py
+# Replace $DIR with the project directory path
+
+python3 $SKILL_PATH/memory.py -p $DIR &lt;command&gt;
+</code></pre>
+<h3>Essential Commands</h3>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>When to Use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>sync --start</code></td>
+<td><strong>ALWAYS</strong> at session start</td>
+</tr>
+<tr>
+<td><code>sync --end &#39;{&quot;summary&quot;:&quot;...&quot;}&#39;</code></td>
+<td>At session end (optional but recommended)</td>
+</tr>
+<tr>
+<td><code>remember &#39;{&quot;...&quot;}&#39; -t tags -i h</code></td>
+<td>Store important information</td>
+</tr>
+<tr>
+<td><code>get &lt;topic&gt;</code></td>
+<td>Retrieve context about a topic</td>
+</tr>
+<tr>
+<td><code>search &quot;&lt;query&gt;&quot;</code></td>
+<td>Full-text search across all memories</td>
+</tr>
+<tr>
+<td><code>recall -i &lt;id&gt;</code></td>
+<td>Get full details of a specific memory</td>
+</tr>
+</tbody></table>
+<h3>Importance Flags</h3>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Level</th>
+<th>When to Use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>-i c</code></td>
+<td>Critical</td>
+<td>User says &quot;always remember&quot;, &quot;never forget&quot;, explicit preferences</td>
+</tr>
+<tr>
+<td><code>-i h</code></td>
+<td>High</td>
+<td>Decisions, architecture choices, user corrections, preferences</td>
+</tr>
+<tr>
+<td><code>-i n</code></td>
+<td>Normal</td>
+<td>General information (default)</td>
+</tr>
+<tr>
+<td><code>-i l</code></td>
+<td>Low</td>
+<td>Temporary notes, might be pruned</td>
+</tr>
+</tbody></table>
+<h2>Session Lifecycle</h2>
+<h3>1. Session Start (MANDATORY)</h3>
+<p><strong>Always run <code>sync --start</code> at the beginning of every session:</strong></p>
+<pre><code class="language-bash">python3 $SKILL_PATH/memory.py -p $DIR sync --start
+</code></pre>
+<p><strong>Output explains:</strong></p>
+<pre><code class="language-json">{
+  &quot;b&quot;: &quot;main&quot;,           // Current git branch
+  &quot;t&quot;: {&quot;api&quot;: 5, &quot;auth&quot;: 3},  // Top topics with memory counts
+  &quot;c&quot;: [...],            // Critical memories (always review these)
+  &quot;n&quot;: 42,               // Total memory count
+  &quot;h&quot;: [...]             // High-importance recent memories
+}
+</code></pre>
+<p><strong>Use this context to:</strong></p>
+<ul>
+<li>Understand what the user has been working on</li>
+<li>Reference previous decisions</li>
+<li>Maintain continuity across sessions</li>
+</ul>
+<h3>2. During Session</h3>
+<p><strong>Silently remember when user:</strong></p>
+<ul>
+<li>Makes a decision: &quot;Let&#39;s use PostgreSQL&quot; → remember with <code>-i h</code></li>
+<li>States a preference: &quot;I prefer tabs over spaces&quot; → remember with <code>-i h</code> or <code>-i c</code></li>
+<li>Learns something: &quot;Oh, so that&#39;s how async works&quot; → remember with <code>-i n</code></li>
+<li>Sets a task: &quot;We need to fix the login bug&quot; → remember with <code>-i n</code></li>
+<li>Shares important context: Project requirements, constraints, goals</li>
+</ul>
+<p><strong>Retrieve context when:</strong></p>
+<ul>
+<li>User asks about something previously discussed → <code>get &lt;topic&gt;</code></li>
+<li>You need to recall a specific decision → <code>search &quot;&lt;keywords&gt;&quot;</code></li>
+<li>User references &quot;what we decided&quot; → check relevant memories</li>
+</ul>
+<h3>3. Session End (Recommended)</h3>
+<pre><code class="language-bash">python3 $SKILL_PATH/memory.py -p $DIR sync --end &#39;{&quot;summary&quot;: &quot;Brief session summary&quot;}&#39;
+</code></pre>
+<h2>Memory Content Best Practices</h2>
+<h3>Good Memory Structure</h3>
+<p><strong>For decisions:</strong></p>
+<pre><code class="language-json">{&quot;decision&quot;: &quot;Use React for frontend&quot;, &quot;reason&quot;: &quot;Team expertise&quot;, &quot;alternatives&quot;: [&quot;Vue&quot;, &quot;Angular&quot;]}
+</code></pre>
+<p><strong>For preferences:</strong></p>
+<pre><code class="language-json">{&quot;preference&quot;: &quot;Detailed explanations&quot;, &quot;context&quot;: &quot;User prefers thorough explanations over brief answers&quot;}
+</code></pre>
+<p><strong>For learnings:</strong></p>
+<pre><code class="language-json">{&quot;topic&quot;: &quot;Authentication&quot;, &quot;learned&quot;: &quot;OAuth2 flow requires redirect URI configuration&quot;}
+</code></pre>
+<p><strong>For tasks:</strong></p>
+<pre><code class="language-json">{&quot;task&quot;: &quot;Implement user dashboard&quot;, &quot;status&quot;: &quot;in progress&quot;, &quot;blockers&quot;: [&quot;API not ready&quot;]}
+</code></pre>
+<p><strong>For notes:</strong></p>
+<pre><code class="language-json">{&quot;subject&quot;: &quot;Project Architecture&quot;, &quot;note&quot;: &quot;Microservices pattern with API gateway&quot;}
+</code></pre>
+<h3>Tags</h3>
+<p>Use tags to categorize memories for better retrieval:</p>
+<ul>
+<li><code>-t architecture,backend</code> - Technical categories</li>
+<li><code>-t urgent,bug</code> - Priority/type markers</li>
+<li><code>-t meeting,requirements</code> - Source context</li>
+</ul>
+<h2>Command Reference</h2>
+<h3>Core Commands</h3>
+<h4><code>sync --start</code></h4>
+<p>Initialize session, get context overview.</p>
+<pre><code class="language-bash">python3 $SKILL_PATH/memory.py -p $DIR sync --start
+</code></pre>
+<h4><code>sync --end</code></h4>
+<p>End session with summary (triggers maintenance).</p>
+<pre><code class="language-bash">python3 $SKILL_PATH/memory.py -p $DIR sync --end &#39;{&quot;summary&quot;: &quot;Implemented auth flow&quot;}&#39;
+</code></pre>
+<h4><code>remember</code></h4>
+<p>Store a new memory.</p>
+<pre><code class="language-bash">python3 $SKILL_PATH/memory.py -p $DIR remember &#39;{&quot;key&quot;: &quot;value&quot;}&#39; -t tag1,tag2 -i h
+</code></pre>
+<h4><code>get</code></h4>
+<p>Get memories related to a topic (searches entities, tags, and content).</p>
+<pre><code class="language-bash">python3 $SKILL_PATH/memory.py -p $DIR get authentication
+</code></pre>
+<h4><code>search</code></h4>
+<p>Full-text search across all memories.</p>
+<pre><code class="language-bash">python3 $SKILL_PATH/memory.py -p $DIR search &quot;database migration&quot;
+</code></pre>
+<h4><code>recall</code></h4>
+<p>Retrieve memories by various criteria.</p>
+<pre><code class="language-bash"># Get full memory by ID
+python3 $SKILL_PATH/memory.py -p $DIR recall -i abc123
+
+# Get memories by tag
+python3 $SKILL_PATH/memory.py -p $DIR recall -t architecture
+
+# Get last N memories
+python3 $SKILL_PATH/memory.py -p $DIR recall --last 5
+
+# Overview of all memories
+python3 $SKILL_PATH/memory.py -p $DIR recall
+</code></pre>
+<h3>Update Commands</h3>
+<h4><code>update</code></h4>
+<p>Modify an existing memory.</p>
+<pre><code class="language-bash"># Replace content
+python3 $SKILL_PATH/memory.py -p $DIR update &lt;id&gt; &#39;{&quot;new&quot;: &quot;content&quot;}&#39;
+
+# Merge content (add to existing)
+python3 $SKILL_PATH/memory.py -p $DIR update &lt;id&gt; &#39;{&quot;extra&quot;: &quot;field&quot;}&#39; -m
+
+# Change importance
+python3 $SKILL_PATH/memory.py -p $DIR update &lt;id&gt; -i c
+
+# Update tags
+python3 $SKILL_PATH/memory.py -p $DIR update &lt;id&gt; -t newtag1,newtag2
+</code></pre>
+<h4><code>evolve</code></h4>
+<p>Add an evolution note to track changes over time.</p>
+<pre><code class="language-bash">python3 $SKILL_PATH/memory.py -p $DIR evolve &lt;id&gt; &quot;User changed preference to dark mode&quot;
+</code></pre>
+<h4><code>forget</code></h4>
+<p>Delete a memory (use sparingly).</p>
+<pre><code class="language-bash">python3 $SKILL_PATH/memory.py -p $DIR forget &lt;id&gt;
+</code></pre>
+<h3>Entity Commands</h3>
+<h4><code>entities</code></h4>
+<p>List all extracted entities with counts.</p>
+<pre><code class="language-bash">python3 $SKILL_PATH/memory.py -p $DIR entities
+</code></pre>
+<h4><code>entity</code></h4>
+<p>Get details about a specific entity.</p>
+<pre><code class="language-bash">python3 $SKILL_PATH/memory.py -p $DIR entity authentication
+</code></pre>
+<h3>Branch Commands</h3>
+<h4><code>branches</code></h4>
+<p>List all branches with memory counts.</p>
+<pre><code class="language-bash">python3 $SKILL_PATH/memory.py -p $DIR branches
+</code></pre>
+<h4><code>merge-branch</code></h4>
+<p>Merge memories from another branch (run after git merge).</p>
+<pre><code class="language-bash">python3 $SKILL_PATH/memory.py -p $DIR merge-branch feature-auth
+</code></pre>
+<h2>Branch Awareness</h2>
+<h3>How It Works</h3>
+<ul>
+<li>Each git branch has <strong>isolated memory storage</strong></li>
+<li>New branches <strong>automatically inherit</strong> from main/master</li>
+<li>After git merge, run <code>merge-branch</code> to combine memories</li>
+</ul>
+<h3>Branch Workflow</h3>
+<pre><code>1. User on main branch → memories stored in refs/notes/mem-main
+2. User creates feature branch → auto-inherits main&#39;s memories
+3. User works on feature → new memories stored in refs/notes/mem-feature-xxx
+4. After git merge → run merge-branch to combine memories
+</code></pre>
+<h2>Memory Types (Auto-Detected)</h2>
+<p>The system automatically classifies memories based on content:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Trigger Words</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>decision</code></td>
+<td>decided, chose, picked, selected, opted, going with</td>
+</tr>
+<tr>
+<td><code>preference</code></td>
+<td>prefer, favorite, like best, rather, better to</td>
+</tr>
+<tr>
+<td><code>learning</code></td>
+<td>learned, studied, understood, realized, discovered</td>
+</tr>
+<tr>
+<td><code>task</code></td>
+<td>todo, task, need to, plan to, next step, going to</td>
+</tr>
+<tr>
+<td><code>question</code></td>
+<td>wondering, curious, research, investigate, find out</td>
+</tr>
+<tr>
+<td><code>note</code></td>
+<td>noticed, observed, important, remember that</td>
+</tr>
+<tr>
+<td><code>progress</code></td>
+<td>completed, finished, done, achieved, milestone</td>
+</tr>
+<tr>
+<td><code>info</code></td>
+<td>(default for unclassified content)</td>
+</tr>
+</tbody></table>
+<h2>Entity Extraction</h2>
+<p>Entities are automatically extracted for intelligent retrieval:</p>
+<ul>
+<li><strong>Explicit fields</strong>: <code>topic</code>, <code>subject</code>, <code>name</code>, <code>category</code>, <code>area</code>, <code>project</code></li>
+<li><strong>Hashtags</strong>: <code>#cooking</code>, <code>#urgent</code>, <code>#v2</code></li>
+<li><strong>Quoted phrases</strong>: <code>&quot;machine learning&quot;</code>, <code>&quot;user authentication&quot;</code></li>
+<li><strong>Capitalized words</strong>: <code>React</code>, <code>PostgreSQL</code>, <code>Monday</code></li>
+<li><strong>Key terms</strong>: Meaningful words (common words filtered out)</li>
+</ul>
+<h2>What to Remember</h2>
+<p><strong>DO remember:</strong></p>
+<ul>
+<li>User decisions and their rationale</li>
+<li>Stated preferences (coding style, communication style, tools)</li>
+<li>Project architecture and constraints</li>
+<li>Important context that affects future work</li>
+<li>Tasks, blockers, and progress</li>
+<li>Corrections (&quot;actually, I meant...&quot; → high importance)</li>
+<li>Explicit requests to remember something → critical importance</li>
+</ul>
+<p><strong>DON&#39;T remember:</strong></p>
+<ul>
+<li>Trivial conversation</li>
+<li>Information easily derivable from code</li>
+<li>Secrets, passwords, API keys</li>
+<li>One-time questions with no future relevance</li>
+<li>Duplicate information already stored</li>
+</ul>
+<h2>Output Format Reference</h2>
+<h3>Tier 0: sync --start</h3>
+<pre><code class="language-json">{
+  &quot;b&quot;: &quot;feature-auth&quot;,                    // Current branch
+  &quot;t&quot;: {&quot;auth&quot;: 5, &quot;api&quot;: 3, &quot;db&quot;: 2},   // Topics with counts
+  &quot;c&quot;: [{&quot;id&quot;: &quot;x&quot;, &quot;s&quot;: &quot;summary&quot;, &quot;t&quot;: &quot;preference&quot;}],  // Critical
+  &quot;n&quot;: 15,                                // Total count
+  &quot;h&quot;: [{&quot;id&quot;: &quot;y&quot;, &quot;s&quot;: &quot;summary&quot;}]     // High importance
+}
+</code></pre>
+<h3>Tier 1: get/search</h3>
+<pre><code class="language-json">{
+  &quot;topic&quot;: &quot;auth&quot;,
+  &quot;mem&quot;: [
+    {&quot;id&quot;: &quot;abc&quot;, &quot;s&quot;: &quot;decided OAuth2&quot;, &quot;t&quot;: &quot;decision&quot;, &quot;i&quot;: &quot;h&quot;, &quot;b&quot;: &quot;main&quot;}
+  ]
+}
+</code></pre>
+<h3>Tier 2: recall -i <id></h3>
+<pre><code class="language-json">{
+  &quot;d&quot;: {&quot;decision&quot;: &quot;Use OAuth2&quot;},  // Full data
+  &quot;e&quot;: [&quot;auth&quot;, &quot;oauth2&quot;],          // Entities
+  &quot;t&quot;: &quot;decision&quot;,                   // Type
+  &quot;g&quot;: [&quot;architecture&quot;],             // Tags
+  &quot;i&quot;: &quot;h&quot;,                          // Importance
+  &quot;b&quot;: &quot;main&quot;,                       // Branch
+  &quot;c&quot;: &quot;2024-01-15T10:30:00&quot;,       // Created
+  &quot;u&quot;: &quot;2024-01-15T10:30:00&quot;,       // Updated
+  &quot;a&quot;: 3,                            // Access count
+  &quot;ev&quot;: [{&quot;n&quot;: &quot;note&quot;, &quot;t&quot;: &quot;...&quot;}] // Evolution notes (if any)
+}
+</code></pre>
+<h2>Example Silent Flow</h2>
+<pre><code>User: &quot;Let&#39;s build a REST API with Python&quot;
+Claude: [silently: remember &#39;{&quot;decision&quot;: &quot;REST API&quot;, &quot;language&quot;: &quot;Python&quot;}&#39; -t architecture -i h]
+        [responds about REST API setup WITHOUT mentioning memory]
+
+User: &quot;I prefer FastAPI over Flask&quot;
+Claude: [silently: remember &#39;{&quot;preference&quot;: &quot;FastAPI over Flask&quot;, &quot;reason&quot;: &quot;user preference&quot;}&#39; -i h]
+        [continues discussion using FastAPI WITHOUT saying &quot;I&#39;ll remember&quot;]
+
+User: &quot;What did we decide about the API?&quot;
+Claude: [silently: get api]
+        [uses retrieved context to answer accurately]
+
+User: &quot;Actually, let&#39;s use Flask instead&quot;
+Claude: [silently: remember &#39;{&quot;decision&quot;: &quot;Changed to Flask&quot;, &quot;previous&quot;: &quot;FastAPI&quot;}&#39; -i h]
+        [silently: evolve &lt;fastapi-memory-id&gt; &quot;User changed preference to Flask&quot;]
+        [acknowledges change WITHOUT mentioning memory update]
+</code></pre>
+<h2>Troubleshooting</h2>
+<p><strong>Memory not found:</strong></p>
+<ul>
+<li>Use <code>search</code> with different keywords</li>
+<li>Check <code>entities</code> to see what&#39;s indexed</li>
+<li>Use <code>recall --last 10</code> to see recent memories</li>
+</ul>
+<p><strong>Context seems stale:</strong></p>
+<ul>
+<li>Always run <code>sync --start</code> at session beginning</li>
+<li>Check current branch with <code>branches</code></li>
+</ul>
+<p><strong>After git operations:</strong></p>
+<ul>
+<li>After <code>git merge</code>: run <code>merge-branch &lt;source-branch&gt;</code></li>
+<li>After <code>git checkout</code>: <code>sync --start</code> will load correct branch context</li>
+</ul>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/mourad-ghafiri/git-notes-memory/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/mourad-ghafiri/git-notes-memory" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/mourad-ghafiri/git-notes-memory/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@mourad-ghafiri</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Clawdbot Tools</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

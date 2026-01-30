@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Access Granola AI meeting notes - CSV import, shared note fetching">
+  <meta name="description" content="Access Granola meeting transcripts and notes">
   <title>granola - MoltDirectory</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,7 +29,7 @@
       </a>
       <nav class="header-links">
         <a href="../../start-here/index.html" class="header-link">Start Here</a>
-        <a href="../../security-auditor.html" class="header-link">Security Auditor</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
           <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -47,117 +47,121 @@
               <a href="../index.html" class="back-link">← Back to Notes & PKM</a>
               <div class="skill-page-meta">
                 <a href="../index.html" class="skill-page-category">Notes & PKM</a>
-                <span class="skill-page-author">by @mvanhorn</span>
+                <span class="skill-page-author">by @scald</span>
               </div>
               <h1 class="skill-page-title">granola</h1>
-              <p class="skill-page-desc">Access Granola AI meeting notes - CSV import, shared note fetching</p>
+              <p class="skill-page-desc">Access Granola meeting transcripts and notes</p>
             </div>
           </section>
           <div class="skill-page-body">
             <article class="skill-page-content">
               <div class="skill-source-wrapper">
                 <div class="skill-source-header">
-                  <span class="skill-source-label">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                    SKILL.md
-                  </span>
-                  <button class="skill-source-copy" onclick="copySkillContent(this)">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                     Copy
                   </button>
                 </div>
-                <div class="skill-source-content">
-              <div class="markdown-content">
-                <h1>Granola</h1>
-<p>Access your <a href="https://granola.ai">Granola</a> meeting notes. Granola is the AI notepad for people in back-to-back meetings.</p>
-<h2>Current Capabilities</h2>
-<h3>1. CSV Export Import</h3>
-<p>Granola allows exporting historical notes as CSV. This skill can parse and search those exports.</p>
-<pre><code class="language-bash"># Parse a Granola CSV export
-python3 {baseDir}/scripts/csv_import.py --file ~/Downloads/granola_export.csv
-
-# Search parsed notes
-python3 {baseDir}/scripts/csv_import.py --file ~/Downloads/granola_export.csv --search &quot;quarterly review&quot;
+                <div class="markdown-content">
+                  <h1>granola</h1>
+<p>Access Granola meeting transcripts, summaries, and notes.</p>
+<h2>Setup</h2>
+<p>Granola stores meetings in the cloud. To access them locally:</p>
+<ol>
+<li><strong>Install dependencies:</strong></li>
+</ol>
+<pre><code class="language-bash">pip install requests
 </code></pre>
-<h3>2. Shared Note Fetching</h3>
-<p>When you share a Granola note, it gets a public URL. This skill can fetch and parse shared notes.</p>
-<pre><code class="language-bash"># Fetch a shared note
-python3 {baseDir}/scripts/fetch_shared.py --url &quot;https://share.granola.ai/...&quot;
+<ol start="2">
+<li><strong>Run initial sync:</strong></li>
+</ol>
+<pre><code class="language-bash">python ~/path/to/clawdbot/skills/granola/scripts/sync.py ~/granola-meetings
 </code></pre>
-<h3>3. MCP Integration (Coming Soon)</h3>
-<p>Granola is building official MCP (Model Context Protocol) support for AI agent access. When available:</p>
-<pre><code class="language-json">{
-  &quot;mcpServers&quot;: {
-    &quot;granola&quot;: {
-      &quot;command&quot;: &quot;granola-mcp&quot;,
-      &quot;args&quot;: [&quot;--api-key&quot;, &quot;YOUR_KEY&quot;]
+<ol start="3">
+<li><strong>Set up automatic sync via clawdbot cron:</strong></li>
+</ol>
+<pre><code class="language-javascript">clawdbot_cron({
+  action: &quot;add&quot;,
+  job: {
+    name: &quot;Granola Sync&quot;,
+    description: &quot;Sync Granola meetings to local disk&quot;,
+    schedule: { kind: &quot;cron&quot;, expr: &quot;0 */6 * * *&quot;, tz: &quot;America/New_York&quot; },
+    sessionTarget: &quot;isolated&quot;,
+    wakeMode: &quot;now&quot;,
+    payload: {
+      kind: &quot;agentTurn&quot;,
+      message: &quot;Run the Granola sync: python {skillsDir}/granola/scripts/sync.py ~/granola-meetings&quot;,
+      deliver: false
     }
   }
-}
+})
 </code></pre>
-<h2>How to Export from Granola</h2>
-<ol>
-<li>Open Granola app</li>
-<li>Go to <strong>Settings → Profile</strong></li>
-<li>Click <strong>Generate CSV</strong></li>
-<li>CSV will be emailed to you (takes a few hours)</li>
-</ol>
-<p>Note: CSV export only includes notes older than 30 days and doesn&#39;t include full transcripts.</p>
-<h2>Usage Examples</h2>
-<p><strong>Import and search meeting notes:</strong></p>
-<pre><code>&quot;Search my Granola notes for anything about the product roadmap&quot;
-&quot;What did we discuss in last month&#39;s board meeting?&quot;
-&quot;Find action items from my 1:1s&quot;
+<p>The sync script reads auth from <code>~/Library/Application Support/Granola/supabase.json</code> (created when you sign into Granola on macOS).</p>
+<h2>Data Structure</h2>
+<p>After sync, each meeting is a folder:</p>
+<pre><code>~/granola-meetings/
+  {meeting-id}/
+    metadata.json   - title, date, attendees
+    transcript.md   - formatted transcript  
+    transcript.json - raw transcript data
+    document.json   - full API response
+    notes.md        - AI summary (if available)
 </code></pre>
-<p><strong>When MCP is available:</strong></p>
-<pre><code>&quot;What meetings did I have this week?&quot;
-&quot;Summarize my meeting with John yesterday&quot;
-&quot;What are my action items from today?&quot;
+<h2>Quick Commands</h2>
+<p><strong>List recent meetings:</strong></p>
+<pre><code class="language-bash">for d in $(ls -t ~/granola-meetings | head -10); do
+  jq -r &#39;&quot;\(.created_at[0:10]) | \(.title)&quot;&#39; ~/granola-meetings/$d/metadata.json 2&gt;/dev/null
+done
 </code></pre>
-<h2>Roadmap</h2>
+<p><strong>Search by title:</strong></p>
+<pre><code class="language-bash">grep -l &quot;client name&quot; ~/granola-meetings/*/metadata.json | while read f; do
+  jq -r &#39;.title&#39; &quot;$f&quot;
+done
+</code></pre>
+<p><strong>Search transcript content:</strong></p>
+<pre><code class="language-bash">grep -ri &quot;keyword&quot; ~/granola-meetings/*/transcript.md
+</code></pre>
+<p><strong>Meetings on a specific date:</strong></p>
+<pre><code class="language-bash">for d in ~/granola-meetings/*/metadata.json; do
+  if jq -e &#39;.created_at | startswith(&quot;2026-01-03&quot;)&#39; &quot;$d&quot; &gt; /dev/null 2&gt;&amp;1; then
+    jq -r &#39;.title&#39; &quot;$d&quot;
+  fi
+done
+</code></pre>
+<h2>Notes</h2>
 <ul>
-<li><input checked="" disabled="" type="checkbox"> CSV export parsing</li>
-<li><input checked="" disabled="" type="checkbox"> Shared note fetching</li>
-<li><input disabled="" type="checkbox"> MCP integration (waiting for Granola to ship)</li>
-<li><input disabled="" type="checkbox"> Full API access (when available)</li>
-</ul>
-<h2>Links</h2>
-<ul>
-<li><a href="https://help.granola.ai">Granola Help Center</a></li>
-<li><a href="https://help.granola.ai/article/exporting-notes">Export docs</a></li>
-<li><a href="https://granola.ai">Granola website</a></li>
+<li>Sync requires the Granola desktop app to be signed in (for auth tokens)</li>
+<li>Tokens expire after ~6 hours; open Granola to refresh them</li>
+<li>macOS only (auth file path is macOS-specific)</li>
+<li>For multi-machine setups, sync on one machine and rsync the folder to others</li>
 </ul>
 
-              </div>
                 </div>
               </div>
             </article>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/moltbot/skills/tree/main/skills/mvanhorn/granola-notes/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/tree/main/skills/scald/granola/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
-                <a href="https://clawdhub.com/mvanhorn/granola" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                <a href="https://clawdhub.com/scald/granola" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/mvanhorn/granola-notes/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/scald/granola/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                   Download SKILL.md
                 </a>
-                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                  Security Check
-                </button>
               </div>
               <div class="sidebar-card">
                 <div class="sidebar-title">Details</div>
                 <div class="sidebar-info">
                   <div class="sidebar-info-item">
                     <span class="sidebar-info-label">Author</span>
-                    <span class="sidebar-info-value">@mvanhorn</span>
+                    <span class="sidebar-info-value">@scald</span>
                   </div>
                   <div class="sidebar-info-item">
                     <span class="sidebar-info-label">Category</span>
@@ -171,10 +175,22 @@ python3 {baseDir}/scripts/fetch_shared.py --url &quot;https://share.granola.ai/.
   <footer class="footer">
     <div class="footer-inner">
       <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
-      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. Created by: <a href="https://x.com/neonone1234" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">NeonOne</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
     </div>
   </footer>
   <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
     function copySkillContent(btn) {
       const wrapper = btn.closest('.skill-source-wrapper');
       const content = wrapper.querySelector('.markdown-content');
@@ -190,34 +206,17 @@ python3 {baseDir}/scripts/fetch_shared.py --url &quot;https://share.granola.ai/.
         });
       }
     }
-    
+
     async function sendToSecurityAuditor() {
       try {
-        // Get content from the rendered markdown in the DOM
         const contentElement = document.querySelector('.markdown-content');
         if (!contentElement) throw new Error('Could not find markdown content');
-        
         const skillContent = contentElement.innerText || contentElement.textContent;
-        
-        // Store in localStorage
         localStorage.setItem('skillAuditContent', skillContent);
-        
-        // Open security auditor in new tab (go up two levels)
-        window.open('../../security-auditor.html', '_blank');
+        window.open('/security-auditor', '_blank'); 
       } catch (error) {
         alert('Error: ' + error.message);
       }
-    }
-    function toggleTheme() {
-      const html = document.documentElement;
-      const currentTheme = html.getAttribute('data-theme');
-      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-      if (newTheme === 'light') {
-        html.setAttribute('data-theme', 'light');
-      } else {
-        html.removeAttribute('data-theme');
-      }
-      localStorage.setItem('theme', newTheme);
     }
   </script>
 </body>

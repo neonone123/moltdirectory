@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Manage Jira issues, boards, sprints, and projects via the jira-cli">
+  <meta name="description" content="Jira issues, transitions, and worklogs via REST API">
   <title>jira - MoltDirectory</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,7 +29,7 @@
       </a>
       <nav class="header-links">
         <a href="../../start-here/index.html" class="header-link">Start Here</a>
-        <a href="../../security-auditor.html" class="header-link">Security Auditor</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
           <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -47,100 +47,142 @@
               <a href="../index.html" class="back-link">← Back to Productivity & Tasks</a>
               <div class="skill-page-meta">
                 <a href="../index.html" class="skill-page-category">Productivity & Tasks</a>
-                <span class="skill-page-author">by @jdrhyne</span>
+                <span class="skill-page-author">by @kyjus25</span>
               </div>
               <h1 class="skill-page-title">jira</h1>
-              <p class="skill-page-desc">Manage Jira issues, boards, sprints, and projects via the jira-cli</p>
+              <p class="skill-page-desc">Jira issues, transitions, and worklogs via REST API</p>
             </div>
           </section>
           <div class="skill-page-body">
             <article class="skill-page-content">
               <div class="skill-source-wrapper">
                 <div class="skill-source-header">
-                  <span class="skill-source-label">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                    SKILL.md
-                  </span>
-                  <button class="skill-source-copy" onclick="copySkillContent(this)">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                     Copy
                   </button>
                 </div>
-                <div class="skill-source-content">
-              <div class="markdown-content">
-                <h1>jira</h1>
-<p>Use <code>jira</code> to manage Jira issues, sprints, and boards. Requires API token setup.</p>
-<h2>Setup (once)</h2>
+                <div class="markdown-content">
+                  <h1>Jira Skill</h1>
+<p>Work with Jira issues and worklogs from Clawdbot (search, status, create, log work, worklog summaries).</p>
+<h2>Setup</h2>
 <ol>
-<li>Generate an API token: <a href="https://id.atlassian.com/manage-profile/security/api-tokens">https://id.atlassian.com/manage-profile/security/api-tokens</a></li>
-<li>Export it: <code>export JIRA_API_TOKEN=&quot;your-token&quot;</code> (add to ~/.zshrc for persistence)</li>
-<li>Initialize: <code>jira init --server https://your-org.atlassian.net --login you@email.com --installation cloud</code></li>
+<li>Get your API key: <a href="https://id.atlassian.com/manage-profile/security/api-tokens">https://id.atlassian.com/manage-profile/security/api-tokens</a></li>
+<li>Click &quot;Create API Token&quot;</li>
+<li>Set environment variables:<pre><code class="language-bash">export JIRA_EMAIL=&quot;you@example.com&quot;
+export JIRA_API_TOKEN=&quot;your-api-token&quot;
+export JIRA_URL=&quot;https://your-domain.atlassian.net&quot;
+# Optional project scope (comma-separated). Empty = search all.
+export JIRA_BOARD=&quot;ABC&quot;
+</code></pre>
+</li>
 </ol>
-<h2>Common commands</h2>
-<h3>Issues</h3>
+<p>Requires <code>curl</code>, <code>jq</code>, <code>bc</code>, and <code>python3</code>.</p>
+<h2>Quick Commands</h2>
+<p>All commands live in <code>{baseDir}/scripts/jira.sh</code>.</p>
 <ul>
-<li>List issues: <code>jira issue list -p PROJECT</code></li>
-<li>View issue: <code>jira issue view PROJ-123</code></li>
-<li>Create issue: <code>jira issue create -p PROJECT -t &quot;Task&quot; -s &quot;Summary&quot; -b &quot;Description&quot;</code></li>
-<li>Edit issue: <code>jira issue edit PROJ-123 -s &quot;New summary&quot;</code></li>
-<li>Assign issue: <code>jira issue assign PROJ-123 &quot;user@email.com&quot;</code></li>
-<li>Transition issue: <code>jira issue move PROJ-123 &quot;In Progress&quot;</code></li>
-<li>Comment: <code>jira issue comment add PROJ-123 &quot;My comment&quot;</code></li>
-<li>Search (JQL): <code>jira issue list -q &quot;project = MKT AND status = &#39;To Do&#39;&quot;</code></li>
+<li><code>{baseDir}/scripts/jira.sh search &quot;timeout&quot; [max]</code> — fuzzy search by summary or key inside <code>JIRA_BOARD</code></li>
+<li><code>{baseDir}/scripts/jira.sh link ABC-123</code> — browser link for an issue</li>
+<li><code>{baseDir}/scripts/jira.sh issue ABC-123</code> — quick issue details</li>
+<li><code>{baseDir}/scripts/jira.sh status ABC-123 &quot;In Progress&quot;</code> — move an issue (validates available transitions)</li>
+<li><code>{baseDir}/scripts/jira.sh transitions ABC-123</code> — list allowed transitions</li>
+<li><code>{baseDir}/scripts/jira.sh assign ABC-123 &quot;name or email&quot;</code> — assign by user search</li>
+<li><code>{baseDir}/scripts/jira.sh assign-me ABC-123</code> — assign to yourself</li>
+<li><code>{baseDir}/scripts/jira.sh comment ABC-123 &quot;text&quot;</code> — add a comment</li>
+<li><code>{baseDir}/scripts/jira.sh create &quot;Title&quot; [&quot;Description&quot;]</code> — create a Task in <code>JIRA_BOARD</code></li>
+<li><code>{baseDir}/scripts/jira.sh log ABC-123 2.5 [YYYY-MM-DD]</code> — log hours (defaults to today UTC)</li>
+<li><code>{baseDir}/scripts/jira.sh my [max]</code> — open issues assigned to you</li>
+<li><code>{baseDir}/scripts/jira.sh hours 2025-01-01 2025-01-07</code> — your logged hours by issue (JSON)</li>
+<li><code>{baseDir}/scripts/jira.sh hours-day 2025-01-07 [name|email]</code> — logged hours for a day grouped by user/issue; optional filter (name/email; also resolves to accountId)</li>
+<li><code>{baseDir}/scripts/jira.sh hours-issue ABC-123 [name|email]</code> — logged hours for an issue; optional filter (name/email; also resolves to accountId)</li>
 </ul>
-<h3>Sprints</h3>
+<h2>Command Reference</h2>
 <ul>
-<li>List sprints: <code>jira sprint list -p PROJECT</code></li>
-<li>View active sprint: <code>jira sprint list -p PROJECT --state active</code></li>
-<li>Sprint issues: <code>jira sprint list -p PROJECT --state active --plain</code></li>
-</ul>
-<h3>Boards</h3>
-<ul>
-<li>List boards: <code>jira board list -p PROJECT</code></li>
-</ul>
-<h3>Epics</h3>
-<ul>
-<li>List epics: <code>jira epic list -p PROJECT</code></li>
-<li>View epic: <code>jira epic view PROJ-100</code></li>
-</ul>
-<h3>Projects</h3>
-<ul>
-<li>List projects: <code>jira project list</code></li>
-</ul>
-<h2>Output formats</h2>
-<ul>
-<li><code>--plain</code> — Tab-separated, no colors (best for scripting)</li>
-<li><code>--columns key,summary,status</code> — Select columns</li>
-<li><code>--no-truncate</code> — Don&#39;t truncate long fields</li>
-</ul>
-<h2>Tips</h2>
-<ul>
-<li>Set default project in config: <code>~/.config/.jira/.config.yml</code></li>
-<li>Use JQL for complex queries: <code>-q &quot;assignee = currentUser() AND status != Done&quot;</code></li>
-<li>Open in browser: <code>jira open PROJ-123</code></li>
+<li><p><strong>Search issues</strong></p>
+<pre><code class="language-bash">{baseDir}/scripts/jira.sh search &quot;payment failure&quot; [maxResults]
+</code></pre>
+</li>
+<li><p><strong>Issue link</strong></p>
+<pre><code class="language-bash">{baseDir}/scripts/jira.sh link ABC-321
+</code></pre>
+</li>
+<li><p><strong>Issue details</strong></p>
+<pre><code class="language-bash">{baseDir}/scripts/jira.sh issue ABC-321
+</code></pre>
+</li>
+<li><p><strong>Update status</strong></p>
+<pre><code class="language-bash">{baseDir}/scripts/jira.sh status ABC-321 &quot;Done&quot;
+</code></pre>
+</li>
+<li><p><strong>List transitions</strong></p>
+<pre><code class="language-bash">{baseDir}/scripts/jira.sh transitions ABC-321
+</code></pre>
+</li>
+<li><p><strong>Assign issue</strong></p>
+<pre><code class="language-bash">{baseDir}/scripts/jira.sh assign ABC-321 &quot;Jane Doe&quot;
+</code></pre>
+</li>
+<li><p><strong>Assign to yourself</strong></p>
+<pre><code class="language-bash">{baseDir}/scripts/jira.sh assign-me ABC-321
+</code></pre>
+</li>
+<li><p><strong>Add comment</strong></p>
+<pre><code class="language-bash">{baseDir}/scripts/jira.sh comment ABC-321 &quot;Deployed to staging&quot;
+</code></pre>
+</li>
+<li><p><strong>Create issue</strong></p>
+<pre><code class="language-bash">{baseDir}/scripts/jira.sh create &quot;Fix auth timeout&quot; &quot;Users being logged out after 5m&quot;
+</code></pre>
+</li>
+<li><p><strong>Log hours</strong></p>
+<pre><code class="language-bash">{baseDir}/scripts/jira.sh log PB-321 1.5 2025-01-18
+</code></pre>
+</li>
+<li><p><strong>My open issues</strong></p>
+<pre><code class="language-bash">{baseDir}/scripts/jira.sh my [maxResults]
+</code></pre>
+</li>
+<li><p><strong>Logged hours by issue (me)</strong></p>
+<pre><code class="language-bash">{baseDir}/scripts/jira.sh hours 2025-01-01 2025-01-05
+</code></pre>
+</li>
+<li><p><strong>Logged hours for a day (everyone)</strong></p>
+<pre><code class="language-bash">{baseDir}/scripts/jira.sh hours-day 2025-01-05
+</code></pre>
+</li>
+<li><p><strong>Logged hours for a day (user filter)</strong></p>
+<pre><code class="language-bash">{baseDir}/scripts/jira.sh hours-day 2025-01-05 &quot;jane&quot;
+</code></pre>
+</li>
+<li><p><strong>Logged hours for an issue</strong></p>
+<pre><code class="language-bash">{baseDir}/scripts/jira.sh hours-issue ABC-321 &quot;jane&quot;
+</code></pre>
+</li>
 </ul>
 <h2>Notes</h2>
 <ul>
-<li>Confirm with user before creating/editing/transitioning issues</li>
-<li>For bulk operations, show what will change before executing</li>
+<li>Worklog commands use Jira&#39;s worklog/updated + worklog/list combo and may take a few seconds on large projects.</li>
+<li><code>hours</code> filters by <code>JIRA_EMAIL</code>; <code>hours-day</code> returns all users with totals per issue and user.</li>
+<li>Outputs for hours commands are JSON for reuse in other tools.</li>
+<li>Status transitions are validated against the server-provided transition list before applying.</li>
 </ul>
 
-              </div>
                 </div>
               </div>
             </article>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/moltbot/skills/tree/main/skills/jdrhyne/jira/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/tree/main/skills/kyjus25/clawdbot-jira-skill/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
-                <a href="https://clawdhub.com/jdrhyne/jira" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                <a href="https://clawdhub.com/kyjus25/jira" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/jdrhyne/jira/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/kyjus25/clawdbot-jira-skill/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                   Download SKILL.md
                 </a>
@@ -154,7 +196,7 @@
                 <div class="sidebar-info">
                   <div class="sidebar-info-item">
                     <span class="sidebar-info-label">Author</span>
-                    <span class="sidebar-info-value">@jdrhyne</span>
+                    <span class="sidebar-info-value">@kyjus25</span>
                   </div>
                   <div class="sidebar-info-item">
                     <span class="sidebar-info-label">Category</span>
@@ -168,10 +210,22 @@
   <footer class="footer">
     <div class="footer-inner">
       <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
-      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. Created by: <a href="https://x.com/neonone1234" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">NeonOne</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
     </div>
   </footer>
   <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
     function copySkillContent(btn) {
       const wrapper = btn.closest('.skill-source-wrapper');
       const content = wrapper.querySelector('.markdown-content');
@@ -187,34 +241,17 @@
         });
       }
     }
-    
+
     async function sendToSecurityAuditor() {
       try {
-        // Get content from the rendered markdown in the DOM
         const contentElement = document.querySelector('.markdown-content');
         if (!contentElement) throw new Error('Could not find markdown content');
-        
         const skillContent = contentElement.innerText || contentElement.textContent;
-        
-        // Store in localStorage
         localStorage.setItem('skillAuditContent', skillContent);
-        
-        // Open security auditor in new tab (go up two levels)
-        window.open('../../security-auditor.html', '_blank');
+        window.open('/security-auditor', '_blank'); 
       } catch (error) {
         alert('Error: ' + error.message);
       }
-    }
-    function toggleTheme() {
-      const html = document.documentElement;
-      const currentTheme = html.getAttribute('data-theme');
-      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-      if (newTheme === 'light') {
-        html.setAttribute('data-theme', 'light');
-      } else {
-        html.removeAttribute('data-theme');
-      }
-      localStorage.setItem('theme', newTheme);
     }
   </script>
 </body>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Manage Cloudflare Workers, KV, D1, R2, and secrets using the Wrangler CLI">
+  <meta name="description" content="Cloudflare CLI: DNS records, cache purge, Workers routes">
   <title>cloudflare - MoltDirectory</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,7 +29,7 @@
       </a>
       <nav class="header-links">
         <a href="../../start-here/index.html" class="header-link">Start Here</a>
-        <a href="../../security-auditor.html" class="header-link">Security Auditor</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
           <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -47,298 +47,138 @@
               <a href="../index.html" class="back-link">← Back to DevOps & Cloud</a>
               <div class="skill-page-meta">
                 <a href="../index.html" class="skill-page-category">DevOps & Cloud</a>
-                <span class="skill-page-author">by @asleep123</span>
+                <span class="skill-page-author">by @dbhurley</span>
               </div>
               <h1 class="skill-page-title">cloudflare</h1>
-              <p class="skill-page-desc">Manage Cloudflare Workers, KV, D1, R2, and secrets using the Wrangler CLI</p>
+              <p class="skill-page-desc">Cloudflare CLI: DNS records, cache purge, Workers routes</p>
             </div>
           </section>
           <div class="skill-page-body">
             <article class="skill-page-content">
               <div class="skill-source-wrapper">
                 <div class="skill-source-header">
-                  <span class="skill-source-label">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                    SKILL.md
-                  </span>
-                  <button class="skill-source-copy" onclick="copySkillContent(this)">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                     Copy
                   </button>
                 </div>
-                <div class="skill-source-content">
-              <div class="markdown-content">
-                <h1>Cloudflare (Wrangler CLI)</h1>
-<p>Manage Cloudflare Workers and associated services via the <code>wrangler</code> CLI.</p>
-<h2>Prerequisites</h2>
-<ul>
-<li>Node.js v20+ required</li>
-<li>Install: <code>npm install -g wrangler</code> or use project-local <code>npx wrangler</code></li>
-<li>Auth: <code>wrangler login</code> (opens browser for OAuth)</li>
-<li>Verify: <code>wrangler whoami</code></li>
-</ul>
-<h2>Quick Reference</h2>
-<h3>Workers</h3>
-<pre><code class="language-bash"># Initialize new worker
-wrangler init &lt;name&gt;
-
-# Local development
-wrangler dev [script]
-
-# Deploy
-wrangler deploy [script]
-
-# List deployments
-wrangler deployments list
-
-# View deployment
-wrangler deployments view [deployment-id]
-
-# Rollback
-wrangler rollback [version-id]
-
-# Delete worker
-wrangler delete [name]
-
-# Tail logs (live)
-wrangler tail [worker]
-</code></pre>
-<h3>Secrets</h3>
-<pre><code class="language-bash"># Add/update secret (interactive)
-wrangler secret put &lt;key&gt;
-
-# Add secret from stdin
-echo &quot;value&quot; | wrangler secret put &lt;key&gt;
-
-# List secrets
-wrangler secret list
-
-# Delete secret
-wrangler secret delete &lt;key&gt;
-
-# Bulk upload from JSON file
-wrangler secret bulk secrets.json
-</code></pre>
-<h3>KV (Key-Value Store)</h3>
-<pre><code class="language-bash"># Create namespace
-wrangler kv namespace create &lt;name&gt;
-
-# List namespaces
-wrangler kv namespace list
-
-# Delete namespace
-wrangler kv namespace delete --namespace-id &lt;id&gt;
-
-# Put key
-wrangler kv key put &lt;key&gt; &lt;value&gt; --namespace-id &lt;id&gt;
-
-# Get key
-wrangler kv key get &lt;key&gt; --namespace-id &lt;id&gt;
-
-# Delete key
-wrangler kv key delete &lt;key&gt; --namespace-id &lt;id&gt;
-
-# List keys
-wrangler kv key list --namespace-id &lt;id&gt;
-
-# Bulk operations (JSON file)
-wrangler kv bulk put &lt;file&gt; --namespace-id &lt;id&gt;
-wrangler kv bulk delete &lt;file&gt; --namespace-id &lt;id&gt;
-</code></pre>
-<h3>D1 (SQL Database)</h3>
-<pre><code class="language-bash"># Create database
-wrangler d1 create &lt;name&gt;
-
-# List databases
-wrangler d1 list
-
-# Database info
-wrangler d1 info &lt;name&gt;
-
-# Execute SQL
-wrangler d1 execute &lt;database&gt; --command &quot;SELECT * FROM users&quot;
-
-# Execute SQL file
-wrangler d1 execute &lt;database&gt; --file schema.sql
-
-# Local execution (for dev)
-wrangler d1 execute &lt;database&gt; --local --command &quot;...&quot;
-
-# Export database
-wrangler d1 export &lt;name&gt; --output backup.sql
-
-# Delete database
-wrangler d1 delete &lt;name&gt;
-
-# Migrations
-wrangler d1 migrations create &lt;database&gt; &lt;name&gt;
-wrangler d1 migrations apply &lt;database&gt;
-wrangler d1 migrations list &lt;database&gt;
-</code></pre>
-<h3>R2 (Object Storage)</h3>
-<pre><code class="language-bash"># Create bucket
-wrangler r2 bucket create &lt;name&gt;
-
-# List buckets
-wrangler r2 bucket list
-
-# Delete bucket
-wrangler r2 bucket delete &lt;name&gt;
-
-# Upload object
-wrangler r2 object put &lt;bucket&gt;/&lt;key&gt; --file &lt;path&gt;
-
-# Download object
-wrangler r2 object get &lt;bucket&gt;/&lt;key&gt; --file &lt;path&gt;
-
-# Delete object
-wrangler r2 object delete &lt;bucket&gt;/&lt;key&gt;
-</code></pre>
-<h3>Queues</h3>
-<pre><code class="language-bash"># Create queue
-wrangler queues create &lt;name&gt;
-
-# List queues
-wrangler queues list
-
-# Delete queue
-wrangler queues delete &lt;name&gt;
-</code></pre>
-<h2>Configuration Files</h2>
-<p>Wrangler supports both TOML and JSON/JSONC config formats:</p>
-<ul>
-<li><code>wrangler.toml</code> — traditional format</li>
-<li><code>wrangler.json</code> or <code>wrangler.jsonc</code> — newer, with JSON schema support</li>
-</ul>
-<p><strong>⚠️ Important:</strong> If both exist, JSON takes precedence. Pick one format to avoid confusion where edits to TOML are ignored.</p>
-<h3>JSONC format (with schema autocomplete)</h3>
-<pre><code class="language-jsonc">{
-  &quot;$schema&quot;: &quot;./node_modules/wrangler/config-schema.json&quot;,
-  &quot;name&quot;: &quot;my-worker&quot;,
-  &quot;main&quot;: &quot;src/index.ts&quot;,
-  &quot;compatibility_date&quot;: &quot;2024-12-30&quot;
-}
-</code></pre>
-<h3>TOML format</h3>
-<pre><code class="language-toml">name = &quot;my-worker&quot;
-main = &quot;src/index.ts&quot;
-compatibility_date = &quot;2024-12-30&quot;
-</code></pre>
-<p>With bindings:</p>
-<pre><code class="language-toml">name = &quot;my-worker&quot;
-main = &quot;src/index.ts&quot;
-compatibility_date = &quot;2024-12-30&quot;
-
-# KV binding
-[[kv_namespaces]]
-binding = &quot;MY_KV&quot;
-id = &quot;xxx&quot;
-
-# D1 binding
-[[d1_databases]]
-binding = &quot;DB&quot;
-database_name = &quot;my-db&quot;
-database_id = &quot;xxx&quot;
-
-# R2 binding
-[[r2_buckets]]
-binding = &quot;BUCKET&quot;
-bucket_name = &quot;my-bucket&quot;
-
-# Environment variables
-[vars]
-API_URL = &quot;https://api.example.com&quot;
-
-# Secrets (set via `wrangler secret put`)
-# Referenced as env.SECRET_NAME in worker code
-</code></pre>
-<p>Static assets (for frameworks like Next.js):</p>
-<pre><code class="language-toml">name = &quot;my-site&quot;
-main = &quot;.open-next/worker.js&quot;
-compatibility_date = &quot;2024-12-30&quot;
-compatibility_flags = [&quot;nodejs_compat&quot;]
-
-[assets]
-directory = &quot;.open-next/assets&quot;
-binding = &quot;ASSETS&quot;
-</code></pre>
-<h2>Common Patterns</h2>
-<h3>Deploy with environment</h3>
-<pre><code class="language-bash">wrangler deploy -e production
-wrangler deploy -e staging
-</code></pre>
-<h3>Custom domain (via dashboard or API)</h3>
-<p>Custom domains must be configured in the Cloudflare dashboard under Worker Settings &gt; Domains &amp; Routes, or via the Cloudflare API. Wrangler doesn&#39;t directly manage custom domains.</p>
-<h3>Local development with bindings</h3>
-<pre><code class="language-bash"># Creates local D1/KV/R2 for dev
-wrangler dev --local
-</code></pre>
-<h3>Checking deployment status</h3>
-<pre><code class="language-bash">wrangler deployments list
-wrangler deployments view
-</code></pre>
-<h2>What Wrangler Does NOT Do</h2>
-<ul>
-<li><strong>DNS management</strong> — Use the Cloudflare dashboard or API for DNS records</li>
-<li><strong>Custom domains</strong> — Configure via dashboard (Worker Settings &gt; Domains &amp; Routes) or API</li>
-<li><strong>SSL certificates</strong> — Managed automatically by Cloudflare when custom domains are added</li>
-<li><strong>Firewall/WAF rules</strong> — Use dashboard or API</li>
-</ul>
-<p>For DNS/domain management, see the <code>cloudflare</code> skill (uses Cloudflare API directly).</p>
-<h2>Troubleshooting</h2>
+                <div class="markdown-content">
+                  <h1>Cloudflare CLI</h1>
+<p>Manage Cloudflare DNS, cache, and Workers via the API.</p>
+<h2>🔑 Required Secrets</h2>
 <table>
 <thead>
 <tr>
-<th>Issue</th>
-<th>Solution</th>
+<th>Variable</th>
+<th>Description</th>
+<th>How to Get</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>&quot;Not authenticated&quot;</td>
-<td>Run <code>wrangler login</code></td>
-</tr>
-<tr>
-<td>Node version error</td>
-<td>Requires Node.js v20+</td>
-</tr>
-<tr>
-<td>&quot;No config found&quot;</td>
-<td>Ensure config file exists (<code>wrangler.toml</code> or <code>wrangler.jsonc</code>) or use <code>-c path/to/config</code></td>
-</tr>
-<tr>
-<td>Config changes ignored</td>
-<td>Check for <code>wrangler.json</code>/<code>wrangler.jsonc</code> — JSON takes precedence over TOML</td>
-</tr>
-<tr>
-<td>Binding not found</td>
-<td>Check <code>wrangler.toml</code> bindings match code references</td>
+<td><code>CLOUDFLARE_API_TOKEN</code></td>
+<td>Scoped API token</td>
+<td>Cloudflare → My Profile → API Tokens</td>
 </tr>
 </tbody></table>
-<h2>Resources</h2>
+<p><strong>Recommended token permissions:</strong></p>
 <ul>
-<li><a href="https://developers.cloudflare.com/workers/wrangler/">Wrangler Docs</a></li>
-<li><a href="https://developers.cloudflare.com/workers/">Workers Docs</a></li>
-<li><a href="https://developers.cloudflare.com/d1/">D1 Docs</a></li>
-<li><a href="https://developers.cloudflare.com/r2/">R2 Docs</a></li>
-<li><a href="https://developers.cloudflare.com/kv/">KV Docs</a></li>
+<li>DNS:Read, DNS:Edit</li>
+<li>Cache Purge:Purge</li>
+<li>Workers Routes:Edit</li>
 </ul>
+<h2>⚙️ Setup</h2>
+<p>Configure in <code>~/.clawdis/clawdis.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;skills&quot;: {
+    &quot;cloudflare&quot;: {
+      &quot;env&quot;: {
+        &quot;CLOUDFLARE_API_TOKEN&quot;: &quot;your-token&quot;
+      }
+    }
+  }
+}
+</code></pre>
+<h2>📋 Commands</h2>
+<h3>Verify Token</h3>
+<pre><code class="language-bash"># Test that your token works
+uv run {baseDir}/scripts/cloudflare.py verify
+</code></pre>
+<h3>Zones (Domains)</h3>
+<pre><code class="language-bash"># List all zones
+uv run {baseDir}/scripts/cloudflare.py zones
 
-              </div>
+# Get zone details
+uv run {baseDir}/scripts/cloudflare.py zone &lt;zone_id_or_domain&gt;
+</code></pre>
+<h3>DNS Records</h3>
+<pre><code class="language-bash"># List DNS records for a zone
+uv run {baseDir}/scripts/cloudflare.py dns list &lt;domain&gt;
+
+# Add DNS record
+uv run {baseDir}/scripts/cloudflare.py dns add &lt;domain&gt; --type A --name www --content 1.2.3.4
+uv run {baseDir}/scripts/cloudflare.py dns add &lt;domain&gt; --type CNAME --name blog --content example.com
+
+# Update DNS record
+uv run {baseDir}/scripts/cloudflare.py dns update &lt;domain&gt; &lt;record_id&gt; --content 5.6.7.8
+
+# Delete DNS record (asks for confirmation)
+uv run {baseDir}/scripts/cloudflare.py dns delete &lt;domain&gt; &lt;record_id&gt;
+
+# Delete without confirmation
+uv run {baseDir}/scripts/cloudflare.py dns delete &lt;domain&gt; &lt;record_id&gt; --yes
+</code></pre>
+<h3>Cache</h3>
+<pre><code class="language-bash"># Purge everything
+uv run {baseDir}/scripts/cloudflare.py cache purge &lt;domain&gt; --all
+
+# Purge specific URLs
+uv run {baseDir}/scripts/cloudflare.py cache purge &lt;domain&gt; --urls &quot;https://example.com/page1,https://example.com/page2&quot;
+
+# Purge by prefix
+uv run {baseDir}/scripts/cloudflare.py cache purge &lt;domain&gt; --prefix &quot;/blog/&quot;
+</code></pre>
+<h3>Workers Routes</h3>
+<pre><code class="language-bash"># List routes
+uv run {baseDir}/scripts/cloudflare.py routes list &lt;domain&gt;
+
+# Add route
+uv run {baseDir}/scripts/cloudflare.py routes add &lt;domain&gt; --pattern &quot;*.example.com/*&quot; --worker my-worker
+</code></pre>
+<h2>📤 Output Formats</h2>
+<p>All commands support <code>--json</code> for machine-readable output:</p>
+<pre><code class="language-bash">uv run {baseDir}/scripts/cloudflare.py dns list example.com --json
+</code></pre>
+<h2>🔗 Common Workflows</h2>
+<h3>Point domain to Vercel</h3>
+<pre><code class="language-bash"># Add CNAME for apex
+cloudflare dns add example.com --type CNAME --name @ --content cname.vercel-dns.com --proxied false
+
+# Add CNAME for www
+cloudflare dns add example.com --type CNAME --name www --content cname.vercel-dns.com --proxied false
+</code></pre>
+<h3>Clear cache after deploy</h3>
+<pre><code class="language-bash">cloudflare cache purge example.com --all
+</code></pre>
+<h2>📦 Installation</h2>
+<pre><code class="language-bash">clawdhub install cloudflare
+</code></pre>
+
                 </div>
               </div>
             </article>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/moltbot/skills/tree/main/skills/asleep123/wrangler/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/tree/main/skills/dbhurley/cloudflare/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
-                <a href="https://clawdhub.com/asleep123/cloudflare" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                <a href="https://clawdhub.com/dbhurley/cloudflare" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/asleep123/wrangler/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/dbhurley/cloudflare/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                   Download SKILL.md
                 </a>
@@ -352,7 +192,7 @@ wrangler deployments view
                 <div class="sidebar-info">
                   <div class="sidebar-info-item">
                     <span class="sidebar-info-label">Author</span>
-                    <span class="sidebar-info-value">@asleep123</span>
+                    <span class="sidebar-info-value">@dbhurley</span>
                   </div>
                   <div class="sidebar-info-item">
                     <span class="sidebar-info-label">Category</span>
@@ -366,10 +206,22 @@ wrangler deployments view
   <footer class="footer">
     <div class="footer-inner">
       <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
-      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. Created by: <a href="https://x.com/neonone1234" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">NeonOne</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
     </div>
   </footer>
   <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
     function copySkillContent(btn) {
       const wrapper = btn.closest('.skill-source-wrapper');
       const content = wrapper.querySelector('.markdown-content');
@@ -385,34 +237,17 @@ wrangler deployments view
         });
       }
     }
-    
+
     async function sendToSecurityAuditor() {
       try {
-        // Get content from the rendered markdown in the DOM
         const contentElement = document.querySelector('.markdown-content');
         if (!contentElement) throw new Error('Could not find markdown content');
-        
         const skillContent = contentElement.innerText || contentElement.textContent;
-        
-        // Store in localStorage
         localStorage.setItem('skillAuditContent', skillContent);
-        
-        // Open security auditor in new tab (go up two levels)
-        window.open('../../security-auditor.html', '_blank');
+        window.open('/security-auditor', '_blank'); 
       } catch (error) {
         alert('Error: ' + error.message);
       }
-    }
-    function toggleTheme() {
-      const html = document.documentElement;
-      const currentTheme = html.getAttribute('data-theme');
-      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-      if (newTheme === 'light') {
-        html.setAttribute('data-theme', 'light');
-      } else {
-        html.removeAttribute('data-theme');
-      }
-      localStorage.setItem('theme', newTheme);
     }
   </script>
 </body>

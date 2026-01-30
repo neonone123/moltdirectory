@@ -29,6 +29,7 @@
       </a>
       <nav class="header-links">
         <a href="../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
           <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -122,6 +123,34 @@ npm install -g moltbot@latest
         html.removeAttribute('data-theme');
       }
       localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
     }
   </script>
 </body>

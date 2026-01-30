@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Flight tracking and scheduling. Track live flights in real-time by region, callsign">
+  <meta name="description" content="Real-time flight tracking with gate info and delays">
   <title>flight-tracker - MoltDirectory</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,7 +29,7 @@
       </a>
       <nav class="header-links">
         <a href="../../start-here/index.html" class="header-link">Start Here</a>
-        <a href="../../security-auditor.html" class="header-link">Security Auditor</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
           <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -47,160 +47,129 @@
               <a href="../index.html" class="back-link">← Back to Transportation</a>
               <div class="skill-page-meta">
                 <a href="../index.html" class="skill-page-category">Transportation</a>
-                <span class="skill-page-author">by @xenofex7</span>
+                <span class="skill-page-author">by @copey02</span>
               </div>
               <h1 class="skill-page-title">flight-tracker</h1>
-              <p class="skill-page-desc">Flight tracking and scheduling. Track live flights in real-time by region, callsign</p>
+              <p class="skill-page-desc">Real-time flight tracking with gate info and delays</p>
             </div>
           </section>
           <div class="skill-page-body">
             <article class="skill-page-content">
               <div class="skill-source-wrapper">
                 <div class="skill-source-header">
-                  <span class="skill-source-label">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                    SKILL.md
-                  </span>
-                  <button class="skill-source-copy" onclick="copySkillContent(this)">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                     Copy
                   </button>
                 </div>
-                <div class="skill-source-content">
-              <div class="markdown-content">
-                <h1>Flight Tracker</h1>
-<p>Track flights in real-time and search flight schedules between airports.</p>
-<h2>Quick Commands</h2>
-<h3>Live Flight Tracking</h3>
-<h4>Flights over a region (bounding box)</h4>
-<pre><code class="language-bash"># Switzerland (lat_min, lat_max, lon_min, lon_max)
-curl -s &quot;https://opensky-network.org/api/states/all?lamin=45.8&amp;lomin=5.9&amp;lamax=47.8&amp;lomax=10.5&quot; | \
-  jq -r &#39;.states[] | &quot;\(.[1]) - \(.[2]) | Alt: \(.[7])m | Speed: \(.[9])m/s | From: \(.[5])&quot;&#39;
+                <div class="markdown-content">
+                  <h1>Flight Tracker</h1>
+<p>Track any flight worldwide using AviationStack API and display in a clean, Flighty-style format.</p>
+<h2>Quick Start</h2>
+<p>Track a flight by its IATA code:</p>
+<pre><code class="language-bash">scripts/track_flight.py AA100
+scripts/track_flight.py UA2402
+scripts/track_flight.py BA123
 </code></pre>
-<h3>Track specific flight by callsign</h3>
-<pre><code class="language-bash">curl -s &quot;https://opensky-network.org/api/states/all?icao24=&lt;aircraft-icao&gt;&quot; | jq .
+<h2>First-Time Setup</h2>
+<p>Before using this skill, you need an API key (one-time setup):</p>
+<ol>
+<li><strong>Get a free API key</strong> at <a href="https://aviationstack.com/signup/free">https://aviationstack.com/signup/free</a> (100 requests/month)</li>
+<li><strong>Set environment variable:</strong><pre><code class="language-bash">export AVIATIONSTACK_API_KEY=&#39;your-key-here&#39;
 </code></pre>
-<h4>Get live flight info</h4>
-<pre><code class="language-bash"># Use helper script
-python3 scripts/track.py --region switzerland
-python3 scripts/track.py --callsign SWR123
-python3 scripts/track.py --airport LSZH
+</li>
+<li><strong>Install dependencies:</strong><pre><code class="language-bash">pip3 install requests
 </code></pre>
-<h3>Flight Schedules</h3>
-<p>Search for scheduled flights between airports:</p>
-<pre><code class="language-bash"># Basic usage (shows search links)
-python3 scripts/schedule.py HAM ZRH
-
-# With specific date
-python3 scripts/schedule.py --from HAM --to ZRH --date 2026-01-15
-
-# With API key (optional, for detailed results)
-export AVIATIONSTACK_API_KEY=&#39;your_key_here&#39;
-python3 scripts/schedule.py HAM ZRH
-</code></pre>
-<p><strong>Without API key:</strong> Shows helpful search links (Google Flights, FlightRadar24, airline websites)</p>
-<p><strong>With API key:</strong> Fetches live schedule data with departure/arrival times, terminals, gates, and status</p>
-<p>Free API key available at <a href="https://aviationstack.com">aviationstack.com</a> (100 requests/month)</p>
-<h2>Regions</h2>
-<p>Pre-defined regions in the script:</p>
+</li>
+</ol>
+<p>For detailed setup instructions, see <a href="references/api-setup.md">api-setup.md</a>.</p>
+<h2>Output Format</h2>
+<p>The skill displays flight information in a clean, readable format with:</p>
 <ul>
-<li><strong>switzerland</strong>: Swiss airspace</li>
-<li><strong>europe</strong>: European airspace (rough bounds)</li>
-<li><strong>zurich</strong>: Area around Zurich</li>
-<li><strong>geneva</strong>: Area around Geneva</li>
+<li>✈️ Airline and flight number</li>
+<li>🛩️ Aircraft type and registration</li>
+<li>🛫 Departure airport, terminal, gate, times</li>
+<li>🛬 Arrival airport, terminal, gate, times</li>
+<li>📊 Flight status with visual indicators</li>
+<li>⏱️ Delay calculations (if applicable)</li>
+<li>🌐 Live position, altitude, speed (when airborne)</li>
 </ul>
-<h2>API Endpoints</h2>
-<h3>All states</h3>
-<pre><code class="language-bash">GET https://opensky-network.org/api/states/all
+<p>Status indicators:</p>
+<ul>
+<li>🟢 Active/Airborne/En-route</li>
+<li>✅ Landed/Arrived</li>
+<li>🟡 Scheduled</li>
+<li>🟠 Delayed</li>
+<li>🔴 Cancelled</li>
+</ul>
+<h2>Advanced Usage</h2>
+<p><strong>Get raw JSON data:</strong></p>
+<pre><code class="language-bash">scripts/track_flight.py AA100 --json
 </code></pre>
-<p>Optional parameters:</p>
-<ul>
-<li><code>lamin</code>, <code>lomin</code>, <code>lamax</code>, <code>lomax</code>: Bounding box</li>
-<li><code>icao24</code>: Specific aircraft (hex code)</li>
-<li><code>time</code>: Unix timestamp (0 = now)</li>
-</ul>
-<h3>Response Format</h3>
-<p>Each flight state contains:</p>
-<pre><code>[0]  icao24      - Aircraft ICAO24 address (hex)
-[1]  callsign    - Flight callsign (e.g., &quot;SWR123&quot;)
-[2]  origin_country - Country name
-[5]  origin      - Origin airport (if available)
-[7]  baro_altitude - Altitude in meters
-[9]  velocity    - Speed in m/s
-[10] heading     - Direction in degrees
-[11] vertical_rate - Climb/descent rate in m/s
+<p><strong>Check help:</strong></p>
+<pre><code class="language-bash">scripts/track_flight.py --help
 </code></pre>
-<h2>Airport Codes</h2>
-<h3>ICAO (for live tracking)</h3>
+<h2>Workflow</h2>
+<p>When a user asks to track a flight:</p>
+<ol>
+<li>Extract the flight number from the request</li>
+<li>Run the tracking script with the flight number</li>
+<li>Present the formatted output to the user</li>
+<li>If data is needed for further processing, use <code>--json</code> flag</li>
+</ol>
+<h2>Flight Number Formats</h2>
+<p>Accept IATA flight codes:</p>
 <ul>
-<li><strong>LSZH</strong> - Zurich</li>
-<li><strong>LSGG</strong> - Geneva</li>
-<li><strong>LSZB</strong> - Bern</li>
-<li><strong>LSZA</strong> - Lugano</li>
-<li><strong>LFSB</strong> - Basel-Mulhouse (EuroAirport)</li>
+<li>AA100 (American Airlines)</li>
+<li>UA2402 (United)</li>
+<li>BA123 (British Airways)</li>
+<li>DL456 (Delta)</li>
 </ul>
-<h3>IATA (for schedules)</h3>
+<p>The script automatically converts to uppercase and handles the lookup.</p>
+<h2>Error Handling</h2>
+<p>The script handles common errors:</p>
 <ul>
-<li><strong>ZRH</strong> - Zurich</li>
-<li><strong>GVA</strong> - Geneva</li>
-<li><strong>BSL</strong> - Basel</li>
-<li><strong>BRN</strong> - Bern</li>
-<li><strong>LUG</strong> - Lugano</li>
-<li><strong>HAM</strong> - Hamburg</li>
-<li><strong>FRA</strong> - Frankfurt</li>
-<li><strong>MUC</strong> - Munich</li>
-<li><strong>BER</strong> - Berlin</li>
-<li><strong>LHR</strong> - London Heathrow</li>
-<li><strong>CDG</strong> - Paris CDG</li>
-<li><strong>AMS</strong> - Amsterdam</li>
+<li>Missing API key → Shows setup instructions</li>
+<li>Flight not found → Suggests verification</li>
+<li>API errors → Displays error message</li>
+<li>Rate limit exceeded → Indicates limit reached</li>
 </ul>
+<h2>API Limits</h2>
+<p>Free tier: 100 requests/month. Track usage to stay within limits. For heavy usage, consider upgrading or alternative APIs (see references/api-setup.md).</p>
 <h2>Notes</h2>
-<h3>Live Tracking (OpenSky Network)</h3>
 <ul>
-<li>Free API with rate limits (anonymous: 400/day)</li>
-<li>Real-time data from ADS-B receivers worldwide</li>
-<li>No API key required</li>
-<li>Data updated every 10 seconds</li>
-<li>Create account for higher limits and historical data</li>
-</ul>
-<h3>Flight Schedules (AviationStack)</h3>
-<ul>
-<li>Optional API key for detailed schedule data</li>
-<li>Free tier: 100 requests/month</li>
-<li>Without API: provides search links to Google Flights, FlightRadar24, etc.</li>
-<li>Supports date-specific queries</li>
+<li>Uses AviationStack free tier (no HTTPS on free plan)</li>
+<li>Real-time data updated frequently</li>
+<li>Historical flight data available</li>
+<li>Worldwide coverage (250+ countries, 13,000+ airlines)</li>
 </ul>
 
-              </div>
                 </div>
               </div>
             </article>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/moltbot/skills/tree/main/skills/xenofex7/flight-tracker/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/tree/main/skills/copey02/aviationstack-flight-tracker/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
-                <a href="https://clawdhub.com/xenofex7/flight-tracker" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                <a href="https://clawdhub.com/copey02/flight-tracker" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/xenofex7/flight-tracker/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/copey02/aviationstack-flight-tracker/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                   Download SKILL.md
                 </a>
-                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                  Security Check
-                </button>
               </div>
               <div class="sidebar-card">
                 <div class="sidebar-title">Details</div>
                 <div class="sidebar-info">
                   <div class="sidebar-info-item">
                     <span class="sidebar-info-label">Author</span>
-                    <span class="sidebar-info-value">@xenofex7</span>
+                    <span class="sidebar-info-value">@copey02</span>
                   </div>
                   <div class="sidebar-info-item">
                     <span class="sidebar-info-label">Category</span>
@@ -214,10 +183,22 @@ python3 scripts/schedule.py HAM ZRH
   <footer class="footer">
     <div class="footer-inner">
       <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
-      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. Created by: <a href="https://x.com/neonone1234" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">NeonOne</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
     </div>
   </footer>
   <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
     function copySkillContent(btn) {
       const wrapper = btn.closest('.skill-source-wrapper');
       const content = wrapper.querySelector('.markdown-content');
@@ -233,34 +214,17 @@ python3 scripts/schedule.py HAM ZRH
         });
       }
     }
-    
+
     async function sendToSecurityAuditor() {
       try {
-        // Get content from the rendered markdown in the DOM
         const contentElement = document.querySelector('.markdown-content');
         if (!contentElement) throw new Error('Could not find markdown content');
-        
         const skillContent = contentElement.innerText || contentElement.textContent;
-        
-        // Store in localStorage
         localStorage.setItem('skillAuditContent', skillContent);
-        
-        // Open security auditor in new tab (go up two levels)
-        window.open('../../security-auditor.html', '_blank');
+        window.open('/security-auditor', '_blank'); 
       } catch (error) {
         alert('Error: ' + error.message);
       }
-    }
-    function toggleTheme() {
-      const html = document.documentElement;
-      const currentTheme = html.getAttribute('data-theme');
-      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-      if (newTheme === 'light') {
-        html.setAttribute('data-theme', 'light');
-      } else {
-        html.removeAttribute('data-theme');
-      }
-      localStorage.setItem('theme', newTheme);
     }
   </script>
 </body>

@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Trigger 84+ Alter macOS app actions via x-callback-urls">
+  <title>alter-actions - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Apple Apps & Services</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Apple Apps & Services</a>
+                <span class="skill-page-author">by @olivieralter</span>
+              </div>
+              <h1 class="skill-page-title">alter-actions</h1>
+              <p class="skill-page-desc">Trigger 84+ Alter macOS app actions via x-callback-urls</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Alter Action Trigger</h1>
+<p>Trigger Alter actions via x-callback-urls from Clawdbot or the command line.</p>
+<h2>Quick Start</h2>
+<pre><code class="language-bash"># Trigger an action directly
+node index.js trigger ask-anything --input &quot;What is AI?&quot;
+
+# Find actions with natural language
+node index.js find &quot;summarize video&quot;
+
+# List all actions in a category
+node index.js list --category writing
+</code></pre>
+<h2>URL Format</h2>
+<p>All Alter actions use the x-callback-url format:</p>
+<pre><code>alter://action/{action-id}?input={encoded-text}&amp;param={value}
+</code></pre>
+<h2>Functions</h2>
+<h3><code>triggerAction(actionId, input, params)</code></h3>
+<p>Triggers an Alter action via x-callback-url.</p>
+<h3><code>findActions(query)</code></h3>
+<p>Finds actions matching a natural language query.</p>
+<h3><code>listActions(category)</code></h3>
+<p>Lists all actions, optionally filtered by category.</p>
+<h3><code>getActionInfo(actionId)</code></h3>
+<p>Returns detailed information about a specific action.</p>
+<h3><code>buildCallbackUrl(actionId, input, params)</code></h3>
+<p>Builds an x-callback-url without executing it.</p>
+<hr>
+<h2>Available Actions Reference</h2>
+<h3>📝 Writing Actions</h3>
+<table>
+<thead>
+<tr>
+<th>Action ID</th>
+<th>Name</th>
+<th>Description</th>
+<th>Parameters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>analyze-prose</code></td>
+<td>Analyze Prose</td>
+<td>Evaluates writing for quality with ratings and recommendations</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>aphorisms</code></td>
+<td>Aphorisms</td>
+<td>Finds and prints existing, known aphorisms</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>change-tone</code></td>
+<td>Change the Tone</td>
+<td>Changes text tone while preserving meaning</td>
+<td><code>tone</code>: Assertive, Friendly, Informal, Professional, Simple and direct</td>
+</tr>
+<tr>
+<td><code>correct-grammar</code></td>
+<td>Correct Grammar &amp; Spelling</td>
+<td>Fixes grammar and spelling errors</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>cut-filler-words</code></td>
+<td>Cut filler words</td>
+<td>Removes filler words for confident text</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>fill-in</code></td>
+<td>Fill in</td>
+<td>Completes partial text intelligently</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>improve-writing</code></td>
+<td>Improve Writing</td>
+<td>Refines text for clarity, coherence, grammar</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>lengthen</code></td>
+<td>Lengthen</td>
+<td>Expands text with additional details</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>poll</code></td>
+<td>Poll</td>
+<td>Generates engaging polls</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>rewrite</code></td>
+<td>Rewrite</td>
+<td>Rewrites text with fresh perspectives</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>shorten</code></td>
+<td>Shorten</td>
+<td>Condenses text while retaining essentials</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>write-essay</code></td>
+<td>Write essay</td>
+<td>Crafts well-structured essays</td>
+<td><code>input</code>: Topic/Instructions</td>
+</tr>
+</tbody></table>
+<h3>💻 Code Actions</h3>
+<table>
+<thead>
+<tr>
+<th>Action ID</th>
+<th>Name</th>
+<th>Description</th>
+<th>Parameters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>act-code</code></td>
+<td>Act On Code</td>
+<td>Modifies and improves code</td>
+<td><code>input</code>: Instructions</td>
+</tr>
+<tr>
+<td><code>document</code></td>
+<td>Document code</td>
+<td>Documents code with comments</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>explain-code</code></td>
+<td>Explain Code</td>
+<td>Explains code and documentation</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>fill-code</code></td>
+<td>Fill Code</td>
+<td>Fills in missing code</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>fix-code</code></td>
+<td>Fix Code</td>
+<td>Fixes code errors</td>
+<td><code>input</code>: Error message</td>
+</tr>
+<tr>
+<td><code>language-gpt</code></td>
+<td>Language-GPT</td>
+<td>Expert insights for programming languages</td>
+<td><code>input</code>: Question</td>
+</tr>
+<tr>
+<td><code>suggest-improvements</code></td>
+<td>Suggest code improvements</td>
+<td>Analyzes code for enhancements</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>transcode</code></td>
+<td>Transcode to other language</td>
+<td>Converts code between languages</td>
+<td><code>language</code>: Target language</td>
+</tr>
+</tbody></table>
+<h3>🌐 Translation Actions</h3>
+<table>
+<thead>
+<tr>
+<th>Action ID</th>
+<th>Name</th>
+<th>Description</th>
+<th>Parameters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>translate</code></td>
+<td>Translate</td>
+<td>Translates text between languages</td>
+<td><code>language</code>: Arabic, Chinese, Dutch, English, Filipino, French, German, Indonesian, Italian, Japanese, Korean, Portuguese, Russian, Spanish, Vietnamese</td>
+</tr>
+<tr>
+<td><code>translate-to-english</code></td>
+<td>Translate to English</td>
+<td>Translates any language to English</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>translate-to-french</code></td>
+<td>Translate to French</td>
+<td>Translates any language to French</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>translate-to-spanish</code></td>
+<td>Translate to Spanish</td>
+<td>Translates any language to Spanish</td>
+<td>None</td>
+</tr>
+</tbody></table>
+<h3>📊 Summarize Actions</h3>
+<table>
+<thead>
+<tr>
+<th>Action ID</th>
+<th>Name</th>
+<th>Description</th>
+<th>Parameters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>summarize-detailed</code></td>
+<td>Detailed</td>
+<td>Comprehensive summary with overview, points, takeaways</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>summarize-micro</code></td>
+<td>Micro</td>
+<td>Concise, focused summaries</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>summarize-newsletter</code></td>
+<td>Newsletter Summary</td>
+<td>Extracts key newsletter updates</td>
+<td>None</td>
+</tr>
+</tbody></table>
+<h3>🔍 Extract Actions</h3>
+<table>
+<thead>
+<tr>
+<th>Action ID</th>
+<th>Name</th>
+<th>Description</th>
+<th>Parameters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>extract-mails</code></td>
+<td>Mails</td>
+<td>Extracts email addresses</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>extract-names</code></td>
+<td>Names</td>
+<td>Extracts personal names</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>extract-any</code></td>
+<td>People/Companies</td>
+<td>Extracts personal/business info</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>extract-predictions</code></td>
+<td>Predictions</td>
+<td>Extracts predictions</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>extract-recommendations</code></td>
+<td>Recommendations</td>
+<td>Extracts recommendations</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>extract-todo</code></td>
+<td>Tasks</td>
+<td>Extracts actionable tasks</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>extract-trends</code></td>
+<td>Trends</td>
+<td>Extracts trends</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>extract-wisdom</code></td>
+<td>Extract Wisdom</td>
+<td>Extracts insights and interesting info</td>
+<td>None</td>
+</tr>
+</tbody></table>
+<h3>📋 Format Actions</h3>
+<table>
+<thead>
+<tr>
+<th>Action ID</th>
+<th>Name</th>
+<th>Description</th>
+<th>Parameters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>format-to-bullet-list</code></td>
+<td>Bullet list</td>
+<td>Converts text to bullet list</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>format-to-markdown-checklist</code></td>
+<td>Markdown checklist</td>
+<td>Converts text to checklist</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>format-to-markdown-table</code></td>
+<td>Markdown table</td>
+<td>Converts text to table</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>format-to-numbered-list</code></td>
+<td>Numbered list</td>
+<td>Converts text to numbered list</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>sort-az</code></td>
+<td>Sort A-Z</td>
+<td>Sorts alphabetically ascending</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>sort-za</code></td>
+<td>Sort Z-A</td>
+<td>Sorts alphabetically descending</td>
+<td>None</td>
+</tr>
+</tbody></table>
+<h3>🎨 Create Actions</h3>
+<table>
+<thead>
+<tr>
+<th>Action ID</th>
+<th>Name</th>
+<th>Description</th>
+<th>Parameters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>create-alter-action</code></td>
+<td>Alter Action</td>
+<td>Creates Alter Actions</td>
+<td><code>input</code>: Instructions</td>
+</tr>
+<tr>
+<td><code>create-charts</code></td>
+<td>Charts</td>
+<td>Creates Recharts visualizations</td>
+<td><code>input</code>: Instructions</td>
+</tr>
+<tr>
+<td><code>create-diagrams</code></td>
+<td>Diagrams</td>
+<td>Generates Mermaid diagrams</td>
+<td><code>input</code>: Instructions</td>
+</tr>
+<tr>
+<td><code>create-html</code></td>
+<td>HTML page</td>
+<td>Creates HTML pages</td>
+<td><code>input</code>: Instructions</td>
+</tr>
+<tr>
+<td><code>create-images</code></td>
+<td>Images</td>
+<td>Generates AI images (Flux, Ideogram)</td>
+<td><code>input</code>: Instructions</td>
+</tr>
+<tr>
+<td><code>create-maps</code></td>
+<td>Maps</td>
+<td>Creates LeafletJS maps</td>
+<td><code>input</code>: Instructions</td>
+</tr>
+<tr>
+<td><code>create-presentations</code></td>
+<td>HTML Presentations</td>
+<td>Generates slide presentations</td>
+<td><code>input</code>: Instructions</td>
+</tr>
+<tr>
+<td><code>create-react-app</code></td>
+<td>Tailwind React App</td>
+<td>Creates React apps</td>
+<td><code>input</code>: Instructions</td>
+</tr>
+</tbody></table>
+<h3>🔎 Explain Actions</h3>
+<table>
+<thead>
+<tr>
+<th>Action ID</th>
+<th>Name</th>
+<th>Description</th>
+<th>Parameters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>analyze-paper</code></td>
+<td>Analyze Paper</td>
+<td>Analyzes research papers</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>explain-selection</code></td>
+<td>Explain</td>
+<td>Explains complex concepts simply</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>hidden-message</code></td>
+<td>Hidden message</td>
+<td>Uncovers hidden messages in text</td>
+<td>None</td>
+</tr>
+</tbody></table>
+<h3>🔀 Git Actions</h3>
+<table>
+<thead>
+<tr>
+<th>Action ID</th>
+<th>Name</th>
+<th>Description</th>
+<th>Parameters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>git-commit</code></td>
+<td>Commit message</td>
+<td>Generates commit messages</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>git-review</code></td>
+<td>Review</td>
+<td>Reviews code changes</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>git-summarize</code></td>
+<td>Summarize</td>
+<td>Summarizes Git commits</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>pull-request</code></td>
+<td>Pull Request</td>
+<td>Creates PR descriptions</td>
+<td>None</td>
+</tr>
+</tbody></table>
+<h3>🧠 Co-Intelligence Actions (Expert GPTs)</h3>
+<table>
+<thead>
+<tr>
+<th>Action ID</th>
+<th>Name</th>
+<th>Description</th>
+<th>Parameters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>business-strategist-gpt</code></td>
+<td>Business Strategy Expert</td>
+<td>Business strategy advice</td>
+<td><code>input</code>: Question</td>
+</tr>
+<tr>
+<td><code>children-educator</code></td>
+<td>Children Educator</td>
+<td>Early childhood education guidance</td>
+<td><code>input</code>: Question</td>
+</tr>
+<tr>
+<td><code>e-commerce-strategist-gpt</code></td>
+<td>E-commerce Strategy Expert</td>
+<td>E-commerce strategy advice</td>
+<td><code>input</code>: Question</td>
+</tr>
+<tr>
+<td><code>hrmanager-gpt</code></td>
+<td>HR Manager Expert</td>
+<td>HR management guidance</td>
+<td><code>input</code>: Question</td>
+</tr>
+<tr>
+<td><code>marketer-gpt</code></td>
+<td>Marketing Expert</td>
+<td>Marketing strategy advice</td>
+<td><code>input</code>: Question</td>
+</tr>
+<tr>
+<td><code>mental-models-gpt</code></td>
+<td>Mental Models Expert</td>
+<td>Mental models for decision-making</td>
+<td><code>input</code>: Question</td>
+</tr>
+<tr>
+<td><code>software-architect-gpt</code></td>
+<td>Software Architect Expert</td>
+<td>Software architecture guidance</td>
+<td><code>input</code>: Question</td>
+</tr>
+</tbody></table>
+<h3>💬 General Actions</h3>
+<table>
+<thead>
+<tr>
+<th>Action ID</th>
+<th>Name</th>
+<th>Description</th>
+<th>Parameters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ask-anything</code></td>
+<td>Ask Anything</td>
+<td>Open-ended AI conversation</td>
+<td><code>input</code>: Instructions</td>
+</tr>
+<tr>
+<td><code>ask-web</code></td>
+<td>Search the web</td>
+<td>Web search with sources</td>
+<td><code>input</code>: Question</td>
+</tr>
+</tbody></table>
+<h3>📧 Email Actions</h3>
+<table>
+<thead>
+<tr>
+<th>Action ID</th>
+<th>Name</th>
+<th>Description</th>
+<th>Parameters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>mail-draft</code></td>
+<td>Mail Draft</td>
+<td>Creates email drafts</td>
+<td><code>input</code>: Instructions</td>
+</tr>
+<tr>
+<td><code>mail-multi-summary</code></td>
+<td>Multiconversation summary</td>
+<td>Summarizes multiple email threads</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>mail-reply</code></td>
+<td>Mail Reply</td>
+<td>Generates email replies</td>
+<td><code>answerType</code>: Any updates?, Doesn&#39;t work, I don&#39;t know, etc.</td>
+</tr>
+<tr>
+<td><code>mail-summary</code></td>
+<td>Thread summary</td>
+<td>Summarizes email threads</td>
+<td>None</td>
+</tr>
+</tbody></table>
+<h3>📱 Social Media Actions</h3>
+<table>
+<thead>
+<tr>
+<th>Action ID</th>
+<th>Name</th>
+<th>Description</th>
+<th>Parameters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>linkedin-post</code></td>
+<td>Linkedin Post</td>
+<td>Creates LinkedIn posts</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>linkedin-reply</code></td>
+<td>Linkedin Reply</td>
+<td>Generates LinkedIn replies</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>twitter-post</code></td>
+<td>Twitter Post</td>
+<td>Creates engaging tweets</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>twitter-reply</code></td>
+<td>Twitter Reply</td>
+<td>Generates tweet replies</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>twitter-thread</code></td>
+<td>Twitter Thread</td>
+<td>Creates Twitter threads</td>
+<td>None</td>
+</tr>
+</tbody></table>
+<h3>📺 YouTube Actions</h3>
+<table>
+<thead>
+<tr>
+<th>Action ID</th>
+<th>Name</th>
+<th>Description</th>
+<th>Parameters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>youtube-hidden-message</code></td>
+<td>Youtube hidden message</td>
+<td>Analyzes videos for hidden messages</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>youtube-summarize-detailed</code></td>
+<td>Youtube detailed Summary</td>
+<td>Comprehensive video summaries</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>youtube-summarize-micro</code></td>
+<td>Youtube micro summary</td>
+<td>Quick video summaries</td>
+<td>None</td>
+</tr>
+</tbody></table>
+<h3>🎯 Other Actions</h3>
+<table>
+<thead>
+<tr>
+<th>Action ID</th>
+<th>Name</th>
+<th>Description</th>
+<th>Parameters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>create-a-keynote-deck</code></td>
+<td>Generate Keynote slides</td>
+<td>Generates Keynote presentations</td>
+<td><code>input</code>: Instructions</td>
+</tr>
+<tr>
+<td><code>edit-a-keynote-deck</code></td>
+<td>Edit Keynote slide</td>
+<td>Edits Keynote slides</td>
+<td><code>input</code>: Instructions</td>
+</tr>
+<tr>
+<td><code>translate-the-deck</code></td>
+<td>Translate the deck</td>
+<td>Translates Keynote presentations</td>
+<td><code>language</code>: Target language</td>
+</tr>
+<tr>
+<td><code>write-presenter-notes</code></td>
+<td>Write presenter notes</td>
+<td>Creates presenter notes</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>meeting-scribe</code></td>
+<td>Meeting Report</td>
+<td>Converts transcripts to notes</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>spreadsheet-formula</code></td>
+<td>Spreadsheet Formula</td>
+<td>Creates spreadsheet formulas</td>
+<td><code>input</code>: Instructions</td>
+</tr>
+<tr>
+<td><code>user-story</code></td>
+<td>User Story</td>
+<td>Creates agile user stories</td>
+<td>None</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Categories</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Description</th>
+<th>Action Count</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>code</code></td>
+<td>Programming and development</td>
+<td>8</td>
+</tr>
+<tr>
+<td><code>writing</code></td>
+<td>Text editing and creation</td>
+<td>12</td>
+</tr>
+<tr>
+<td><code>translate</code></td>
+<td>Language translation</td>
+<td>4</td>
+</tr>
+<tr>
+<td><code>summarize</code></td>
+<td>Content summarization</td>
+<td>2</td>
+</tr>
+<tr>
+<td><code>extract</code></td>
+<td>Information extraction</td>
+<td>7</td>
+</tr>
+<tr>
+<td><code>format</code></td>
+<td>Text formatting</td>
+<td>6</td>
+</tr>
+<tr>
+<td><code>create</code></td>
+<td>Content creation</td>
+<td>8</td>
+</tr>
+<tr>
+<td><code>explain</code></td>
+<td>Explanation and analysis</td>
+<td>4</td>
+</tr>
+<tr>
+<td><code>git</code></td>
+<td>Git version control</td>
+<td>4</td>
+</tr>
+<tr>
+<td><code>co-intelligences</code></td>
+<td>Expert AI assistants</td>
+<td>7</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Usage Examples</h2>
+<h3>From Clawdbot</h3>
+<pre><code class="language-javascript">// Trigger ask-anything with a question
+const { triggerAction } = require(&#39;./index.js&#39;);
+triggerAction(&#39;ask-anything&#39;, &#39;What is machine learning?&#39;);
+
+// Find actions for &quot;translate text&quot;
+const { findActions } = require(&#39;./index.js&#39;);
+const matches = findActions(&#39;translate text&#39;);
+console.log(matches[0]); // { id: &#39;translate&#39;, name: &#39;Translate&#39;, ... }
+
+// Build URL without triggering
+const { buildCallbackUrl } = require(&#39;./index.js&#39;);
+const url = buildCallbackUrl(&#39;translate&#39;, null, { language: &#39;French&#39; });
+// -&gt; alter://action/translate?language=French
+</code></pre>
+<h3>From Command Line</h3>
+<pre><code class="language-bash"># Ask a question
+node index.js trigger ask-anything --input &quot;Explain quantum computing&quot;
+
+# Translate with specific language
+node index.js trigger translate --param &quot;language=Japanese&quot;
+
+# Fix code with error message
+node index.js trigger fix-code --input &quot;TypeError: undefined is not a function&quot;
+
+# Change tone
+node index.js trigger change-tone --param &quot;tone=Professional&quot;
+
+# Search for actions
+node index.js find &quot;create a chart&quot;
+
+# Get action details
+node index.js info create-images
+</code></pre>
+<hr>
+<h2>Notes</h2>
+<ul>
+<li>Actions operate on currently selected text/files in Alter</li>
+<li>Parameters are URL-encoded automatically</li>
+<li>Actions with <code>hasParameters: false</code> typically need selected content in Alter</li>
+<li>The <code>open</code> command is used on macOS to trigger x-callback-urls</li>
+</ul>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/olivieralter/alter-actions/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/olivieralter/alter-actions" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/olivieralter/alter-actions/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@olivieralter</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Apple Apps & Services</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>
