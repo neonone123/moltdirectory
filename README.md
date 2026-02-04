@@ -6,7 +6,7 @@ The largest community-curated directory of pre-built skills and personas for [Op
 
 ## ✨ Features
 
-- **400+ Skills** across 25+ categories
+- **1600+ Skills** across 25+ categories
 - **Fast Search** with keyboard shortcuts (⌘K)
 - **Dark/Light Mode** with persistent theme preferences
 - **Static Generation** - No server required, works anywhere
