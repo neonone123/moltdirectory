@@ -19,7 +19,7 @@ const icons = {
   'apple': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>',
   'apple-apps--services': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>',
   'search-research': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
-  'moltbot-tools': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+  'openclaw-tools': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
   'clawdbot-tools': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
   'cli-utilities': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>',
   'marketing-sales': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>',
@@ -68,7 +68,7 @@ const PAGE_TEMPLATE = (content, title, desc, depth = 0) => {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="${desc}">
-  <title>${title} - MoltDirectory</title>
+  <title>${title} - OpenClaw Directory</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -89,7 +89,7 @@ const PAGE_TEMPLATE = (content, title, desc, depth = 0) => {
     <div class="header-inner">
       <a href="${relPath}index.html" class="logo">
 
-        <span class="logo-text">MoltDirectory</span>
+        <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
         <a href="${relPath}start-here/index.html" class="header-link">Start Here</a>
@@ -109,7 +109,7 @@ const PAGE_TEMPLATE = (content, title, desc, depth = 0) => {
   <footer class="footer">
     <div class="footer-inner">
       <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
-      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">OpenClawDirectory.com is a community-run project and is not affiliated with the official OpenClaw team or Peter Steinberger. We are just fans of the lobster.</p>
     </div>
   </footer>
   <script>
@@ -244,7 +244,7 @@ async function build() {
     if (icons[id]) return icons[id];
     // Try finding a partial match in the icons object
     const key = Object.keys(icons).find(k => id.includes(k) || k.includes(id));
-    return icons[key] || icons['moltbot-tools'];
+    return icons[key] || icons['openclaw-tools'];
   };
 
   console.log(`Found ${filteredCategories.length} categories and ${filteredSkills.length} skills.`);
@@ -260,15 +260,8 @@ async function build() {
       <div class="hero-content">
         <div class="hero-badge">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-          </svg>
-          <span>The Agent Skills Directory</span>
-        </div>
-        <h1 class="hero-title">
-          <span class="hero-title-line">Don't Build From Scratch.</span>
-          <span class="hero-title-accent">Molt It.</span>
-        </h1>
-        <p class="hero-subtitle">The largest directory of pre-built skills and personas for MoltBot. Find the logic you need to make your agent smarter, faster.</p>
+        <h1 class="hero-title">Browse OpenClaw Skills</h1>
+        <p class="hero-subtitle">The largest directory of pre-built skills for OpenClaw agents.</p>
         
         <div class="hero-stats">
           <div class="hero-stat-card">
@@ -380,7 +373,7 @@ async function build() {
       }
     </script>
   `;
-  fs.writeFileSync(path.join(OUTPUT_DIR, 'index.html'), PAGE_TEMPLATE(homeContent, 'MoltBot Skills Directory', 'Browse AI agent skills for MoltBot'));
+  fs.writeFileSync(path.join(OUTPUT_DIR, 'index.html'), PAGE_TEMPLATE(homeContent, 'OpenClaw Skills Directory', 'Browse AI agent skills for OpenClaw'));
 
   // 2. Generate Category Pages
   for (const cat of filteredCategories) {
@@ -535,13 +528,13 @@ async function build() {
 
   console.log('Generating Start Here page...');
   const startHereMd = `
-# Start Here: The Awesome Guide to MoltBot
+# Start Here: The Awesome Guide to OpenClaw
 
 **Formerly known as ClawdBot (🦞)**
 
-A curated collection of resources, tools, and guides for [MoltBot](https://molt.bot) - the AI-powered messaging gateway that bridges your favorite chat platforms to coding agents.
+A curated collection of resources, tools, and guides for [OpenClaw](https://openclaw.io) - the AI-powered messaging gateway that bridges your favorite chat platforms to coding agents.
 
-> **Note on the Rebrand**: MoltBot was previously known as Clawdbot. The project was renamed in early 2025. All existing Clawdbot configurations (\`~/.clawdbot/\`) remain fully compatible.
+> **Note on the Rebrand**: OpenClaw was previously known as Clawdbot. The project was renamed in early 2025. All existing Clawdbot configurations (\`~/.clawdbot/\`) remain fully compatible.
 
 ## 🚀 Quick Install
 
@@ -555,19 +548,19 @@ curl -fsSL https://molt.bot/install.sh | bash
 iwr -useb https://molt.bot/install.ps1 | iex
 
 # npm
-npm install -g moltbot@latest
+npm install -g openclaw@latest
 \`\`\`
 
 ## 📚 Official Resources
 
-- **[MoltBot Website](https://molt.bot)** - Official home with downloads.
-- **[Documentation](https://docs.molt.bot)** - Comprehensive guides and API docs.
-- **[GitHub Repository](https://github.com/moltbot/moltbot)** - Source code and issues.
-- **[Changelog](https://docs.molt.bot/changelog)** - Latest updates and history.
+- **[OpenClaw Website](https://openclaw.io)** - Official home with downloads.
+- **[Documentation](https://docs.openclaw.io)** - Comprehensive guides and API docs.
+- **[GitHub Repository](https://github.com/openclaw/openclaw)** - Source code and issues.
+- **[Changelog](https://docs.openclaw.io/changelog)** - Latest updates and history.
 
 ## ⚡ Getting Started
 
-- **[Quick Start Guide](https://docs.molt.bot/getting-started)** - The fastest way to your first bot.
+- **[Quick Start Guide](https://docs.openclaw.io/getting-started)** - The fastest way to your first bot.
 - **[First Bot Setup](https://github.com/minhlucvan/aswesome-moltbot/blob/main/docs/first-bot.md)** - Step-by-step connection guide.
 - **[Architecture Overview](https://github.com/minhlucvan/aswesome-moltbot/blob/main/docs/architecture.md)** - Learn how the magic works.
 
@@ -585,13 +578,13 @@ npm install -g moltbot@latest
 
 ## 🛠️ The Skills Directory (Why we are here)
 
-MoltBot's power comes from **Skills** (plugins). Out of the box, it can do basic things. With skills, it becomes a god.
+OpenClaw's power comes from **Skills** (plugins). Out of the box, it can do basic things. With skills, it becomes a god.
 
 **Top Community Resources:**
 
-*   **[Awesome MoltBot Skills](https://github.com/VoltAgent/awesome-moltbot-skills):** The community-maintained "best of" list.
+*   **[Awesome OpenClaw Skills](https://github.com/VoltAgent/awesome-openclaw-skills):** The community-maintained "best of" list.
 *   **[ClawdHub (Legacy)](https://clawdhub.com):** The original skill registry.
-*   **Browse the MoltDirectory** to find verified skills for Email, Calendar, Coding, and more.
+*   **Browse the OpenClaw Directory** to find verified skills for Email, Calendar, Coding, and more.
 `;
   const startHereHtml = marked(startHereMd);
   const startHereContent = `
@@ -599,7 +592,7 @@ MoltBot's power comes from **Skills** (plugins). Out of the box, it can do basic
       <div class="category-hero-content">
         <a href="../index.html" class="back-link">← Home</a>
         <h1 class="category-hero-title">Start Here</h1>
-        <p class="category-hero-desc">The Unofficial Guide to MoltBot</p>
+        <p class="category-hero-desc">The Unofficial Guide to OpenClaw</p>
       </div>
     </section>
     <article class="skill-page-content" style="max-width: 800px; margin: 0 auto; padding: 40px 24px;">
@@ -610,7 +603,7 @@ MoltBot's power comes from **Skills** (plugins). Out of the box, it can do basic
   `;
   const startHereDir = path.join(OUTPUT_DIR, 'start-here');
   if (!fs.existsSync(startHereDir)) fs.mkdirSync(startHereDir);
-  fs.writeFileSync(path.join(startHereDir, 'index.html'), PAGE_TEMPLATE(startHereContent, 'Start Here', 'The Unofficial Guide to MoltBot', 1));
+  fs.writeFileSync(path.join(startHereDir, 'index.html'), PAGE_TEMPLATE(startHereContent, 'Start Here', 'The Unofficial Guide to OpenClaw', 1));
 
   console.log('\nBuild Finished Successfully!');
 }

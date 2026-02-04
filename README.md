@@ -1,6 +1,6 @@
-# MoltDirectory 🦞
+# OpenClaw Directory 🦞
 
-The largest community-curated directory of pre-built skills and personas for [MoltBot](https://molt.bot). Find the logic you need to make your agent smarter, faster.
+The largest community-curated directory of pre-built skills and personas for [OpenClaw](https://openclaw.io). Find the logic you need to make your agent smarter, faster.
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
@@ -60,7 +60,7 @@ moltdirectory/
 
 ## 🔧 How It Works
 
-The build script (`build.js`) fetches the skill registry from the [Awesome MoltBot Skills](https://github.com/VoltAgent/awesome-moltbot-skills) repository and generates:
+The build script (`build.js`) fetches the skill registry from the [Awesome OpenClaw Skills](https://github.com/VoltAgent/awesome-openclaw-skills) repository and generates:
 
 1. **Homepage** with category grid and search
 2. **Category pages** listing skills in each category
@@ -109,12 +109,4 @@ Contributions are welcome! Here's how you can help:
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
-
-- [MoltBot](https://molt.bot) team for the amazing platform
-- [Awesome MoltBot Skills](https://github.com/VoltAgent/awesome-moltbot-skills) community
-- All skill authors who contribute to the ecosystem
-
----
-
-**Disclaimer**: MoltDirectory is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster. 🦞
+**Disclaimer**: OpenClaw Directory is a community-run project and is not affiliated with the official OpenClaw team or Peter Steinberger. We are just fans of the lobster. 🦞
