@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Complete agent memory + performance system">
+  <title>memory-pipeline - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Notes & PKM</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Notes & PKM</a>
+                <span class="skill-page-author">by @joe-rlo</span>
+              </div>
+              <h1 class="skill-page-title">memory-pipeline</h1>
+              <p class="skill-page-desc">Complete agent memory + performance system</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Memory Pipeline</h1>
+<p><strong>Give your AI agent a memory that actually works.</strong></p>
+<p>AI agents wake up blank every session. Memory Pipeline fixes that — it extracts what matters from past conversations, connects the dots, and generates a daily briefing so your agent starts each session primed instead of clueless.</p>
+<h2>What It Does</h2>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>When it runs</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Extract</strong></td>
+<td>Between sessions</td>
+<td>Pulls structured facts (decisions, preferences, learnings) from daily notes and transcripts</td>
+</tr>
+<tr>
+<td><strong>Link</strong></td>
+<td>Between sessions</td>
+<td>Builds a knowledge graph — connects related facts, flags contradictions</td>
+</tr>
+<tr>
+<td><strong>Brief</strong></td>
+<td>Between sessions</td>
+<td>Generates a compact <code>BRIEFING.md</code> loaded at session start</td>
+</tr>
+<tr>
+<td><strong>Ingest</strong></td>
+<td>On demand</td>
+<td>Imports external knowledge (ChatGPT exports, etc.) into searchable memory</td>
+</tr>
+<tr>
+<td><strong>Performance Hooks</strong></td>
+<td>During sessions</td>
+<td>Pre-game briefing injection, tool discipline, output compression, after-action review</td>
+</tr>
+</tbody></table>
+<h2>Why This Is Different</h2>
+<p>Most &quot;memory&quot; solutions are just vector search over chat logs. This is a <strong>cognitive architecture</strong> — inspired by how human memory actually works:</p>
+<ul>
+<li><strong>Extraction over accumulation</strong> — Instead of dumping everything into a database, it identifies what&#39;s worth remembering: decisions, preferences, learnings, commitments. The rest is noise.</li>
+<li><strong>Knowledge graph, not just embeddings</strong> — Facts get linked to each other with bidirectional relationships. Your agent doesn&#39;t just find similar text — it understands that a decision about your tech stack relates to a project deadline relates to a preference you stated three weeks ago.</li>
+<li><strong>Briefing over retrieval</strong> — Rather than hoping the right context gets retrieved at query time, your agent starts every session with a curated cheat sheet. Active projects, recent decisions, personality reminders. Zero cold-start lag.</li>
+<li><strong>No mid-swing coaching</strong> — Borrowed from performance psychology. Corrections happen <em>between</em> sessions, not during. The after-action review feeds into the next briefing. The loop is closed — just not mid-execution.</li>
+</ul>
+<h2>Quick Start</h2>
+<h3>Install</h3>
+<pre><code class="language-bash">clawdhub install memory-pipeline
+</code></pre>
+<h3>Setup</h3>
+<pre><code class="language-bash">bash skills/memory-pipeline/scripts/setup.sh
+</code></pre>
+<p>The setup script will detect your workspace, check dependencies (Python 3 + any LLM API key), create the <code>memory/</code> directory, and run the full pipeline.</p>
+<h3>Requirements</h3>
+<ul>
+<li><strong>Python 3</strong></li>
+<li><strong>At least one LLM API key</strong> (auto-detected):<ul>
+<li>OpenAI (<code>OPENAI_API_KEY</code> or <code>~/.config/openai/api_key</code>)</li>
+<li>Anthropic (<code>ANTHROPIC_API_KEY</code> or <code>~/.config/anthropic/api_key</code>)</li>
+<li>Gemini (<code>GEMINI_API_KEY</code> or <code>~/.config/gemini/api_key</code>)</li>
+</ul>
+</li>
+</ul>
+<h3>Run Manually</h3>
+<pre><code class="language-bash"># Full pipeline
+python3 skills/memory-pipeline/scripts/memory-extract.py
+python3 skills/memory-pipeline/scripts/memory-link.py
+python3 skills/memory-pipeline/scripts/memory-briefing.py
+</code></pre>
+<h3>Automate via Heartbeat</h3>
+<p>Add to your <code>HEARTBEAT.md</code> for daily automatic runs:</p>
+<pre><code class="language-markdown">### Daily Memory Pipeline
+- **Frequency:** Once per day (morning)
+- **Action:** Run the memory pipeline:
+  1. `python3 skills/memory-pipeline/scripts/memory-extract.py`
+  2. `python3 skills/memory-pipeline/scripts/memory-link.py`
+  3. `python3 skills/memory-pipeline/scripts/memory-briefing.py`
+</code></pre>
+<h2>Import External Knowledge</h2>
+<p>Already have years of conversations in ChatGPT? Import them so your agent knows what you know.</p>
+<h3>ChatGPT Export</h3>
+<pre><code class="language-bash"># 1. Export from ChatGPT: Settings → Data Controls → Export Data
+# 2. Drop the zip in your workspace
+# 3. Run:
+python3 skills/memory-pipeline/scripts/ingest-chatgpt.py ~/imports/chatgpt-export.zip
+
+# Preview first (recommended):
+python3 skills/memory-pipeline/scripts/ingest-chatgpt.py ~/imports/chatgpt-export.zip --dry-run
+</code></pre>
+<p><strong>What it does:</strong></p>
+<ul>
+<li>Parses ChatGPT&#39;s conversation tree format</li>
+<li>Filters out throwaway conversations (configurable: <code>--min-turns</code>, <code>--min-length</code>)</li>
+<li>Supports topic exclusion (edit <code>EXCLUDE_PATTERNS</code> to skip unwanted topics)</li>
+<li>Outputs clean, dated markdown files to <code>memory/knowledge/chatgpt/</code></li>
+<li>Files are automatically indexed by OpenClaw&#39;s semantic search</li>
+</ul>
+<p><strong>Options:</strong></p>
+<ul>
+<li><code>--dry-run</code> — Preview without writing files</li>
+<li><code>--keep-all</code> — Skip all filtering</li>
+<li><code>--min-turns N</code> — Minimum user messages to keep (default: 2)</li>
+<li><code>--min-length N</code> — Minimum total characters (default: 200)</li>
+</ul>
+<h3>Adding Other Sources</h3>
+<p>The pattern is extensible. Create <code>ingest-&lt;source&gt;.py</code>, parse the format, write markdown to <code>memory/knowledge/&lt;source&gt;/</code>. The indexer handles the rest.</p>
+<h2>How the Pipeline Works</h2>
+<h3>Stage 1: Extract</h3>
+<p><strong>Script:</strong> <code>memory-extract.py</code></p>
+<p>Reads daily notes (<code>memory/YYYY-MM-DD.md</code>) and session transcripts, then uses an LLM to extract structured facts:</p>
+<pre><code class="language-json">{&quot;type&quot;: &quot;decision&quot;, &quot;content&quot;: &quot;Use Rust for the backend&quot;, &quot;subject&quot;: &quot;Project Architecture&quot;, &quot;confidence&quot;: 0.9}
+{&quot;type&quot;: &quot;preference&quot;, &quot;content&quot;: &quot;Prefers Google Drive over Notion&quot;, &quot;subject&quot;: &quot;Tools&quot;, &quot;confidence&quot;: 0.95}
+</code></pre>
+<p><strong>Output:</strong> <code>memory/extracted.jsonl</code></p>
+<h3>Stage 2: Link</h3>
+<p><strong>Script:</strong> <code>memory-link.py</code></p>
+<p>Takes extracted facts and builds a knowledge graph:</p>
+<ul>
+<li>Generates embeddings for semantic similarity</li>
+<li>Creates bidirectional links between related facts</li>
+<li>Detects contradictions and marks superseded facts</li>
+<li>Auto-generates domain tags</li>
+</ul>
+<p><strong>Output:</strong> <code>memory/knowledge-graph.json</code> + <code>memory/knowledge-summary.md</code></p>
+<h3>Stage 3: Briefing</h3>
+<p><strong>Script:</strong> <code>memory-briefing.py</code></p>
+<p>Generates a compact daily briefing (&lt; 2000 chars) combining:</p>
+<ul>
+<li>Personality traits (from <code>SOUL.md</code>)</li>
+<li>User context (from <code>USER.md</code>)</li>
+<li>Active projects and recent decisions</li>
+<li>Open todos</li>
+</ul>
+<p><strong>Output:</strong> <code>BRIEFING.md</code> (workspace root)</p>
+<h2>Performance Hooks (Optional)</h2>
+<p>Four lifecycle hooks that enforce execution discipline during sessions. Based on a principle from performance psychology: <strong>separate preparation from execution</strong>.</p>
+<pre><code>User Message → Agent Loop
+  ├── before_agent_start  →  Briefing packet (memory + checklist)
+  ├── before_tool_call    →  Policy enforcement (deny list)
+  ├── tool_result_persist →  Output compression (prevent context bloat)
+  └── agent_end           →  After-action review (durable notes)
+</code></pre>
+<h3>Configuration</h3>
+<pre><code class="language-json">{
+  &quot;enabled&quot;: true,
+  &quot;briefing&quot;: {
+    &quot;maxChars&quot;: 6000,
+    &quot;checklist&quot;: [
+      &quot;Restate the task in one sentence.&quot;,
+      &quot;List constraints and success criteria.&quot;,
+      &quot;Retrieve only the minimum relevant memory.&quot;,
+      &quot;Prefer tools over guessing when facts matter.&quot;
+    ],
+    &quot;memoryFiles&quot;: [&quot;memory/IDENTITY.md&quot;, &quot;memory/PROJECTS.md&quot;]
+  },
+  &quot;tools&quot;: {
+    &quot;deny&quot;: [&quot;dangerous_tool&quot;],
+    &quot;maxToolResultChars&quot;: 12000
+  },
+  &quot;afterAction&quot;: {
+    &quot;writeMemoryFile&quot;: &quot;memory/AFTER_ACTION.md&quot;,
+    &quot;maxBullets&quot;: 8
+  }
+}
+</code></pre>
+<h3>Hook Details</h3>
+<table>
+<thead>
+<tr>
+<th>Hook</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>before_agent_start</code></td>
+<td>Loads memory files, builds bounded briefing packet, injects into system prompt</td>
+</tr>
+<tr>
+<td><code>before_tool_call</code></td>
+<td>Checks tool against deny list, prevents unsafe calls</td>
+</tr>
+<tr>
+<td><code>tool_result_persist</code></td>
+<td>Head (60%) + tail (30%) compression of large results</td>
+</tr>
+<tr>
+<td><code>agent_end</code></td>
+<td>Appends session summary to memory file with tools used and outcomes</td>
+</tr>
+</tbody></table>
+<h2>Output Files</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Location</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>BRIEFING.md</code></td>
+<td>Workspace root</td>
+<td>Daily context cheat sheet</td>
+</tr>
+<tr>
+<td><code>extracted.jsonl</code></td>
+<td><code>memory/</code></td>
+<td>All extracted facts (append-only)</td>
+</tr>
+<tr>
+<td><code>knowledge-graph.json</code></td>
+<td><code>memory/</code></td>
+<td>Full graph with embeddings and links</td>
+</tr>
+<tr>
+<td><code>knowledge-summary.md</code></td>
+<td><code>memory/</code></td>
+<td>Human-readable graph summary</td>
+</tr>
+<tr>
+<td><code>knowledge/chatgpt/*.md</code></td>
+<td><code>memory/</code></td>
+<td>Ingested ChatGPT conversations</td>
+</tr>
+</tbody></table>
+<h2>Customization</h2>
+<ul>
+<li><strong>Change LLM models</strong> — Edit model names in each script (supports OpenAI, Anthropic, Gemini)</li>
+<li><strong>Adjust extraction</strong> — Modify the extraction prompt in <code>memory-extract.py</code> to focus on different fact types</li>
+<li><strong>Tune link sensitivity</strong> — Change the similarity threshold in <code>memory-link.py</code> (default: 0.3)</li>
+<li><strong>Filter ingestion</strong> — Edit <code>EXCLUDE_PATTERNS</code> in <code>ingest-chatgpt.py</code> for topic exclusion</li>
+</ul>
+<h2>Troubleshooting</h2>
+<table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>No facts extracted</td>
+<td>Check that daily notes or transcripts exist; verify API key</td>
+</tr>
+<tr>
+<td>Low-quality links</td>
+<td>Add OpenAI key for embedding-based similarity; adjust threshold</td>
+</tr>
+<tr>
+<td>Briefing too long</td>
+<td>Reduce facts in template or let LLM generation handle it (auto-constrained to 2000 chars)</td>
+</tr>
+</tbody></table>
+<h2>See Also</h2>
+<ul>
+<li><a href="references/setup.md">Setup Guide</a> — Detailed installation and configuration</li>
+</ul>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/joe-rlo/memory-pipeline/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/joe-rlo/memory-pipeline" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/joe-rlo/memory-pipeline/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@joe-rlo</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Notes & PKM</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

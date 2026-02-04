@@ -1,0 +1,2377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Seoul Subway assistant for real-time arrivals, route planning, and service alerts (Korean/English)">
+  <title>seoul-subway - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Marketing & Sales</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Marketing & Sales</a>
+                <span class="skill-page-author">by @dukbong</span>
+              </div>
+              <h1 class="skill-page-title">seoul-subway</h1>
+              <p class="skill-page-desc">Seoul Subway assistant for real-time arrivals, route planning, and service alerts (Korean/English)</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Seoul Subway Skill</h1>
+<p>Query real-time Seoul Subway information. <strong>No API key required</strong> - uses proxy server.</p>
+<h2>Features</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Description</th>
+<th>Trigger Example (KO)</th>
+<th>Trigger Example (EN)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Real-time Arrival</td>
+<td>Train arrival times by station</td>
+<td>&quot;강남역 도착정보&quot;</td>
+<td>&quot;Gangnam station arrivals&quot;</td>
+</tr>
+<tr>
+<td>Station Search</td>
+<td>Line and station code lookup</td>
+<td>&quot;강남역 몇호선?&quot;</td>
+<td>&quot;What line is Gangnam?&quot;</td>
+</tr>
+<tr>
+<td>Route Search</td>
+<td>Shortest path with time/fare</td>
+<td>&quot;신도림에서 서울역&quot;</td>
+<td>&quot;Sindorim to Seoul Station&quot;</td>
+</tr>
+<tr>
+<td>Service Alerts</td>
+<td>Delays, incidents, non-stops</td>
+<td>&quot;지하철 지연 있어?&quot;</td>
+<td>&quot;Any subway delays?&quot;</td>
+</tr>
+<tr>
+<td><strong>Last Train</strong></td>
+<td>Last train times by station</td>
+<td>&quot;홍대 막차 몇 시야?&quot;</td>
+<td>&quot;Last train to Hongdae?&quot;</td>
+</tr>
+<tr>
+<td><strong>Exit Info</strong></td>
+<td>Exit numbers for landmarks</td>
+<td>&quot;코엑스 몇 번 출구?&quot;</td>
+<td>&quot;Which exit for COEX?&quot;</td>
+</tr>
+<tr>
+<td><strong>Accessibility</strong></td>
+<td>Elevators, escalators, wheelchair lifts</td>
+<td>&quot;강남역 엘리베이터&quot;</td>
+<td>&quot;Gangnam elevators&quot;</td>
+</tr>
+<tr>
+<td><strong>Quick Exit</strong></td>
+<td>Best car for facilities</td>
+<td>&quot;강남역 빠른하차&quot;</td>
+<td>&quot;Gangnam quick exit&quot;</td>
+</tr>
+<tr>
+<td><strong>Restrooms</strong></td>
+<td>Restroom locations</td>
+<td>&quot;강남역 화장실&quot;</td>
+<td>&quot;Gangnam restrooms&quot;</td>
+</tr>
+</tbody></table>
+<h3>Natural Language Triggers / 자연어 트리거</h3>
+<p>다양한 자연어 표현을 인식합니다:</p>
+<h4>Real-time Arrival / 실시간 도착</h4>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>한국어</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&quot;When&#39;s the next train at Gangnam?&quot;</td>
+<td>&quot;강남 몇 분 남았어?&quot;</td>
+</tr>
+<tr>
+<td>&quot;Trains at Gangnam&quot;</td>
+<td>&quot;강남 열차&quot;</td>
+</tr>
+<tr>
+<td>&quot;Gangnam arrivals&quot;</td>
+<td>&quot;강남 언제 와?&quot;</td>
+</tr>
+<tr>
+<td>&quot;Next train to Gangnam&quot;</td>
+<td>&quot;다음 열차 강남&quot;</td>
+</tr>
+</tbody></table>
+<h4>Route Search / 경로 검색</h4>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>한국어</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&quot;How do I get to Seoul Station from Gangnam?&quot;</td>
+<td>&quot;강남에서 서울역 어떻게 가?&quot;</td>
+</tr>
+<tr>
+<td>&quot;Gangnam → Seoul Station&quot;</td>
+<td>&quot;강남 → 서울역&quot;</td>
+</tr>
+<tr>
+<td>&quot;Gangnam to Seoul Station&quot;</td>
+<td>&quot;강남에서 서울역 가는 길&quot;</td>
+</tr>
+<tr>
+<td>&quot;Route from Gangnam to Hongdae&quot;</td>
+<td>&quot;강남부터 홍대까지&quot;</td>
+</tr>
+</tbody></table>
+<h4>Service Alerts / 운행 알림</h4>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>한국어</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&quot;Is Line 2 running normally?&quot;</td>
+<td>&quot;2호선 정상 운행해?&quot;</td>
+</tr>
+<tr>
+<td>&quot;Any delays on Line 1?&quot;</td>
+<td>&quot;1호선 지연 있어?&quot;</td>
+</tr>
+<tr>
+<td>&quot;Subway status&quot;</td>
+<td>&quot;지하철 상황&quot;</td>
+</tr>
+<tr>
+<td>&quot;Line 3 alerts&quot;</td>
+<td>&quot;3호선 알림&quot;</td>
+</tr>
+</tbody></table>
+<h4>Last Train / 막차 시간</h4>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>한국어</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&quot;Last train to Gangnam?&quot;</td>
+<td>&quot;강남 막차 몇 시야?&quot;</td>
+</tr>
+<tr>
+<td>&quot;When is the last train at Hongdae?&quot;</td>
+<td>&quot;홍대입구 막차 시간&quot;</td>
+</tr>
+<tr>
+<td>&quot;Final train to Seoul Station&quot;</td>
+<td>&quot;서울역 막차&quot;</td>
+</tr>
+<tr>
+<td>&quot;Last train on Saturday?&quot;</td>
+<td>&quot;토요일 막차 시간&quot;</td>
+</tr>
+</tbody></table>
+<h4>Exit Info / 출구 정보</h4>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>한국어</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&quot;Which exit for COEX?&quot;</td>
+<td>&quot;코엑스 몇 번 출구?&quot;</td>
+</tr>
+<tr>
+<td>&quot;Exit for Lotte World&quot;</td>
+<td>&quot;롯데월드 출구&quot;</td>
+</tr>
+<tr>
+<td>&quot;DDP which exit?&quot;</td>
+<td>&quot;DDP 몇 번 출구?&quot;</td>
+</tr>
+<tr>
+<td>&quot;Gyeongbokgung Palace exit&quot;</td>
+<td>&quot;경복궁 나가는 출구&quot;</td>
+</tr>
+</tbody></table>
+<h4>Accessibility / 접근성 정보</h4>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>한국어</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&quot;Gangnam station elevators&quot;</td>
+<td>&quot;강남역 엘리베이터&quot;</td>
+</tr>
+<tr>
+<td>&quot;Escalators at Seoul Station&quot;</td>
+<td>&quot;서울역 에스컬레이터&quot;</td>
+</tr>
+<tr>
+<td>&quot;Wheelchair lifts at Jamsil&quot;</td>
+<td>&quot;잠실역 휠체어리프트&quot;</td>
+</tr>
+<tr>
+<td>&quot;Accessibility info for Hongdae&quot;</td>
+<td>&quot;홍대입구 접근성 정보&quot;</td>
+</tr>
+</tbody></table>
+<h4>Quick Exit / 빠른하차</h4>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>한국어</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&quot;Quick exit at Gangnam&quot;</td>
+<td>&quot;강남역 빠른하차&quot;</td>
+</tr>
+<tr>
+<td>&quot;Which car for elevator?&quot;</td>
+<td>&quot;엘리베이터 몇 번째 칸?&quot;</td>
+</tr>
+<tr>
+<td>&quot;Best car for exit 3&quot;</td>
+<td>&quot;3번 출구 가까운 칸&quot;</td>
+</tr>
+<tr>
+<td>&quot;Fastest exit at Samsung&quot;</td>
+<td>&quot;삼성역 빠른 하차 위치&quot;</td>
+</tr>
+</tbody></table>
+<h4>Restrooms / 화장실</h4>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>한국어</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&quot;Restrooms at Gangnam&quot;</td>
+<td>&quot;강남역 화장실&quot;</td>
+</tr>
+<tr>
+<td>&quot;Where&#39;s the bathroom at Myeongdong?&quot;</td>
+<td>&quot;명동역 화장실 어디야?&quot;</td>
+</tr>
+<tr>
+<td>&quot;Accessible restroom at Seoul Station&quot;</td>
+<td>&quot;서울역 장애인 화장실&quot;</td>
+</tr>
+<tr>
+<td>&quot;Baby changing station at Jamsil&quot;</td>
+<td>&quot;잠실역 기저귀 교환대&quot;</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>First Time Setup / 첫 사용 안내</h2>
+<p>When you first use this skill, you&#39;ll see a permission prompt for the proxy domain.</p>
+<p>처음 사용 시 프록시 도메인 접근 확인 창이 뜹니다.</p>
+<p><strong>Select / 선택:</strong> <code>Yes, and don&#39;t ask again for vercel-proxy-henna-eight.vercel.app</code></p>
+<p>This only needs to be done once. / 한 번만 하면 됩니다.</p>
+<hr>
+<h2>Proxy API Reference</h2>
+<p>All API calls go through the proxy server. No API keys needed for users.</p>
+<h3>Base URL</h3>
+<pre><code>https://vercel-proxy-henna-eight.vercel.app
+</code></pre>
+<h3>1. Real-time Arrival Info</h3>
+<p><strong>Endpoint</strong></p>
+<pre><code>GET /api/realtime/{station}?start=0&amp;end=10
+</code></pre>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>station</td>
+<td>Yes</td>
+<td>Station name (Korean, URL-encoded)</td>
+</tr>
+<tr>
+<td>start</td>
+<td>No</td>
+<td>Start index (default: 0)</td>
+</tr>
+<tr>
+<td>end</td>
+<td>No</td>
+<td>End index (default: 10)</td>
+</tr>
+<tr>
+<td>format</td>
+<td>No</td>
+<td><code>formatted</code> (markdown, default) or <code>raw</code> (JSON)</td>
+</tr>
+<tr>
+<td>lang</td>
+<td>No</td>
+<td><code>ko</code> (default) or <code>en</code></td>
+</tr>
+</tbody></table>
+<p><strong>Response Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>subwayId</code></td>
+<td>Line ID (1002=Line 2, 1077=Sinbundang)</td>
+</tr>
+<tr>
+<td><code>trainLineNm</code></td>
+<td>Direction (e.g., &quot;성수행 - 역삼방면&quot;)</td>
+</tr>
+<tr>
+<td><code>arvlMsg2</code></td>
+<td>Arrival time (e.g., &quot;4분 20초 후&quot;)</td>
+</tr>
+<tr>
+<td><code>arvlMsg3</code></td>
+<td>Current location</td>
+</tr>
+<tr>
+<td><code>isFastTrain</code></td>
+<td>Fast train flag (1=급행)</td>
+</tr>
+</tbody></table>
+<p><strong>Example</strong></p>
+<pre><code class="language-bash">curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/realtime/강남&quot;
+</code></pre>
+<hr>
+<h3>2. Station Search</h3>
+<p><strong>Endpoint</strong></p>
+<pre><code>GET /api/stations?station={name}&amp;start=1&amp;end=10
+</code></pre>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>station</td>
+<td>Yes</td>
+<td>Station name to search</td>
+</tr>
+<tr>
+<td>start</td>
+<td>No</td>
+<td>Start index (default: 1)</td>
+</tr>
+<tr>
+<td>end</td>
+<td>No</td>
+<td>End index (default: 10)</td>
+</tr>
+</tbody></table>
+<p><strong>Response Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>STATION_CD</code></td>
+<td>Station code</td>
+</tr>
+<tr>
+<td><code>STATION_NM</code></td>
+<td>Station name</td>
+</tr>
+<tr>
+<td><code>LINE_NUM</code></td>
+<td>Line name (e.g., &quot;02호선&quot;)</td>
+</tr>
+<tr>
+<td><code>FR_CODE</code></td>
+<td>External station code</td>
+</tr>
+</tbody></table>
+<p><strong>Example</strong></p>
+<pre><code class="language-bash">curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/stations?station=강남&quot;
+</code></pre>
+<hr>
+<h3>3. Route Search</h3>
+<p><strong>Endpoint</strong></p>
+<pre><code>GET /api/route?dptreStnNm={departure}&amp;arvlStnNm={arrival}
+</code></pre>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>dptreStnNm</td>
+<td>Yes</td>
+<td>Departure station</td>
+</tr>
+<tr>
+<td>arvlStnNm</td>
+<td>Yes</td>
+<td>Arrival station</td>
+</tr>
+<tr>
+<td>searchDt</td>
+<td>No</td>
+<td>Datetime (yyyy-MM-dd HH:mm:ss)</td>
+</tr>
+<tr>
+<td>searchType</td>
+<td>No</td>
+<td>duration / distance / transfer</td>
+</tr>
+<tr>
+<td>format</td>
+<td>No</td>
+<td><code>formatted</code> (markdown, default) or <code>raw</code> (JSON)</td>
+</tr>
+<tr>
+<td>lang</td>
+<td>No</td>
+<td><code>ko</code> (default) or <code>en</code></td>
+</tr>
+</tbody></table>
+<p><strong>Response Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>totalDstc</code></td>
+<td>Total distance (m)</td>
+</tr>
+<tr>
+<td><code>totalreqHr</code></td>
+<td>Total time (seconds)</td>
+</tr>
+<tr>
+<td><code>totalCardCrg</code></td>
+<td>Fare (KRW)</td>
+</tr>
+<tr>
+<td><code>paths[].trainno</code></td>
+<td>Train number</td>
+</tr>
+<tr>
+<td><code>paths[].trainDptreTm</code></td>
+<td>Departure time</td>
+</tr>
+<tr>
+<td><code>paths[].trainArvlTm</code></td>
+<td>Arrival time</td>
+</tr>
+<tr>
+<td><code>paths[].trsitYn</code></td>
+<td>Transfer flag</td>
+</tr>
+</tbody></table>
+<p><strong>Example</strong></p>
+<pre><code class="language-bash">curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/route?dptreStnNm=신도림&amp;arvlStnNm=서울역&quot;
+</code></pre>
+<hr>
+<h3>4. Service Alerts</h3>
+<p><strong>Endpoint</strong></p>
+<pre><code>GET /api/alerts?pageNo=1&amp;numOfRows=10&amp;format=enhanced
+</code></pre>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>pageNo</td>
+<td>No</td>
+<td>Page number (default: 1)</td>
+</tr>
+<tr>
+<td>numOfRows</td>
+<td>No</td>
+<td>Results per page (default: 10)</td>
+</tr>
+<tr>
+<td>lineNm</td>
+<td>No</td>
+<td>Filter by line</td>
+</tr>
+<tr>
+<td>format</td>
+<td>No</td>
+<td><code>default</code> or <code>enhanced</code> (structured response)</td>
+</tr>
+</tbody></table>
+<p><strong>Response Fields (Default)</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ntceNo</code></td>
+<td>Notice number</td>
+</tr>
+<tr>
+<td><code>ntceSj</code></td>
+<td>Notice title</td>
+</tr>
+<tr>
+<td><code>ntceCn</code></td>
+<td>Notice content</td>
+</tr>
+<tr>
+<td><code>lineNm</code></td>
+<td>Line name</td>
+</tr>
+<tr>
+<td><code>regDt</code></td>
+<td>Registration date</td>
+</tr>
+</tbody></table>
+<p><strong>Response Fields (Enhanced)</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>summary.delayedLines</code></td>
+<td>Lines with delays</td>
+</tr>
+<tr>
+<td><code>summary.suspendedLines</code></td>
+<td>Lines with service suspended</td>
+</tr>
+<tr>
+<td><code>summary.normalLines</code></td>
+<td>Lines operating normally</td>
+</tr>
+<tr>
+<td><code>alerts[].lineName</code></td>
+<td>Line name (Korean)</td>
+</tr>
+<tr>
+<td><code>alerts[].lineNameEn</code></td>
+<td>Line name (English)</td>
+</tr>
+<tr>
+<td><code>alerts[].status</code></td>
+<td><code>normal</code>, <code>delayed</code>, or <code>suspended</code></td>
+</tr>
+<tr>
+<td><code>alerts[].severity</code></td>
+<td><code>low</code>, <code>medium</code>, or <code>high</code></td>
+</tr>
+<tr>
+<td><code>alerts[].title</code></td>
+<td>Alert title</td>
+</tr>
+</tbody></table>
+<p><strong>Example</strong></p>
+<pre><code class="language-bash"># Default format
+curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/alerts&quot;
+
+# Enhanced format with status summary
+curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/alerts?format=enhanced&quot;
+</code></pre>
+<hr>
+<h3>5. Last Train Time</h3>
+<blockquote>
+<p><strong>참고:</strong> 이 API는 주요 역 77개의 막차 시간을 정적 데이터로 제공합니다.
+서울교통공사 2025년 1월 기준 데이터입니다.</p>
+<p><strong>지원 역 (77개):</strong>
+가산디지털단지, 강남, 강남구청, 강변, 건대입구, 경복궁, 고속터미널, 공덕, 광나루, 광화문, 교대, 구로, 군자, 김포공항, 노량진, 당산, 대림, 동대문, 동대문역사문화공원, 디지털미디어시티, 뚝섬, 마포구청, 명동, 모란, 몽촌토성, 복정, 불광, 사가정, 사당, 삼각지, 삼성, 상봉, 서울대입구, 서울역, 선릉, 성수, 수유, 시청, 신논현, 신당, 신도림, 신사, 신촌, 안국, 압구정, 약수, 양재, 여의도, 역삼, 연신내, 영등포, 옥수, 올림픽공원, 왕십리, 용산, 을지로3가, 을지로4가, 을지로입구, 응암, 이대, 이촌, 이태원, 인천공항1터미널, 인천공항2터미널, 잠실, 정자, 종각, 종로3가, 종합운동장, 천호, 청담, 충무로, 판교, 합정, 혜화, 홍대입구, 효창공원앞</p>
+</blockquote>
+<p><strong>Endpoint</strong></p>
+<pre><code>GET /api/last-train/{station}?direction=up&amp;weekType=1
+</code></pre>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>station</td>
+<td>Yes</td>
+<td>Station name (Korean or English)</td>
+</tr>
+<tr>
+<td>direction</td>
+<td>No</td>
+<td><code>up</code>, <code>down</code>, or <code>all</code> (default: all)</td>
+</tr>
+<tr>
+<td>weekType</td>
+<td>No</td>
+<td><code>1</code>=Weekday, <code>2</code>=Saturday, <code>3</code>=Sunday/Holiday (default: auto)</td>
+</tr>
+</tbody></table>
+<p><strong>Response Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>station</code></td>
+<td>Station name (Korean)</td>
+</tr>
+<tr>
+<td><code>stationEn</code></td>
+<td>Station name (English)</td>
+</tr>
+<tr>
+<td><code>lastTrains[].direction</code></td>
+<td>Direction (Korean)</td>
+</tr>
+<tr>
+<td><code>lastTrains[].directionEn</code></td>
+<td>Direction (English)</td>
+</tr>
+<tr>
+<td><code>lastTrains[].time</code></td>
+<td>Last train time (HH:MM)</td>
+</tr>
+<tr>
+<td><code>lastTrains[].weekType</code></td>
+<td>Day type (Korean)</td>
+</tr>
+<tr>
+<td><code>lastTrains[].weekTypeEn</code></td>
+<td>Day type (English)</td>
+</tr>
+<tr>
+<td><code>lastTrains[].line</code></td>
+<td>Line name</td>
+</tr>
+<tr>
+<td><code>lastTrains[].lineEn</code></td>
+<td>Line name (English)</td>
+</tr>
+<tr>
+<td><code>lastTrains[].destination</code></td>
+<td>Final destination</td>
+</tr>
+<tr>
+<td><code>lastTrains[].destinationEn</code></td>
+<td>Destination (English)</td>
+</tr>
+</tbody></table>
+<p><strong>Example</strong></p>
+<pre><code class="language-bash"># Auto-detect day type
+curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/last-train/홍대입구&quot;
+
+# English station name
+curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/last-train/Hongdae&quot;
+
+# Specific direction and day
+curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/last-train/강남?direction=up&amp;weekType=1&quot;
+</code></pre>
+<hr>
+<h3>6. Exit Information</h3>
+<blockquote>
+<p><strong>참고:</strong> 이 API는 주요 역 77개의 출구 정보를 정적 데이터로 제공합니다.</p>
+<p><strong>지원 역 (77개):</strong>
+가산디지털단지, 강남, 강남구청, 강변, 건대입구, 경복궁, 고속터미널, 공덕, 광나루, 광화문, 교대, 구로, 군자, 김포공항, 노량진, 당산, 대림, 동대문, 동대문역사문화공원, 디지털미디어시티, 뚝섬, 마포구청, 명동, 모란, 몽촌토성, 복정, 불광, 사가정, 사당, 삼각지, 삼성, 상봉, 서울대입구, 서울역, 선릉, 성수, 수유, 시청, 신논현, 신당, 신도림, 신사, 신촌, 안국, 압구정, 약수, 양재, 여의도, 역삼, 연신내, 영등포, 옥수, 올림픽공원, 왕십리, 용산, 을지로3가, 을지로4가, 을지로입구, 응암, 이대, 이촌, 이태원, 인천공항1터미널, 인천공항2터미널, 잠실, 정자, 종각, 종로3가, 종합운동장, 천호, 청담, 충무로, 판교, 합정, 혜화, 홍대입구, 효창공원앞</p>
+</blockquote>
+<p><strong>Endpoint</strong></p>
+<pre><code>GET /api/exits/{station}
+</code></pre>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>station</td>
+<td>Yes</td>
+<td>Station name (Korean or English)</td>
+</tr>
+</tbody></table>
+<p><strong>Error Response (Unsupported Station)</strong></p>
+<pre><code class="language-json">{
+  &quot;code&quot;: &quot;INVALID_STATION&quot;,
+  &quot;message&quot;: &quot;Exit information not available for this station&quot;,
+  &quot;hint&quot;: &quot;Exit information is available for major tourist stations only&quot;
+}
+</code></pre>
+<p><strong>Response Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>station</code></td>
+<td>Station name (Korean)</td>
+</tr>
+<tr>
+<td><code>stationEn</code></td>
+<td>Station name (English)</td>
+</tr>
+<tr>
+<td><code>line</code></td>
+<td>Line name</td>
+</tr>
+<tr>
+<td><code>exits[].number</code></td>
+<td>Exit number</td>
+</tr>
+<tr>
+<td><code>exits[].landmark</code></td>
+<td>Nearby landmark (Korean)</td>
+</tr>
+<tr>
+<td><code>exits[].landmarkEn</code></td>
+<td>Nearby landmark (English)</td>
+</tr>
+<tr>
+<td><code>exits[].distance</code></td>
+<td>Walking distance</td>
+</tr>
+<tr>
+<td><code>exits[].facilities</code></td>
+<td>Facility types</td>
+</tr>
+</tbody></table>
+<p><strong>Example</strong></p>
+<pre><code class="language-bash"># Get COEX exit info
+curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/exits/삼성&quot;
+
+# English station name
+curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/exits/Samsung&quot;
+</code></pre>
+<hr>
+<h3>7. Accessibility Info</h3>
+<p><strong>Endpoint</strong></p>
+<pre><code>GET /api/accessibility/{station}
+</code></pre>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>station</td>
+<td>Yes</td>
+<td>Station name (Korean or English)</td>
+</tr>
+<tr>
+<td>type</td>
+<td>No</td>
+<td><code>elevator</code>, <code>escalator</code>, <code>wheelchair</code>, or <code>all</code> (default: all)</td>
+</tr>
+<tr>
+<td>format</td>
+<td>No</td>
+<td><code>formatted</code> (markdown, default) or <code>raw</code> (JSON)</td>
+</tr>
+<tr>
+<td>lang</td>
+<td>No</td>
+<td><code>ko</code> (default) or <code>en</code></td>
+</tr>
+</tbody></table>
+<p><strong>Response Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>station</code></td>
+<td>Station name (Korean)</td>
+</tr>
+<tr>
+<td><code>stationEn</code></td>
+<td>Station name (English)</td>
+</tr>
+<tr>
+<td><code>elevators[].lineNm</code></td>
+<td>Line name</td>
+</tr>
+<tr>
+<td><code>elevators[].dtlPstn</code></td>
+<td>Detailed location</td>
+</tr>
+<tr>
+<td><code>elevators[].bgngFlr</code> / <code>endFlr</code></td>
+<td>Floor level (start/end)</td>
+</tr>
+<tr>
+<td><code>elevators[].bgngFlrGrndUdgdSe</code></td>
+<td>Ground/underground (지상/지하)</td>
+</tr>
+<tr>
+<td><code>elevators[].oprtngSitu</code></td>
+<td>Operation status (M=normal)</td>
+</tr>
+<tr>
+<td><code>escalators[]</code></td>
+<td>Same structure as elevators</td>
+</tr>
+<tr>
+<td><code>wheelchairLifts[]</code></td>
+<td>Same structure as elevators</td>
+</tr>
+</tbody></table>
+<p><strong>Example</strong></p>
+<pre><code class="language-bash"># All accessibility info
+curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/accessibility/강남&quot;
+
+# Elevators only
+curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/accessibility/강남?type=elevator&quot;
+
+# English output
+curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/accessibility/Gangnam?lang=en&quot;
+
+# Raw JSON
+curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/accessibility/강남?format=raw&quot;
+</code></pre>
+<hr>
+<h3>8. Quick Exit Info</h3>
+<p><strong>Endpoint</strong></p>
+<pre><code>GET /api/quick-exit/{station}
+</code></pre>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>station</td>
+<td>Yes</td>
+<td>Station name (Korean or English)</td>
+</tr>
+<tr>
+<td>facility</td>
+<td>No</td>
+<td><code>elevator</code>, <code>escalator</code>, <code>exit</code>, or <code>all</code> (default: all)</td>
+</tr>
+<tr>
+<td>format</td>
+<td>No</td>
+<td><code>formatted</code> (markdown, default) or <code>raw</code> (JSON)</td>
+</tr>
+<tr>
+<td>lang</td>
+<td>No</td>
+<td><code>ko</code> (default) or <code>en</code></td>
+</tr>
+</tbody></table>
+<p><strong>Response Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>station</code></td>
+<td>Station name (Korean)</td>
+</tr>
+<tr>
+<td><code>stationEn</code></td>
+<td>Station name (English)</td>
+</tr>
+<tr>
+<td><code>quickExits[].lineNm</code></td>
+<td>Line name</td>
+</tr>
+<tr>
+<td><code>quickExits[].drtnInfo</code></td>
+<td>Direction</td>
+</tr>
+<tr>
+<td><code>quickExits[].qckgffVhclDoorNo</code></td>
+<td>Best car/door number</td>
+</tr>
+<tr>
+<td><code>quickExits[].plfmCmgFac</code></td>
+<td>Facility type (엘리베이터/계단/에스컬레이터)</td>
+</tr>
+<tr>
+<td><code>quickExits[].upbdnbSe</code></td>
+<td>Up/down direction (상행/하행)</td>
+</tr>
+<tr>
+<td><code>quickExits[].elvtrNo</code></td>
+<td>Elevator number (if applicable)</td>
+</tr>
+</tbody></table>
+<p><strong>Example</strong></p>
+<pre><code class="language-bash"># All quick exit info
+curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/quick-exit/강남&quot;
+
+# Filter by elevator
+curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/quick-exit/강남?facility=elevator&quot;
+
+# English station name
+curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/quick-exit/Gangnam&quot;
+</code></pre>
+<hr>
+<h3>9. Restroom Info</h3>
+<p><strong>Endpoint</strong></p>
+<pre><code>GET /api/restrooms/{station}
+</code></pre>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>station</td>
+<td>Yes</td>
+<td>Station name (Korean or English)</td>
+</tr>
+<tr>
+<td>format</td>
+<td>No</td>
+<td><code>formatted</code> (markdown, default) or <code>raw</code> (JSON)</td>
+</tr>
+<tr>
+<td>lang</td>
+<td>No</td>
+<td><code>ko</code> (default) or <code>en</code></td>
+</tr>
+</tbody></table>
+<p><strong>Response Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>station</code></td>
+<td>Station name (Korean)</td>
+</tr>
+<tr>
+<td><code>stationEn</code></td>
+<td>Station name (English)</td>
+</tr>
+<tr>
+<td><code>restrooms[].lineNm</code></td>
+<td>Line name</td>
+</tr>
+<tr>
+<td><code>restrooms[].dtlPstn</code></td>
+<td>Detailed location</td>
+</tr>
+<tr>
+<td><code>restrooms[].stnFlr</code></td>
+<td>Floor level (e.g., B1)</td>
+</tr>
+<tr>
+<td><code>restrooms[].grndUdgdSe</code></td>
+<td>Ground/underground (지상/지하)</td>
+</tr>
+<tr>
+<td><code>restrooms[].gateInoutSe</code></td>
+<td>Inside/outside gate (내부/외부)</td>
+</tr>
+<tr>
+<td><code>restrooms[].rstrmInfo</code></td>
+<td>Restroom type info</td>
+</tr>
+<tr>
+<td><code>restrooms[].whlchrAcsPsbltyYn</code></td>
+<td>Wheelchair accessible (Y/N)</td>
+</tr>
+</tbody></table>
+<p><strong>Example</strong></p>
+<pre><code class="language-bash"># Get restroom info
+curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/restrooms/강남&quot;
+
+# English output
+curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/restrooms/Gangnam?lang=en&quot;
+
+# Raw JSON
+curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/restrooms/강남?format=raw&quot;
+</code></pre>
+<hr>
+<h2>Landmark → Station Mapping</h2>
+<p>외국인 관광객이 자주 찾는 랜드마크와 해당 역 정보입니다.</p>
+<table>
+<thead>
+<tr>
+<th>Landmark</th>
+<th>Station</th>
+<th>Line</th>
+<th>Exit</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>COEX / 코엑스</td>
+<td>삼성 Samsung</td>
+<td>2호선</td>
+<td>5-6</td>
+</tr>
+<tr>
+<td>Lotte World / 롯데월드</td>
+<td>잠실 Jamsil</td>
+<td>2호선</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Lotte World Tower</td>
+<td>잠실 Jamsil</td>
+<td>2호선</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Gyeongbokgung Palace / 경복궁</td>
+<td>경복궁 Gyeongbokgung</td>
+<td>3호선</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Changdeokgung Palace / 창덕궁</td>
+<td>안국 Anguk</td>
+<td>3호선</td>
+<td>3</td>
+</tr>
+<tr>
+<td>DDP / 동대문디자인플라자</td>
+<td>동대문역사문화공원</td>
+<td>2호선</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Myeongdong / 명동</td>
+<td>명동 Myeongdong</td>
+<td>4호선</td>
+<td>6</td>
+</tr>
+<tr>
+<td>N Seoul Tower / 남산타워</td>
+<td>명동 Myeongdong</td>
+<td>4호선</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Bukchon Hanok Village</td>
+<td>안국 Anguk</td>
+<td>3호선</td>
+<td>6</td>
+</tr>
+<tr>
+<td>Insadong / 인사동</td>
+<td>안국 Anguk</td>
+<td>3호선</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Hongdae / 홍대</td>
+<td>홍대입구 Hongik Univ.</td>
+<td>2호선</td>
+<td>9</td>
+</tr>
+<tr>
+<td>Itaewon / 이태원</td>
+<td>이태원 Itaewon</td>
+<td>6호선</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Gangnam / 강남</td>
+<td>강남 Gangnam</td>
+<td>2호선</td>
+<td>10-11</td>
+</tr>
+<tr>
+<td>Yeouido Park / 여의도공원</td>
+<td>여의도 Yeouido</td>
+<td>5호선</td>
+<td>5</td>
+</tr>
+<tr>
+<td>IFC Mall</td>
+<td>여의도 Yeouido</td>
+<td>5호선</td>
+<td>1</td>
+</tr>
+<tr>
+<td>63 Building</td>
+<td>여의도 Yeouido</td>
+<td>5호선</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Gwanghwamun Square / 광화문광장</td>
+<td>광화문 Gwanghwamun</td>
+<td>5호선</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Namdaemun Market / 남대문시장</td>
+<td>서울역 Seoul Station</td>
+<td>1호선</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Cheonggyecheon Stream / 청계천</td>
+<td>을지로입구 Euljiro 1-ga</td>
+<td>2호선</td>
+<td>6</td>
+</tr>
+<tr>
+<td>Express Bus Terminal</td>
+<td>고속터미널 Express Terminal</td>
+<td>3호선</td>
+<td>4,8</td>
+</tr>
+<tr>
+<td>Gimpo Airport</td>
+<td>김포공항 Gimpo Airport</td>
+<td>5호선</td>
+<td>1,3</td>
+</tr>
+<tr>
+<td>Incheon Airport T1</td>
+<td>인천공항1터미널</td>
+<td>공항철도</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Incheon Airport T2</td>
+<td>인천공항2터미널</td>
+<td>공항철도</td>
+<td>1</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Static Data (GitHub Raw)</h2>
+<p>For static data like station lists and line mappings, use GitHub raw URLs:</p>
+<pre><code class="language-bash"># Station list
+curl &quot;https://raw.githubusercontent.com/dukbong/seoul-subway/main/data/stations.json&quot;
+
+# Line ID mappings
+curl &quot;https://raw.githubusercontent.com/dukbong/seoul-subway/main/data/lines.json&quot;
+
+# Station name translations
+curl &quot;https://raw.githubusercontent.com/dukbong/seoul-subway/main/data/station-names.json&quot;
+</code></pre>
+<hr>
+<h2>Line ID Mapping</h2>
+<table>
+<thead>
+<tr>
+<th>Line</th>
+<th>ID</th>
+<th>Line</th>
+<th>ID</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Line 1</td>
+<td>1001</td>
+<td>Line 6</td>
+<td>1006</td>
+</tr>
+<tr>
+<td>Line 2</td>
+<td>1002</td>
+<td>Line 7</td>
+<td>1007</td>
+</tr>
+<tr>
+<td>Line 3</td>
+<td>1003</td>
+<td>Line 8</td>
+<td>1008</td>
+</tr>
+<tr>
+<td>Line 4</td>
+<td>1004</td>
+<td>Line 9</td>
+<td>1009</td>
+</tr>
+<tr>
+<td>Line 5</td>
+<td>1005</td>
+<td>Sinbundang</td>
+<td>1077</td>
+</tr>
+<tr>
+<td>Gyeongui-Jungang</td>
+<td>1063</td>
+<td>Gyeongchun</td>
+<td>1067</td>
+</tr>
+<tr>
+<td>Airport Railroad</td>
+<td>1065</td>
+<td>Suin-Bundang</td>
+<td>1075</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Station Name Mapping (English → Korean)</h2>
+<p>주요 역 이름의 영어-한글 매핑 테이블입니다. API 호출 시 영어 입력을 한글로 변환해야 합니다.</p>
+<h3>Line 1 (1호선)</h3>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>Korean</th>
+<th>English</th>
+<th>Korean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Seoul Station</td>
+<td>서울역</td>
+<td>City Hall</td>
+<td>시청</td>
+</tr>
+<tr>
+<td>Jonggak</td>
+<td>종각</td>
+<td>Jongno 3-ga</td>
+<td>종로3가</td>
+</tr>
+<tr>
+<td>Jongno 5-ga</td>
+<td>종로5가</td>
+<td>Dongdaemun</td>
+<td>동대문</td>
+</tr>
+<tr>
+<td>Cheongnyangni</td>
+<td>청량리</td>
+<td>Yongsan</td>
+<td>용산</td>
+</tr>
+<tr>
+<td>Noryangjin</td>
+<td>노량진</td>
+<td>Yeongdeungpo</td>
+<td>영등포</td>
+</tr>
+<tr>
+<td>Guro</td>
+<td>구로</td>
+<td>Incheon</td>
+<td>인천</td>
+</tr>
+<tr>
+<td>Bupyeong</td>
+<td>부평</td>
+<td>Suwon</td>
+<td>수원</td>
+</tr>
+</tbody></table>
+<h3>Line 2 (2호선)</h3>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>Korean</th>
+<th>English</th>
+<th>Korean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Gangnam</td>
+<td>강남</td>
+<td>Yeoksam</td>
+<td>역삼</td>
+</tr>
+<tr>
+<td>Samseong</td>
+<td>삼성</td>
+<td>Jamsil</td>
+<td>잠실</td>
+</tr>
+<tr>
+<td>Sindorim</td>
+<td>신도림</td>
+<td>Hongdae (Hongik Univ.)</td>
+<td>홍대입구</td>
+</tr>
+<tr>
+<td>Hapjeong</td>
+<td>합정</td>
+<td>Dangsan</td>
+<td>당산</td>
+</tr>
+<tr>
+<td>Yeouido</td>
+<td>여의도</td>
+<td>Konkuk Univ.</td>
+<td>건대입구</td>
+</tr>
+<tr>
+<td>Seolleung</td>
+<td>선릉</td>
+<td>Samsung</td>
+<td>삼성</td>
+</tr>
+<tr>
+<td>Sports Complex</td>
+<td>종합운동장</td>
+<td>Gangbyeon</td>
+<td>강변</td>
+</tr>
+<tr>
+<td>Ttukseom</td>
+<td>뚝섬</td>
+<td>Seongsu</td>
+<td>성수</td>
+</tr>
+<tr>
+<td>Wangsimni</td>
+<td>왕십리</td>
+<td>Euljiro 3-ga</td>
+<td>을지로3가</td>
+</tr>
+<tr>
+<td>Euljiro 1-ga</td>
+<td>을지로입구</td>
+<td>City Hall</td>
+<td>시청</td>
+</tr>
+<tr>
+<td>Chungjeongno</td>
+<td>충정로</td>
+<td>Ewha Womans Univ.</td>
+<td>이대</td>
+</tr>
+<tr>
+<td>Sinchon</td>
+<td>신촌</td>
+<td>Sadang</td>
+<td>사당</td>
+</tr>
+<tr>
+<td>Nakseongdae</td>
+<td>낙성대</td>
+<td>Seoul Nat&#39;l Univ.</td>
+<td>서울대입구</td>
+</tr>
+<tr>
+<td>Guro Digital Complex</td>
+<td>구로디지털단지</td>
+<td>Mullae</td>
+<td>문래</td>
+</tr>
+</tbody></table>
+<h3>Line 3 (3호선)</h3>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>Korean</th>
+<th>English</th>
+<th>Korean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Gyeongbokgung</td>
+<td>경복궁</td>
+<td>Anguk</td>
+<td>안국</td>
+</tr>
+<tr>
+<td>Jongno 3-ga</td>
+<td>종로3가</td>
+<td>Chungmuro</td>
+<td>충무로</td>
+</tr>
+<tr>
+<td>Dongguk Univ.</td>
+<td>동대입구</td>
+<td>Yaksu</td>
+<td>약수</td>
+</tr>
+<tr>
+<td>Apgujeong</td>
+<td>압구정</td>
+<td>Sinsa</td>
+<td>신사</td>
+</tr>
+<tr>
+<td>Express Bus Terminal</td>
+<td>고속터미널</td>
+<td>Gyodae</td>
+<td>교대</td>
+</tr>
+<tr>
+<td>Nambu Bus Terminal</td>
+<td>남부터미널</td>
+<td>Yangjae</td>
+<td>양재</td>
+</tr>
+<tr>
+<td>Daehwa</td>
+<td>대화</td>
+<td>Juyeop</td>
+<td>주엽</td>
+</tr>
+</tbody></table>
+<h3>Line 4 (4호선)</h3>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>Korean</th>
+<th>English</th>
+<th>Korean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Myeongdong</td>
+<td>명동</td>
+<td>Hoehyeon</td>
+<td>회현</td>
+</tr>
+<tr>
+<td>Seoul Station</td>
+<td>서울역</td>
+<td>Sookmyung Women&#39;s Univ.</td>
+<td>숙대입구</td>
+</tr>
+<tr>
+<td>Dongdaemun History &amp; Culture Park</td>
+<td>동대문역사문화공원</td>
+<td>Hyehwa</td>
+<td>혜화</td>
+</tr>
+<tr>
+<td>Hansung Univ.</td>
+<td>한성대입구</td>
+<td>Mia</td>
+<td>미아</td>
+</tr>
+<tr>
+<td>Mia Sageori</td>
+<td>미아사거리</td>
+<td>Gireum</td>
+<td>길음</td>
+</tr>
+<tr>
+<td>Chongshin Univ.</td>
+<td>총신대입구</td>
+<td>Sadang</td>
+<td>사당</td>
+</tr>
+</tbody></table>
+<h3>Line 5 (5호선)</h3>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>Korean</th>
+<th>English</th>
+<th>Korean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Gwanghwamun</td>
+<td>광화문</td>
+<td>Jongno 3-ga</td>
+<td>종로3가</td>
+</tr>
+<tr>
+<td>Dongdaemun History &amp; Culture Park</td>
+<td>동대문역사문화공원</td>
+<td>Cheonggu</td>
+<td>청구</td>
+</tr>
+<tr>
+<td>Wangsimni</td>
+<td>왕십리</td>
+<td>Haengdang</td>
+<td>행당</td>
+</tr>
+<tr>
+<td>Yeouido</td>
+<td>여의도</td>
+<td>Yeouinaru</td>
+<td>여의나루</td>
+</tr>
+<tr>
+<td>Mapo</td>
+<td>마포</td>
+<td>Gongdeok</td>
+<td>공덕</td>
+</tr>
+<tr>
+<td>Gimpo Airport</td>
+<td>김포공항</td>
+<td>Banghwa</td>
+<td>방화</td>
+</tr>
+</tbody></table>
+<h3>Line 6 (6호선)</h3>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>Korean</th>
+<th>English</th>
+<th>Korean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Itaewon</td>
+<td>이태원</td>
+<td>Samgakji</td>
+<td>삼각지</td>
+</tr>
+<tr>
+<td>Noksapyeong</td>
+<td>녹사평</td>
+<td>Hangang</td>
+<td>한강진</td>
+</tr>
+<tr>
+<td>Sangsu</td>
+<td>상수</td>
+<td>Hapjeong</td>
+<td>합정</td>
+</tr>
+<tr>
+<td>World Cup Stadium</td>
+<td>월드컵경기장</td>
+<td>Digital Media City</td>
+<td>디지털미디어시티</td>
+</tr>
+</tbody></table>
+<h3>Line 7 (7호선)</h3>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>Korean</th>
+<th>English</th>
+<th>Korean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Gangnam-gu Office</td>
+<td>강남구청</td>
+<td>Cheongdam</td>
+<td>청담</td>
+</tr>
+<tr>
+<td>Konkuk Univ.</td>
+<td>건대입구</td>
+<td>Children&#39;s Grand Park</td>
+<td>어린이대공원</td>
+</tr>
+<tr>
+<td>Junggok</td>
+<td>중곡</td>
+<td>Ttukseom Resort</td>
+<td>뚝섬유원지</td>
+</tr>
+<tr>
+<td>Express Bus Terminal</td>
+<td>고속터미널</td>
+<td>Nonhyeon</td>
+<td>논현</td>
+</tr>
+<tr>
+<td>Hakdong</td>
+<td>학동</td>
+<td>Bogwang</td>
+<td>보광</td>
+</tr>
+<tr>
+<td>Jangam</td>
+<td>장암</td>
+<td>Dobongsan</td>
+<td>도봉산</td>
+</tr>
+</tbody></table>
+<h3>Line 8 (8호선)</h3>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>Korean</th>
+<th>English</th>
+<th>Korean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Jamsil</td>
+<td>잠실</td>
+<td>Mongchontoseong</td>
+<td>몽촌토성</td>
+</tr>
+<tr>
+<td>Gangdong-gu Office</td>
+<td>강동구청</td>
+<td>Cheonho</td>
+<td>천호</td>
+</tr>
+<tr>
+<td>Bokjeong</td>
+<td>복정</td>
+<td>Sanseong</td>
+<td>산성</td>
+</tr>
+<tr>
+<td>Moran</td>
+<td>모란</td>
+<td>Amsa</td>
+<td>암사</td>
+</tr>
+</tbody></table>
+<h3>Line 9 (9호선)</h3>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>Korean</th>
+<th>English</th>
+<th>Korean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Sinnonhyeon</td>
+<td>신논현</td>
+<td>Express Bus Terminal</td>
+<td>고속터미널</td>
+</tr>
+<tr>
+<td>Dongjak</td>
+<td>동작</td>
+<td>Noryangjin</td>
+<td>노량진</td>
+</tr>
+<tr>
+<td>Yeouido</td>
+<td>여의도</td>
+<td>National Assembly</td>
+<td>국회의사당</td>
+</tr>
+<tr>
+<td>Dangsan</td>
+<td>당산</td>
+<td>Yeomchang</td>
+<td>염창</td>
+</tr>
+<tr>
+<td>Gimpo Airport</td>
+<td>김포공항</td>
+<td>Gaehwa</td>
+<td>개화</td>
+</tr>
+<tr>
+<td>Olympic Park</td>
+<td>올림픽공원</td>
+<td>Sports Complex</td>
+<td>종합운동장</td>
+</tr>
+</tbody></table>
+<h3>Sinbundang Line (신분당선)</h3>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>Korean</th>
+<th>English</th>
+<th>Korean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Gangnam</td>
+<td>강남</td>
+<td>Sinsa</td>
+<td>신사</td>
+</tr>
+<tr>
+<td>Yangjae</td>
+<td>양재</td>
+<td>Yangjae Citizen&#39;s Forest</td>
+<td>양재시민의숲</td>
+</tr>
+<tr>
+<td>Pangyo</td>
+<td>판교</td>
+<td>Jeongja</td>
+<td>정자</td>
+</tr>
+<tr>
+<td>Dongcheon</td>
+<td>동천</td>
+<td>Suji District Office</td>
+<td>수지구청</td>
+</tr>
+<tr>
+<td>Gwanggyo</td>
+<td>광교</td>
+<td>Gwanggyo Jungang</td>
+<td>광교중앙</td>
+</tr>
+</tbody></table>
+<h3>Gyeongui-Jungang Line (경의중앙선)</h3>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>Korean</th>
+<th>English</th>
+<th>Korean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Seoul Station</td>
+<td>서울역</td>
+<td>Hongdae (Hongik Univ.)</td>
+<td>홍대입구</td>
+</tr>
+<tr>
+<td>Gongdeok</td>
+<td>공덕</td>
+<td>Hyochang Park</td>
+<td>효창공원앞</td>
+</tr>
+<tr>
+<td>Yongsan</td>
+<td>용산</td>
+<td>Oksu</td>
+<td>옥수</td>
+</tr>
+<tr>
+<td>Wangsimni</td>
+<td>왕십리</td>
+<td>Cheongnyangni</td>
+<td>청량리</td>
+</tr>
+<tr>
+<td>DMC</td>
+<td>디지털미디어시티</td>
+<td>Susaek</td>
+<td>수색</td>
+</tr>
+<tr>
+<td>Ilsan</td>
+<td>일산</td>
+<td>Paju</td>
+<td>파주</td>
+</tr>
+</tbody></table>
+<h3>Airport Railroad (공항철도)</h3>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>Korean</th>
+<th>English</th>
+<th>Korean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Seoul Station</td>
+<td>서울역</td>
+<td>Gongdeok</td>
+<td>공덕</td>
+</tr>
+<tr>
+<td>Hongdae (Hongik Univ.)</td>
+<td>홍대입구</td>
+<td>Digital Media City</td>
+<td>디지털미디어시티</td>
+</tr>
+<tr>
+<td>Gimpo Airport</td>
+<td>김포공항</td>
+<td>Incheon Airport T1</td>
+<td>인천공항1터미널</td>
+</tr>
+<tr>
+<td>Incheon Airport T2</td>
+<td>인천공항2터미널</td>
+<td>Cheongna Int&#39;l City</td>
+<td>청라국제도시</td>
+</tr>
+</tbody></table>
+<h3>Suin-Bundang Line (수인분당선)</h3>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>Korean</th>
+<th>English</th>
+<th>Korean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Wangsimni</td>
+<td>왕십리</td>
+<td>Seolleung</td>
+<td>선릉</td>
+</tr>
+<tr>
+<td>Gangnam-gu Office</td>
+<td>강남구청</td>
+<td>Seonjeongneung</td>
+<td>선정릉</td>
+</tr>
+<tr>
+<td>Jeongja</td>
+<td>정자</td>
+<td>Migeum</td>
+<td>미금</td>
+</tr>
+<tr>
+<td>Ori</td>
+<td>오리</td>
+<td>Jukjeon</td>
+<td>죽전</td>
+</tr>
+<tr>
+<td>Suwon</td>
+<td>수원</td>
+<td>Incheon</td>
+<td>인천</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Usage Examples</h2>
+<p><strong>Real-time Arrival</strong></p>
+<pre><code class="language-bash">curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/realtime/강남&quot;
+</code></pre>
+<p><strong>Station Search</strong></p>
+<pre><code class="language-bash">curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/stations?station=강남&quot;
+</code></pre>
+<p><strong>Route Search</strong></p>
+<pre><code class="language-bash">curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/route?dptreStnNm=신도림&amp;arvlStnNm=서울역&quot;
+</code></pre>
+<p><strong>Service Alerts</strong></p>
+<pre><code class="language-bash">curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/alerts&quot;
+# Enhanced format with delay summary
+curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/alerts?format=enhanced&quot;
+</code></pre>
+<p><strong>Last Train</strong></p>
+<pre><code class="language-bash"># Korean station name
+curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/last-train/홍대입구&quot;
+# English station name
+curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/last-train/Gangnam&quot;
+</code></pre>
+<p><strong>Exit Information</strong></p>
+<pre><code class="language-bash"># For COEX
+curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/exits/삼성&quot;
+# For Lotte World
+curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/exits/잠실&quot;
+</code></pre>
+<p><strong>Accessibility</strong></p>
+<pre><code class="language-bash"># All accessibility info
+curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/accessibility/강남&quot;
+# Elevators only
+curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/accessibility/강남?type=elevator&quot;
+</code></pre>
+<p><strong>Quick Exit</strong></p>
+<pre><code class="language-bash"># Quick exit for elevators
+curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/quick-exit/강남?facility=elevator&quot;
+</code></pre>
+<p><strong>Restrooms</strong></p>
+<pre><code class="language-bash"># Restroom locations
+curl &quot;https://vercel-proxy-henna-eight.vercel.app/api/restrooms/강남&quot;
+</code></pre>
+<hr>
+<h2>Line Color Mapping / 노선 색상 매핑</h2>
+<table>
+<thead>
+<tr>
+<th>Line / 호선</th>
+<th>Color / 색상</th>
+<th>Emoji</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1호선 / Line 1</td>
+<td>Blue / 파랑</td>
+<td>🔵</td>
+</tr>
+<tr>
+<td>2호선 / Line 2</td>
+<td>Green / 초록</td>
+<td>🟢</td>
+</tr>
+<tr>
+<td>3호선 / Line 3</td>
+<td>Orange / 주황</td>
+<td>🟠</td>
+</tr>
+<tr>
+<td>4호선 / Line 4</td>
+<td>Sky Blue / 하늘</td>
+<td>🔵</td>
+</tr>
+<tr>
+<td>5호선 / Line 5</td>
+<td>Purple / 보라</td>
+<td>🟣</td>
+</tr>
+<tr>
+<td>6호선 / Line 6</td>
+<td>Brown / 갈색</td>
+<td>🟤</td>
+</tr>
+<tr>
+<td>7호선 / Line 7</td>
+<td>Olive / 올리브</td>
+<td>🟢</td>
+</tr>
+<tr>
+<td>8호선 / Line 8</td>
+<td>Pink / 분홍</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>9호선 / Line 9</td>
+<td>Gold / 금색</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>신분당선 / Sinbundang</td>
+<td>Red / 빨강</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>경의중앙선 / Gyeongui-Jungang</td>
+<td>Cyan / 청록</td>
+<td>🔵</td>
+</tr>
+<tr>
+<td>공항철도 / Airport Railroad</td>
+<td>Blue / 파랑</td>
+<td>🔵</td>
+</tr>
+<tr>
+<td>수인분당선 / Suin-Bundang</td>
+<td>Yellow / 노랑</td>
+<td>🟡</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Output Format Guide</h2>
+<h3>Real-time Arrival</h3>
+<p><strong>Korean:</strong></p>
+<pre><code>[강남역 Gangnam]
+
+| 호선 | 방향 | 도착 | 위치 | 유형 |
+|------|------|------|------|------|
+| 🟢 2 | 성수 (Seongsu) | 3분 | 역삼 | 일반 |
+| 🟢 2 | 신촌 (Sinchon) | 5분 | 선정릉 | 일반 |
+</code></pre>
+<p><strong>English:</strong></p>
+<pre><code>[Gangnam Station 강남역]
+
+| Line | Direction | Arrival | Location | Type |
+|------|-----------|---------|----------|------|
+| 🟢 2 | Seongsu (성수) | 3 min | Yeoksam | Regular |
+| 🟢 2 | Sinchon (신촌) | 5 min | Seonjeongneung | Regular |
+</code></pre>
+<h3>Station Search</h3>
+<p><strong>Korean:</strong></p>
+<pre><code>[강남역]
+
+| 호선 | 역코드 | 외부코드 |
+|------|--------|----------|
+| 2호선 | 222 | 0222 |
+</code></pre>
+<p><strong>English:</strong></p>
+<pre><code>[Gangnam Station]
+
+| Line | Station Code | External Code |
+|------|--------------|---------------|
+| Line 2 | 222 | 0222 |
+</code></pre>
+<h3>Route Search</h3>
+<p><strong>Korean:</strong></p>
+<pre><code>[강남 → 홍대입구]
+
+소요시간: 38분 | 거리: 22.1km | 요금: 1,650원 | 환승: 1회
+
+🟢 강남 ─2호선─▶ 🟢 신도림 ─2호선─▶ 🟢 홍대입구
+
+| 구분 | 역 | 호선 | 시간 |
+|------|-----|------|------|
+| 출발 | 강남 Gangnam | 🟢 2 | 09:03 |
+| 환승 | 신도림 Sindorim | 🟢 2→2 | 09:18 |
+| 도착 | 홍대입구 Hongdae | 🟢 2 | 09:42 |
+</code></pre>
+<p><strong>English:</strong></p>
+<pre><code>[Gangnam → Hongdae]
+
+Time: 38 min | Distance: 22.1 km | Fare: 1,650 KRW | Transfer: 1
+
+🟢 Gangnam ─Line 2─▶ 🟢 Sindorim ─Line 2─▶ 🟢 Hongdae
+
+| Step | Station | Line | Time |
+|------|---------|------|------|
+| Depart | Gangnam 강남 | 🟢 2 | 09:03 |
+| Transfer | Sindorim 신도림 | 🟢 2→2 | 09:18 |
+| Arrive | Hongdae 홍대입구 | 🟢 2 | 09:42 |
+</code></pre>
+<h3>Service Alerts</h3>
+<p><strong>Korean:</strong></p>
+<pre><code>[운행 알림]
+
+🔵 1호선 | 종로3가역 무정차 (15:00 ~ 15:22)
+└─ 코레일 열차 연기 발생으로 인함
+
+🟢 2호선 | 정상 운행
+</code></pre>
+<p><strong>English:</strong></p>
+<pre><code>[Service Alerts]
+
+🔵 Line 1 | Jongno 3-ga Non-stop (15:00 ~ 15:22)
+└─ Due to smoke from Korail train
+
+🟢 Line 2 | Normal operation
+</code></pre>
+<h3>Last Train</h3>
+<p><strong>Korean:</strong></p>
+<pre><code>[홍대입구 막차 시간]
+
+| 방향 | 시간 | 종착역 | 요일 |
+|------|------|--------|------|
+| 🟢 내선순환 | 00:32 | 성수 | 평일 |
+| 🟢 외선순환 | 00:25 | 신도림 | 평일 |
+</code></pre>
+<p><strong>English:</strong></p>
+<pre><code>[Last Train - Hongik Univ.]
+
+| Direction | Time | Destination | Day |
+|-----------|------|-------------|-----|
+| 🟢 Inner Circle | 00:32 | Seongsu | Weekday |
+| 🟢 Outer Circle | 00:25 | Sindorim | Weekday |
+</code></pre>
+<h3>Exit Info</h3>
+<p><strong>Korean:</strong></p>
+<pre><code>[삼성역 출구 정보]
+
+| 출구 | 시설 | 거리 |
+|------|------|------|
+| 5번 | 코엑스몰 | 도보 3분 |
+| 6번 | 코엑스 아쿠아리움 | 도보 5분 |
+| 7번 | 봉은사 | 도보 10분 |
+</code></pre>
+<p><strong>English:</strong></p>
+<pre><code>[Samsung Station Exits]
+
+| Exit | Landmark | Distance |
+|------|----------|----------|
+| #5 | COEX Mall | 3 min walk |
+| #6 | COEX Aquarium | 5 min walk |
+| #7 | Bongeunsa Temple | 10 min walk |
+</code></pre>
+<h3>Accessibility Info</h3>
+<p><strong>Korean:</strong></p>
+<pre><code>[강남역 접근성 정보 Gangnam]
+
+### 🛗 엘리베이터
+
+| 호선 | 위치 | 층 | 구분 |
+|------|------|-----|------|
+| 2호선 | 대합실 | 지하 B1 | 일반 |
+| 신분당선 | 개찰구 | 지하 B2 | 일반 |
+
+**운영 현황**
+
+| 번호 | 위치 | 상태 | 운영시간 |
+|------|------|------|----------|
+| 1 | 대합실 | 🟢 정상 | 05:30 ~ 24:00 |
+
+### ↗️ 에스컬레이터
+
+| 호선 | 위치 | 층 | 구분 |
+|------|------|-----|------|
+| 2호선 | 출구 1 | 지하 B1 | 상행 |
+
+### ♿ 휠체어리프트
+
+| 호선 | 번호 | 위치 | 상태 |
+|------|------|------|------|
+| 2호선 | 1 | 3번 출구 | 🟢 정상 |
+</code></pre>
+<p><strong>English:</strong></p>
+<pre><code>[Gangnam Station Accessibility 강남역]
+
+### 🛗 Elevators
+
+| Line | Location | Floor | Type |
+|------|----------|-------|------|
+| Line 2 | Concourse | Underground B1 | General |
+
+### ↗️ Escalators
+
+| Line | Location | Floor | Type |
+|------|----------|-------|------|
+| Line 2 | Exit 1 | Underground B1 | Up |
+
+### ♿ Wheelchair Lifts
+
+| Line | No. | Location | Status |
+|------|-----|----------|--------|
+| Line 2 | 1 | Exit 3 | 🟢 Normal |
+</code></pre>
+<h3>Quick Exit</h3>
+<p><strong>Korean:</strong></p>
+<pre><code>[강남역 빠른하차 정보 Gangnam]
+
+| 호선 | 방향 | 칸 | 출구 | 계단 | 엘리베이터 | 에스컬레이터 |
+|------|------|-----|------|------|------------|--------------|
+| 2호선 | 외선 | 3-2 | 1 | 1 | 1 | 1 |
+| 2호선 | 내선 | 7-1 | 5 | 2 | 2 | 2 |
+</code></pre>
+<p><strong>English:</strong></p>
+<pre><code>[Gangnam Station Quick Exit 강남역]
+
+| Line | Direction | Car | Exit | Stairs | Elevator | Escalator |
+|------|-----------|-----|------|--------|----------|-----------|
+| Line 2 | Outer | 3-2 | 1 | 1 | 1 | 1 |
+| Line 2 | Inner | 7-1 | 5 | 2 | 2 | 2 |
+</code></pre>
+<h3>Restrooms</h3>
+<p><strong>Korean:</strong></p>
+<pre><code>[강남역 화장실 정보 Gangnam]
+
+| 호선 | 위치 | 층 | 개찰구 | 구분 | 변기수 | 기저귀교환대 |
+|------|------|-----|--------|------|--------|--------------|
+| 2호선 | 대합실 | 지하 B1 | 개찰구 내 | 일반 | 남 3 (소 5) 여 5 ♿ 1 | 👶 있음 |
+| 2호선 | 출구1 | 지하 B1 | 개찰구 외 | 일반 | 남 2 (소 3) 여 3 | 없음 |
+
+**요약:** 총 2개 | 개찰구 내 1개 | 개찰구 외 1개 | 장애인화장실 1개 | 기저귀교환대 있음
+</code></pre>
+<p><strong>English:</strong></p>
+<pre><code>[Gangnam Station Restrooms 강남역]
+
+| Line | Location | Floor | Gate | Type | Toilets | Baby Station |
+|------|----------|-------|------|------|---------|--------------|
+| Line 2 | Concourse | Under B1 | Inside gate | General | M:3 (U:5) W:5 ♿:1 | 👶 Yes |
+| Line 2 | Exit 1 | Under B1 | Outside gate | General | M:2 (U:3) W:3 | No |
+
+**Summary:** Total 2 | Inside gate: 1 | Outside gate: 1 | Accessible: 1 | Baby station: Yes
+</code></pre>
+<h3>Error</h3>
+<p><strong>Korean:</strong></p>
+<pre><code>오류: 역을 찾을 수 없습니다.
+&quot;강남&quot; (역 이름만)으로 검색해 보세요.
+</code></pre>
+<p><strong>English:</strong></p>
+<pre><code>Error: Station not found.
+Try searching with &quot;Gangnam&quot; (station name only).
+</code></pre>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/dukbong/seoul-subway/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/dukbong/seoul-subway" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/dukbong/seoul-subway/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@dukbong</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Marketing & Sales</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

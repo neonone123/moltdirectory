@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Full autonomous development orchestrator with AI-powered task decomposition">
+  <title>claw-conductor - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Productivity & Tasks</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Productivity & Tasks</a>
+                <span class="skill-page-author">by @johnsonfarmsus</span>
+              </div>
+              <h1 class="skill-page-title">claw-conductor</h1>
+              <p class="skill-page-desc">Full autonomous development orchestrator with AI-powered task decomposition</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Claw Conductor v2.1</h1>
+<p><strong>Your always-on development assistant - handles everything from quick questions to full project builds.</strong></p>
+<p>Claw Conductor is an intelligent orchestration layer that:</p>
+<ul>
+<li>🎯 <strong>Always-On</strong>: Handles every message automatically (no need to invoke)</li>
+<li>🤖 <strong>Smart Triage</strong>: Detects simple questions vs development tasks</li>
+<li>💬 <strong>Discord-Aware</strong>: Auto-maps channels to project workspaces</li>
+<li>🔀 <strong>Multi-Model</strong>: Routes tasks to optimal AI based on capabilities</li>
+<li>⚡ <strong>Parallel Execution</strong>: Builds complete projects efficiently</li>
+</ul>
+<h2>🚀 How It Works</h2>
+<p><strong>Automatic Flow:</strong></p>
+<ol>
+<li>Message arrives in Discord channel (e.g., #scientific-calculator)</li>
+<li>Claw-conductor detects channel → maps to <code>/root/projects/scientific-calculator</code></li>
+<li>Triages request: Simple question or development task?</li>
+<li><strong>If Simple</strong>: Quick response from fast model with project context</li>
+<li><strong>If Development</strong>: Full orchestration - decompose, route, execute, consolidate</li>
+</ol>
+<p><strong>You never need to explicitly invoke it</strong> - it handles everything automatically!</p>
+<h2>🎯 Usage Examples</h2>
+<p><strong>Simple Questions</strong> (fast response):</p>
+<pre><code>User: What files are in this project?
+Conductor: 📋 Simple response mode
+          [Lists files from /root/projects/scientific-calculator]
+
+User: How does the calculator work?
+Conductor: 📋 Simple response mode
+          [Explains architecture with project context]
+</code></pre>
+<p><strong>Development Tasks</strong> (full orchestration):</p>
+<pre><code>User: Build a scientific calculator with trig functions
+Conductor: 🔧 Development mode - full orchestration
+          [Decomposes into tasks, routes to models, executes in parallel]
+
+User: Fix the bug in the calculation logic
+Conductor: 🔧 Development mode - full orchestration
+          [Analyzes code, creates fix, tests, commits]
+</code></pre>
+<p><strong>User Overrides</strong>:</p>
+<pre><code>User: !simple Build a calculator
+Conductor: 📋 Simple response mode
+          [Gives advice/explanation instead of building]
+
+User: !dev What files exist?
+Conductor: 🔧 Development mode - full orchestration
+          [Treats as development task - maybe creates file listing tool]
+</code></pre>
+<h2>🚀 Skill Invocation (For OpenClaw Agent)</h2>
+<p><strong>NEW: Always-On Mode (Recommended)</strong></p>
+<p>Configure this skill as the default handler for Discord channels in &quot;Active Projects&quot; category:</p>
+<pre><code class="language-python"># In OpenClaw agent configuration
+from orchestrator import Orchestrator
+
+orchestrator = Orchestrator()
+
+# Handle ALL messages through conductor
+result = orchestrator.handle_message(
+    request=user_message,
+    channel_id=discord_channel_id,
+    channel_name=discord_channel_name
+)
+</code></pre>
+<p><strong>Legacy: Explicit Invocation</strong></p>
+<p>When this skill is invoked with a development request, execute the following:</p>
+<ol>
+<li><p><strong>Extract the request</strong> from the user&#39;s message (everything after &quot;use claw-conductor to&quot;)</p>
+</li>
+<li><p><strong>Determine project name</strong> from the request or generate one from keywords</p>
+</li>
+<li><p><strong>Execute the orchestrator</strong> using Python:</p>
+<pre><code class="language-bash">cd ~/.openclaw/skills/claw-conductor/scripts
+python3 -c &quot;
+from orchestrator import Orchestrator
+import sys
+
+orchestrator = Orchestrator()
+
+request = &#39;&#39;&#39;[USER&#39;S REQUEST HERE]&#39;&#39;&#39;
+project_name = &#39;[PROJECT-NAME]&#39;  # e.g., &#39;calculator-app&#39;, &#39;todo-app&#39;, &#39;blog-site&#39;
+
+# Get GitHub user from config
+github_user = orchestrator.config.get(&#39;github_user&#39;)
+
+result = orchestrator.execute_request(
+    request=request,
+    project_name=project_name,
+    github_user=github_user
+)
+
+# Report results back to Discord
+if result[&#39;success&#39;]:
+    print(f\&quot;✅ Project &#39;{project_name}&#39; completed successfully!\&quot;)
+    print(f\&quot;📦 {result[&#39;tasks_completed&#39;]} tasks completed\&quot;)
+    if github_user:
+        print(f\&quot;🔗 GitHub: https://github.com/{github_user}/{project_name}\&quot;)
+    print(f\&quot;📁 Workspace: {result.get(&#39;workspace&#39;, &#39;/root/projects/&#39; + project_name)}\&quot;)
+else:
+    print(f\&quot;❌ Project failed: {result.get(&#39;error&#39;, &#39;Unknown error&#39;)}\&quot;)
+    sys.exit(1)
+&quot;
+</code></pre>
+</li>
+<li><p><strong>Report progress</strong> to Discord during execution:</p>
+<ul>
+<li>Announce task decomposition results</li>
+<li>Report task routing decisions</li>
+<li>Update on parallel execution progress</li>
+<li>Share final results with GitHub link</li>
+</ul>
+</li>
+</ol>
+<p><strong>Example Invocation:</strong>
+User says: <code>@OpenClaw use claw-conductor to build a calculator app</code></p>
+<p>You execute:</p>
+<ul>
+<li>Request: &quot;build a calculator app&quot;</li>
+<li>Project name: &quot;calculator-app&quot;</li>
+<li>Run orchestrator with these parameters</li>
+</ul>
+<hr>
+<h2>What&#39;s New in v2.1</h2>
+<p>🤖 <strong>AI-Powered Decomposition</strong>: Intelligently analyzes complex requests using your best AI model (auto-selected or configured)
+🎯 <strong>Full Orchestration</strong>: Decomposes complex requests → Routes subtasks → Executes in parallel → Consolidates results
+⚡ <strong>Parallel Execution</strong>: Up to 5 tasks running concurrently across multiple projects
+📁 <strong>Project Management</strong>: Automatic workspace creation, git initialization, and GitHub integration
+🔗 <strong>Dependency-Aware</strong>: Respects task dependencies and file conflicts
+📦 <strong>Auto-Consolidation</strong>: Merges results, runs tests, commits to git, pushes to GitHub</p>
+<hr>
+<h2>Quick Start</h2>
+<h3>Installation</h3>
+<p>In OpenClaw:</p>
+<pre><code class="language-bash">cd ~/.openclaw/skills
+git clone https://github.com/johnsonfarmsus/claw-conductor.git
+cd claw-conductor
+./scripts/setup.sh
+</code></pre>
+<h3>First-Time Setup</h3>
+<pre><code class="language-bash">./scripts/setup.sh
+</code></pre>
+<p>This creates your personalized agent-registry.json with:</p>
+<ul>
+<li>Your AI model configurations</li>
+<li>Cost tracking (free vs paid)</li>
+<li>Capability ratings per model</li>
+<li>Routing preferences</li>
+</ul>
+<h3>Usage</h3>
+<p><strong>Simple request:</strong></p>
+<pre><code>@OpenClaw use claw-conductor to build a calculator app
+</code></pre>
+<p><strong>Complex request:</strong></p>
+<pre><code>@OpenClaw use claw-conductor to build a towing dispatch system with:
+- Customer portal for requesting service
+- Driver dashboard for accepting jobs
+- Admin panel for managing users
+- Real-time location tracking
+- Payment integration
+</code></pre>
+<hr>
+<h2>How It Works</h2>
+<h3>Complete Workflow</h3>
+<pre><code>Discord Request
+    ↓
+1. Task Decomposition
+   • Analyzes request complexity
+   • Breaks into independent subtasks
+   • Assigns category &amp; complexity to each
+   • Builds dependency graph
+    ↓
+2. Intelligent Routing
+   • Scores each model for each task (0-100)
+   • Routes to best match based on capabilities
+   • Considers cost optimization
+    ↓
+3. Project Initialization
+   • Creates /root/projects/{name}/
+   • Initializes git repository
+   • Creates GitHub repo (if configured)
+   • Sets up workspace
+    ↓
+4. Parallel Execution
+   • Spawns up to 5 tasks simultaneously
+   • Respects dependencies (database before auth)
+   • Avoids file conflicts (same files sequential)
+   • Reports progress to Discord
+    ↓
+5. Result Consolidation
+   • Merges all task outputs
+   • Resolves file conflicts
+   • Runs tests (if present)
+   • Commits to git
+   • Pushes to GitHub
+    ↓
+Discord Completion Report
+</code></pre>
+<h3>Example: Dispatch System</h3>
+<p><strong>Request:</strong></p>
+<pre><code>Build a towing dispatch system with customer portal,
+driver dashboard, admin panel, and real-time tracking
+</code></pre>
+<p><strong>Decomposition:</strong></p>
+<pre><code>Task 1: Database schema (database-operations, complexity: 4)
+Task 2: Authentication system (security-fixes, complexity: 4)
+Task 3: Customer portal UI (frontend-development, complexity: 3)
+Task 4: Driver dashboard UI (frontend-development, complexity: 3)
+Task 5: Admin panel UI (frontend-development, complexity: 3)
+Task 6: REST API endpoints (api-development, complexity: 3)
+Task 7: Real-time tracking (performance-optimization, complexity: 5)
+Task 8: Unit tests (unit-test-generation, complexity: 2)
+</code></pre>
+<p><strong>Routing:</strong></p>
+<pre><code>Task 1 → Mistral Devstral (score: 92, best for database)
+Task 2 → Mistral Devstral (score: 88, security expert)
+Task 3 → Mistral Devstral (score: 95, frontend expert)
+Task 4 → Mistral Devstral (score: 95, frontend expert)
+Task 5 → Mistral Devstral (score: 95, frontend expert)
+Task 6 → Llama 3.3 70B (score: 87, API specialist)
+Task 7 → Mistral Devstral (score: 78, fallback - needs Claude ideally)
+Task 8 → Llama 3.3 70B (score: 95, test generation expert)
+</code></pre>
+<p><strong>Execution:</strong></p>
+<pre><code>Parallel execution plan:
+Worker 1: Task 1 (Database) → Mistral
+Worker 2: Task 3 (Customer UI) → Devstral
+Worker 3: Task 4 (Driver UI) → Devstral
+Worker 4: Task 5 (Admin UI) → Devstral
+Worker 5: Task 6 (API) → Llama
+
+After Task 1 completes:
+Worker 1: Task 2 (Auth - depends on DB) → Mistral
+
+After all code complete:
+Worker 1: Task 8 (Tests) → Llama
+</code></pre>
+<p><strong>Result:</strong></p>
+<pre><code>✅ All 8 tasks completed in 47 minutes
+📦 Committed to git with 8 changes
+🔗 Pushed to GitHub repository
+🎉 Project ready for deployment
+</code></pre>
+<hr>
+<h2>Scoring Algorithm</h2>
+<p>Each model is scored 0-100 for each task:</p>
+<pre><code class="language-python">score = (
+    (rating / 5.0) * 50 +              # Model capability (0-50 pts)
+    (1 - complexity/5.0) * 40 +        # Complexity fit (0-40 pts)
+    (experience / 100) * 10 +          # Experience (0-10 pts)
+    cost_factor * 10                   # Cost (0-10 pts)
+)
+</code></pre>
+<p><strong>Hard Ceiling:</strong> Models cannot handle tasks above their <code>max_complexity</code> rating.</p>
+<h3>Scoring Example</h3>
+<p><strong>Task:</strong> Backend API development (complexity: 4)</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Capability</th>
+<th>Complexity Fit</th>
+<th>Experience</th>
+<th>Cost</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Mistral Devstral</td>
+<td>4★ (40pts)</td>
+<td>Can handle 4 (40pts)</td>
+<td>0 (0pts)</td>
+<td>Free (10pts)</td>
+<td><strong>90/100</strong></td>
+</tr>
+<tr>
+<td>Llama 3.3 70B</td>
+<td>4★ (40pts)</td>
+<td>Can handle 4 (40pts)</td>
+<td>2 tasks (2pts)</td>
+<td>Free (10pts)</td>
+<td><strong>92/100</strong> ✅</td>
+</tr>
+<tr>
+<td>Perplexity</td>
+<td>N/A</td>
+<td>Cannot handle backend</td>
+<td>-</td>
+<td>-</td>
+<td><strong>0/100</strong></td>
+</tr>
+</tbody></table>
+<p>Winner: <strong>Llama 3.3 70B</strong> (higher experience)</p>
+<hr>
+<h2>Configuration</h2>
+<h3>Agent Registry Structure</h3>
+<p><code>config/agent-registry.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;user_config&quot;: {
+    &quot;cost_tracking_enabled&quot;: true,
+    &quot;prefer_free_when_equal&quot;: true,
+    &quot;max_parallel_tasks&quot;: 5,
+    &quot;default_complexity_if_unknown&quot;: 3,
+    &quot;fallback&quot;: {
+      &quot;enabled&quot;: true,
+      &quot;retry_delay_seconds&quot;: 2,
+      &quot;track_failures&quot;: true,
+      &quot;penalize_failures&quot;: true,
+      &quot;failure_penalty_points&quot;: 5
+    }
+  },
+  &quot;agents&quot;: {
+    &quot;mistral-devstral-2512&quot;: {
+      &quot;model_id&quot;: &quot;mistral/devstral-2512&quot;,
+      &quot;provider&quot;: &quot;mistral&quot;,
+      &quot;context_window&quot;: 256000,
+      &quot;enabled&quot;: true,
+      &quot;user_cost&quot;: {
+        &quot;type&quot;: &quot;free-tier&quot;,
+        &quot;input_cost_per_million&quot;: 0,
+        &quot;output_cost_per_million&quot;: 0
+      },
+      &quot;capabilities&quot;: {
+        &quot;frontend-development&quot;: {
+          &quot;rating&quot;: 5,
+          &quot;max_complexity&quot;: 5,
+          &quot;notes&quot;: &quot;Expert - near-parity with Claude&quot;
+        },
+        &quot;multi-file-refactoring&quot;: {
+          &quot;rating&quot;: 5,
+          &quot;max_complexity&quot;: 5,
+          &quot;notes&quot;: &quot;Expert - designed for 50+ file changes&quot;
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<h3>Fallback Strategy</h3>
+<p>Conservative fallback (user-configurable):</p>
+<ol>
+<li>Try primary model (attempt 1)</li>
+<li>Try primary model (attempt 2)</li>
+<li>If both fail → Try first runner-up (attempt 3)</li>
+<li>Try first runner-up (attempt 4)</li>
+<li>If all fail → Give up, report to Discord</li>
+</ol>
+<p><strong>Why conservative?</strong>
+Prevents cascading through irrelevant models that may not have capability for the task.</p>
+<hr>
+<h2>Task Categories (23 Standard)</h2>
+<ul>
+<li>code-generation-new-features</li>
+<li>bug-detection-fixes</li>
+<li>multi-file-refactoring</li>
+<li>unit-test-generation</li>
+<li>debugging-complex-issues</li>
+<li>api-development</li>
+<li>security-vulnerability-detection</li>
+<li>security-fixes</li>
+<li>documentation-generation</li>
+<li>code-review</li>
+<li>frontend-development</li>
+<li>backend-development</li>
+<li>database-operations</li>
+<li>codebase-exploration</li>
+<li>dependency-management</li>
+<li>legacy-modernization</li>
+<li>error-correction</li>
+<li>performance-optimization</li>
+<li>test-coverage-analysis</li>
+<li>algorithm-implementation</li>
+<li>boilerplate-generation</li>
+</ul>
+<hr>
+<h2>Advanced Features</h2>
+<h3>Multi-Project Support</h3>
+<p>Handle concurrent requests across different projects:</p>
+<pre><code>Project A: Dispatch System (3 tasks running)
+Project B: Calculator App (2 tasks running)
+────────────────────────────────────────────
+Total: 5 concurrent tasks (at global limit)
+</code></pre>
+<h3>File Conflict Detection</h3>
+<p>Tasks touching the same files run sequentially:</p>
+<pre><code>Task 1: Modify src/api/users.js → Running
+Task 2: Modify src/api/users.js → Queued (waits for Task 1)
+Task 3: Modify src/ui/dashboard.js → Running (independent)
+</code></pre>
+<h3>Dependency-Aware Scheduling</h3>
+<pre><code>Task 1: Database schema → No deps, starts immediately
+Task 2: Auth system → Depends on Task 1, waits
+Task 3: Frontend UI → Depends on Task 2, waits
+Task 4: Tests → Depends on all, runs last
+</code></pre>
+<h3>Auto-Consolidation</h3>
+<p>After all tasks complete:</p>
+<ol>
+<li>Check git status for conflicts</li>
+<li>Run tests (pytest, npm test, etc.)</li>
+<li>Commit with conventional commit message</li>
+<li>Push to GitHub (if configured)</li>
+<li>Report to Discord</li>
+</ol>
+<hr>
+<h2>Examples</h2>
+<h3>Simple Calculator</h3>
+<pre><code>@OpenClaw use claw-conductor to build a calculator with:
+- Basic operations (add, subtract, multiply, divide)
+- Clean UI
+- Unit tests
+</code></pre>
+<p><strong>Result:</strong></p>
+<ul>
+<li>3 tasks (UI, logic, tests)</li>
+<li>Completed in ~8 minutes</li>
+<li>Pushed to GitHub</li>
+</ul>
+<h3>Towing Dispatch System</h3>
+<pre><code>@OpenClaw use claw-conductor to build a dispatch system with:
+- Customer portal
+- Driver dashboard
+- Admin panel
+- Real-time tracking
+- Payment integration
+</code></pre>
+<p><strong>Result:</strong></p>
+<ul>
+<li>8 tasks across 3 models</li>
+<li>Completed in ~45 minutes</li>
+<li>Full working application</li>
+</ul>
+<h3>API with Documentation</h3>
+<pre><code>@OpenClaw use claw-conductor to create a REST API for a blog with:
+- CRUD operations for posts
+- Authentication
+- Swagger documentation
+- Integration tests
+</code></pre>
+<p><strong>Result:</strong></p>
+<ul>
+<li>5 tasks (schema, auth, endpoints, docs, tests)</li>
+<li>Completed in ~20 minutes</li>
+<li>API-first design</li>
+</ul>
+<hr>
+<h2>Troubleshooting</h2>
+<h3>Task Decomposition Issues</h3>
+<p><strong>Problem:</strong> Request not decomposed correctly
+<strong>Solution:</strong> Be specific in request. Include keywords: &quot;database&quot;, &quot;API&quot;, &quot;frontend&quot;, &quot;tests&quot;</p>
+<h3>Model Selection Issues</h3>
+<p><strong>Problem:</strong> Wrong model chosen for task
+<strong>Solution:</strong> Adjust capability ratings in <code>agent-registry.json</code></p>
+<h3>Execution Failures</h3>
+<p><strong>Problem:</strong> Task fails with error
+<strong>Solution:</strong> Fallback tries primary 2x, runner-up 2x. Check error logs in <code>.claw-conductor/execution-log.json</code></p>
+<h3>Git Conflicts</h3>
+<p><strong>Problem:</strong> Consolidation fails due to conflicts
+<strong>Solution:</strong> Currently requires manual resolution. Future: AI-powered conflict resolution</p>
+<hr>
+<h2>Roadmap</h2>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> Task decomposition (v2.0)</li>
+<li><input checked="" disabled="" type="checkbox"> Parallel execution (v2.0)</li>
+<li><input checked="" disabled="" type="checkbox"> Multi-project support (v2.0)</li>
+<li><input checked="" disabled="" type="checkbox"> Auto-consolidation (v2.0)</li>
+<li><input disabled="" type="checkbox"> AI-powered decomposition (v2.1)</li>
+<li><input disabled="" type="checkbox"> Discord progress updates (v2.1)</li>
+<li><input disabled="" type="checkbox"> Conflict resolution with AI (v2.2)</li>
+<li><input disabled="" type="checkbox"> Real-time task streaming (v2.2)</li>
+<li><input disabled="" type="checkbox"> Web dashboard (v3.0)</li>
+</ul>
+<hr>
+<h2>License</h2>
+<p>GNU AGPL v3 - See LICENSE file</p>
+<p>Copyleft license requiring server-side source availability.</p>
+<hr>
+<h2>Contributing</h2>
+<p>See <a href="CONTRIBUTING.md">CONTRIBUTING.md</a> for guidelines.</p>
+<p>Published on ClawHub.ai: <a href="https://clawhub.ai/skills/claw-conductor">https://clawhub.ai/skills/claw-conductor</a></p>
+<hr>
+<p><em>Built with ❤️ by the Claw Conductor team</em></p>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/johnsonfarmsus/claw-conductor/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/johnsonfarmsus/claw-conductor" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/johnsonfarmsus/claw-conductor/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@johnsonfarmsus</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Productivity & Tasks</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

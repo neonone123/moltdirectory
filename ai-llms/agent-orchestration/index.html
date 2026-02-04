@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Master the art of spawning and managing sub-agents">
+  <title>agent-orchestration - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to AI & LLMs</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">AI & LLMs</a>
+                <span class="skill-page-author">by @halthelobster</span>
+              </div>
+              <h1 class="skill-page-title">agent-orchestration</h1>
+              <p class="skill-page-desc">Master the art of spawning and managing sub-agents</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Agent Orchestration 🦞</h1>
+<p><strong>By Hal Labs</strong> — Part of the Hal Stack</p>
+<p>Your agents fail because your prompts suck. This skill fixes that.</p>
+<hr>
+<h2>The Core Problem</h2>
+<p>You&#39;re not prompting. <strong>You&#39;re praying.</strong></p>
+<p>Most prompts are wishes tossed into the void:</p>
+<pre><code>❌ &quot;Research the best vector databases and write a report&quot;
+</code></pre>
+<p>You type something reasonable. The output is mid. You rephrase. Still mid. You add keywords. Somehow worse. You blame the model.</p>
+<p>Here&#39;s what you don&#39;t understand: <strong>A language model is a pattern-completion engine.</strong> It generates the most statistically probable output given your input.</p>
+<p>Vague input → generic output. Not because the model is dumb. Because generic is what&#39;s most probable when you give it nothing specific to work with.</p>
+<p><strong>The model honored exactly what you asked for. You just didn&#39;t realize how little you gave it.</strong></p>
+<hr>
+<h2>The Core Reframe</h2>
+<p>A prompt is not a request. <strong>A prompt is a contract.</strong></p>
+<p>Every contract must answer four non-negotiables:</p>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Question</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Role</strong></td>
+<td>Who is the model role-playing as?</td>
+</tr>
+<tr>
+<td><strong>Task</strong></td>
+<td>What exactly must it accomplish?</td>
+</tr>
+<tr>
+<td><strong>Constraints</strong></td>
+<td>What rules must be followed?</td>
+</tr>
+<tr>
+<td><strong>Output</strong></td>
+<td>What does &quot;done&quot; look like?</td>
+</tr>
+</tbody></table>
+<p>Miss one, the model fills the gap with assumptions. Assumptions are where hallucinations are born.</p>
+<hr>
+<h2>The 5-Layer Architecture</h2>
+<p>Effective prompts share a specific structure. This maps to how models actually process information.</p>
+<h3>Layer 1: Identity</h3>
+<p>Who is the model in this conversation?</p>
+<p>Not &quot;helpful assistant&quot; but a specific role with specific expertise:</p>
+<pre><code class="language-markdown">You are a senior product marketer who specializes in B2B SaaS positioning.
+You have 15 years of experience converting technical features into emotional benefits.
+You write in short sentences. You never use jargon without explaining it.
+</code></pre>
+<p>The model doesn&#39;t &quot;become&quot; this identity—it accesses different clusters of training data, different stylistic patterns, different reasoning approaches.</p>
+<p><strong>Identity matters.</strong> Miss this and you get generic output.</p>
+<h3>Layer 2: Context</h3>
+<p>What does the model need to know to do this task exceptionally well?</p>
+<p>Context must be:</p>
+<ul>
+<li><strong>Ordered</strong> — Most important first</li>
+<li><strong>Scoped</strong> — Only what&#39;s relevant</li>
+<li><strong>Labeled</strong> — What&#39;s rules vs. editable vs. historical</li>
+</ul>
+<pre><code class="language-markdown">## Context
+
+### Rules (never change)
+- Design system: Tailwind, shadcn components
+- Voice: Professional but warm, never corporate
+
+### Current State (may evolve)
+- Landing page exists at /landing
+- Using Next.js 14 with App Router
+
+### Historical (for reference)
+- Originally built with Create React App, migrated Jan 2025
+</code></pre>
+<p><strong>Without labels, the model treats everything as equally optional.</strong> Then it rewrites your core logic halfway through.</p>
+<h3>Layer 3: Task</h3>
+<p>What specific action must be taken?</p>
+<p>Not &quot;write something about X&quot; but precise instructions:</p>
+<pre><code class="language-markdown">## Task
+Produce a 500-word product description that:
+- Emphasizes time-saving benefits for busy executives
+- Opens with the primary pain point
+- Includes 3 specific use cases
+- Ends with a clear call to action
+</code></pre>
+<p>The more precisely you define the task, the more precisely the model executes.</p>
+<h3>Layer 4: Process ⚡</h3>
+<p><strong>This is where most prompts fail.</strong></p>
+<p>You&#39;re asking for output. You should be asking for <strong>how the output is formed.</strong></p>
+<p>❌ Bad:</p>
+<pre><code>Write me a marketing page.
+</code></pre>
+<p>✅ Good:</p>
+<pre><code class="language-markdown">## Process
+1. First, analyze the target audience and identify their primary pain points
+2. Then, define the positioning that addresses those pain points
+3. Then, write the page
+4. Show your reasoning at each step
+5. Do not skip steps
+6. Audit your work before reporting done
+</code></pre>
+<p><strong>You don&#39;t want answers. You want how the answer is formed.</strong></p>
+<p>Think like a director. You&#39;re not asking for a scene—you&#39;re directing how the scene gets built.</p>
+<h3>Layer 5: Output</h3>
+<p>What does &quot;done&quot; actually look like?</p>
+<p>If you don&#39;t specify, you get whatever format the model defaults to.</p>
+<pre><code class="language-markdown">## Output Format
+Return a JSON object with:
+- `headline`: string (max 60 chars)
+- `subheadline`: string (max 120 chars)  
+- `body`: string (markdown formatted)
+- `cta`: string (action verb + benefit)
+
+Do not include explanations, notes, or commentary. Only the JSON.
+</code></pre>
+<p><strong>Miss one layer, the structure wobbles. Miss two, it collapses.</strong></p>
+<hr>
+<h2>Model Selection</h2>
+<p><strong>Prompt portability is a myth.</strong></p>
+<p>Different models are different specialists. You wouldn&#39;t give identical instructions to your exec assistant, designer, and backend dev.</p>
+<table>
+<thead>
+<tr>
+<th>Model Type</th>
+<th>Best For</th>
+<th>Watch Out For</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Claude Opus</td>
+<td>Complex reasoning, nuanced writing, long context</td>
+<td>Expensive, can be verbose</td>
+</tr>
+<tr>
+<td>Claude Sonnet</td>
+<td>Balanced tasks, code, analysis</td>
+<td>Less creative than Opus</td>
+</tr>
+<tr>
+<td>GPT-4</td>
+<td>Broad knowledge, structured output</td>
+<td>Can be sycophantic</td>
+</tr>
+<tr>
+<td>Smaller models</td>
+<td>Quick tasks, simple queries</td>
+<td>Limited reasoning depth</td>
+</tr>
+</tbody></table>
+<p><strong>Adapt your prompts per model:</strong></p>
+<ul>
+<li>Some prefer structured natural language</li>
+<li>Some need explicit step sequencing</li>
+<li>Some collapse under verbose prompts</li>
+<li>Some ignore constraints unless repeated</li>
+<li>Some excel at analysis but suck at creativity</li>
+</ul>
+<p><strong>The person who writes model-specific prompts will outperform the person with &quot;better ideas&quot; every time.</strong></p>
+<hr>
+<h2>Constraints Are Instructions</h2>
+<p>Vagueness isn&#39;t flexibility. <strong>It&#39;s cowardice.</strong></p>
+<p>You hedge because being specific feels risky. But the model doesn&#39;t read your mind.</p>
+<p><strong>Constraints are not limitations. Constraints are instructions.</strong></p>
+<pre><code class="language-markdown">## Constraints
+- Never alter the existing design system
+- Always maintain the established voice/tone
+- Never change the data model without explicit approval
+- Max 3 API calls per operation
+- If unsure, ask rather than assume
+</code></pre>
+<p>Every conversation starts at zero. The model doesn&#39;t have accumulated context from working with you. <strong>Consistency comes from instruction, not memory.</strong></p>
+<hr>
+<h2>Canonical Documentation</h2>
+<p>If you don&#39;t have docs, you&#39;re gambling.</p>
+<table>
+<thead>
+<tr>
+<th>Document</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PRD</td>
+<td>What we&#39;re building and why</td>
+</tr>
+<tr>
+<td>Design System</td>
+<td>Visual rules and components</td>
+</tr>
+<tr>
+<td>Constraints Doc</td>
+<td>What must never change</td>
+</tr>
+<tr>
+<td>Context Doc</td>
+<td>Current state and history</td>
+</tr>
+</tbody></table>
+<p><strong>The rule:</strong> Reference docs in your prompts.</p>
+<pre><code class="language-markdown">The attached PRD is the source of truth. Do not contradict it.
+The design system in /docs/design.md must be followed exactly.
+</code></pre>
+<p>Without explicit anchoring, the model assumes everything is mutable—including your core decisions.</p>
+<blockquote>
+<p>&quot;Good prompting isn&#39;t writing better sentences. It&#39;s anchoring the model to reality.&quot;</p>
+</blockquote>
+<hr>
+<h2>The Complete Template</h2>
+<pre><code class="language-markdown">## Identity
+You are a [specific role] with [specific expertise].
+[Behavioral traits and style]
+
+## Context
+
+### Rules (never change)
+- [Constraint 1]
+- [Constraint 2]
+
+### Current State
+- [Relevant background]
+
+### Reference Docs
+- [Doc 1]: [what it contains]
+- [Doc 2]: [what it contains]
+
+## Task
+[Specific, measurable objective]
+
+## Process
+1. First, [analysis step]
+2. Then, [planning step]
+3. Then, [execution step]
+4. Finally, [verification step]
+
+Show your reasoning at each step.
+
+## User Stories
+1. As [user], I want [goal], so that [benefit]
+2. As [user], I want [goal], so that [benefit]
+
+## Output Format
+[Exact specification of deliverable]
+
+## Constraints
+- [Limit 1]
+- [Limit 2]
+- [What NOT to do]
+
+## Error Handling
+- If [situation]: [action]
+- If blocked: [escalation]
+
+## Before Reporting Done
+1. Review each user story
+2. Verify the output satisfies it
+3. If not, iterate until it does
+4. Only then report complete
+</code></pre>
+<hr>
+<h2>Ralph Mode</h2>
+<p>For complex tasks where first attempts often fail:</p>
+<pre><code class="language-markdown">## Mode: Ralph
+Keep trying until it works. Don&#39;t give up on first failure.
+
+If something breaks:
+1. Debug and understand why
+2. Try a different approach  
+3. Research how others solved similar problems
+4. Iterate until user stories are satisfied
+
+You have [N] attempts before escalating.
+</code></pre>
+<p><strong>When to use:</strong></p>
+<ul>
+<li>Build tasks with multiple components</li>
+<li>Integration work</li>
+<li>Anything where first-try success is unlikely</li>
+</ul>
+<hr>
+<h2>Agent Tracking</h2>
+<p><strong>Every spawned agent gets tracked. No orphans.</strong></p>
+<p>Maintain <code>notes/areas/active-agents.md</code>:</p>
+<pre><code class="language-markdown">## Currently Running
+
+| Label | Task | Spawned | Expected | Status |
+|-------|------|---------|----------|--------|
+| research-x | Competitor analysis | 9:00 AM | 15m | 🏃 Running |
+
+## Completed Today
+
+| Label | Task | Runtime | Result |
+|-------|------|---------|--------|
+| builder-v2 | Dashboard update | 8m | ✅ Complete |
+</code></pre>
+<p><strong>Heartbeat check:</strong></p>
+<pre><code>1. Run sessions_list --activeMinutes 120
+2. Compare to tracking file
+3. Investigate any missing/stalled agents
+4. Log completions to LEARNINGS.md
+</code></pre>
+<hr>
+<h2>The Learnings Loop</h2>
+<p>Every agent outcome is data. Capture it.</p>
+<p>Maintain <code>LEARNINGS.md</code>:</p>
+<pre><code class="language-markdown">## What Works
+- User stories + acceptance loop
+- Ralph mode for complex builds
+- Explicit output formats
+- Process layer with reasoning steps
+
+## What Doesn&#39;t Work
+- Lazy task dumps
+- Missing success criteria
+- No scope limits
+- Vague constraints
+
+## Experiment Log
+### [Date]: [Agent Label]
+**Approach:** [What you tried]
+**Outcome:** [What happened]  
+**Lesson:** [What you learned]
+</code></pre>
+<hr>
+<h2>Role Library</h2>
+<p>Build reusable role definitions:</p>
+<pre><code class="language-markdown"># Role Library
+
+## Research Analyst
+You are a senior research analyst with 10 years experience in technology markets.
+You are thorough but efficient. You cite sources. You distinguish fact from speculation.
+You present findings in structured formats with clear recommendations.
+
+## Technical Writer  
+You are a technical writer who specializes in developer documentation.
+You write clearly and concisely. You use examples liberally.
+You assume the reader is smart but unfamiliar with this specific system.
+
+## Code Reviewer
+You are a senior engineer conducting code review.
+You focus on correctness, maintainability, and security.
+You explain your reasoning. You suggest specific improvements, not vague feedback.
+</code></pre>
+<hr>
+<h2>Quick Reference</h2>
+<h3>The 4 Non-Negotiables</h3>
+<ol>
+<li><strong>Role</strong> — Who is the model?</li>
+<li><strong>Task</strong> — What must it do?</li>
+<li><strong>Constraints</strong> — What rules apply?</li>
+<li><strong>Output</strong> — What does done look like?</li>
+</ol>
+<h3>The 5 Layers</h3>
+<ol>
+<li><strong>Identity</strong> — Specific role and expertise</li>
+<li><strong>Context</strong> — Ordered, scoped, labeled</li>
+<li><strong>Task</strong> — Precise objective</li>
+<li><strong>Process</strong> — How to approach (most overlooked!)</li>
+<li><strong>Output</strong> — Exact format specification</li>
+</ol>
+<h3>Pre-Spawn Checklist</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Identity assigned?</li>
+<li><input disabled="" type="checkbox"> Context labeled (rules/state/history)?</li>
+<li><input disabled="" type="checkbox"> Task specific and measurable?</li>
+<li><input disabled="" type="checkbox"> Process described (not just output)?</li>
+<li><input disabled="" type="checkbox"> User stories defined?</li>
+<li><input disabled="" type="checkbox"> Output format specified?</li>
+<li><input disabled="" type="checkbox"> Constraints explicit?</li>
+<li><input disabled="" type="checkbox"> Error handling included?</li>
+<li><input disabled="" type="checkbox"> Added to tracking file?</li>
+</ul>
+<hr>
+<h2>The Final Truth</h2>
+<p>The gap between &quot;AI doesn&#39;t work for me&quot; and exceptional results isn&#39;t intelligence or access.</p>
+<p><strong>One group treats prompting as conversation. The other treats it as engineering a system command.</strong></p>
+<p>The model matches your level of rigor.</p>
+<ul>
+<li>Vague inputs → generic outputs</li>
+<li>Structured inputs → structured outputs  </li>
+<li>Clear thinking → clear results</li>
+</ul>
+<p>You don&#39;t need to be smarter. You need to be clearer.</p>
+<p><strong>Clarity is a system, not a talent.</strong></p>
+<hr>
+<p><em>Part of the Hal Stack 🦞</em></p>
+<hr>
+<p><strong>Got a skill idea?</strong> Email: <a href="mailto:halthelobster@protonmail.com">halthelobster@protonmail.com</a></p>
+<hr>
+<p><em>&quot;You&#39;re not prompting, you&#39;re praying. Start engineering.&quot;</em></p>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/halthelobster/agent-orchestration/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/halthelobster/agent-orchestration" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/halthelobster/agent-orchestration/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@halthelobster</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">AI & LLMs</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

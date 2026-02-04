@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Parameter-efficient fine-tuning for LLMs using LoRA, QLoRA, and 25+ methods">
+  <title>peft - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to AI & LLMs</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">AI & LLMs</a>
+                <span class="skill-page-author">by @desperado991128</span>
+              </div>
+              <h1 class="skill-page-title">peft</h1>
+              <p class="skill-page-desc">Parameter-efficient fine-tuning for LLMs using LoRA, QLoRA, and 25+ methods</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>PEFT (Parameter-Efficient Fine-Tuning)</h1>
+<p>Fine-tune LLMs by training &lt;1% of parameters using LoRA, QLoRA, and 25+ adapter methods.</p>
+<h2>When to use PEFT</h2>
+<p><strong>Use PEFT/LoRA when:</strong></p>
+<ul>
+<li>Fine-tuning 7B-70B models on consumer GPUs (RTX 4090, A100)</li>
+<li>Need to train &lt;1% parameters (6MB adapters vs 14GB full model)</li>
+<li>Want fast iteration with multiple task-specific adapters</li>
+<li>Deploying multiple fine-tuned variants from one base model</li>
+</ul>
+<p><strong>Use QLoRA (PEFT + quantization) when:</strong></p>
+<ul>
+<li>Fine-tuning 70B models on single 24GB GPU</li>
+<li>Memory is the primary constraint</li>
+<li>Can accept ~5% quality trade-off vs full fine-tuning</li>
+</ul>
+<p><strong>Use full fine-tuning instead when:</strong></p>
+<ul>
+<li>Training small models (&lt;1B parameters)</li>
+<li>Need maximum quality and have compute budget</li>
+<li>Significant domain shift requires updating all weights</li>
+</ul>
+<h2>Quick start</h2>
+<h3>Installation</h3>
+<pre><code class="language-bash"># Basic installation
+pip install peft
+
+# With quantization support (recommended)
+pip install peft bitsandbytes
+
+# Full stack
+pip install peft transformers accelerate bitsandbytes datasets
+</code></pre>
+<h3>LoRA fine-tuning (standard)</h3>
+<pre><code class="language-python">from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments, Trainer
+from peft import get_peft_model, LoraConfig, TaskType
+from datasets import load_dataset
+
+# Load base model
+model_name = &quot;meta-llama/Llama-3.1-8B&quot;
+model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=&quot;auto&quot;, device_map=&quot;auto&quot;)
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+tokenizer.pad_token = tokenizer.eos_token
+
+# LoRA configuration
+lora_config = LoraConfig(
+    task_type=TaskType.CAUSAL_LM,
+    r=16,                          # Rank (8-64, higher = more capacity)
+    lora_alpha=32,                 # Scaling factor (typically 2*r)
+    lora_dropout=0.05,             # Dropout for regularization
+    target_modules=[&quot;q_proj&quot;, &quot;v_proj&quot;, &quot;k_proj&quot;, &quot;o_proj&quot;],  # Attention layers
+    bias=&quot;none&quot;                    # Don&#39;t train biases
+)
+
+# Apply LoRA
+model = get_peft_model(model, lora_config)
+model.print_trainable_parameters()
+# Output: trainable params: 13,631,488 || all params: 8,043,307,008 || trainable%: 0.17%
+
+# Prepare dataset
+dataset = load_dataset(&quot;databricks/databricks-dolly-15k&quot;, split=&quot;train&quot;)
+
+def tokenize(example):
+    text = f&quot;### Instruction:\n{example[&#39;instruction&#39;]}\n\n### Response:\n{example[&#39;response&#39;]}&quot;
+    return tokenizer(text, truncation=True, max_length=512, padding=&quot;max_length&quot;)
+
+tokenized = dataset.map(tokenize, remove_columns=dataset.column_names)
+
+# Training
+training_args = TrainingArguments(
+    output_dir=&quot;./lora-llama&quot;,
+    num_train_epochs=3,
+    per_device_train_batch_size=4,
+    gradient_accumulation_steps=4,
+    learning_rate=2e-4,
+    fp16=True,
+    logging_steps=10,
+    save_strategy=&quot;epoch&quot;
+)
+
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=tokenized,
+    data_collator=lambda data: {&quot;input_ids&quot;: torch.stack([f[&quot;input_ids&quot;] for f in data]),
+                                 &quot;attention_mask&quot;: torch.stack([f[&quot;attention_mask&quot;] for f in data]),
+                                 &quot;labels&quot;: torch.stack([f[&quot;input_ids&quot;] for f in data])}
+)
+
+trainer.train()
+
+# Save adapter only (6MB vs 16GB)
+model.save_pretrained(&quot;./lora-llama-adapter&quot;)
+</code></pre>
+<h3>QLoRA fine-tuning (memory-efficient)</h3>
+<pre><code class="language-python">from transformers import AutoModelForCausalLM, BitsAndBytesConfig
+from peft import get_peft_model, LoraConfig, prepare_model_for_kbit_training
+
+# 4-bit quantization config
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_quant_type=&quot;nf4&quot;,           # NormalFloat4 (best for LLMs)
+    bnb_4bit_compute_dtype=&quot;bfloat16&quot;,   # Compute in bf16
+    bnb_4bit_use_double_quant=True       # Nested quantization
+)
+
+# Load quantized model
+model = AutoModelForCausalLM.from_pretrained(
+    &quot;meta-llama/Llama-3.1-70B&quot;,
+    quantization_config=bnb_config,
+    device_map=&quot;auto&quot;
+)
+
+# Prepare for training (enables gradient checkpointing)
+model = prepare_model_for_kbit_training(model)
+
+# LoRA config for QLoRA
+lora_config = LoraConfig(
+    r=64,                              # Higher rank for 70B
+    lora_alpha=128,
+    lora_dropout=0.1,
+    target_modules=[&quot;q_proj&quot;, &quot;v_proj&quot;, &quot;k_proj&quot;, &quot;o_proj&quot;, &quot;gate_proj&quot;, &quot;up_proj&quot;, &quot;down_proj&quot;],
+    bias=&quot;none&quot;,
+    task_type=&quot;CAUSAL_LM&quot;
+)
+
+model = get_peft_model(model, lora_config)
+# 70B model now fits on single 24GB GPU!
+</code></pre>
+<h2>LoRA parameter selection</h2>
+<h3>Rank (r) - capacity vs efficiency</h3>
+<table>
+<thead>
+<tr>
+<th>Rank</th>
+<th>Trainable Params</th>
+<th>Memory</th>
+<th>Quality</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>4</td>
+<td>~3M</td>
+<td>Minimal</td>
+<td>Lower</td>
+<td>Simple tasks, prototyping</td>
+</tr>
+<tr>
+<td><strong>8</strong></td>
+<td>~7M</td>
+<td>Low</td>
+<td>Good</td>
+<td><strong>Recommended starting point</strong></td>
+</tr>
+<tr>
+<td><strong>16</strong></td>
+<td>~14M</td>
+<td>Medium</td>
+<td>Better</td>
+<td><strong>General fine-tuning</strong></td>
+</tr>
+<tr>
+<td>32</td>
+<td>~27M</td>
+<td>Higher</td>
+<td>High</td>
+<td>Complex tasks</td>
+</tr>
+<tr>
+<td>64</td>
+<td>~54M</td>
+<td>High</td>
+<td>Highest</td>
+<td>Domain adaptation, 70B models</td>
+</tr>
+</tbody></table>
+<h3>Alpha (lora_alpha) - scaling factor</h3>
+<pre><code class="language-python"># Rule of thumb: alpha = 2 * rank
+LoraConfig(r=16, lora_alpha=32)  # Standard
+LoraConfig(r=16, lora_alpha=16)  # Conservative (lower learning rate effect)
+LoraConfig(r=16, lora_alpha=64)  # Aggressive (higher learning rate effect)
+</code></pre>
+<h3>Target modules by architecture</h3>
+<pre><code class="language-python"># Llama / Mistral / Qwen
+target_modules = [&quot;q_proj&quot;, &quot;v_proj&quot;, &quot;k_proj&quot;, &quot;o_proj&quot;, &quot;gate_proj&quot;, &quot;up_proj&quot;, &quot;down_proj&quot;]
+
+# GPT-2 / GPT-Neo
+target_modules = [&quot;c_attn&quot;, &quot;c_proj&quot;, &quot;c_fc&quot;]
+
+# Falcon
+target_modules = [&quot;query_key_value&quot;, &quot;dense&quot;, &quot;dense_h_to_4h&quot;, &quot;dense_4h_to_h&quot;]
+
+# BLOOM
+target_modules = [&quot;query_key_value&quot;, &quot;dense&quot;, &quot;dense_h_to_4h&quot;, &quot;dense_4h_to_h&quot;]
+
+# Auto-detect all linear layers
+target_modules = &quot;all-linear&quot;  # PEFT 0.6.0+
+</code></pre>
+<h2>Loading and merging adapters</h2>
+<h3>Load trained adapter</h3>
+<pre><code class="language-python">from peft import PeftModel, AutoPeftModelForCausalLM
+from transformers import AutoModelForCausalLM
+
+# Option 1: Load with PeftModel
+base_model = AutoModelForCausalLM.from_pretrained(&quot;meta-llama/Llama-3.1-8B&quot;)
+model = PeftModel.from_pretrained(base_model, &quot;./lora-llama-adapter&quot;)
+
+# Option 2: Load directly (recommended)
+model = AutoPeftModelForCausalLM.from_pretrained(
+    &quot;./lora-llama-adapter&quot;,
+    device_map=&quot;auto&quot;
+)
+</code></pre>
+<h3>Merge adapter into base model</h3>
+<pre><code class="language-python"># Merge for deployment (no adapter overhead)
+merged_model = model.merge_and_unload()
+
+# Save merged model
+merged_model.save_pretrained(&quot;./llama-merged&quot;)
+tokenizer.save_pretrained(&quot;./llama-merged&quot;)
+
+# Push to Hub
+merged_model.push_to_hub(&quot;username/llama-finetuned&quot;)
+</code></pre>
+<h3>Multi-adapter serving</h3>
+<pre><code class="language-python">from peft import PeftModel
+
+# Load base with first adapter
+model = AutoPeftModelForCausalLM.from_pretrained(&quot;./adapter-task1&quot;)
+
+# Load additional adapters
+model.load_adapter(&quot;./adapter-task2&quot;, adapter_name=&quot;task2&quot;)
+model.load_adapter(&quot;./adapter-task3&quot;, adapter_name=&quot;task3&quot;)
+
+# Switch between adapters at runtime
+model.set_adapter(&quot;task1&quot;)  # Use task1 adapter
+output1 = model.generate(**inputs)
+
+model.set_adapter(&quot;task2&quot;)  # Switch to task2
+output2 = model.generate(**inputs)
+
+# Disable adapters (use base model)
+with model.disable_adapter():
+    base_output = model.generate(**inputs)
+</code></pre>
+<h2>PEFT methods comparison</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Trainable %</th>
+<th>Memory</th>
+<th>Speed</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>LoRA</strong></td>
+<td>0.1-1%</td>
+<td>Low</td>
+<td>Fast</td>
+<td>General fine-tuning</td>
+</tr>
+<tr>
+<td><strong>QLoRA</strong></td>
+<td>0.1-1%</td>
+<td>Very Low</td>
+<td>Medium</td>
+<td>Memory-constrained</td>
+</tr>
+<tr>
+<td>AdaLoRA</td>
+<td>0.1-1%</td>
+<td>Low</td>
+<td>Medium</td>
+<td>Automatic rank selection</td>
+</tr>
+<tr>
+<td>IA3</td>
+<td>0.01%</td>
+<td>Minimal</td>
+<td>Fastest</td>
+<td>Few-shot adaptation</td>
+</tr>
+<tr>
+<td>Prefix Tuning</td>
+<td>0.1%</td>
+<td>Low</td>
+<td>Medium</td>
+<td>Generation control</td>
+</tr>
+<tr>
+<td>Prompt Tuning</td>
+<td>0.001%</td>
+<td>Minimal</td>
+<td>Fast</td>
+<td>Simple task adaptation</td>
+</tr>
+<tr>
+<td>P-Tuning v2</td>
+<td>0.1%</td>
+<td>Low</td>
+<td>Medium</td>
+<td>NLU tasks</td>
+</tr>
+</tbody></table>
+<h3>IA3 (minimal parameters)</h3>
+<pre><code class="language-python">from peft import IA3Config
+
+ia3_config = IA3Config(
+    target_modules=[&quot;q_proj&quot;, &quot;v_proj&quot;, &quot;k_proj&quot;, &quot;down_proj&quot;],
+    feedforward_modules=[&quot;down_proj&quot;]
+)
+model = get_peft_model(model, ia3_config)
+# Trains only 0.01% of parameters!
+</code></pre>
+<h3>Prefix Tuning</h3>
+<pre><code class="language-python">from peft import PrefixTuningConfig
+
+prefix_config = PrefixTuningConfig(
+    task_type=&quot;CAUSAL_LM&quot;,
+    num_virtual_tokens=20,      # Prepended tokens
+    prefix_projection=True       # Use MLP projection
+)
+model = get_peft_model(model, prefix_config)
+</code></pre>
+<h2>Integration patterns</h2>
+<h3>With TRL (SFTTrainer)</h3>
+<pre><code class="language-python">from trl import SFTTrainer, SFTConfig
+from peft import LoraConfig
+
+lora_config = LoraConfig(r=16, lora_alpha=32, target_modules=&quot;all-linear&quot;)
+
+trainer = SFTTrainer(
+    model=model,
+    args=SFTConfig(output_dir=&quot;./output&quot;, max_seq_length=512),
+    train_dataset=dataset,
+    peft_config=lora_config,  # Pass LoRA config directly
+)
+trainer.train()
+</code></pre>
+<h3>With Axolotl (YAML config)</h3>
+<pre><code class="language-yaml"># axolotl config.yaml
+adapter: lora
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules:
+  - q_proj
+  - v_proj
+  - k_proj
+  - o_proj
+lora_target_linear: true  # Target all linear layers
+</code></pre>
+<h3>With vLLM (inference)</h3>
+<pre><code class="language-python">from vllm import LLM
+from vllm.lora.request import LoRARequest
+
+# Load base model with LoRA support
+llm = LLM(model=&quot;meta-llama/Llama-3.1-8B&quot;, enable_lora=True)
+
+# Serve with adapter
+outputs = llm.generate(
+    prompts,
+    lora_request=LoRARequest(&quot;adapter1&quot;, 1, &quot;./lora-adapter&quot;)
+)
+</code></pre>
+<h2>Performance benchmarks</h2>
+<h3>Memory usage (Llama 3.1 8B)</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>GPU Memory</th>
+<th>Trainable Params</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Full fine-tuning</td>
+<td>60+ GB</td>
+<td>8B (100%)</td>
+</tr>
+<tr>
+<td>LoRA r=16</td>
+<td>18 GB</td>
+<td>14M (0.17%)</td>
+</tr>
+<tr>
+<td>QLoRA r=16</td>
+<td>6 GB</td>
+<td>14M (0.17%)</td>
+</tr>
+<tr>
+<td>IA3</td>
+<td>16 GB</td>
+<td>800K (0.01%)</td>
+</tr>
+</tbody></table>
+<h3>Training speed (A100 80GB)</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Tokens/sec</th>
+<th>vs Full FT</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Full FT</td>
+<td>2,500</td>
+<td>1x</td>
+</tr>
+<tr>
+<td>LoRA</td>
+<td>3,200</td>
+<td>1.3x</td>
+</tr>
+<tr>
+<td>QLoRA</td>
+<td>2,100</td>
+<td>0.84x</td>
+</tr>
+</tbody></table>
+<h3>Quality (MMLU benchmark)</h3>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Full FT</th>
+<th>LoRA</th>
+<th>QLoRA</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Llama 2-7B</td>
+<td>45.3</td>
+<td>44.8</td>
+<td>44.1</td>
+</tr>
+<tr>
+<td>Llama 2-13B</td>
+<td>54.8</td>
+<td>54.2</td>
+<td>53.5</td>
+</tr>
+</tbody></table>
+<h2>Common issues</h2>
+<h3>CUDA OOM during training</h3>
+<pre><code class="language-python"># Solution 1: Enable gradient checkpointing
+model.gradient_checkpointing_enable()
+
+# Solution 2: Reduce batch size + increase accumulation
+TrainingArguments(
+    per_device_train_batch_size=1,
+    gradient_accumulation_steps=16
+)
+
+# Solution 3: Use QLoRA
+from transformers import BitsAndBytesConfig
+bnb_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type=&quot;nf4&quot;)
+</code></pre>
+<h3>Adapter not applying</h3>
+<pre><code class="language-python"># Verify adapter is active
+print(model.active_adapters)  # Should show adapter name
+
+# Check trainable parameters
+model.print_trainable_parameters()
+
+# Ensure model in training mode
+model.train()
+</code></pre>
+<h3>Quality degradation</h3>
+<pre><code class="language-python"># Increase rank
+LoraConfig(r=32, lora_alpha=64)
+
+# Target more modules
+target_modules = &quot;all-linear&quot;
+
+# Use more training data and epochs
+TrainingArguments(num_train_epochs=5)
+
+# Lower learning rate
+TrainingArguments(learning_rate=1e-4)
+</code></pre>
+<h2>Best practices</h2>
+<ol>
+<li><strong>Start with r=8-16</strong>, increase if quality insufficient</li>
+<li><strong>Use alpha = 2 * rank</strong> as starting point</li>
+<li><strong>Target attention + MLP layers</strong> for best quality/efficiency</li>
+<li><strong>Enable gradient checkpointing</strong> for memory savings</li>
+<li><strong>Save adapters frequently</strong> (small files, easy rollback)</li>
+<li><strong>Evaluate on held-out data</strong> before merging</li>
+<li><strong>Use QLoRA for 70B+ models</strong> on consumer hardware</li>
+</ol>
+<h2>References</h2>
+<ul>
+<li><strong><a href="references/advanced-usage.md">Advanced Usage</a></strong> - DoRA, LoftQ, rank stabilization, custom modules</li>
+<li><strong><a href="references/troubleshooting.md">Troubleshooting</a></strong> - Common errors, debugging, optimization</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><strong>GitHub</strong>: <a href="https://github.com/huggingface/peft">https://github.com/huggingface/peft</a></li>
+<li><strong>Docs</strong>: <a href="https://huggingface.co/docs/peft">https://huggingface.co/docs/peft</a></li>
+<li><strong>LoRA Paper</strong>: arXiv:2106.09685</li>
+<li><strong>QLoRA Paper</strong>: arXiv:2305.14314</li>
+<li><strong>Models</strong>: <a href="https://huggingface.co/models?library=peft">https://huggingface.co/models?library=peft</a></li>
+</ul>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/desperado991128/peft/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/desperado991128/peft" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/desperado991128/peft/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@desperado991128</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">AI & LLMs</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

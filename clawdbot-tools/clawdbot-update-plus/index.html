@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Full backup, update, and restore for Clawdbot - config, workspace, and skills with auto-rollback">
+  <title>clawdbot-update-plus - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Clawdbot Tools</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Clawdbot Tools</a>
+                <span class="skill-page-author">by @hopyky</span>
+              </div>
+              <h1 class="skill-page-title">clawdbot-update-plus</h1>
+              <p class="skill-page-desc">Full backup, update, and restore for Clawdbot - config, workspace, and skills with auto-rollback</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>🔄 Clawdbot Update Plus</h1>
+<p>A comprehensive backup, update, and restore tool for your entire Clawdbot environment. Protect your config, workspace, and skills with automatic rollback, encrypted backups, and cloud sync.</p>
+<h2>Quick Start</h2>
+<pre><code class="language-bash"># Check for available updates
+clawdbot-update-plus check
+
+# Create a full backup
+clawdbot-update-plus backup
+
+# Update everything (creates backup first)
+clawdbot-update-plus update
+
+# Preview changes (no modifications)
+clawdbot-update-plus update --dry-run
+
+# Restore from backup
+clawdbot-update-plus restore clawdbot-update-2026-01-25-12:00:00.tar.gz
+</code></pre>
+<h2>Features</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Full Backup</strong></td>
+<td>Backup entire environment (config, workspace, skills)</td>
+</tr>
+<tr>
+<td><strong>Auto Backup</strong></td>
+<td>Creates backup before every update</td>
+</tr>
+<tr>
+<td><strong>Auto Rollback</strong></td>
+<td>Reverts to previous commit if update fails</td>
+</tr>
+<tr>
+<td><strong>Smart Restore</strong></td>
+<td>Restore everything or specific parts (config, workspace)</td>
+</tr>
+<tr>
+<td><strong>Multi-Directory</strong></td>
+<td>Separate prod/dev skills with independent update settings</td>
+</tr>
+<tr>
+<td><strong>Encrypted Backups</strong></td>
+<td>Optional GPG encryption</td>
+</tr>
+<tr>
+<td><strong>Cloud Sync</strong></td>
+<td>Upload backups to Google Drive, S3, Dropbox via rclone</td>
+</tr>
+<tr>
+<td><strong>Notifications</strong></td>
+<td>Get notified via WhatsApp, Telegram, or Discord</td>
+</tr>
+<tr>
+<td><strong>Modular Architecture</strong></td>
+<td>Clean, maintainable codebase</td>
+</tr>
+</tbody></table>
+<h2>Installation</h2>
+<pre><code class="language-bash"># Via ClawdHub
+clawdhub install clawdbot-update-plus --dir ~/.clawdbot/skills
+
+# Or clone manually
+git clone https://github.com/hopyky/clawdbot-update-plus.git ~/.clawdbot/skills/clawdbot-update-plus
+</code></pre>
+<h3>Add to PATH</h3>
+<p>Create a symlink to use the command globally:</p>
+<pre><code class="language-bash">mkdir -p ~/bin
+echo &#39;export PATH=&quot;$HOME/bin:$PATH&quot;&#39; &gt;&gt; ~/.zshrc  # or ~/.bashrc
+source ~/.zshrc
+ln -sf ~/.clawdbot/skills/clawdbot-update-plus/bin/clawdbot-update-plus ~/bin/clawdbot-update-plus
+</code></pre>
+<h3>Dependencies</h3>
+<table>
+<thead>
+<tr>
+<th>Dependency</th>
+<th>Required</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>git</code></td>
+<td>Yes</td>
+<td>Update skills from repositories</td>
+</tr>
+<tr>
+<td><code>jq</code></td>
+<td>Yes</td>
+<td>Parse JSON configuration</td>
+</tr>
+<tr>
+<td><code>rsync</code></td>
+<td>Yes</td>
+<td>Efficient file copying</td>
+</tr>
+<tr>
+<td><code>rclone</code></td>
+<td>No</td>
+<td>Cloud storage sync</td>
+</tr>
+<tr>
+<td><code>gpg</code></td>
+<td>No</td>
+<td>Backup encryption</td>
+</tr>
+</tbody></table>
+<h2>Configuration</h2>
+<p>Create <code>~/.clawdbot/clawdbot-update.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;backup_dir&quot;: &quot;~/.clawdbot/backups&quot;,
+  &quot;backup_before_update&quot;: true,
+  &quot;backup_count&quot;: 5,
+  &quot;backup_paths&quot;: [
+    {&quot;path&quot;: &quot;~/.clawdbot&quot;, &quot;label&quot;: &quot;config&quot;, &quot;exclude&quot;: [&quot;backups&quot;, &quot;logs&quot;, &quot;media&quot;, &quot;*.lock&quot;]},
+    {&quot;path&quot;: &quot;~/clawd&quot;, &quot;label&quot;: &quot;workspace&quot;, &quot;exclude&quot;: [&quot;node_modules&quot;, &quot;.venv&quot;]}
+  ],
+  &quot;skills_dirs&quot;: [
+    {&quot;path&quot;: &quot;~/.clawdbot/skills&quot;, &quot;label&quot;: &quot;prod&quot;, &quot;update&quot;: true},
+    {&quot;path&quot;: &quot;~/clawd/skills&quot;, &quot;label&quot;: &quot;dev&quot;, &quot;update&quot;: false}
+  ],
+  &quot;remote_storage&quot;: {
+    &quot;enabled&quot;: false,
+    &quot;rclone_remote&quot;: &quot;gdrive:&quot;,
+    &quot;path&quot;: &quot;clawdbot-backups&quot;
+  },
+  &quot;encryption&quot;: {
+    &quot;enabled&quot;: false,
+    &quot;gpg_recipient&quot;: &quot;your-email@example.com&quot;
+  },
+  &quot;notifications&quot;: {
+    &quot;enabled&quot;: false,
+    &quot;target&quot;: &quot;+1234567890&quot;,
+    &quot;on_success&quot;: true,
+    &quot;on_error&quot;: true
+  }
+}
+</code></pre>
+<h2>Backup Paths</h2>
+<p>Configure what to backup with <code>backup_paths</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>path</code></td>
+<td>Directory to backup (supports <code>~</code>)</td>
+</tr>
+<tr>
+<td><code>label</code></td>
+<td>Name in logs and restore</td>
+</tr>
+<tr>
+<td><code>exclude</code></td>
+<td>Files/folders to exclude</td>
+</tr>
+</tbody></table>
+<h3>Recommended Setup</h3>
+<pre><code class="language-json">&quot;backup_paths&quot;: [
+  {&quot;path&quot;: &quot;~/.clawdbot&quot;, &quot;label&quot;: &quot;config&quot;, &quot;exclude&quot;: [&quot;backups&quot;, &quot;logs&quot;, &quot;media&quot;]},
+  {&quot;path&quot;: &quot;~/clawd&quot;, &quot;label&quot;: &quot;workspace&quot;, &quot;exclude&quot;: [&quot;node_modules&quot;, &quot;.venv&quot;]}
+]
+</code></pre>
+<h2>Skills Update</h2>
+<p>Configure which skills to update with <code>skills_dirs</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>path</code></td>
+<td>Skills directory</td>
+</tr>
+<tr>
+<td><code>label</code></td>
+<td>Name in logs</td>
+</tr>
+<tr>
+<td><code>update</code></td>
+<td>Run <code>git pull</code> (true/false)</td>
+</tr>
+</tbody></table>
+<h3>Recommended Setup</h3>
+<pre><code class="language-json">&quot;skills_dirs&quot;: [
+  {&quot;path&quot;: &quot;~/.clawdbot/skills&quot;, &quot;label&quot;: &quot;prod&quot;, &quot;update&quot;: true},
+  {&quot;path&quot;: &quot;~/clawd/skills&quot;, &quot;label&quot;: &quot;dev&quot;, &quot;update&quot;: false}
+]
+</code></pre>
+<ul>
+<li><strong>Prod</strong>: Auto-update from ClawdHub/GitHub</li>
+<li><strong>Dev</strong>: Manual only (protects your work)</li>
+</ul>
+<h2>Commands</h2>
+<h3><code>backup</code> — Create Full Backup</h3>
+<pre><code class="language-bash">clawdbot-update-plus backup
+</code></pre>
+<h3><code>list-backups</code> — List Available Backups</h3>
+<pre><code class="language-bash">clawdbot-update-plus list-backups
+</code></pre>
+<h3><code>update</code> — Update Everything</h3>
+<pre><code class="language-bash"># Standard update (with automatic backup)
+clawdbot-update-plus update
+
+# Preview changes only
+clawdbot-update-plus update --dry-run
+
+# Skip backup
+clawdbot-update-plus update --no-backup
+
+# Force continue even if backup fails
+clawdbot-update-plus update --force
+</code></pre>
+<h3><code>restore</code> — Restore from Backup</h3>
+<pre><code class="language-bash"># Restore everything
+clawdbot-update-plus restore backup.tar.gz
+
+# Restore only config
+clawdbot-update-plus restore backup.tar.gz config
+
+# Restore only workspace
+clawdbot-update-plus restore backup.tar.gz workspace
+
+# Force (no confirmation)
+clawdbot-update-plus restore backup.tar.gz --force
+</code></pre>
+<h3><code>check</code> — Check for Updates</h3>
+<pre><code class="language-bash">clawdbot-update-plus check
+</code></pre>
+<h3><code>install-cron</code> — Automatic Updates</h3>
+<pre><code class="language-bash"># Install daily at 2 AM
+clawdbot-update-plus install-cron
+
+# Custom schedule
+clawdbot-update-plus install-cron &quot;0 3 * * 0&quot;  # Sundays at 3 AM
+
+# Remove
+clawdbot-update-plus uninstall-cron
+</code></pre>
+<h2>Notifications</h2>
+<p>Get notified when updates complete or fail:</p>
+<pre><code class="language-json">&quot;notifications&quot;: {
+  &quot;enabled&quot;: true,
+  &quot;target&quot;: &quot;+1234567890&quot;,
+  &quot;on_success&quot;: true,
+  &quot;on_error&quot;: true
+}
+</code></pre>
+<p>Target format determines channel:</p>
+<ul>
+<li><code>+1234567890</code> → WhatsApp</li>
+<li><code>@username</code> → Telegram</li>
+<li><code>channel:123</code> → Discord</li>
+</ul>
+<h2>Cloud Storage</h2>
+<h3>Setup rclone</h3>
+<pre><code class="language-bash"># Install
+brew install rclone  # macOS
+curl https://rclone.org/install.sh | sudo bash  # Linux
+
+# Configure
+rclone config
+</code></pre>
+<h3>Enable in Config</h3>
+<pre><code class="language-json">&quot;remote_storage&quot;: {
+  &quot;enabled&quot;: true,
+  &quot;rclone_remote&quot;: &quot;gdrive:&quot;,
+  &quot;path&quot;: &quot;clawdbot-backups&quot;
+}
+</code></pre>
+<h2>Encrypted Backups</h2>
+<pre><code class="language-json">&quot;encryption&quot;: {
+  &quot;enabled&quot;: true,
+  &quot;gpg_recipient&quot;: &quot;your-email@example.com&quot;
+}
+</code></pre>
+<h2>Logs</h2>
+<p>All operations are logged to <code>~/.clawdbot/backups/update.log</code>:</p>
+<pre><code>[2026-01-25 20:22:48] === Update started 2026-01-25 20:22:48 ===
+[2026-01-25 20:23:39] Creating backup...
+[2026-01-25 20:23:39] Backup created: clawdbot-update-2026-01-25-20:22:48.tar.gz (625M)
+[2026-01-25 20:23:39] Clawdbot current version: 2026.1.22
+[2026-01-25 20:23:41] Starting skills update
+[2026-01-25 20:23:41] === Update completed 2026-01-25 20:23:41 ===
+[2026-01-25 20:23:43] Notification sent to +1234567890 via whatsapp
+</code></pre>
+<p><strong>Log retention</strong>: Logs older than 30 days are automatically deleted.</p>
+<h2>Retention Policy</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Retention</th>
+<th>Config</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Backups (local)</td>
+<td>Last N backups</td>
+<td><code>backup_count: 5</code></td>
+</tr>
+<tr>
+<td>Backups (remote)</td>
+<td>Last N backups</td>
+<td>Same as local</td>
+</tr>
+<tr>
+<td>Logs</td>
+<td>30 days</td>
+<td>Automatic</td>
+</tr>
+</tbody></table>
+<h2>Architecture (v2.0)</h2>
+<pre><code>bin/
+├── clawdbot-update-plus     # Main entry point
+└── lib/
+    ├── utils.sh             # Logging, helpers
+    ├── config.sh            # Configuration
+    ├── backup.sh            # Backup functions
+    ├── restore.sh           # Restore functions
+    ├── update.sh            # Update functions
+    ├── notify.sh            # Notifications
+    └── cron.sh              # Cron management
+</code></pre>
+<h2>Changelog</h2>
+<h3>v2.0.0</h3>
+<ul>
+<li>Complete architecture rewrite</li>
+<li>Modular design (7 separate modules)</li>
+<li>Cleaner codebase (~150 lines per module vs 1000+ monolith)</li>
+<li>Better error handling</li>
+<li>Improved restore with label support</li>
+<li>Auto-detect notification channel from target format</li>
+<li>Fixed <code>--no-backup</code> flag being ignored</li>
+<li>Detailed logging to file with auto-purge</li>
+<li>Backup retention policy (local + remote)</li>
+</ul>
+<h3>v1.7.0</h3>
+<ul>
+<li>Smart restore with label support</li>
+<li>Auto-detect backup format</li>
+</ul>
+<h3>v1.6.0</h3>
+<ul>
+<li>Added <code>backup_paths</code> for full environment backup</li>
+<li>Separated backup logic from update logic</li>
+</ul>
+<h3>v1.5.0</h3>
+<ul>
+<li>Multi-directory support (<code>skills_dirs</code>)</li>
+</ul>
+<h3>v1.4.0</h3>
+<ul>
+<li>Notifications via Clawdbot messaging</li>
+</ul>
+<h3>v1.3.0</h3>
+<ul>
+<li>Added <code>check</code>, <code>diff-backups</code>, <code>install-cron</code> commands</li>
+</ul>
+<h2>Author</h2>
+<p>Created by <strong>hopyky</strong></p>
+<h2>License</h2>
+<p>MIT</p>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/hopyky/clawdbot-update-plus/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/hopyky/clawdbot-update-plus" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/hopyky/clawdbot-update-plus/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@hopyky</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Clawdbot Tools</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

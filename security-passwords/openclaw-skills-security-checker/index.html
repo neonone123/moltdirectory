@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Security scanner for ClawHub skills - detects suspicious patterns, manages whitelists, and monitors Security & Passwords">
+  <title>openclaw-skills-security-checker - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Security & Passwords</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Security & Passwords</a>
+                <span class="skill-page-author">by @digitaladaption</span>
+              </div>
+              <h1 class="skill-page-title">openclaw-skills-security-checker</h1>
+              <p class="skill-page-desc">Security scanner for ClawHub skills - detects suspicious patterns, manages whitelists, and monitors Security & Passwords</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Security Skill Scanner</h1>
+<p>Scans ClawdHub skills for suspicious patterns, manages permission manifests, and monitors Moltbook for security threats.</p>
+<h2>Features</h2>
+<ul>
+<li><strong>Pattern Detection</strong>: Scans SKILL.md files for credential theft, command injection, network exfil patterns</li>
+<li><strong>Whitelist Management</strong>: Maintains list of known legitimate skills</li>
+<li><strong>Moltbook Monitoring</strong>: Continuously monitors Moltbook for security discussions and scam alerts</li>
+<li><strong>Permission Manifests</strong>: Generates and tracks skill permissions with Isnad chains</li>
+<li><strong>Daily Reports</strong>: Automatic scanning with markdown/JSON reports</li>
+</ul>
+<h2>Usage</h2>
+<h3>Scan All Skills</h3>
+<pre><code class="language-bash">python3 /root/clawd/skills/security-skill-scanner/skill-scanner.py
+</code></pre>
+<h3>Scan Specific Skill</h3>
+<pre><code class="language-bash">python3 /root/clawd/skills/security-skill-scanner/skill-scanner.py --skill nano-banana-pro
+</code></pre>
+<h3>Add to Whitelist</h3>
+<pre><code class="language-bash">python3 /root/clawd/skills/security-skill-scanner/whitelist-manager.py add skill-name &quot;reason for whitelist&quot;
+</code></pre>
+<h3>Check Whitelist</h3>
+<pre><code class="language-bash">python3 /root/clawd/skills/security-skill-scanner/whitelist-manager.py list
+</code></pre>
+<h3>Monitor Moltbook (One-shot)</h3>
+<pre><code class="language-bash">bash /root/clawd/skills/security-skill-scanner/moltbook-monitor.sh
+</code></pre>
+<h2>Files</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>skill-scanner.py</code></td>
+<td>Main scanner with regex pattern detection</td>
+</tr>
+<tr>
+<td><code>whitelist-manager.py</code></td>
+<td>Manage false-positive whitelist</td>
+</tr>
+<tr>
+<td><code>moltbook-monitor.sh</code></td>
+<td>Moltbook security feed monitor</td>
+</tr>
+<tr>
+<td><code>permission-manager.py</code></td>
+<td>Generate skill permission manifests</td>
+</tr>
+<tr>
+<td><code>data/whitelist.json</code></td>
+<td>Whitelisted skills database</td>
+</tr>
+</tbody></table>
+<h2>Patterns Detected</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Patterns</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Credential Theft</td>
+<td>.env access, webhook.site, POST secrets</td>
+</tr>
+<tr>
+<td>Command Injection</td>
+<td>os.system, eval, shell=True, subprocess</td>
+</tr>
+<tr>
+<td>Network Exfil</td>
+<td>HTTP requests with Bearer tokens</td>
+</tr>
+<tr>
+<td>Suspicious Downloads</td>
+<td>wget, curl -O, remote scripts</td>
+</tr>
+</tbody></table>
+<h2>Whitelisted Skills</h2>
+<p>These skills are known legitimate and excluded from warnings:</p>
+<ul>
+<li>nano-banana-pro (Google Gemini)</li>
+<li>notion (Notion API)</li>
+<li>trello (Trello API)</li>
+<li>gog (Google Workspace)</li>
+<li>local-places (Google Places)</li>
+<li>bluebubbles (iMessage)</li>
+<li>weather (Weather API)</li>
+<li>And 5 more...</li>
+</ul>
+<h2>Cron Jobs (Optional)</h2>
+<p>Add to crontab for automated scanning:</p>
+<pre><code class="language-bash"># Daily skill scan at 4 AM
+0 4 * * * python3 /root/clawd/skills/security-skill-scanner/skill-scanner.py &gt;&gt; /var/log/skill-scan.log 2&gt;&amp;1
+
+# Moltbook monitor every 30 min
+*/30 * * * * bash /root/clawd/skills/security-skill-scanner/moltbook-monitor.sh &gt;&gt; /var/log/moltbook-monitor.log 2&gt;&amp;1
+</code></pre>
+<h2>Pre-Install Hook (Block Suspicious Skills)</h2>
+<p>Install new skills with automatic security scanning that <strong>BLOCKS</strong> suspicious installations:</p>
+<h3>Quick Install with Scan</h3>
+<pre><code class="language-bash"># Interactive mode (asks before installing)
+bash /root/clawd/skills/security-skill-scanner/install-skill.sh nano-banana-pro
+
+# With force override (installs even if suspicious)
+bash /root/clawd/skills/security-skill-scanner/install-skill.sh suspicious-skill --force
+
+# Scan-only mode
+python3 /root/clawd/skills/security-skill-scanner/install-hook.py skill-name --scan-only
+</code></pre>
+<h3>Integration with molthub</h3>
+<p>Add to your shell profile for automatic scanning on every install:</p>
+<pre><code class="language-bash"># Add to ~/.bashrc or ~/.zshrc
+molthub() {
+    if [ &quot;$1&quot; = &quot;install&quot; ] || [ &quot;$1&quot; = &quot;add&quot; ]; then
+        python3 /root/clawd/skills/security-skill-scanner/install-hook.py &quot;$2&quot; --interactive
+    else
+        /home/linuxbrew/.linuxbrew/bin/molthub &quot;$@&quot;
+    fi
+}
+</code></pre>
+<p>Now every <code>molthub install &lt;skill&gt;</code> will be scanned first!</p>
+<h3>What Happens</h3>
+<ol>
+<li><strong>Clean skill</strong> → Installs normally ✅</li>
+<li><strong>Whitelisted skill</strong> → Installs normally ✅</li>
+<li><strong>Suspicious skill</strong> → <strong>BLOCKED</strong> with explanation 🚫</li>
+<li><strong>Suspicious + --force</strong> → Warns but installs ⚠️</li>
+</ol>
+<h3>Example Output</h3>
+<pre><code>🔒 Pre-Install Security Scan: nano-banana-pro
+----------------------------------------------
+Status: whitelisted
+Action: allowed
+✅ Scan passed - safe to install
+
+🚀 Proceeding with installation...
+✅ nano-banana-pro installed successfully
+</code></pre>
+<p>vs</p>
+<pre><code>🔒 Pre-Install Security Scan: weather-scam
+----------------------------------------------
+Status: suspicious
+Action: blocked
+
+🚨 THREATS DETECTED:
+   🔴 [credential_theft] Access to .env file
+      File: SKILL.md
+   🔴 [network_exfil] HTTP requests with Bearer tokens
+      File: scripts/steal_creds.py
+
+❌ INSTALLATION BLOCKED
+
+To override: python3 install-hook.py weather-scam --force
+</code></pre>
+<h2>Reports</h2>
+<ul>
+<li><code>/tmp/security-scanner/scan-report.md</code> - Human-readable scan results</li>
+<li><code>/tmp/security-scanner/scan-results.json</code> - Structured JSON output</li>
+<li><code>/tmp/security-scanner/moltbook-scan.log</code> - Moltbook monitoring log</li>
+</ul>
+<h2>Integration</h2>
+<p>Import as a module:</p>
+<pre><code class="language-python">from skill_scanner import RegexScanner
+
+scanner = RegexScanner()
+results = scanner.scan_all_skills()
+print(f&quot;Found {results[&#39;threats_found&#39;]} threats&quot;)
+</code></pre>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/digitaladaption/openclaw-skills-security-checker/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/digitaladaption/openclaw-skills-security-checker" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/digitaladaption/openclaw-skills-security-checker/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@digitaladaption</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Security & Passwords</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

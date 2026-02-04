@@ -1,0 +1,1875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A guide to build AI bots with Botpress's Agent Development Kit (ADK)">
+  <title>botpress-adk - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Coding Agents & IDEs</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Coding Agents & IDEs</a>
+                <span class="skill-page-author">by @yueranlu</span>
+              </div>
+              <h1 class="skill-page-title">botpress-adk</h1>
+              <p class="skill-page-desc">A guide to build AI bots with Botpress's Agent Development Kit (ADK)</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Botpress ADK Development Guide</h1>
+<p>A comprehensive guide for building AI bots with the Botpress Agent Development Kit (ADK).</p>
+<h2>When to Use</h2>
+<ul>
+<li>User asks to build a Botpress bot or chatbot</li>
+<li>User mentions ADK, Agent Development Kit, or Botpress</li>
+<li>User wants to create actions, tools, workflows, conversations, tables, triggers, or knowledge bases</li>
+<li>User needs help with <code>adk</code> CLI commands (init, dev, deploy, link)</li>
+<li>User has ADK-related errors or needs troubleshooting</li>
+<li>User asks about bot configuration, state management, or integrations</li>
+</ul>
+<h2>Quick Reference</h2>
+<p>The ADK is a <strong>convention-based TypeScript framework</strong> where <strong>file structure maps directly to bot behavior</strong>.</p>
+<p><strong>Your role:</strong> Guide users through the entire bot development lifecycle - from project setup to deployment. Use the patterns and code examples in this skill to write correct, working ADK code.</p>
+<p><strong>Key principle:</strong> In ADK, <strong>where you put files matters</strong>. Each component type has a specific <code>src/</code> subdirectory, and files are auto-discovered based on location.</p>
+<h2>How to Use This Skill</h2>
+<p><strong>This skill is your primary reference for building Botpress bots.</strong> When a user asks you to build something with the ADK:</p>
+<ol>
+<li><strong>Identify what they need</strong> - Is it a new bot, a feature (action, tool, workflow), data storage (table), or event handling (trigger)?</li>
+<li><strong>Check the correct directory</strong> - Each component type goes in a specific <code>src/</code> subdirectory</li>
+<li><strong>Use the patterns below</strong> - Follow the code examples exactly, they represent the correct ADK conventions</li>
+<li><strong>Run <code>adk --help</code></strong> - For CLI commands not covered here, or <code>adk &lt;command&gt; --help</code> for specific help</li>
+</ol>
+<p><strong>Decision Guide - What Component to Create:</strong></p>
+<table>
+<thead>
+<tr>
+<th>User Wants To...</th>
+<th>Create This</th>
+<th>Location</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Handle user messages</td>
+<td>Conversation</td>
+<td><code>src/conversations/</code></td>
+</tr>
+<tr>
+<td>Add a function the AI can call</td>
+<td>Tool</td>
+<td><code>src/tools/</code></td>
+</tr>
+<tr>
+<td>Add reusable business logic</td>
+<td>Action</td>
+<td><code>src/actions/</code></td>
+</tr>
+<tr>
+<td>Run background/scheduled tasks</td>
+<td>Workflow</td>
+<td><code>src/workflows/</code></td>
+</tr>
+<tr>
+<td>Store structured data</td>
+<td>Table</td>
+<td><code>src/tables/</code></td>
+</tr>
+<tr>
+<td>React to events (user created, etc.)</td>
+<td>Trigger</td>
+<td><code>src/triggers/</code></td>
+</tr>
+<tr>
+<td>Give AI access to docs/data</td>
+<td>Knowledge Base</td>
+<td><code>src/knowledge/</code></td>
+</tr>
+<tr>
+<td>Connect external service (Slack, etc.)</td>
+<td>Integration</td>
+<td><code>adk add &lt;name&gt;</code></td>
+</tr>
+</tbody></table>
+<p><strong>If the information in this skill isn&#39;t enough</strong>, fetch the corresponding GitHub reference file (links provided in each section) for more detailed specifications.</p>
+<h2>Important: ADK is AI-Native</h2>
+<p>The ADK does <strong>NOT</strong> use traditional chatbot patterns. Don&#39;t create intents, entities, or dialog flows.</p>
+<p><strong>Instead of:</strong></p>
+<ul>
+<li>Defining intents (<code>greet</code>, <code>orderPizza</code>, <code>checkStatus</code>)</li>
+<li>Training entity extraction (<code>@pizzaSize</code>, <code>@toppings</code>)</li>
+<li>Manually routing to intent handlers</li>
+</ul>
+<p><strong>ADK uses:</strong></p>
+<ul>
+<li><code>execute()</code> - The AI understands user intent naturally from instructions</li>
+<li>Tools - AI autonomously decides when to call your functions</li>
+<li><code>zai.extract()</code> - Schema-based structured data extraction</li>
+<li>Knowledge bases - RAG for grounding responses in your docs</li>
+</ul>
+<p><strong>Docs:</strong> <a href="https://www.botpress.com/docs/adk/">https://www.botpress.com/docs/adk/</a>
+<strong>GitHub:</strong> <a href="https://github.com/botpress/skills/tree/master/skills/adk">https://github.com/botpress/skills/tree/master/skills/adk</a></p>
+<hr>
+<h2>Prerequisites &amp; Installation</h2>
+<p>Before using the ADK, ensure the user has:</p>
+<ul>
+<li><strong>Botpress Account</strong> - Create at <a href="https://app.botpress.cloud">https://app.botpress.cloud</a></li>
+<li><strong>Node.js v22.0.0+</strong> - Check with <code>node --version</code></li>
+<li><strong>Package Manager</strong> - bun (recommended), pnpm, yarn, or npm</li>
+</ul>
+<p><strong>Install the ADK CLI:</strong></p>
+<p>macOS &amp; Linux:</p>
+<pre><code class="language-bash">curl -fsSL https://github.com/botpress/adk/releases/latest/download/install.sh | bash
+</code></pre>
+<p>Windows (PowerShell):</p>
+<pre><code class="language-powershell">powershell -c &quot;irm https://github.com/botpress/adk/releases/latest/download/install.ps1 | iex&quot;
+</code></pre>
+<p><strong>Verify installation:</strong></p>
+<pre><code class="language-bash">adk --version
+</code></pre>
+<p>If installation fails, check <a href="https://github.com/botpress/adk/releases">https://github.com/botpress/adk/releases</a> for manual download options.</p>
+<p><strong>Docs:</strong> <a href="https://www.botpress.com/docs/adk/quickstart">https://www.botpress.com/docs/adk/quickstart</a>
+<strong>GitHub:</strong> <a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/cli.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/cli.md</a></p>
+<hr>
+<h2>Quick Start</h2>
+<p>Once the ADK CLI is installed, create a new bot:</p>
+<pre><code class="language-bash">adk init my-bot         # Create project (choose &quot;Hello World&quot; template for beginners)
+cd my-bot
+npm install             # Or bun/pnpm/yarn
+adk login               # Authenticate with Botpress Cloud
+adk add chat            # Add the chat integration for testing
+adk dev                 # Start dev server with hot reload
+adk chat                # Test in CLI (run in separate terminal)
+adk deploy              # Deploy to production when ready
+</code></pre>
+<p>The visual console at <strong><a href="http://localhost:3001/">http://localhost:3001/</a></strong> lets you configure integrations and test the bot.</p>
+<p><strong>Docs:</strong> <a href="https://www.botpress.com/docs/adk/quickstart">https://www.botpress.com/docs/adk/quickstart</a>
+<strong>GitHub:</strong> <a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/cli.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/cli.md</a></p>
+<hr>
+<h2>Linking and Deploying Your Bot</h2>
+<p><strong>IMPORTANT:</strong> Your bot must be linked to Botpress Cloud and deployed for it to work. The ADK runs locally during development but the bot itself lives in Botpress Cloud.</p>
+<h3>The Correct Order: Link → Dev → Deploy</h3>
+<p>Follow this order to get your bot working:</p>
+<pre><code class="language-bash"># 1. LINK - Connect your project to Botpress Cloud (creates agent.json)
+adk link
+
+# 2. DEV - Start the development server (hot reload, testing)
+adk dev
+
+# 3. DEPLOY - Push to production when ready
+adk deploy
+</code></pre>
+<p><strong>Step-by-step:</strong></p>
+<ol>
+<li><p><strong><code>adk link</code></strong> - Links your local project to a bot in Botpress Cloud. This creates <code>agent.json</code> with your workspace and bot IDs. Run this first before anything else.</p>
+</li>
+<li><p><strong><code>adk dev</code></strong> - Starts the local development server with hot reloading. Opens the dev console at <a href="http://localhost:3001">http://localhost:3001</a> where you can configure integrations and test your bot. Use <code>adk chat</code> in a separate terminal to test.</p>
+</li>
+<li><p><strong><code>adk deploy</code></strong> - Deploys your bot to production. Run this when you&#39;re ready for your bot to be live and accessible through production channels (Slack, WhatsApp, webchat, etc.).</p>
+</li>
+</ol>
+<h3>Troubleshooting Errors</h3>
+<p><strong>If you encounter errors when running <code>adk dev</code> or <code>adk deploy</code>:</strong></p>
+<ol>
+<li><strong>Check the logs</strong> - Look at the terminal output or the logs panel in the dev console at <a href="http://localhost:3001">http://localhost:3001</a></li>
+<li><strong>Copy the error message</strong> - Select and copy the full error message from the logs</li>
+<li><strong>Ask for help</strong> - Paste the error back to the AI assistant and ask it to help fix the issue</li>
+</ol>
+<p>Common error scenarios:</p>
+<ul>
+<li><strong>Integration configuration errors:</strong> Usually means an integration needs to be configured in the UI at localhost:3001</li>
+<li><strong>Type errors:</strong> Often caused by incorrect imports or schema mismatches</li>
+<li><strong>Deployment failures:</strong> May indicate missing environment variables or invalid configuration</li>
+</ul>
+<p><strong>Example workflow for fixing errors:</strong></p>
+<pre><code>1. Run `adk dev` or `adk deploy`
+2. See error in terminal/logs
+3. Copy the error message
+4. Tell the AI: &quot;I got this error when running adk dev: [paste error]&quot;
+5. The AI will help diagnose and fix the issue
+</code></pre>
+<p><strong>Docs:</strong> <a href="https://www.botpress.com/docs/adk/quickstart">https://www.botpress.com/docs/adk/quickstart</a>
+<strong>GitHub:</strong> <a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/cli.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/cli.md</a></p>
+<hr>
+<h2>Project Structure</h2>
+<p><strong>Critical rule:</strong> File location determines behavior. Place components in the correct <code>src/</code> subdirectory or they won&#39;t be discovered.</p>
+<pre><code>my-bot/
+├── agent.config.ts    # Bot configuration: name, models, state schemas, integrations
+├── agent.json         # Workspace/bot IDs (auto-generated by adk link/dev, add to .gitignore)
+├── package.json       # Node.js dependencies and scripts (dev, build, deploy)
+├── tsconfig.json      # TypeScript configuration
+├── .env               # API keys and secrets (never commit!)
+├── .gitignore         # Should include: agent.json, .env, node_modules/, .botpress/
+├── src/
+│   ├── conversations/ # Handle incoming messages → use execute() for AI responses
+│   ├── workflows/     # Background processes → use step() for resumable operations
+│   ├── actions/       # Reusable functions → call from anywhere with actions.name()
+│   ├── tools/         # AI-callable functions → AI decides when to invoke these
+│   ├── tables/        # Data storage → auto-synced to cloud, supports semantic search
+│   ├── triggers/      # Event handlers → react to user.created, integration events, etc.
+│   └── knowledge/     # RAG sources → index docs, websites, or tables for AI context
+└── .botpress/         # Auto-generated types (never edit manually)
+</code></pre>
+<p><strong>Key Configuration Files:</strong></p>
+<ul>
+<li><strong>agent.config.ts</strong> - Primary configuration defining bot metadata, AI models, state schemas, and integrations (you edit this)</li>
+<li><strong>agent.json</strong> - Links agent to workspace/bot IDs. Auto-generated by <code>adk link</code> or <code>adk dev</code>. <strong>Add to .gitignore</strong> - contains environment-specific IDs that differ per developer</li>
+<li><strong>package.json</strong> - Node.js config with <code>@botpress/runtime</code> dependency and scripts for <code>dev</code>, <code>build</code>, <code>deploy</code></li>
+<li><strong>tsconfig.json</strong> - TypeScript configuration for the project</li>
+<li><strong>.env</strong> - Environment variables for API keys and secrets (never commit!)</li>
+<li><strong>.gitignore</strong> - Should include: <code>agent.json</code>, <code>.env</code>, <code>node_modules/</code>, <code>.botpress/</code></li>
+</ul>
+<p><strong>Docs:</strong> <a href="https://www.botpress.com/docs/adk/project-structure">https://www.botpress.com/docs/adk/project-structure</a>
+<strong>GitHub:</strong> <a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/agent-config.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/agent-config.md</a></p>
+<hr>
+<h2>Agent Configuration</h2>
+<p>The <code>agent.config.ts</code> file defines your bot&#39;s identity, AI models, state schemas, and integrations. Always start here when setting up a new bot.</p>
+<pre><code class="language-typescript">import { defineConfig, z } from &quot;@botpress/runtime&quot;;
+
+export default defineConfig({
+  name: &quot;my-support-bot&quot;,
+  description: &quot;AI customer support assistant&quot;,
+
+  // AI models for different operations
+  defaultModels: {
+    autonomous: &quot;openai:gpt-4o&quot;,      // Used by execute() for conversations
+    zai: &quot;openai:gpt-4o-mini&quot;         // Used by zai operations (cheaper, faster)
+  },
+
+  // Global bot state - shared across all conversations and users
+  bot: {
+    state: z.object({
+      maintenanceMode: z.boolean().default(false),
+      totalConversations: z.number().default(0)
+    })
+  },
+
+  // Per-user state - persists across all conversations for each user
+  user: {
+    state: z.object({
+      name: z.string().optional(),
+      tier: z.enum([&quot;free&quot;, &quot;pro&quot;]).default(&quot;free&quot;),
+      preferredLanguage: z.enum([&quot;en&quot;, &quot;es&quot;, &quot;fr&quot;]).default(&quot;en&quot;)
+    }),
+    tags: {
+      source: z.string(),
+      region: z.string().optional()
+    }
+  },
+
+  // Per-conversation state
+  conversation: {
+    state: z.object({
+      context: z.string().optional()
+    }),
+    tags: {
+      category: z.enum([&quot;support&quot;, &quot;sales&quot;, &quot;general&quot;]),
+      priority: z.enum([&quot;low&quot;, &quot;medium&quot;, &quot;high&quot;]).optional()
+    }
+  },
+
+  // Integrations your bot uses (ADK 1.9+ format)
+  dependencies: {
+    integrations: {
+      chat: { version: &quot;chat@0.7.3&quot;, enabled: true },
+      slack: { version: &quot;slack@2.5.5&quot;, enabled: true }
+    }
+  }
+});
+</code></pre>
+<p><strong>Available models:</strong></p>
+<ul>
+<li>OpenAI: <code>openai:gpt-4o</code>, <code>openai:gpt-4o-mini</code>, <code>openai:gpt-4-turbo</code></li>
+<li>Anthropic: <code>anthropic:claude-3-5-sonnet</code>, <code>anthropic:claude-3-opus</code></li>
+<li>Google: <code>google:gemini-1.5-pro</code>, <code>google:gemini-1.5-flash</code></li>
+</ul>
+<p><strong>Docs:</strong> <a href="https://www.botpress.com/docs/adk/project-structure">https://www.botpress.com/docs/adk/project-structure</a>
+<strong>GitHub:</strong> <a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/agent-config.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/agent-config.md</a></p>
+<hr>
+<h2>Core Concepts</h2>
+<h3>1. Actions - Reusable Business Logic</h3>
+<p><strong>When to create an Action:</strong></p>
+<ul>
+<li>You need reusable logic that will be called from multiple places (workflows, conversations, triggers)</li>
+<li>You&#39;re wrapping an external API or database operation</li>
+<li>You want testable, composable business logic</li>
+<li>You need to call integration APIs (Slack, Linear, etc.) with custom logic</li>
+</ul>
+<p><strong>When NOT to use an Action (use a Tool instead):</strong></p>
+<ul>
+<li>You want the AI to decide when to call it autonomously</li>
+<li>The function should be available during <code>execute()</code></li>
+</ul>
+<p>Actions are <strong>not</strong> directly callable by the AI - convert them to tools with <code>.asTool()</code> if the AI needs to use them.</p>
+<p><strong>Location:</strong> <code>src/actions/*.ts</code></p>
+<pre><code class="language-typescript">import { Action, z } from &quot;@botpress/runtime&quot;;
+
+export const fetchUser = new Action({
+  name: &quot;fetchUser&quot;,
+  description: &quot;Retrieves user details from the database&quot;,
+
+  // Define input/output with Zod schemas for type safety
+  input: z.object({ userId: z.string() }),
+  output: z.object({ name: z.string(), email: z.string() }),
+
+  // IMPORTANT: Handler receives { input, client } - destructure input INSIDE the handler
+  async handler({ input, client }) {
+    const { user } = await client.getUser({ id: input.userId });
+    return { name: user.name, email: user.tags.email };
+  }
+});
+</code></pre>
+<p><strong>Calling actions:</strong></p>
+<pre><code class="language-typescript">import { actions } from &quot;@botpress/runtime&quot;;
+const userData = await actions.fetchUser({ userId: &quot;123&quot; });
+
+// To make an action callable by the AI, convert it to a tool:
+tools: [actions.fetchUser.asTool()]
+</code></pre>
+<p><strong>Key Rules:</strong></p>
+<ul>
+<li>Handler receives <code>{ input, client }</code> - must destructure <code>input</code> inside the handler</li>
+<li>Cannot destructure input fields directly in parameters</li>
+<li>Can call other actions, integration actions, access state</li>
+<li>Can be converted to tools with <code>.asTool()</code></li>
+</ul>
+<p><strong>Docs:</strong> <a href="https://www.botpress.com/docs/adk/concepts/actions">https://www.botpress.com/docs/adk/concepts/actions</a>
+<strong>GitHub:</strong> <a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/actions.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/actions.md</a></p>
+<hr>
+<h3>2. Tools - AI-Callable Functions</h3>
+<p><strong>When to create a Tool:</strong></p>
+<ul>
+<li>You want the AI to autonomously decide when to use this function</li>
+<li>The function retrieves information the AI needs (search, lookup, fetch)</li>
+<li>The function performs actions on behalf of the user (create ticket, send message)</li>
+<li>You&#39;re building capabilities the AI should have during conversations</li>
+</ul>
+<p><strong>The AI decides when to use tools based on:</strong></p>
+<ol>
+<li>The tool&#39;s <code>description</code> - Make this clear and specific about WHEN to use it</li>
+<li>The input schema&#39;s <code>.describe()</code> fields - Help AI understand what parameters mean</li>
+<li>The conversation context and user&#39;s intent</li>
+</ol>
+<p><strong>Key difference from Actions:</strong> Tools can destructure input directly; Actions cannot.</p>
+<p><strong>Location:</strong> <code>src/tools/*.ts</code></p>
+<pre><code class="language-typescript">import { Autonomous, z } from &quot;@botpress/runtime&quot;;
+
+export const searchProducts = new Autonomous.Tool({
+  name: &quot;searchProducts&quot;,
+  // This description is critical - it tells the AI when to use this tool
+  description: &quot;Search the product catalog. Use when user asks about products, availability, pricing, or wants to browse items.&quot;,
+
+  input: z.object({
+    query: z.string().describe(&quot;Search keywords&quot;),
+    category: z.string().optional().describe(&quot;Filter by category&quot;)
+  }),
+  output: z.object({
+    products: z.array(z.object({ id: z.string(), name: z.string(), price: z.number() }))
+  }),
+
+  // Unlike actions, tools CAN destructure input directly in the handler
+  handler: async ({ query, category }) =&gt; {
+    // Your search logic here
+    return { products: [] };
+  }
+});
+</code></pre>
+<p><strong>Using ThinkSignal:</strong> When a tool can&#39;t complete but you want to give the AI context:</p>
+<pre><code class="language-typescript">import { Autonomous } from &quot;@botpress/runtime&quot;;
+
+// Inside handler - AI will see this message and can respond appropriately
+throw new Autonomous.ThinkSignal(
+  &quot;No results found&quot;,
+  &quot;No products found matching that query. Ask user to try different search terms.&quot;
+);
+</code></pre>
+<p><strong>Advanced Tool Properties:</strong></p>
+<pre><code class="language-typescript">export const myTool = new Autonomous.Tool({
+  name: &quot;myTool&quot;,
+  description: &quot;Tool description&quot;,
+  input: z.object({...}),
+  output: z.object({...}),
+  aliases: [&quot;searchDocs&quot;, &quot;findDocs&quot;],  // Alternative names
+  handler: async (input, ctx) =&gt; {
+    console.log(`Call ID: ${ctx.callId}`);  // Unique call identifier
+    // ...
+  },
+  retry: async ({ attempt, error }) =&gt; {
+    if (attempt &lt; 3 &amp;&amp; error?.code === &#39;RATE_LIMIT&#39;) {
+      await new Promise(r =&gt; setTimeout(r, 1000 * attempt));
+      return true;  // Retry
+    }
+    return false;  // Don&#39;t retry
+  }
+});
+</code></pre>
+<p><strong>Docs:</strong> <a href="https://www.botpress.com/docs/adk/concepts/tools">https://www.botpress.com/docs/adk/concepts/tools</a>
+<strong>GitHub:</strong> <a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/tools.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/tools.md</a></p>
+<hr>
+<h3>3. Conversations - Message Handlers</h3>
+<p><strong>When to create a Conversation:</strong></p>
+<ul>
+<li>Every bot needs at least one conversation handler to respond to users</li>
+<li>Create separate handlers for different channels if they need different behavior</li>
+<li>Use <code>channel: &quot;*&quot;</code> to handle all channels with one handler</li>
+</ul>
+<p><strong>Key decisions when building a conversation:</strong></p>
+<ol>
+<li><strong>Which channels?</strong> - Specify <code>&quot;*&quot;</code> for all, or specific channels like <code>&quot;slack.dm&quot;</code></li>
+<li><strong>What tools does the AI need?</strong> - Pass them to <code>execute({ tools: [...] })</code></li>
+<li><strong>What knowledge should ground responses?</strong> - Pass to <code>execute({ knowledge: [...] })</code></li>
+<li><strong>What instructions guide the AI?</strong> - Define personality, rules, and context</li>
+</ol>
+<p><strong>The <code>execute()</code> function is the heart of ADK</strong> - it runs autonomous AI logic with your tools and knowledge. Most conversation handlers will call <code>execute()</code>.</p>
+<p><strong>Location:</strong> <code>src/conversations/*.ts</code></p>
+<pre><code class="language-typescript">import { Conversation, z } from &quot;@botpress/runtime&quot;;
+
+export const Chat = new Conversation({
+  // Which channels this handler responds to
+  channel: &quot;chat.channel&quot;,  // Or &quot;*&quot; for all, or [&quot;slack.dm&quot;, &quot;webchat.channel&quot;]
+
+  // Per-conversation state (optional)
+  state: z.object({
+    messageCount: z.number().default(0)
+  }),
+
+  async handler({ message, state, conversation, execute, user }) {
+    state.messageCount += 1;
+
+    // Handle commands
+    if (message?.payload?.text?.startsWith(&quot;/help&quot;)) {
+      await conversation.send({
+        type: &quot;text&quot;,
+        payload: { text: &quot;Available commands: /help, /status&quot; }
+      });
+      return;
+    }
+
+    // Let the AI handle the response with your tools and knowledge
+    await execute({
+      // Instructions guide the AI&#39;s behavior and personality
+      instructions: `You are a helpful customer support agent for Acme Corp.
+        User&#39;s name: ${user.state.name || &quot;there&quot;}
+        User&#39;s tier: ${user.state.tier}
+        Be friendly, concise, and always offer to help further.`,
+
+      // Tools the AI can use during this conversation
+      tools: [searchProducts, actions.createTicket.asTool()],
+
+      // Knowledge bases for RAG - AI will search these to ground responses
+      knowledge: [DocsKnowledgeBase],
+
+      model: &quot;openai:gpt-4o&quot;,
+      temperature: 0.7,
+      iterations: 10  // Max tool call iterations
+    });
+  }
+});
+</code></pre>
+<p><strong>Handler Context:</strong></p>
+<ul>
+<li><code>message</code> - User&#39;s message data</li>
+<li><code>execute</code> - Run autonomous AI logic</li>
+<li><code>conversation</code> - Conversation instance methods (send, startTyping, stopTyping)</li>
+<li><code>state</code> - Mutable state (bot, user, conversation)</li>
+<li><code>client</code> - Botpress API client</li>
+<li><code>type</code> - Event classification (message, workflow_request)</li>
+</ul>
+<p><strong>Execute Function Options:</strong></p>
+<pre><code class="language-typescript">await execute({
+  instructions: string | async function,  // Required
+  tools: Tool[],                          // AI-callable tools
+  knowledge: Knowledge[],                 // Knowledge bases for RAG
+  exits: Exit[],                          // Structured exit handlers
+  model: string,                          // AI model to use
+  temperature: number,                    // 0-1, default 0.7
+  iterations: number,                     // Max tool calls, default 10
+  hooks: {
+    onBeforeTool: async ({ tool, input }) =&gt; { ... },
+    onAfterTool: async ({ tool, output }) =&gt; { ... },
+    onTrace: async (trace) =&gt; { ... }
+  }
+});
+</code></pre>
+<p><strong>Common channels:</strong> <code>chat.channel</code>, <code>webchat.channel</code>, <code>slack.dm</code>, <code>slack.channel</code>, <code>discord.channel</code>, <code>whatsapp.channel</code>, <code>&quot;*&quot;</code> (all)</p>
+<p><strong>Docs:</strong> <a href="https://www.botpress.com/docs/adk/concepts/conversations">https://www.botpress.com/docs/adk/concepts/conversations</a>
+<strong>GitHub:</strong> <a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/conversations.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/conversations.md</a></p>
+<hr>
+<h3>4. Workflows - Background &amp; Multi-Step Processes</h3>
+<p><strong>When to create a Workflow:</strong></p>
+<ul>
+<li>Operations that take longer than 2 minutes (the default timeout)</li>
+<li>Multi-step processes that need to survive crashes/restarts</li>
+<li>Scheduled/recurring tasks (daily reports, periodic syncs)</li>
+<li>Background processing (order fulfillment, data migration)</li>
+<li>Operations that need to wait for external events or user input</li>
+</ul>
+<p><strong>When NOT to use a Workflow (handle in conversation instead):</strong></p>
+<ul>
+<li>Quick operations that complete immediately</li>
+<li>Simple request-response patterns</li>
+<li>Operations that don&#39;t need persistence</li>
+</ul>
+<p><strong>Key workflow concepts:</strong></p>
+<ul>
+<li><strong>Steps are checkpoints</strong> - If workflow crashes, it resumes from last completed step</li>
+<li><strong>State persists</strong> - Store progress in <code>state</code> to track across steps</li>
+<li><strong>Always pass conversationId</strong> - If the workflow needs to message users back</li>
+</ul>
+<p><strong>Location:</strong> <code>src/workflows/*.ts</code></p>
+<pre><code class="language-typescript">import { Workflow, z } from &quot;@botpress/runtime&quot;;
+
+export const ProcessOrderWorkflow = new Workflow({
+  name: &quot;processOrder&quot;,
+  description: &quot;Processes customer orders&quot;,
+  timeout: &quot;6h&quot;,                    // Max duration
+  schedule: &quot;0 9 * * *&quot;,            // Optional: run daily at 9am (cron syntax)
+
+  input: z.object({
+    orderId: z.string(),
+    conversationId: z.string()      // Include this to message the user back!
+  }),
+
+  state: z.object({
+    currentStep: z.number().default(0),
+    processedItems: z.array(z.string()).default([])
+  }),
+
+  output: z.object({
+    success: z.boolean(),
+    itemsProcessed: z.number()
+  }),
+
+  async handler({ input, state, step, client, execute }) {
+    // State is passed as parameter, auto-tracked
+    state.currentStep = 1;
+
+    // IMPORTANT: Each step needs a unique, stable name (no dynamic names!)
+    const orderData = await step(&quot;fetch-order&quot;, async () =&gt; {
+      return await fetchOrderData(input.orderId);
+    });
+
+    // Steps can have retry logic
+    await step(&quot;process-payment&quot;, async () =&gt; {
+      return await processPayment(orderData);
+    }, { maxAttempts: 3 });
+
+    // To message the user from a workflow, use client.createMessage (NOT conversation.send)
+    await step(&quot;notify-user&quot;, async () =&gt; {
+      await client.createMessage({
+        conversationId: input.conversationId,
+        type: &quot;text&quot;,
+        payload: { text: &quot;Your order has been processed!&quot; }
+      });
+    });
+
+    return {
+      success: true,
+      itemsProcessed: state.processedItems.length
+    };
+  }
+});
+
+// Start a workflow from a conversation or trigger
+await ProcessOrderWorkflow.start({
+  orderId: &quot;123&quot;,
+  conversationId: conversation.id  // Always pass this if you need to message back
+});
+
+// Get or create with deduplication
+const instance = await ProcessOrderWorkflow.getOrCreate({
+  key: `order-${orderId}`,  // Prevents duplicate workflows
+  input: { orderId, conversationId }
+});
+</code></pre>
+<p><strong>Step Methods:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>step(name, fn)</code></td>
+<td>Basic execution with caching</td>
+</tr>
+<tr>
+<td><code>step.sleep(name, ms)</code></td>
+<td>Pause for milliseconds</td>
+</tr>
+<tr>
+<td><code>step.sleepUntil(name, date)</code></td>
+<td>Pause until specific date</td>
+</tr>
+<tr>
+<td><code>step.listen()</code></td>
+<td>Wait for external events</td>
+</tr>
+<tr>
+<td><code>step.progress(msg)</code></td>
+<td>Update progress message</td>
+</tr>
+<tr>
+<td><code>step.request(name, prompt)</code></td>
+<td>Request user input (blocking)</td>
+</tr>
+<tr>
+<td><code>step.executeWorkflow()</code></td>
+<td>Start and await another workflow</td>
+</tr>
+<tr>
+<td><code>step.waitForWorkflow(id)</code></td>
+<td>Wait for existing workflow</td>
+</tr>
+<tr>
+<td><code>step.map(items, fn)</code></td>
+<td>Process array with concurrency</td>
+</tr>
+<tr>
+<td><code>step.forEach(items, fn)</code></td>
+<td>Execute on items without results</td>
+</tr>
+<tr>
+<td><code>step.batch(items, fn)</code></td>
+<td>Process in groups</td>
+</tr>
+<tr>
+<td><code>step.fail(reason)</code></td>
+<td>Mark workflow as failed</td>
+</tr>
+<tr>
+<td><code>step.abort()</code></td>
+<td>Stop immediately without failure</td>
+</tr>
+</tbody></table>
+<p><strong>Critical Rules:</strong></p>
+<ul>
+<li>Step names must be <strong>unique</strong> and <strong>stable</strong> (avoid dynamic naming in loops)</li>
+<li>State is passed as a parameter, not accessed via <code>this.state</code></li>
+<li>Always pass <code>conversationId</code> for workflows that need to message users</li>
+<li>Default timeout is 2 minutes - use steps for longer processes</li>
+</ul>
+<p><strong>Docs:</strong> <a href="https://www.botpress.com/docs/adk/concepts/workflows/overview">https://www.botpress.com/docs/adk/concepts/workflows/overview</a>
+<strong>GitHub:</strong> <a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/workflows.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/workflows.md</a></p>
+<hr>
+<h3>5. Tables - Data Storage</h3>
+<p><strong>When to create a Table:</strong></p>
+<ul>
+<li>You need to persist structured data (users, orders, tickets, logs)</li>
+<li>You want to query/filter data by fields</li>
+<li>You need semantic search on text content (set <code>searchable: true</code>)</li>
+<li>You&#39;re storing data that should survive bot restarts</li>
+</ul>
+<p><strong>When NOT to use a Table (use State instead):</strong></p>
+<ul>
+<li>Simple key-value data per user/conversation → use <code>user.state</code> or <code>conversation.state</code></li>
+<li>Temporary data that doesn&#39;t need persistence</li>
+<li>Small amounts of data that fit in state</li>
+</ul>
+<p><strong>Tables vs Knowledge Bases:</strong></p>
+<ul>
+<li><strong>Tables</strong> = Structured data you CRUD (create, read, update, delete)</li>
+<li><strong>Knowledge Bases</strong> = Documents/content for AI to search and reference</li>
+</ul>
+<p><strong>Location:</strong> <code>src/tables/*.ts</code></p>
+<p><strong>CRITICAL RULES (violations will cause errors):</strong></p>
+<ul>
+<li>Do NOT define an <code>id</code> column - it&#39;s created automatically as a number</li>
+<li>Table names MUST end with &quot;Table&quot; (e.g., <code>OrdersTable</code>, not <code>Orders</code>)</li>
+</ul>
+<pre><code class="language-typescript">import { Table, z } from &quot;@botpress/runtime&quot;;
+
+export const OrdersTable = new Table({
+  name: &quot;OrdersTable&quot;,  // Must end with &quot;Table&quot;
+  description: &quot;Stores order information&quot;,
+  columns: {
+    // NO id column - it&#39;s automatic!
+    orderId: z.string(),
+    userId: z.string(),
+    status: z.enum([&quot;pending&quot;, &quot;completed&quot;, &quot;cancelled&quot;]),
+    total: z.number(),
+    createdAt: z.date(),
+    // Enable semantic search on a column:
+    notes: {
+      schema: z.string(),
+      searchable: true
+    }
+  }
+});
+</code></pre>
+<p><strong>CRUD operations:</strong></p>
+<pre><code class="language-typescript">// Create - id is auto-assigned
+await OrdersTable.createRows({
+  rows: [{ orderId: &quot;ord-123&quot;, userId: &quot;user-456&quot;, status: &quot;pending&quot;, total: 99.99, createdAt: new Date() }]
+});
+
+// Read with filters
+const { rows } = await OrdersTable.findRows({
+  filter: { userId: &quot;user-456&quot;, status: &quot;pending&quot; },
+  orderBy: &quot;createdAt&quot;,
+  orderDirection: &quot;desc&quot;,
+  limit: 10
+});
+
+// Get single row by id
+const row = await OrdersTable.getRow({ id: 123 });
+
+// Semantic search (on searchable columns)
+const { rows } = await OrdersTable.findRows({
+  search: &quot;delivery issue&quot;,
+  limit: 5
+});
+
+// Update - must include the id
+await OrdersTable.updateRows({
+  rows: [{ id: 1, status: &quot;completed&quot; }]
+});
+
+// Upsert - insert or update based on key column
+await OrdersTable.upsertRows({
+  rows: [{ orderId: &quot;ord-123&quot;, status: &quot;shipped&quot; }],
+  keyColumn: &quot;orderId&quot;
+});
+
+// Delete by filter
+await OrdersTable.deleteRows({ status: &quot;cancelled&quot; });
+
+// Delete by IDs
+await OrdersTable.deleteRowIds([123, 456]);
+</code></pre>
+<p><strong>Advanced: Computed Columns:</strong></p>
+<pre><code class="language-typescript">columns: {
+  basePrice: z.number(),
+  taxRate: z.number(),
+  fullPrice: {
+    computed: true,
+    schema: z.number(),
+    dependencies: [&quot;basePrice&quot;, &quot;taxRate&quot;],
+    value: async (row) =&gt; row.basePrice * (1 + row.taxRate)
+  }
+}
+</code></pre>
+<p><strong>Docs:</strong> <a href="https://www.botpress.com/docs/adk/concepts/tables">https://www.botpress.com/docs/adk/concepts/tables</a>
+<strong>GitHub:</strong> <a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/tables.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/tables.md</a></p>
+<hr>
+<h3>6. Knowledge Bases - RAG for AI Context</h3>
+<p><strong>When to create a Knowledge Base:</strong></p>
+<ul>
+<li>You want the AI to answer questions based on your documentation</li>
+<li>You have FAQs, policies, or product info the AI should reference</li>
+<li>You want AI responses grounded in specific content (not hallucinated)</li>
+<li>You&#39;re building a support bot that needs access to help articles</li>
+</ul>
+<p><strong>How RAG works in ADK:</strong></p>
+<ol>
+<li>You define knowledge sources (websites, files, tables)</li>
+<li>Content is indexed and embedded for semantic search</li>
+<li>During <code>execute()</code>, the AI automatically searches relevant knowledge</li>
+<li>AI uses retrieved content to generate grounded responses</li>
+</ol>
+<p><strong>Choosing a DataSource type:</strong></p>
+<ul>
+<li><strong>Website</strong> - Index public documentation, help sites, blogs</li>
+<li><strong>Directory</strong> - Index local markdown/text files (dev only!)</li>
+<li><strong>Table</strong> - Index structured data from your tables</li>
+</ul>
+<p><strong>Location:</strong> <code>src/knowledge/*.ts</code></p>
+<pre><code class="language-typescript">import { Knowledge, DataSource } from &quot;@botpress/runtime&quot;;
+
+// Website source - index via sitemap
+const websiteSource = DataSource.Website.fromSitemap(
+  &quot;https://docs.example.com/sitemap.xml&quot;,
+  {
+    id: &quot;website-docs&quot;,
+    maxPages: 500,
+    maxDepth: 10,
+    filter: (ctx) =&gt; ctx.url.includes(&quot;/docs/&quot;)  // Only index /docs/ pages
+  }
+);
+
+// Local files (development only - won&#39;t work in production)
+const localSource = DataSource.Directory.fromPath(&quot;src/knowledge/docs&quot;, {
+  id: &quot;local-docs&quot;,
+  filter: (path) =&gt; path.endsWith(&quot;.md&quot;)
+});
+
+// Table-based knowledge
+const tableSource = DataSource.Table.fromTable(FAQTable, {
+  id: &quot;faq-table&quot;,
+  transform: ({ row }) =&gt; `Question: ${row.question}\nAnswer: ${row.answer}`,
+  filter: ({ row }) =&gt; row.published === true
+});
+
+export const DocsKB = new Knowledge({
+  name: &quot;docsKB&quot;,
+  description: &quot;Product documentation and help articles&quot;,
+  sources: [websiteSource, localSource, tableSource]
+});
+
+// Use in conversations - AI will search this knowledge base
+await execute({
+  instructions: &quot;Answer based on the documentation&quot;,
+  knowledge: [DocsKB]
+});
+
+// Manually refresh knowledge base
+await DocsKB.refresh();                  // Smart refresh (only changed content)
+await DocsKB.refresh({ force: true });   // Force full re-index
+await DocsKB.refreshSource(&quot;website-docs&quot;, { force: true });  // Refresh specific source
+</code></pre>
+<p><strong>Website Source Methods:</strong></p>
+<ul>
+<li><code>fromSitemap(url, options)</code> - Parse XML sitemap</li>
+<li><code>fromWebsite(baseUrl, options)</code> - Crawl from base URL (requires Browser integration)</li>
+<li><code>fromLlmsTxt(url, options)</code> - Parse llms.txt file</li>
+<li><code>fromUrls(urls, options)</code> - Index specific URLs</li>
+</ul>
+<p><strong>Docs:</strong> <a href="https://www.botpress.com/docs/adk/concepts/knowledge">https://www.botpress.com/docs/adk/concepts/knowledge</a>
+<strong>GitHub:</strong> <a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/knowledge-bases.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/knowledge-bases.md</a></p>
+<hr>
+<h3>7. Triggers - Event-Driven Automation</h3>
+<p><strong>When to create a Trigger:</strong></p>
+<ul>
+<li>You need to react to events automatically (user signs up, issue created, etc.)</li>
+<li>You want to start workflows when specific events occur</li>
+<li>You need to sync data when external systems change</li>
+<li>You want to send notifications based on events</li>
+</ul>
+<p><strong>Common trigger patterns:</strong></p>
+<ul>
+<li><strong>User onboarding</strong> - Trigger on <code>user.created</code> → start onboarding workflow</li>
+<li><strong>Integration sync</strong> - Trigger on <code>linear:issueCreated</code> → create record in table</li>
+<li><strong>Notifications</strong> - Trigger on <code>workflow.completed</code> → send Slack message</li>
+</ul>
+<p><strong>Finding available events:</strong></p>
+<ul>
+<li>Bot events: <code>user.created</code>, <code>conversation.started</code>, <code>workflow.completed</code>, etc.</li>
+<li>Integration events: Run <code>adk info &lt;integration&gt; --events</code> to see available events</li>
+</ul>
+<p><strong>Location:</strong> <code>src/triggers/*.ts</code></p>
+<pre><code class="language-typescript">import { Trigger } from &quot;@botpress/runtime&quot;;
+
+export default new Trigger({
+  name: &quot;onNewUser&quot;,
+  description: &quot;Start onboarding when user created&quot;,
+  events: [&quot;user.created&quot;],  // Can listen to multiple events
+
+  handler: async ({ event, client, actions }) =&gt; {
+    const { userId, email } = event.payload;
+
+    // Start an onboarding workflow
+    await OnboardingWorkflow.start({
+      userId,
+      email
+    });
+  }
+});
+
+// Integration events use format: integration:eventName
+export const LinearTrigger = new Trigger({
+  name: &quot;onLinearIssue&quot;,
+  description: &quot;Handle Linear issue events&quot;,
+  events: [&quot;linear:issueCreated&quot;, &quot;linear:issueUpdated&quot;],
+
+  handler: async ({ event, actions }) =&gt; {
+    if (event.type === &quot;linear:issueCreated&quot;) {
+      await actions.slack.sendMessage({
+        channel: &quot;#notifications&quot;,
+        text: `New issue: ${event.payload.title}`
+      });
+    }
+  }
+});
+</code></pre>
+<p><strong>Common Bot Events:</strong></p>
+<ul>
+<li><code>user.created</code>, <code>user.updated</code>, <code>user.deleted</code></li>
+<li><code>conversation.started</code>, <code>conversation.ended</code>, <code>message.created</code></li>
+<li><code>workflow.started</code>, <code>workflow.completed</code>, <code>workflow.failed</code></li>
+<li><code>bot.started</code>, <code>bot.stopped</code></li>
+</ul>
+<p><strong>Common Integration Events:</strong></p>
+<ul>
+<li>Slack: <code>slack:reactionAdded</code>, <code>slack:memberJoinedChannel</code></li>
+<li>Linear: <code>linear:issueCreated</code>, <code>linear:issueUpdated</code></li>
+<li>GitHub: <code>github:issueOpened</code>, <code>github:pullRequestOpened</code></li>
+<li>Intercom: <code>intercom:conversationEvent</code>, <code>intercom:contactEvent</code></li>
+</ul>
+<p><strong>Find integration events:</strong> Run <code>adk info &lt;integration&gt; --events</code></p>
+<p><strong>Docs:</strong> <a href="https://www.botpress.com/docs/adk/concepts/triggers">https://www.botpress.com/docs/adk/concepts/triggers</a>
+<strong>GitHub:</strong> <a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/triggers.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/triggers.md</a></p>
+<hr>
+<h2>Sending Messages</h2>
+<p><strong>CRITICAL: The method depends on WHERE you&#39;re sending from:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Context</th>
+<th>Method</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>In Conversations</td>
+<td><code>conversation.send()</code></td>
+<td>Has conversation context</td>
+</tr>
+<tr>
+<td>In Workflows/Actions</td>
+<td><code>client.createMessage()</code></td>
+<td>Needs explicit <code>conversationId</code></td>
+</tr>
+</tbody></table>
+<p><strong>Common mistake:</strong> Using <code>client.createMessage()</code> in conversations. Always use <code>conversation.send()</code> instead.</p>
+<p>The method depends on where you&#39;re sending from:</p>
+<p><strong>In conversations</strong> - Use <code>conversation.send()</code>:</p>
+<pre><code class="language-typescript">await conversation.send({ type: &quot;text&quot;, payload: { text: &quot;Hello!&quot; } });
+await conversation.send({ type: &quot;image&quot;, payload: { imageUrl: &quot;https://...&quot; } });
+await conversation.send({
+  type: &quot;choice&quot;,
+  payload: {
+    text: &quot;Pick one:&quot;,
+    choices: [
+      { title: &quot;Option A&quot;, value: &quot;a&quot; },
+      { title: &quot;Option B&quot;, value: &quot;b&quot; }
+    ]
+  }
+});
+</code></pre>
+<p><strong>In workflows or actions</strong> - Use <code>client.createMessage()</code> with <code>conversationId</code>:</p>
+<pre><code class="language-typescript">await client.createMessage({
+  conversationId: input.conversationId,  // Must have this!
+  type: &quot;text&quot;,
+  payload: { text: &quot;Workflow complete!&quot; }
+});
+</code></pre>
+<p><strong>All Message Types:</strong></p>
+<pre><code class="language-typescript">// Text
+{ type: &quot;text&quot;, payload: { text: &quot;Hello!&quot; } }
+
+// Markdown
+{ type: &quot;markdown&quot;, payload: { text: &quot;# Heading\n**Bold**&quot; } }
+
+// Image
+{ type: &quot;image&quot;, payload: { imageUrl: &quot;https://...&quot; } }
+
+// Audio
+{ type: &quot;audio&quot;, payload: { audioUrl: &quot;https://...&quot; } }
+
+// Video
+{ type: &quot;video&quot;, payload: { videoUrl: &quot;https://...&quot; } }
+
+// File
+{ type: &quot;file&quot;, payload: { fileUrl: &quot;https://...&quot;, title: &quot;Document.pdf&quot; } }
+
+// Location
+{ type: &quot;location&quot;, payload: { latitude: 40.7128, longitude: -74.0060, address: &quot;New York, NY&quot; } }
+
+// Card
+{ type: &quot;card&quot;, payload: {
+  title: &quot;Product Name&quot;,
+  subtitle: &quot;Description&quot;,
+  imageUrl: &quot;https://...&quot;,
+  actions: [
+    { action: &quot;url&quot;, label: &quot;View&quot;, value: &quot;https://...&quot; },
+    { action: &quot;postback&quot;, label: &quot;Buy&quot;, value: &quot;buy_123&quot; }
+  ]
+}}
+
+// Carousel
+{ type: &quot;carousel&quot;, payload: {
+  items: [
+    { title: &quot;Item 1&quot;, subtitle: &quot;...&quot;, imageUrl: &quot;...&quot;, actions: [...] },
+    { title: &quot;Item 2&quot;, subtitle: &quot;...&quot;, imageUrl: &quot;...&quot;, actions: [...] }
+  ]
+}}
+
+// Choice (Quick Replies)
+{ type: &quot;choice&quot;, payload: {
+  text: &quot;Select an option:&quot;,
+  choices: [
+    { title: &quot;Option 1&quot;, value: &quot;opt1&quot; },
+    { title: &quot;Option 2&quot;, value: &quot;opt2&quot; }
+  ]
+}}
+
+// Dropdown
+{ type: &quot;dropdown&quot;, payload: {
+  text: &quot;Select country:&quot;,
+  options: [
+    { label: &quot;United States&quot;, value: &quot;us&quot; },
+    { label: &quot;Canada&quot;, value: &quot;ca&quot; }
+  ]
+}}
+</code></pre>
+<p><strong>GitHub:</strong> <a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/messages.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/messages.md</a></p>
+<hr>
+<h2>Zai - LLM Utility Operations</h2>
+<p><strong>When to use Zai vs execute():</strong></p>
+<ul>
+<li><strong>Use <code>zai</code></strong> for specific, structured AI operations (extract data, classify, summarize)</li>
+<li><strong>Use <code>execute()</code></strong> for autonomous, multi-turn AI conversations with tools</li>
+</ul>
+<p><strong>Zai is perfect for:</strong></p>
+<ul>
+<li>Extracting structured data from user messages (<code>zai.extract</code>)</li>
+<li>Classifying/labeling content (<code>zai.check</code>, <code>zai.label</code>)</li>
+<li>Summarizing long content (<code>zai.summarize</code>)</li>
+<li>Answering questions from documents (<code>zai.answer</code>)</li>
+<li>Sorting/filtering/grouping data intelligently (<code>zai.sort</code>, <code>zai.filter</code>, <code>zai.group</code>)</li>
+</ul>
+<p><strong>Zai operations are optimized for speed and cost</strong> - they use the <code>zai</code> model configured in <code>agent.config.ts</code> (typically a faster/cheaper model).</p>
+<pre><code class="language-typescript">import { adk, z } from &quot;@botpress/runtime&quot;;
+
+// Extract structured data from text
+const contact = await adk.zai.extract(
+  &quot;Contact John at john@example.com, phone 555-0100&quot;,
+  z.object({
+    name: z.string(),
+    email: z.string(),
+    phone: z.string()
+  })
+);
+// Returns: { name: &quot;John&quot;, email: &quot;john@example.com&quot;, phone: &quot;555-0100&quot; }
+
+// Check if text matches a condition (returns boolean)
+const isSpam = await adk.zai.check(messageText, &quot;is spam or promotional&quot;);
+
+// Label text with multiple criteria
+const labels = await adk.zai.label(customerEmail, {
+  spam: &quot;is spam&quot;,
+  urgent: &quot;needs immediate response&quot;,
+  complaint: &quot;expresses dissatisfaction&quot;
+});
+// Returns: { spam: false, urgent: true, complaint: true }
+
+// Summarize content
+const summary = await adk.zai.summarize(longDocument, {
+  length: 200,
+  bulletPoints: true
+});
+
+// Answer questions from documents (with citations)
+const result = await adk.zai.answer(docs, &quot;What is the refund policy?&quot;);
+if (result.type === &quot;answer&quot;) {
+  console.log(result.answer);
+  console.log(result.citations);
+}
+// Response types: &quot;answer&quot;, &quot;ambiguous&quot;, &quot;out_of_topic&quot;, &quot;invalid_question&quot;, &quot;missing_knowledge&quot;
+
+// Rate items on 1-5 scale
+const scores = await adk.zai.rate(products, &quot;quality score&quot;);
+
+// Sort by criteria
+const sorted = await adk.zai.sort(tickets, &quot;by urgency, most urgent first&quot;);
+
+// Group items semantically
+const groups = await adk.zai.group(emails, {
+  instructions: &quot;categorize by topic&quot;
+});
+
+// Rewrite text
+const professional = await adk.zai.rewrite(&quot;hey wassup&quot;, &quot;make it professional and friendly&quot;);
+
+// Filter arrays
+const activeUsers = await adk.zai.filter(users, &quot;have been active this month&quot;);
+
+// Generate text
+const blogPost = await adk.zai.text(&quot;Write about AI in healthcare&quot;, {
+  length: 1000,
+  temperature: 0.7
+});
+
+// Patch code files
+const patched = await adk.zai.patch(files, &quot;add JSDoc comments to all functions&quot;);
+</code></pre>
+<p><strong>Zai Configuration:</strong></p>
+<pre><code class="language-typescript">// Create configured instance
+const preciseZai = adk.zai.with({
+  modelId: &quot;best&quot;,        // &quot;best&quot; | &quot;fast&quot; | custom model ID
+  temperature: 0.1
+});
+
+// Enable active learning
+const learningZai = adk.zai.learn(&quot;sentiment-analysis&quot;);
+</code></pre>
+<p><strong>Docs:</strong> <a href="https://www.botpress.com/docs/adk/zai/overview">https://www.botpress.com/docs/adk/zai/overview</a>
+<strong>GitHub:</strong> <a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/zai-complete-guide.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/zai-complete-guide.md</a></p>
+<hr>
+<h2>Integrations</h2>
+<p><strong>When to add an Integration:</strong></p>
+<ul>
+<li>You need to connect to an external service (Slack, Linear, GitHub, etc.)</li>
+<li>You want to receive messages from a channel (webchat, WhatsApp, Discord)</li>
+<li>You need to call external APIs with pre-built actions</li>
+<li>You want to react to events from external systems</li>
+</ul>
+<p><strong>Integration workflow:</strong></p>
+<ol>
+<li><strong>Search</strong> - Find integrations with <code>adk search &lt;name&gt;</code></li>
+<li><strong>Add</strong> - Install with <code>adk add &lt;name&gt;@&lt;version&gt;</code></li>
+<li><strong>Configure</strong> - Set up credentials in the UI at <code>http://localhost:3001/</code></li>
+<li><strong>Use</strong> - Call actions via <code>actions.&lt;integration&gt;.&lt;action&gt;()</code></li>
+</ol>
+<p><strong>Making integration actions available to AI:</strong></p>
+<pre><code class="language-typescript">// Convert any integration action to an AI-callable tool
+tools: [actions.slack.sendMessage.asTool()]
+</code></pre>
+<p><strong>CLI commands:</strong></p>
+<pre><code class="language-bash">adk search slack           # Find integrations
+adk add slack@latest       # Add to project
+adk add slack --alias my-slack  # Add with custom alias
+adk info slack --events    # See available events
+adk list                   # List installed integrations
+adk upgrade slack          # Update to latest
+adk remove slack           # Remove integration
+</code></pre>
+<p><strong>Using integration actions:</strong></p>
+<pre><code class="language-typescript">import { actions } from &quot;@botpress/runtime&quot;;
+
+// Slack
+await actions.slack.sendMessage({ channel: &quot;#general&quot;, text: &quot;Hello!&quot; });
+await actions.slack.addReaction({ channel: &quot;C123&quot;, timestamp: &quot;123&quot;, name: &quot;thumbsup&quot; });
+
+// Linear
+await actions.linear.issueCreate({ teamId: &quot;123&quot;, title: &quot;Bug report&quot;, description: &quot;Details&quot; });
+const { items } = await actions.linear.issueList({
+  first: 10,
+  filter: { state: { name: { eq: &quot;In Progress&quot; } } }
+});
+
+// GitHub
+await actions.github.createIssue({ owner: &quot;org&quot;, repo: &quot;repo&quot;, title: &quot;Issue&quot; });
+
+// Browser (web scraping)
+const results = await actions.browser.webSearch({ query: &quot;Botpress docs&quot;, maxResults: 5 });
+
+// Make integration actions available to AI as tools
+await execute({ tools: [actions.slack.sendMessage.asTool()] });
+</code></pre>
+<p><strong>Docs:</strong> <a href="https://www.botpress.com/docs/adk/managing-integrations">https://www.botpress.com/docs/adk/managing-integrations</a>
+<strong>GitHub:</strong> <a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/integration-actions.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/integration-actions.md</a></p>
+<hr>
+<h2>State Management</h2>
+<p><strong>Understanding the state hierarchy - choose the right level:</strong></p>
+<table>
+<thead>
+<tr>
+<th>State Level</th>
+<th>Scope</th>
+<th>Use For</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>bot.state</code></td>
+<td>Global, all users</td>
+<td>Feature flags, counters, maintenance mode</td>
+</tr>
+<tr>
+<td><code>user.state</code></td>
+<td>Per user, all their conversations</td>
+<td>User preferences, profile, tier</td>
+</tr>
+<tr>
+<td><code>conversation.state</code></td>
+<td>Per conversation</td>
+<td>Context, message count, active workflow</td>
+</tr>
+<tr>
+<td><code>workflow.state</code></td>
+<td>Per workflow instance</td>
+<td>Progress tracking, intermediate results</td>
+</tr>
+</tbody></table>
+<p><strong>State is automatically persisted</strong> - just modify it and it saves.</p>
+<p>Access and modify state from anywhere in your bot:</p>
+<pre><code class="language-typescript">import { bot, user, conversation } from &quot;@botpress/runtime&quot;;
+
+// Bot state - global, shared across all users
+bot.state.maintenanceMode = true;
+bot.state.totalConversations += 1;
+
+// User state - per user, persists across conversations
+user.state.name = &quot;Alice&quot;;
+user.state.tier = &quot;pro&quot;;
+user.state.preferredLanguage = &quot;es&quot;;
+
+// In handlers, state is passed as a parameter
+async handler({ state }) {
+  state.messageCount += 1;  // Auto-persisted
+}
+
+// Tags - simple string key-value pairs for categorization
+user.tags.source = &quot;website&quot;;
+user.tags.region = &quot;north-america&quot;;
+conversation.tags.category = &quot;support&quot;;
+conversation.tags.priority = &quot;high&quot;;
+</code></pre>
+<p><strong>State Types:</strong></p>
+<ul>
+<li><strong>Bot State</strong> - Global, shared across all users and conversations</li>
+<li><strong>User State</strong> - Per-user, persists across all their conversations</li>
+<li><strong>Conversation State</strong> - Per-conversation, isolated between conversations</li>
+<li><strong>Workflow State</strong> - Per-workflow instance, persists across steps</li>
+</ul>
+<p><strong>Tags vs State:</strong></p>
+<ul>
+<li>Use <strong>Tags</strong> for: categorization, simple strings, filtering/querying</li>
+<li>Use <strong>State</strong> for: complex objects, arrays, nested data, business logic</li>
+</ul>
+<p><strong>GitHub:</strong> <a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/tags.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/tags.md</a></p>
+<hr>
+<h2>Context API</h2>
+<p>Access runtime services in any handler:</p>
+<pre><code class="language-typescript">import { context } from &quot;@botpress/runtime&quot;;
+
+// Always available
+const client = context.get(&quot;client&quot;);           // Botpress API client
+const citations = context.get(&quot;citations&quot;);     // Citation manager
+const cognitive = context.get(&quot;cognitive&quot;);     // LLM client
+const logger = context.get(&quot;logger&quot;);           // Structured logger
+const botId = context.get(&quot;botId&quot;);            // Current bot ID
+const configuration = context.get(&quot;configuration&quot;);  // Bot config
+
+// Conditionally available (use { optional: true })
+const user = context.get(&quot;user&quot;, { optional: true });
+const conversation = context.get(&quot;conversation&quot;, { optional: true });
+const message = context.get(&quot;message&quot;, { optional: true });
+const workflow = context.get(&quot;workflow&quot;, { optional: true });
+const chat = context.get(&quot;chat&quot;, { optional: true });  // Conversation transcript
+
+if (user) {
+  console.log(`User: ${user.id}`);
+}
+</code></pre>
+<p><strong>GitHub:</strong> <a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/context-api.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/context-api.md</a></p>
+<hr>
+<h2>CLI Quick Reference</h2>
+<pre><code class="language-bash"># Project Lifecycle
+adk init &lt;name&gt;              # Create new project
+adk login                    # Authenticate with Botpress
+adk dev                      # Start dev server (hot reload)
+adk dev --port 3000          # Custom port
+adk chat                     # Test in CLI
+adk build                    # Build for production
+adk deploy                   # Deploy to Botpress Cloud
+adk deploy --env production  # Deploy to specific environment
+
+# Integration Management
+adk add &lt;integration&gt;        # Add integration
+adk add slack@2.5.5          # Add specific version
+adk add slack --alias my-slack  # Add with alias
+adk remove &lt;integration&gt;     # Remove integration
+adk search &lt;query&gt;           # Search integrations
+adk list                     # List installed integrations
+adk list --available         # List all available
+adk info &lt;name&gt;              # Integration details
+adk info &lt;name&gt; --events     # Show available events
+adk upgrade &lt;name&gt;           # Update integration
+adk upgrade                  # Interactive upgrade all
+
+# Knowledge &amp; Assets
+adk kb sync --dev            # Sync knowledge bases
+adk kb sync --prod --force   # Force re-sync production
+adk assets sync              # Sync static files
+
+# Advanced
+adk run &lt;script.ts&gt;          # Run TypeScript script
+adk mcp                      # Start MCP server
+adk link --workspace ws_123 --bot bot_456  # Link to existing bot
+
+# Utilities
+adk self-upgrade             # Update CLI
+adk telemetry --disable      # Disable telemetry
+adk --help                   # Full CLI help
+adk &lt;command&gt; --help         # Help for specific command
+</code></pre>
+<p><strong>Docs:</strong> <a href="https://www.botpress.com/docs/adk/cli-reference">https://www.botpress.com/docs/adk/cli-reference</a>
+<strong>GitHub:</strong> <a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/cli.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/cli.md</a></p>
+<hr>
+<h2>Autonomous Execution with <code>execute()</code></h2>
+<p><strong>The <code>execute()</code> function is the core of ADK&#39;s AI capabilities.</strong> It runs an autonomous AI agent that can:</p>
+<ul>
+<li>Understand user intent from natural language</li>
+<li>Decide which tools to call and when</li>
+<li>Search knowledge bases for relevant information</li>
+<li>Generate contextual responses</li>
+<li>Loop through multiple tool calls until the task is complete</li>
+</ul>
+<p><strong>When to use execute():</strong></p>
+<ul>
+<li>In conversation handlers to generate AI responses</li>
+<li>In workflows when you need AI decision-making</li>
+<li>Anywhere you want autonomous, multi-step AI behavior</li>
+</ul>
+<p><strong>Key parameters to configure:</strong></p>
+<ul>
+<li><code>instructions</code> - Tell the AI who it is and how to behave</li>
+<li><code>tools</code> - Give the AI capabilities (search, create, update, etc.)</li>
+<li><code>knowledge</code> - Ground the AI in your documentation</li>
+<li><code>exits</code> - Define structured output schemas for specific outcomes</li>
+</ul>
+<p>The <code>execute()</code> function enables autonomous AI agent behavior:</p>
+<pre><code class="language-typescript">import { Autonomous, z } from &quot;@botpress/runtime&quot;;
+
+// Define custom tool
+const searchTool = new Autonomous.Tool({
+  name: &quot;search&quot;,
+  description: &quot;Search documentation&quot;,
+  input: z.object({ query: z.string() }),
+  output: z.string(),
+  handler: async ({ query }) =&gt; {
+    // Search implementation
+    return &quot;results...&quot;;
+  }
+});
+
+// Define exit (structured response)
+const AnswerExit = new Autonomous.Exit({
+  name: &quot;Answer&quot;,
+  description: &quot;Provide final answer to the user&quot;,
+  schema: z.object({
+    answer: z.string(),
+    confidence: z.number(),
+    sources: z.array(z.string())
+  })
+});
+
+// Execute AI with tools, knowledge, and exits
+const result = await execute({
+  instructions: &quot;Help the user with their request. Be helpful and concise.&quot;,
+
+  // Add tools
+  tools: [
+    searchTool,
+    actions.linear.issueCreate.asTool()
+  ],
+
+  // Add knowledge bases
+  knowledge: [DocsKnowledgeBase, FAQKnowledgeBase],
+
+  // Define exits for structured outputs
+  exits: [AnswerExit],
+
+  // Model configuration
+  model: &quot;openai:gpt-4o&quot;,
+  temperature: 0.7,
+  iterations: 10,  // Max tool call iterations
+
+  // Hooks for monitoring
+  hooks: {
+    onBeforeTool: async ({ tool, input }) =&gt; {
+      console.log(`Calling ${tool.name}`, input);
+      return { input: { ...input, enhanced: true } };  // Modify input
+    },
+    onAfterTool: async ({ tool, output }) =&gt; {
+      console.log(`Result:`, output);
+    }
+  }
+});
+
+// Handle structured exit
+if (result.is(AnswerExit)) {
+  console.log(result.output.answer);
+  console.log(result.output.sources);
+}
+</code></pre>
+<hr>
+<h2>Troubleshooting</h2>
+<table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Cause</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&quot;Cannot destructure property&quot; in Actions</td>
+<td>Destructuring input directly in handler params</td>
+<td>Use <code>async handler({ input, client })</code> then <code>const { field } = input</code> inside</td>
+</tr>
+<tr>
+<td>Table creation fails</td>
+<td>Invalid table name or <code>id</code> defined</td>
+<td>Remove <code>id</code> column, ensure name ends with &quot;Table&quot;</td>
+</tr>
+<tr>
+<td>Integration action not found</td>
+<td>Integration not installed or configured</td>
+<td>Run <code>adk list</code>, add with <code>adk add</code>, configure in UI at localhost:3001</td>
+</tr>
+<tr>
+<td>Knowledge base not updating</td>
+<td>KB not synced</td>
+<td>Run <code>adk kb sync --dev</code> or <code>adk kb sync --force</code></td>
+</tr>
+<tr>
+<td>Workflow not resuming</td>
+<td>Dynamic step names</td>
+<td>Use stable, unique step names (no <code>step(\</code>item-${i}`)`)</td>
+</tr>
+<tr>
+<td>Types out of date</td>
+<td>Generated types stale</td>
+<td>Run <code>adk dev</code> or <code>adk build</code> to regenerate</td>
+</tr>
+<tr>
+<td>Can&#39;t message user from workflow</td>
+<td>Missing conversationId</td>
+<td>Pass <code>conversationId</code> when starting workflow, use <code>client.createMessage()</code></td>
+</tr>
+<tr>
+<td>&quot;user is not defined&quot;</td>
+<td>Accessing conversation context outside conversation</td>
+<td>Use <code>context.get(&quot;user&quot;, { optional: true })</code></td>
+</tr>
+<tr>
+<td>State changes not persisting</td>
+<td>Creating new objects instead of modifying</td>
+<td>Modify state directly: <code>state.user.name = &quot;Alice&quot;</code></td>
+</tr>
+<tr>
+<td>Tool not being used by AI</td>
+<td>Poor description</td>
+<td>Improve tool description, add detailed <code>.describe()</code> to inputs</td>
+</tr>
+</tbody></table>
+<p><strong>For more help:</strong> Run <code>adk --help</code> or check:</p>
+<ul>
+<li><strong>Docs:</strong> <a href="https://www.botpress.com/docs/adk/">https://www.botpress.com/docs/adk/</a></li>
+<li><strong>GitHub:</strong> <a href="https://github.com/botpress/skills/tree/master/skills/adk/references">https://github.com/botpress/skills/tree/master/skills/adk/references</a></li>
+</ul>
+<hr>
+<h2>Common Patterns &amp; Best Practices</h2>
+<h3>1. Always Pass conversationId for Workflows</h3>
+<pre><code class="language-typescript">// In conversation - starting a workflow that needs to message back
+await MyWorkflow.start({
+  conversationId: conversation.id,  // Always include this!
+  data: &quot;...&quot;
+});
+
+// In workflow - messaging back to user
+await client.createMessage({
+  conversationId: input.conversationId,
+  type: &quot;text&quot;,
+  payload: { text: &quot;Processing complete!&quot; }
+});
+</code></pre>
+<h3>2. Use Environment Variables for Secrets</h3>
+<pre><code class="language-typescript">// In .env (never commit!)
+API_KEY=sk-...
+SLACK_TOKEN=xoxb-...
+
+// In code
+config: { apiKey: process.env.API_KEY }
+</code></pre>
+<h3>3. Keep Step Names Stable in Workflows</h3>
+<pre><code class="language-typescript">// GOOD - Single step for batch
+await step(&quot;process-all-items&quot;, async () =&gt; {
+  for (const item of items) {
+    await processItem(item);
+  }
+});
+
+// BAD - Dynamic names break resume
+for (let i = 0; i &lt; items.length; i++) {
+  await step(`process-${i}`, async () =&gt; { ... });  // Don&#39;t do this!
+}
+</code></pre>
+<h3>4. Error Handling in Actions/Tools</h3>
+<pre><code class="language-typescript">export default new Action({
+  handler: async ({ input }) =&gt; {
+    try {
+      // Action logic
+      return { success: true };
+    } catch (error) {
+      console.error(&quot;Action failed:&quot;, error);
+      throw new Error(`Failed to process: ${error.message}`);
+    }
+  }
+});
+</code></pre>
+<h3>5. ThinkSignal for Tool Edge Cases</h3>
+<pre><code class="language-typescript">handler: async ({ query }) =&gt; {
+  const results = await search(query);
+
+  if (!results.length) {
+    throw new Autonomous.ThinkSignal(
+      &quot;No results&quot;,
+      &quot;No results found. Ask the user to try different search terms.&quot;
+    );
+  }
+
+  return results;
+}
+</code></pre>
+<h3>6. Multi-Channel Handling</h3>
+<pre><code class="language-typescript">export default new Conversation({
+  channels: [&quot;slack.channel&quot;, &quot;webchat.channel&quot;],
+  handler: async ({ conversation }) =&gt; {
+    const channel = conversation.channel;
+
+    if (channel === &quot;slack.channel&quot;) {
+      // Slack-specific handling (threading, mentions, etc.)
+    } else if (channel === &quot;webchat.channel&quot;) {
+      // Webchat-specific handling
+    }
+  }
+});
+</code></pre>
+<hr>
+<h2>Complete Reference Documentation</h2>
+<h3>Official Botpress ADK Documentation</h3>
+<p><strong>Base URL:</strong> <a href="https://www.botpress.com/docs/adk/">https://www.botpress.com/docs/adk/</a></p>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>URL</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Introduction</td>
+<td><a href="https://www.botpress.com/docs/adk/introduction">https://www.botpress.com/docs/adk/introduction</a></td>
+</tr>
+<tr>
+<td>Quickstart</td>
+<td><a href="https://www.botpress.com/docs/adk/quickstart">https://www.botpress.com/docs/adk/quickstart</a></td>
+</tr>
+<tr>
+<td>Project Structure</td>
+<td><a href="https://www.botpress.com/docs/adk/project-structure">https://www.botpress.com/docs/adk/project-structure</a></td>
+</tr>
+<tr>
+<td>Actions</td>
+<td><a href="https://www.botpress.com/docs/adk/concepts/actions">https://www.botpress.com/docs/adk/concepts/actions</a></td>
+</tr>
+<tr>
+<td>Tools</td>
+<td><a href="https://www.botpress.com/docs/adk/concepts/tools">https://www.botpress.com/docs/adk/concepts/tools</a></td>
+</tr>
+<tr>
+<td>Conversations</td>
+<td><a href="https://www.botpress.com/docs/adk/concepts/conversations">https://www.botpress.com/docs/adk/concepts/conversations</a></td>
+</tr>
+<tr>
+<td>Workflows Overview</td>
+<td><a href="https://www.botpress.com/docs/adk/concepts/workflows/overview">https://www.botpress.com/docs/adk/concepts/workflows/overview</a></td>
+</tr>
+<tr>
+<td>Workflow Steps</td>
+<td><a href="https://www.botpress.com/docs/adk/concepts/workflows/steps">https://www.botpress.com/docs/adk/concepts/workflows/steps</a></td>
+</tr>
+<tr>
+<td>Tables</td>
+<td><a href="https://www.botpress.com/docs/adk/concepts/tables">https://www.botpress.com/docs/adk/concepts/tables</a></td>
+</tr>
+<tr>
+<td>Triggers</td>
+<td><a href="https://www.botpress.com/docs/adk/concepts/triggers">https://www.botpress.com/docs/adk/concepts/triggers</a></td>
+</tr>
+<tr>
+<td>Knowledge Bases</td>
+<td><a href="https://www.botpress.com/docs/adk/concepts/knowledge">https://www.botpress.com/docs/adk/concepts/knowledge</a></td>
+</tr>
+<tr>
+<td>Managing Integrations</td>
+<td><a href="https://www.botpress.com/docs/adk/managing-integrations">https://www.botpress.com/docs/adk/managing-integrations</a></td>
+</tr>
+<tr>
+<td>Zai Overview</td>
+<td><a href="https://www.botpress.com/docs/adk/zai/overview">https://www.botpress.com/docs/adk/zai/overview</a></td>
+</tr>
+<tr>
+<td>Zai Reference</td>
+<td><a href="https://www.botpress.com/docs/adk/zai/reference">https://www.botpress.com/docs/adk/zai/reference</a></td>
+</tr>
+<tr>
+<td>CLI Reference</td>
+<td><a href="https://www.botpress.com/docs/adk/cli-reference">https://www.botpress.com/docs/adk/cli-reference</a></td>
+</tr>
+</tbody></table>
+<h3>GitHub Repository References (AI-Optimized)</h3>
+<p><strong>Base URL:</strong> <a href="https://github.com/botpress/skills/tree/master/skills/adk/references">https://github.com/botpress/skills/tree/master/skills/adk/references</a></p>
+<p>For detailed specifications beyond this guide, fetch the corresponding reference file:</p>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>Reference File</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Actions</td>
+<td><a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/actions.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/actions.md</a></td>
+</tr>
+<tr>
+<td>Tools</td>
+<td><a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/tools.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/tools.md</a></td>
+</tr>
+<tr>
+<td>Workflows</td>
+<td><a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/workflows.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/workflows.md</a></td>
+</tr>
+<tr>
+<td>Conversations</td>
+<td><a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/conversations.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/conversations.md</a></td>
+</tr>
+<tr>
+<td>Tables</td>
+<td><a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/tables.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/tables.md</a></td>
+</tr>
+<tr>
+<td>Triggers</td>
+<td><a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/triggers.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/triggers.md</a></td>
+</tr>
+<tr>
+<td>Knowledge Bases</td>
+<td><a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/knowledge-bases.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/knowledge-bases.md</a></td>
+</tr>
+<tr>
+<td>Messages</td>
+<td><a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/messages.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/messages.md</a></td>
+</tr>
+<tr>
+<td>Agent Config</td>
+<td><a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/agent-config.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/agent-config.md</a></td>
+</tr>
+<tr>
+<td>CLI</td>
+<td><a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/cli.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/cli.md</a></td>
+</tr>
+<tr>
+<td>Integration Actions</td>
+<td><a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/integration-actions.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/integration-actions.md</a></td>
+</tr>
+<tr>
+<td>Model Configuration</td>
+<td><a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/model-configuration.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/model-configuration.md</a></td>
+</tr>
+<tr>
+<td>Context API</td>
+<td><a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/context-api.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/context-api.md</a></td>
+</tr>
+<tr>
+<td>Tags</td>
+<td><a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/tags.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/tags.md</a></td>
+</tr>
+<tr>
+<td>Files</td>
+<td><a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/files.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/files.md</a></td>
+</tr>
+<tr>
+<td>Zai Complete Guide</td>
+<td><a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/zai-complete-guide.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/zai-complete-guide.md</a></td>
+</tr>
+<tr>
+<td>Zai Agent Reference</td>
+<td><a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/zai-agent-reference.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/zai-agent-reference.md</a></td>
+</tr>
+<tr>
+<td>MCP Server</td>
+<td><a href="https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/mcp-server.md">https://raw.githubusercontent.com/botpress/skills/master/skills/adk/references/mcp-server.md</a></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Common Scenarios - What to Build</h2>
+<p><strong>&quot;I want to build a support bot that answers questions from our docs&quot;</strong></p>
+<ol>
+<li>Create a Knowledge Base with your documentation as a source</li>
+<li>Create a Conversation handler that uses <code>execute()</code> with that knowledge</li>
+<li>Add the <code>chat</code> integration for testing</li>
+</ol>
+<p><strong>&quot;I want the bot to create tickets in Linear when users report issues&quot;</strong></p>
+<ol>
+<li>Add the Linear integration: <code>adk add linear</code></li>
+<li>Create a Tool that calls <code>actions.linear.issueCreate()</code></li>
+<li>Pass the tool to <code>execute()</code> in your conversation</li>
+</ol>
+<p><strong>&quot;I need to run a daily sync job&quot;</strong></p>
+<ol>
+<li>Create a Workflow with <code>schedule: &quot;0 9 * * *&quot;</code> (cron syntax)</li>
+<li>Implement the sync logic in steps</li>
+<li>The workflow will run automatically at the scheduled time</li>
+</ol>
+<p><strong>&quot;I want to store user preferences&quot;</strong></p>
+<ol>
+<li>Define the schema in <code>agent.config.ts</code> under <code>user.state</code></li>
+<li>Access/modify via <code>user.state.preferenceField = value</code></li>
+<li>State persists automatically</li>
+</ol>
+<p><strong>&quot;I need to react when a new user signs up&quot;</strong></p>
+<ol>
+<li>Create a Trigger listening to <code>user.created</code> event</li>
+<li>In the handler, start an onboarding workflow or send a welcome message</li>
+</ol>
+<p><strong>&quot;I want to store order data and search it&quot;</strong></p>
+<ol>
+<li>Create a Table with your schema (remember: no <code>id</code> field, name ends with &quot;Table&quot;)</li>
+<li>Use <code>searchable: true</code> on text columns you want to search</li>
+<li>Use CRUD methods: <code>createRows</code>, <code>findRows</code>, <code>updateRows</code>, <code>deleteRows</code></li>
+</ol>
+<hr>
+<h2>Summary</h2>
+<p>This skill provides comprehensive guidance for building Botpress bots using the ADK:</p>
+<ul>
+<li><strong>Setup &amp; Initialization</strong> - ADK installation and project creation</li>
+<li><strong>Project Structure</strong> - Conventions, files, and organization</li>
+<li><strong>Core Concepts</strong> - Actions, Tools, Workflows, Conversations, Tables, Knowledge, Triggers</li>
+<li><strong>State Management</strong> - Bot, user, conversation, and workflow state</li>
+<li><strong>Integration Management</strong> - Adding and configuring integrations</li>
+<li><strong>Zai (AI Operations)</strong> - Extract, check, label, summarize, answer, sort, group, rewrite, filter</li>
+<li><strong>CLI Reference</strong> - Complete command guide</li>
+<li><strong>Testing &amp; Deployment</strong> - Local testing and cloud deployment</li>
+<li><strong>Common Patterns</strong> - Best practices and troubleshooting</li>
+</ul>
+<p><strong>Core Principle:</strong> The ADK is a convention-based framework where file location determines behavior. Place components in the correct <code>src/</code> subdirectory and they automatically become bot capabilities.</p>
+<p><strong>When to use this skill:</strong></p>
+<ul>
+<li>User wants to create a new Botpress bot</li>
+<li>User asks how to add actions, tools, workflows, conversations, tables, knowledge bases, or triggers</li>
+<li>User needs help with integrations (Slack, Linear, GitHub, etc.)</li>
+<li>User wants to understand ADK patterns and best practices</li>
+<li>User has errors or needs troubleshooting</li>
+<li>User asks about CLI commands, configuration, or deployment</li>
+</ul>
+<p><strong>Official Documentation:</strong> <a href="https://www.botpress.com/docs/adk/">https://www.botpress.com/docs/adk/</a>
+<strong>GitHub Repository:</strong> <a href="https://github.com/botpress/adk">https://github.com/botpress/adk</a>
+<strong>Skills Repository:</strong> <a href="https://github.com/botpress/skills">https://github.com/botpress/skills</a></p>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/yueranlu/botpress-adk/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/yueranlu/botpress-adk" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/yueranlu/botpress-adk/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@yueranlu</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Coding Agents & IDEs</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

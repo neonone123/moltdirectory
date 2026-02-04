@@ -29,7 +29,7 @@
       </a>
       <nav class="header-links">
         <a href="../../start-here/index.html" class="header-link">Start Here</a>
-        <a href="../../security-auditor.html" class="header-link">Security Auditor</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
           <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -57,18 +57,14 @@
             <article class="skill-page-content">
               <div class="skill-source-wrapper">
                 <div class="skill-source-header">
-                  <span class="skill-source-label">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                    SKILL.md
-                  </span>
-                  <button class="skill-source-copy" onclick="copySkillContent(this)">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                     Copy
                   </button>
                 </div>
-                <div class="skill-source-content">
-              <div class="markdown-content">
-                <h1>HoloCube Controller</h1>
+                <div class="markdown-content">
+                  <h1>HoloCube Controller</h1>
 <p>Control the GeekMagic HelloCubic-Lite with HoloClawd firmware via REST API.</p>
 <p><strong>Firmware:</strong> <a href="https://github.com/andrewjiang/HoloClawd-Open-Firmware">https://github.com/andrewjiang/HoloClawd-Open-Firmware</a></p>
 <h2>Device Info</h2>
@@ -78,19 +74,18 @@
 <li><strong>Default IP:</strong> 192.168.7.80 (configurable)</li>
 </ul>
 <h2>Quick Start</h2>
-<p><strong>Pomodoro Timer</strong> (Andrew&#39;s local version with Spotify integration):</p>
+<p><strong>Pomodoro Timer</strong>:</p>
 <pre><code class="language-bash"># Run pomodoro timer with lobster mascot (25 min work, 5 min break)
-# Uses hardcoded Spotify URIs for focus/break music
-cd ~/Bao/clawd &amp;&amp; uv run --script pomodoro.py
+cd ~/Bao/TimeToLockIn/HoloClawd-Open-Firmware/examples &amp;&amp; uv run --script pomodoro.py
 
 # With custom task label (max 20 chars)
-cd ~/Bao/clawd &amp;&amp; uv run --script pomodoro.py --task &quot;BUILD NETWORK&quot;
+cd ~/Bao/TimeToLockIn/HoloClawd-Open-Firmware/examples &amp;&amp; uv run --script pomodoro.py --task &quot;BUILD NETWORK&quot;
+
+# With Spotify integration
+cd ~/Bao/TimeToLockIn/HoloClawd-Open-Firmware/examples &amp;&amp; uv run --script pomodoro.py --task &quot;LP UPDATE&quot; --spotify-work &quot;spotify:episode:5yJKH11UlF3sS3gcKKaUYx&quot; --spotify-break &quot;spotify:episode:4U4OloHPFBNHWt0GOKENVF&quot;
 
 # Custom timings
-cd ~/Bao/clawd &amp;&amp; uv run --script pomodoro.py --work 50 --short 10 --long 20
-
-# Disable Spotify
-cd ~/Bao/clawd &amp;&amp; uv run --script pomodoro.py --no-spotify
+cd ~/Bao/TimeToLockIn/HoloClawd-Open-Firmware/examples &amp;&amp; uv run --script pomodoro.py --work 50 --short 10 --long 20
 </code></pre>
 <p><strong>Drawing API</strong> (requires holocube_client.py from repo):</p>
 <pre><code class="language-bash"># Draw something on the display
@@ -130,40 +125,47 @@ draw_lobster(cube, 120, 120, happy=True, frame=0)  # Party mode with confetti
 draw_confetti(cube, 120, 120, frame=1)             # Animate confetti
 </code></pre>
 <h2>Pomodoro Timer</h2>
-<p>Full pomodoro timer with cute lobster buddy. <strong>Use Andrew&#39;s local version</strong> at <code>~/Bao/clawd/pomodoro.py</code>:</p>
-<pre><code class="language-bash"># Always run from local directory
-cd ~/Bao/clawd
+<p>Full pomodoro timer with cute lobster buddy located in the HoloCube firmware repo:</p>
+<pre><code class="language-bash"># Always run from the examples directory
+cd ~/Bao/TimeToLockIn/HoloClawd-Open-Firmware/examples
 
-# Default: 25 min work, 5 min break (with Spotify)
+# Default: 25 min work, 5 min break
 uv run --script pomodoro.py
 
 # With custom task label
 uv run --script pomodoro.py --task &quot;CODE REVIEW&quot;
-uv run --script pomodoro.py -t &quot;BUILD NETWORK&quot;
+uv run --script pomodoro.py --task &quot;BUILD NETWORK&quot;
+
+# With Spotify integration (Andrew&#39;s favorite URIs)
+uv run --script pomodoro.py --task &quot;LP UPDATE&quot; \
+  --spotify-work &quot;spotify:episode:5yJKH11UlF3sS3gcKKaUYx&quot; \
+  --spotify-break &quot;spotify:episode:4U4OloHPFBNHWt0GOKENVF&quot;
 
 # Custom timings
 uv run --script pomodoro.py --work 50 --short 10 --long 20
 
-# Disable Spotify
-uv run --script pomodoro.py --no-spotify
+# With trackers
+uv run --script pomodoro.py --water 2 --exercise 1 --focus 3
 </code></pre>
-<p><strong>Andrew&#39;s Version</strong> (~/Bao/clawd/pomodoro.py):</p>
+<p><strong>Location</strong>: <code>~/Bao/TimeToLockIn/HoloClawd-Open-Firmware/examples/pomodoro.py</code></p>
 <ul>
-<li>Hardcoded Spotify URIs:<ul>
-<li>Focus: <code>spotify:episode:5yJKH11UlF3sS3gcKKaUYx</code></li>
-<li>Break: <code>spotify:episode:4U4OloHPFBNHWt0GOKENVF</code></li>
-</ul>
-</li>
-<li>Uses <code>~/clawd/skills/spotify-applescript/spotify.sh</code> for playback</li>
+<li>Uses <code>spotify.sh</code> in the same directory for playback</li>
+<li>Supports icon-based trackers (water, exercise, focus, pills)</li>
+<li>Interactive command listener for live controls</li>
 </ul>
 <p>Options:</p>
 <ul>
-<li><code>--task</code>, <code>-t</code>: Task label displayed during work (max 20 chars, auto-uppercased)</li>
+<li><code>--task</code>: Task label displayed during work (max 20 chars, auto-uppercased)</li>
 <li><code>--work</code>: Work duration in minutes (default: 25)</li>
 <li><code>--short</code>: Short break in minutes (default: 5)</li>
 <li><code>--long</code>: Long break in minutes (default: 15)</li>
 <li><code>--sessions</code>: Sessions before long break (default: 4)</li>
-<li><code>--no-spotify</code>: Disable automatic music playback</li>
+<li><code>--spotify-work</code>: Spotify URI for work sessions</li>
+<li><code>--spotify-break</code>: Spotify URI for break sessions</li>
+<li><code>--water</code>: Water glasses consumed today</li>
+<li><code>--exercise</code>: Exercise sessions completed</li>
+<li><code>--focus</code>: Focus sessions completed</li>
+<li><code>--pills-done</code>: Mark daily pills as taken</li>
 </ul>
 <p>Features:</p>
 <ul>
@@ -171,30 +173,30 @@ uv run --script pomodoro.py --no-spotify
 <li>During breaks: happy lobster with twinkling confetti</li>
 <li>Flashing alerts between sessions</li>
 <li>Tracks completed sessions</li>
-<li>Automatic Spotify playback via AppleScript (macOS)</li>
-<li>Water tracker in top-left corner (shared with water.py)</li>
+<li>Optional Spotify playback via AppleScript (macOS)</li>
+<li>Icon-based trackers displayed on screen</li>
+<li>Interactive command listener via keyboard</li>
 </ul>
-<h2>Water Tracking</h2>
-<p>Track daily water consumption with a cute water drop icon in the top-left corner:</p>
-<pre><code class="language-bash"># Show current count
-uv run --script {baseDir}/water.py
+<h2>Trackers</h2>
+<p>The pomodoro timer supports visual trackers using the Kyrise icon pack. Pass tracker values as arguments to display them during your session:</p>
+<pre><code class="language-bash">cd ~/Bao/TimeToLockIn/HoloClawd-Open-Firmware/examples
 
-# Add a glass (+1)
-uv run --script {baseDir}/water.py add
+# Water tracking (glasses consumed)
+uv run --script pomodoro.py --water 3
 
-# Add multiple glasses
-uv run --script {baseDir}/water.py add 2
+# Exercise sessions
+uv run --script pomodoro.py --exercise 1
 
-# Set to specific count
-uv run --script {baseDir}/water.py set 5
+# Focus sessions completed
+uv run --script pomodoro.py --focus 2
 
-# Reset to 0
-uv run --script {baseDir}/water.py reset
+# Pills taken today
+uv run --script pomodoro.py --pills-done
 
-# Change daily goal
-uv run --script {baseDir}/water.py goal 10
+# Combine multiple trackers
+uv run --script pomodoro.py --task &quot;DEEP WORK&quot; --water 3 --exercise 1 --focus 2
 </code></pre>
-<p>State persists to <code>~/.holocube_water.json</code> and auto-resets each day. The water tracker appears in the top-left corner during pomodoro sessions too.</p>
+<p>Tracker icons appear on the HoloCube display with their current counts.</p>
 <h2>Stock Firmware Tools</h2>
 <h3>holocube.py - GIF Upload (Stock Firmware)</h3>
 <pre><code class="language-bash">uv run --script holocube.py upload animation.gif
@@ -250,14 +252,13 @@ Color.PURPLE  = &quot;#9900ff&quot;
 <li><strong>Screen flickers</strong>: Only clear screen on first frame, use background colors for text updates</li>
 </ul>
 
-              </div>
                 </div>
               </div>
             </article>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/moltbot/skills/tree/main/skills/andrewjiang/holocube/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/tree/main/skills/andrewjiang/holocube/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
@@ -265,7 +266,7 @@ Color.PURPLE  = &quot;#9900ff&quot;
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/andrewjiang/holocube/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/andrewjiang/holocube/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                   Download SKILL.md
                 </a>
@@ -293,10 +294,22 @@ Color.PURPLE  = &quot;#9900ff&quot;
   <footer class="footer">
     <div class="footer-inner">
       <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
-      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. Created by: <a href="https://x.com/neonone1234" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">NeonOne</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
     </div>
   </footer>
   <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
     function copySkillContent(btn) {
       const wrapper = btn.closest('.skill-source-wrapper');
       const content = wrapper.querySelector('.markdown-content');
@@ -312,34 +325,17 @@ Color.PURPLE  = &quot;#9900ff&quot;
         });
       }
     }
-    
+
     async function sendToSecurityAuditor() {
       try {
-        // Get content from the rendered markdown in the DOM
         const contentElement = document.querySelector('.markdown-content');
         if (!contentElement) throw new Error('Could not find markdown content');
-        
         const skillContent = contentElement.innerText || contentElement.textContent;
-        
-        // Store in localStorage
         localStorage.setItem('skillAuditContent', skillContent);
-        
-        // Open security auditor in new tab (go up two levels)
-        window.open('../../security-auditor.html', '_blank');
+        window.open('/security-auditor', '_blank'); 
       } catch (error) {
         alert('Error: ' + error.message);
       }
-    }
-    function toggleTheme() {
-      const html = document.documentElement;
-      const currentTheme = html.getAttribute('data-theme');
-      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-      if (newTheme === 'light') {
-        html.setAttribute('data-theme', 'light');
-      } else {
-        html.removeAttribute('data-theme');
-      }
-      localStorage.setItem('theme', newTheme);
     }
   </script>
 </body>

@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage MongoDB Atlas clusters, projects, users, backups, and alerts via the Atlas Admin API">
+  <title>mongodb-atlas-admin - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Self-Hosted & Automation</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Self-Hosted & Automation</a>
+                <span class="skill-page-author">by @mrlynn</span>
+              </div>
+              <h1 class="skill-page-title">mongodb-atlas-admin</h1>
+              <p class="skill-page-desc">Manage MongoDB Atlas clusters, projects, users, backups, and alerts via the Atlas Admin API</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>MongoDB Atlas Admin</h1>
+<p>Manage MongoDB Atlas infrastructure programmatically via the Atlas Administration API v2.</p>
+<h2>Authentication</h2>
+<p>Atlas API uses HTTP Digest Authentication with API keys or OAuth2 with service accounts.</p>
+<h3>API Keys (Legacy but simpler)</h3>
+<pre><code class="language-bash"># Set credentials
+export ATLAS_PUBLIC_KEY=&quot;your-public-key&quot;
+export ATLAS_PRIVATE_KEY=&quot;your-private-key&quot;
+
+# All requests use digest auth
+curl --user &quot;${ATLAS_PUBLIC_KEY}:${ATLAS_PRIVATE_KEY}&quot; \
+  --digest \
+  --header &quot;Accept: application/vnd.atlas.2025-03-12+json&quot; \
+  --header &quot;Content-Type: application/json&quot; \
+  &quot;https://cloud.mongodb.com/api/atlas/v2/...&quot;
+</code></pre>
+<h3>Service Accounts (OAuth2 - Recommended)</h3>
+<pre><code class="language-bash"># Get access token
+TOKEN=$(curl -s --request POST \
+  &quot;https://cloud.mongodb.com/api/oauth/token&quot; \
+  --header &quot;Content-Type: application/x-www-form-urlencoded&quot; \
+  --data &quot;grant_type=client_credentials&amp;client_id=${CLIENT_ID}&amp;client_secret=${CLIENT_SECRET}&quot; \
+  | jq -r &#39;.access_token&#39;)
+
+# Use token (valid 1 hour)
+curl --header &quot;Authorization: Bearer ${TOKEN}&quot; \
+  --header &quot;Accept: application/vnd.atlas.2025-03-12+json&quot; \
+  &quot;https://cloud.mongodb.com/api/atlas/v2/...&quot;
+</code></pre>
+<h2>Quick Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Endpoint</th>
+<th>Method</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>List projects</td>
+<td><code>/groups</code></td>
+<td>GET</td>
+</tr>
+<tr>
+<td>Create project</td>
+<td><code>/groups</code></td>
+<td>POST</td>
+</tr>
+<tr>
+<td>List clusters</td>
+<td><code>/groups/{groupId}/clusters</code></td>
+<td>GET</td>
+</tr>
+<tr>
+<td>Create cluster</td>
+<td><code>/groups/{groupId}/clusters</code></td>
+<td>POST</td>
+</tr>
+<tr>
+<td>Get cluster</td>
+<td><code>/groups/{groupId}/clusters/{clusterName}</code></td>
+<td>GET</td>
+</tr>
+<tr>
+<td>Update cluster</td>
+<td><code>/groups/{groupId}/clusters/{clusterName}</code></td>
+<td>PATCH</td>
+</tr>
+<tr>
+<td>Delete cluster</td>
+<td><code>/groups/{groupId}/clusters/{clusterName}</code></td>
+<td>DELETE</td>
+</tr>
+<tr>
+<td>List DB users</td>
+<td><code>/groups/{groupId}/databaseUsers</code></td>
+<td>GET</td>
+</tr>
+<tr>
+<td>Create DB user</td>
+<td><code>/groups/{groupId}/databaseUsers</code></td>
+<td>POST</td>
+</tr>
+<tr>
+<td>List IP access</td>
+<td><code>/groups/{groupId}/accessList</code></td>
+<td>GET</td>
+</tr>
+<tr>
+<td>Add IP access</td>
+<td><code>/groups/{groupId}/accessList</code></td>
+<td>POST</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Clusters</h2>
+<h3>List All Clusters in Project</h3>
+<pre><code class="language-bash">curl --user &quot;${ATLAS_PUBLIC_KEY}:${ATLAS_PRIVATE_KEY}&quot; --digest \
+  -H &quot;Accept: application/vnd.atlas.2025-03-12+json&quot; \
+  &quot;https://cloud.mongodb.com/api/atlas/v2/groups/${GROUP_ID}/clusters&quot;
+</code></pre>
+<h3>Get Cluster Details</h3>
+<pre><code class="language-bash">curl --user &quot;${ATLAS_PUBLIC_KEY}:${ATLAS_PRIVATE_KEY}&quot; --digest \
+  -H &quot;Accept: application/vnd.atlas.2025-03-12+json&quot; \
+  &quot;https://cloud.mongodb.com/api/atlas/v2/groups/${GROUP_ID}/clusters/${CLUSTER_NAME}&quot;
+</code></pre>
+<h3>Create Cluster (M10+)</h3>
+<pre><code class="language-bash">curl --user &quot;${ATLAS_PUBLIC_KEY}:${ATLAS_PRIVATE_KEY}&quot; --digest \
+  -H &quot;Accept: application/vnd.atlas.2025-03-12+json&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST &quot;https://cloud.mongodb.com/api/atlas/v2/groups/${GROUP_ID}/clusters&quot; \
+  -d &#39;{
+    &quot;name&quot;: &quot;my-cluster&quot;,
+    &quot;clusterType&quot;: &quot;REPLICASET&quot;,
+    &quot;replicationSpecs&quot;: [{
+      &quot;regionConfigs&quot;: [{
+        &quot;providerName&quot;: &quot;AWS&quot;,
+        &quot;regionName&quot;: &quot;US_EAST_1&quot;,
+        &quot;priority&quot;: 7,
+        &quot;electableSpecs&quot;: {
+          &quot;instanceSize&quot;: &quot;M10&quot;,
+          &quot;nodeCount&quot;: 3
+        }
+      }]
+    }]
+  }&#39;
+</code></pre>
+<h3>Create Free Tier Cluster (M0)</h3>
+<pre><code class="language-bash">curl --user &quot;${ATLAS_PUBLIC_KEY}:${ATLAS_PRIVATE_KEY}&quot; --digest \
+  -H &quot;Accept: application/vnd.atlas.2025-03-12+json&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST &quot;https://cloud.mongodb.com/api/atlas/v2/groups/${GROUP_ID}/clusters&quot; \
+  -d &#39;{
+    &quot;name&quot;: &quot;free-cluster&quot;,
+    &quot;clusterType&quot;: &quot;REPLICASET&quot;,
+    &quot;replicationSpecs&quot;: [{
+      &quot;regionConfigs&quot;: [{
+        &quot;providerName&quot;: &quot;TENANT&quot;,
+        &quot;backingProviderName&quot;: &quot;AWS&quot;,
+        &quot;regionName&quot;: &quot;US_EAST_1&quot;,
+        &quot;priority&quot;: 7,
+        &quot;electableSpecs&quot;: {
+          &quot;instanceSize&quot;: &quot;M0&quot;,
+          &quot;nodeCount&quot;: 3
+        }
+      }]
+    }]
+  }&#39;
+</code></pre>
+<h3>Scale Cluster (Change Instance Size)</h3>
+<pre><code class="language-bash">curl --user &quot;${ATLAS_PUBLIC_KEY}:${ATLAS_PRIVATE_KEY}&quot; --digest \
+  -H &quot;Accept: application/vnd.atlas.2025-03-12+json&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X PATCH &quot;https://cloud.mongodb.com/api/atlas/v2/groups/${GROUP_ID}/clusters/${CLUSTER_NAME}&quot; \
+  -d &#39;{
+    &quot;replicationSpecs&quot;: [{
+      &quot;regionConfigs&quot;: [{
+        &quot;providerName&quot;: &quot;AWS&quot;,
+        &quot;regionName&quot;: &quot;US_EAST_1&quot;,
+        &quot;priority&quot;: 7,
+        &quot;electableSpecs&quot;: {
+          &quot;instanceSize&quot;: &quot;M20&quot;,
+          &quot;nodeCount&quot;: 3
+        }
+      }]
+    }]
+  }&#39;
+</code></pre>
+<h3>Delete Cluster</h3>
+<pre><code class="language-bash">curl --user &quot;${ATLAS_PUBLIC_KEY}:${ATLAS_PRIVATE_KEY}&quot; --digest \
+  -H &quot;Accept: application/vnd.atlas.2025-03-12+json&quot; \
+  -X DELETE &quot;https://cloud.mongodb.com/api/atlas/v2/groups/${GROUP_ID}/clusters/${CLUSTER_NAME}&quot;
+</code></pre>
+<h3>Pause/Resume Cluster</h3>
+<pre><code class="language-bash"># Pause (M10+ only)
+curl --user &quot;${ATLAS_PUBLIC_KEY}:${ATLAS_PRIVATE_KEY}&quot; --digest \
+  -H &quot;Accept: application/vnd.atlas.2025-03-12+json&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X PATCH &quot;https://cloud.mongodb.com/api/atlas/v2/groups/${GROUP_ID}/clusters/${CLUSTER_NAME}&quot; \
+  -d &#39;{&quot;paused&quot;: true}&#39;
+
+# Resume
+curl --user &quot;${ATLAS_PUBLIC_KEY}:${ATLAS_PRIVATE_KEY}&quot; --digest \
+  -H &quot;Accept: application/vnd.atlas.2025-03-12+json&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X PATCH &quot;https://cloud.mongodb.com/api/atlas/v2/groups/${GROUP_ID}/clusters/${CLUSTER_NAME}&quot; \
+  -d &#39;{&quot;paused&quot;: false}&#39;
+</code></pre>
+<hr>
+<h2>Projects (Groups)</h2>
+<h3>List All Projects</h3>
+<pre><code class="language-bash">curl --user &quot;${ATLAS_PUBLIC_KEY}:${ATLAS_PRIVATE_KEY}&quot; --digest \
+  -H &quot;Accept: application/vnd.atlas.2025-03-12+json&quot; \
+  &quot;https://cloud.mongodb.com/api/atlas/v2/groups&quot;
+</code></pre>
+<h3>Create Project</h3>
+<pre><code class="language-bash">curl --user &quot;${ATLAS_PUBLIC_KEY}:${ATLAS_PRIVATE_KEY}&quot; --digest \
+  -H &quot;Accept: application/vnd.atlas.2025-03-12+json&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST &quot;https://cloud.mongodb.com/api/atlas/v2/groups&quot; \
+  -d &#39;{
+    &quot;name&quot;: &quot;my-project&quot;,
+    &quot;orgId&quot;: &quot;YOUR_ORG_ID&quot;
+  }&#39;
+</code></pre>
+<h3>Delete Project</h3>
+<pre><code class="language-bash">curl --user &quot;${ATLAS_PUBLIC_KEY}:${ATLAS_PRIVATE_KEY}&quot; --digest \
+  -H &quot;Accept: application/vnd.atlas.2025-03-12+json&quot; \
+  -X DELETE &quot;https://cloud.mongodb.com/api/atlas/v2/groups/${GROUP_ID}&quot;
+</code></pre>
+<hr>
+<h2>Database Users</h2>
+<h3>List Database Users</h3>
+<pre><code class="language-bash">curl --user &quot;${ATLAS_PUBLIC_KEY}:${ATLAS_PRIVATE_KEY}&quot; --digest \
+  -H &quot;Accept: application/vnd.atlas.2025-03-12+json&quot; \
+  &quot;https://cloud.mongodb.com/api/atlas/v2/groups/${GROUP_ID}/databaseUsers&quot;
+</code></pre>
+<h3>Create Database User</h3>
+<pre><code class="language-bash">curl --user &quot;${ATLAS_PUBLIC_KEY}:${ATLAS_PRIVATE_KEY}&quot; --digest \
+  -H &quot;Accept: application/vnd.atlas.2025-03-12+json&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST &quot;https://cloud.mongodb.com/api/atlas/v2/groups/${GROUP_ID}/databaseUsers&quot; \
+  -d &#39;{
+    &quot;databaseName&quot;: &quot;admin&quot;,
+    &quot;username&quot;: &quot;myuser&quot;,
+    &quot;password&quot;: &quot;securePassword123!&quot;,
+    &quot;roles&quot;: [{
+      &quot;databaseName&quot;: &quot;admin&quot;,
+      &quot;roleName&quot;: &quot;readWriteAnyDatabase&quot;
+    }]
+  }&#39;
+</code></pre>
+<h3>Delete Database User</h3>
+<pre><code class="language-bash">curl --user &quot;${ATLAS_PUBLIC_KEY}:${ATLAS_PRIVATE_KEY}&quot; --digest \
+  -H &quot;Accept: application/vnd.atlas.2025-03-12+json&quot; \
+  -X DELETE &quot;https://cloud.mongodb.com/api/atlas/v2/groups/${GROUP_ID}/databaseUsers/admin/${USERNAME}&quot;
+</code></pre>
+<hr>
+<h2>IP Access List</h2>
+<h3>List IP Access Entries</h3>
+<pre><code class="language-bash">curl --user &quot;${ATLAS_PUBLIC_KEY}:${ATLAS_PRIVATE_KEY}&quot; --digest \
+  -H &quot;Accept: application/vnd.atlas.2025-03-12+json&quot; \
+  &quot;https://cloud.mongodb.com/api/atlas/v2/groups/${GROUP_ID}/accessList&quot;
+</code></pre>
+<h3>Add IP Address</h3>
+<pre><code class="language-bash">curl --user &quot;${ATLAS_PUBLIC_KEY}:${ATLAS_PRIVATE_KEY}&quot; --digest \
+  -H &quot;Accept: application/vnd.atlas.2025-03-12+json&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST &quot;https://cloud.mongodb.com/api/atlas/v2/groups/${GROUP_ID}/accessList&quot; \
+  -d &#39;[{
+    &quot;ipAddress&quot;: &quot;192.168.1.1&quot;,
+    &quot;comment&quot;: &quot;Office IP&quot;
+  }]&#39;
+</code></pre>
+<h3>Allow All IPs (Development Only!)</h3>
+<pre><code class="language-bash">curl --user &quot;${ATLAS_PUBLIC_KEY}:${ATLAS_PRIVATE_KEY}&quot; --digest \
+  -H &quot;Accept: application/vnd.atlas.2025-03-12+json&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST &quot;https://cloud.mongodb.com/api/atlas/v2/groups/${GROUP_ID}/accessList&quot; \
+  -d &#39;[{
+    &quot;cidrBlock&quot;: &quot;0.0.0.0/0&quot;,
+    &quot;comment&quot;: &quot;Allow all - DEV ONLY&quot;
+  }]&#39;
+</code></pre>
+<hr>
+<h2>Backups &amp; Snapshots</h2>
+<h3>List Snapshots</h3>
+<pre><code class="language-bash">curl --user &quot;${ATLAS_PUBLIC_KEY}:${ATLAS_PRIVATE_KEY}&quot; --digest \
+  -H &quot;Accept: application/vnd.atlas.2025-03-12+json&quot; \
+  &quot;https://cloud.mongodb.com/api/atlas/v2/groups/${GROUP_ID}/clusters/${CLUSTER_NAME}/backup/snapshots&quot;
+</code></pre>
+<h3>Take On-Demand Snapshot</h3>
+<pre><code class="language-bash">curl --user &quot;${ATLAS_PUBLIC_KEY}:${ATLAS_PRIVATE_KEY}&quot; --digest \
+  -H &quot;Accept: application/vnd.atlas.2025-03-12+json&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST &quot;https://cloud.mongodb.com/api/atlas/v2/groups/${GROUP_ID}/clusters/${CLUSTER_NAME}/backup/snapshots&quot; \
+  -d &#39;{
+    &quot;description&quot;: &quot;Pre-deployment snapshot&quot;,
+    &quot;retentionInDays&quot;: 7
+  }&#39;
+</code></pre>
+<h3>Restore From Snapshot</h3>
+<pre><code class="language-bash">curl --user &quot;${ATLAS_PUBLIC_KEY}:${ATLAS_PRIVATE_KEY}&quot; --digest \
+  -H &quot;Accept: application/vnd.atlas.2025-03-12+json&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST &quot;https://cloud.mongodb.com/api/atlas/v2/groups/${GROUP_ID}/clusters/${CLUSTER_NAME}/backup/restoreJobs&quot; \
+  -d &#39;{
+    &quot;snapshotId&quot;: &quot;SNAPSHOT_ID&quot;,
+    &quot;deliveryType&quot;: &quot;automated&quot;,
+    &quot;targetClusterName&quot;: &quot;restored-cluster&quot;,
+    &quot;targetGroupId&quot;: &quot;${GROUP_ID}&quot;
+  }&#39;
+</code></pre>
+<hr>
+<h2>Alerts</h2>
+<h3>List Alert Configurations</h3>
+<pre><code class="language-bash">curl --user &quot;${ATLAS_PUBLIC_KEY}:${ATLAS_PRIVATE_KEY}&quot; --digest \
+  -H &quot;Accept: application/vnd.atlas.2025-03-12+json&quot; \
+  &quot;https://cloud.mongodb.com/api/atlas/v2/groups/${GROUP_ID}/alertConfigs&quot;
+</code></pre>
+<h3>Get Active Alerts</h3>
+<pre><code class="language-bash">curl --user &quot;${ATLAS_PUBLIC_KEY}:${ATLAS_PRIVATE_KEY}&quot; --digest \
+  -H &quot;Accept: application/vnd.atlas.2025-03-12+json&quot; \
+  &quot;https://cloud.mongodb.com/api/atlas/v2/groups/${GROUP_ID}/alerts?status=OPEN&quot;
+</code></pre>
+<hr>
+<h2>Instance Sizes</h2>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>vCPUs</th>
+<th>RAM</th>
+<th>Storage</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>M0</td>
+<td>Shared</td>
+<td>Shared</td>
+<td>512 MB</td>
+<td>Free tier, dev/learning</td>
+</tr>
+<tr>
+<td>M2</td>
+<td>Shared</td>
+<td>Shared</td>
+<td>2 GB</td>
+<td>Small dev projects</td>
+</tr>
+<tr>
+<td>M5</td>
+<td>Shared</td>
+<td>Shared</td>
+<td>5 GB</td>
+<td>Larger dev projects</td>
+</tr>
+<tr>
+<td>M10</td>
+<td>2</td>
+<td>2 GB</td>
+<td>10 GB</td>
+<td>Dev/staging, low traffic</td>
+</tr>
+<tr>
+<td>M20</td>
+<td>2</td>
+<td>4 GB</td>
+<td>20 GB</td>
+<td>Light production</td>
+</tr>
+<tr>
+<td>M30</td>
+<td>2</td>
+<td>8 GB</td>
+<td>40 GB</td>
+<td>Production</td>
+</tr>
+<tr>
+<td>M40</td>
+<td>4</td>
+<td>16 GB</td>
+<td>80 GB</td>
+<td>High-traffic production</td>
+</tr>
+<tr>
+<td>M50</td>
+<td>8</td>
+<td>32 GB</td>
+<td>160 GB</td>
+<td>Large production</td>
+</tr>
+<tr>
+<td>M60+</td>
+<td>16+</td>
+<td>64+ GB</td>
+<td>320+ GB</td>
+<td>Enterprise</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Helper Script</h2>
+<p>For convenience, use <code>scripts/atlas.sh</code> wrapper:</p>
+<pre><code class="language-bash"># Usage
+./scripts/atlas.sh &lt;command&gt; [args]
+
+# Examples
+./scripts/atlas.sh projects list
+./scripts/atlas.sh clusters list &lt;project-id&gt;
+./scripts/atlas.sh clusters create &lt;project-id&gt; &lt;name&gt; &lt;size&gt; &lt;region&gt;
+./scripts/atlas.sh clusters delete &lt;project-id&gt; &lt;name&gt;
+./scripts/atlas.sh clusters pause &lt;project-id&gt; &lt;name&gt;
+./scripts/atlas.sh users list &lt;project-id&gt;
+./scripts/atlas.sh users create &lt;project-id&gt; &lt;username&gt; &lt;password&gt;
+</code></pre>
+<hr>
+<h2>Environment Variables</h2>
+<pre><code class="language-bash"># Required
+export ATLAS_PUBLIC_KEY=&quot;...&quot;
+export ATLAS_PRIVATE_KEY=&quot;...&quot;
+
+# Optional (for service accounts)
+export ATLAS_CLIENT_ID=&quot;...&quot;
+export ATLAS_CLIENT_SECRET=&quot;...&quot;
+
+# Common IDs
+export ATLAS_ORG_ID=&quot;...&quot;      # Organization ID
+export ATLAS_GROUP_ID=&quot;...&quot;    # Project/Group ID
+</code></pre>
+<hr>
+<h2>API Reference</h2>
+<ul>
+<li><strong>Base URL:</strong> <code>https://cloud.mongodb.com/api/atlas/v2</code></li>
+<li><strong>Accept Header:</strong> <code>application/vnd.atlas.2025-03-12+json</code></li>
+<li><strong>Full Docs:</strong> <a href="https://www.mongodb.com/docs/atlas/reference/api-resources-spec/v2/">https://www.mongodb.com/docs/atlas/reference/api-resources-spec/v2/</a></li>
+<li><strong>OpenAPI Spec:</strong> <a href="https://github.com/mongodb/atlas-sdk-go/blob/main/openapi/atlas-api.yaml">https://github.com/mongodb/atlas-sdk-go/blob/main/openapi/atlas-api.yaml</a></li>
+</ul>
+<p>For detailed endpoint documentation, see <code>references/api-endpoints.md</code>.</p>
+<hr>
+<h2>Author</h2>
+<p><strong>Michael Lynn</strong> — Principal Staff Developer Advocate at MongoDB</p>
+<ul>
+<li>🌐 Website: <a href="https://mlynn.org">mlynn.org</a></li>
+<li>🐙 GitHub: <a href="https://github.com/mrlynn">@mrlynn</a></li>
+<li>💼 LinkedIn: <a href="https://linkedin.com/in/mlynn">linkedin.com/in/mlynn</a></li>
+</ul>
+<p>Issues &amp; contributions welcome on GitHub!</p>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/mrlynn/mongodb-atlas-admin/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/mrlynn/mongodb-atlas-admin" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/mrlynn/mongodb-atlas-admin/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@mrlynn</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Self-Hosted & Automation</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

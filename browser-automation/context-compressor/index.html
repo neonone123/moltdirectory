@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Automated context management for long-running Clawdbot sessions">
+  <title>context-compressor - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Browser & Automation</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Browser & Automation</a>
+                <span class="skill-page-author">by @maddiedreese</span>
+              </div>
+              <h1 class="skill-page-title">context-compressor</h1>
+              <p class="skill-page-desc">Automated context management for long-running Clawdbot sessions</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Context Compressor Skill</h1>
+<p>Automated context management for long-running Clawdbot sessions. Detects when context limits approach, compresses old conversation history, and seamlessly transfers to a fresh session.</p>
+<h2>When to Use</h2>
+<ul>
+<li>Long coding sessions with extensive context accumulation</li>
+<li>Projects with many iterations and refinements</li>
+<li>When noticing Claude repeating itself or losing track of details</li>
+<li>Proactively before hitting hard context limits</li>
+<li>During heartbeats or idle moments when user isn&#39;t actively waiting</li>
+</ul>
+<h2>How It Works</h2>
+<ol>
+<li><strong>Monitoring</strong>: Continuously tracks context usage via session metadata</li>
+<li><strong>Compression</strong>: When threshold reached (configurable, default 80%), summarizes old messages</li>
+<li><strong>Preservation</strong>: Extracts key decisions, code changes, file states, and action items</li>
+<li><strong>Handoff</strong>: Initiates new session with compressed context as foundation</li>
+<li><strong>Continuity</strong>: User experiences seamless transition with all important context preserved</li>
+</ol>
+<h2>Key Features</h2>
+<ul>
+<li><strong>Smart Summarization</strong>: Preserves decisions, code, file states, not just raw text</li>
+<li><strong>Configurable Thresholds</strong>: Set when compression triggers (70-90% of context limit)</li>
+<li><strong>Background Operation</strong>: Works during heartbeats or low-activity periods</li>
+<li><strong>Selective Retention</strong>: Keeps important files, decisions, TODOs; compresses chaff</li>
+<li><strong>Session State Transfer</strong>: New session inherits all critical context automatically</li>
+</ul>
+<h2>Core Concepts</h2>
+<h3>Context Degradation Patterns</h3>
+<p>As sessions grow long, watch for these signs:</p>
+<ul>
+<li>Repetitive responses (&quot;As I mentioned earlier...&quot;)</li>
+<li>Missing references to earlier decisions</li>
+<li>Forgetting file modifications</li>
+<li>Asking to repeat information</li>
+<li>General coherence degradation</li>
+</ul>
+<h3>Compression Strategy</h3>
+<ol>
+<li><p><strong>Extract Core Intelligence</strong>:</p>
+<ul>
+<li>All decisions made and their rationale</li>
+<li>File paths and their current state</li>
+<li>Pending tasks and their status</li>
+<li>Important code snippets or configurations</li>
+<li>User preferences and patterns</li>
+</ul>
+</li>
+<li><p><strong>Condense History</strong>:</p>
+<ul>
+<li>Remove filler, backtracking, dead ends</li>
+<li>Keep only high-signal turns</li>
+<li>Merge related iterations into summaries</li>
+<li>Preserve critical code snippets inline</li>
+</ul>
+</li>
+<li><p><strong>Format for Efficiency</strong>:</p>
+<ul>
+<li>Use compact representations</li>
+<li>Reference files rather than dump contents</li>
+<li>List decisions as bullet points</li>
+<li>Include only relevant code context</li>
+</ul>
+</li>
+</ol>
+<h2>Usage</h2>
+<h3>Automatic Mode (Recommended)</h3>
+<p>The skill runs automatically during heartbeats and idle periods. Configure threshold:</p>
+<pre><code class="language-bash"># Set compression to trigger at 75% context usage
+context-compressor set-threshold 75
+
+# Check current status
+context-compressor status
+</code></pre>
+<h3>Manual Trigger</h3>
+<pre><code class="language-bash"># Force compression and session reset
+context-compressor compress --force
+</code></pre>
+<h3>Configuration</h3>
+<pre><code class="language-bash"># View all settings
+context-compressor config
+
+# Adjust summarization depth
+context-compressor set-depth brief|detailed|comprehensive
+
+# Set quiet hours (compression won&#39;t run)
+context-compressor set-quiet-hours 23:00-07:00
+</code></pre>
+<h2>Output</h2>
+<p>When compression occurs, the skill produces:</p>
+<ol>
+<li><p><strong>Summary File</strong>: <code>memory/compressed-{session-id}.md</code></p>
+<ul>
+<li>Executive summary of session</li>
+<li>Key decisions made</li>
+<li>Files modified and their states</li>
+<li>Pending tasks</li>
+<li>Code snippets worth preserving</li>
+</ul>
+</li>
+<li><p><strong>Session Handoff</strong>: Automatic new session with:</p>
+<ul>
+<li>User context (USER.md)</li>
+<li>Project memory (MEMORY.md)</li>
+<li>Compressed session summary</li>
+<li>Current working state</li>
+</ul>
+</li>
+</ol>
+<h2>Best Practices</h2>
+<ol>
+<li><strong>Regular Compression</strong>: Don&#39;t wait for limits. Compress proactively every few hours</li>
+<li><strong>Preserve Code</strong>: Always keep actual code snippets, not just references</li>
+<li><strong>Track Decisions</strong>: Explicitly note WHY decisions were made, not just WHAT</li>
+<li><strong>Keep TODOs</strong>: Mark incomplete work clearly for continuity</li>
+<li><strong>Reference Files</strong>: Point to files rather than embedding full contents</li>
+</ol>
+<h2>Integration Points</h2>
+<ul>
+<li><strong>Heartbeats</strong>: Runs compression checks during heartbeat cycles</li>
+<li><strong>Memory System</strong>: Writes compressed summaries to memory files</li>
+<li><strong>Session Management</strong>: Coordinates with session spawn for handoff</li>
+<li><strong>File Tracking</strong>: References current file states accurately</li>
+</ul>
+<h2>Technical Details</h2>
+<h3>Compression Algorithm</h3>
+<ol>
+<li>Parse session transcript into atomic turns</li>
+<li>Score each turn for importance (decisions = high, chat = low)</li>
+<li>Keep top N% of turns by importance score</li>
+<li>Summarize remaining turns into executive summary</li>
+<li>Extract and preserve code blocks separately</li>
+<li>Generate session transfer package</li>
+</ol>
+<h3>Thresholds</h3>
+<ul>
+<li><strong>Conservative (70%)</strong>: Trigger early, preserve more context</li>
+<li><strong>Balanced (80%)</strong>: Default, good for most workflows  </li>
+<li><strong>Aggressive (90%)</strong>: Push limits, maximum session length</li>
+<li><strong>Manual Only</strong>: Disable auto-trigger, compress on demand</li>
+</ul>
+<h3>File References</h3>
+<p>The compressor tracks:</p>
+<ul>
+<li>Modified files and their paths</li>
+<li>Configuration changes</li>
+<li>New files created</li>
+<li>Deleted files</li>
+<li>Directory structure changes</li>
+</ul>
+<h2>Troubleshooting</h2>
+<h3>Compression Too Frequent</h3>
+<pre><code class="language-bash"># Increase threshold
+context-compressor set-threshold 85
+</code></pre>
+<h3>Context Lost After Handoff</h3>
+<p>Check that:</p>
+<ol>
+<li>Compressed summary was generated (<code>memory/compressed-*.md</code>)</li>
+<li>New session loaded memory files</li>
+<li>Critical files weren&#39;t in the &quot;chaff&quot; that got dropped</li>
+</ol>
+<h3>Performance Impact</h3>
+<p>Compression runs in background and should complete in &lt;30s for typical sessions. If slower:</p>
+<ul>
+<li>Reduce summarization depth</li>
+<li>Increase threshold to compress less frequently</li>
+<li>Exclude large files from compression scope</li>
+</ul>
+<h2>Examples</h2>
+<h3>Typical Workflow</h3>
+<pre><code>User: Working on notes app sidebar
+[Session runs 2 hours, many iterations]
+
+Heartbeat triggers → Context at 78% → Auto-compress → New session
+User: (no interruption, seamless continuation)
+New session has: executive summary, key decisions, file states, TODOs
+</code></pre>
+<h3>Manual Recovery</h3>
+<pre><code>User notices Claude repeating itself
+User: &quot;context-compressor compress --force&quot;
+Compressor summarizes → New session starts → User continues seamlessly
+</code></pre>
+<h2>Related Skills</h2>
+<ul>
+<li><strong>memory-system</strong>: Underlying memory infrastructure</li>
+<li><strong>self-improving-agent</strong>: Learns from session patterns</li>
+<li><strong>sessions-spawn</strong>: Handles new session creation</li>
+</ul>
+<h2>See Also</h2>
+<ul>
+<li><a href="https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering">Context Engineering Skills Collection</a></li>
+<li>Research on &quot;lost-in-the-middle&quot; phenomenon in LLM context windows</li>
+</ul>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/maddiedreese/context-compressor/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/maddiedreese/context-compressor" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/maddiedreese/context-compressor/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@maddiedreese</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Browser & Automation</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Live sports alerts for Soccer, NFL, NBA, NHL, MLB, F1 and more">
+  <meta name="description" content="Live sports alerts for Soccer, NFL, NBA, NHL, MLB, F1">
   <title>sports-ticker - MoltDirectory</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -50,7 +50,7 @@
                 <span class="skill-page-author">by @robbyczgw-cla</span>
               </div>
               <h1 class="skill-page-title">sports-ticker</h1>
-              <p class="skill-page-desc">Live sports alerts for Soccer, NFL, NBA, NHL, MLB, F1 and more</p>
+              <p class="skill-page-desc">Live sports alerts for Soccer, NFL, NBA, NHL, MLB, F1</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -67,10 +67,25 @@
                   <h1>Sports Ticker</h1>
 <p>Track your favorite teams across <strong>multiple sports</strong> with <strong>FREE live alerts</strong>!</p>
 <p>Supports: ⚽ Soccer • 🏈 NFL • 🏀 NBA • 🏒 NHL • ⚾ MLB • 🏎️ F1</p>
+<h2>First Run (Onboarding)</h2>
+<p>When no <code>config.json</code> exists, running the setup script launches an interactive wizard:</p>
+<pre><code class="language-bash">python3 scripts/setup.py
+</code></pre>
+<p><strong>The wizard asks:</strong></p>
+<ol>
+<li>📺 <strong>Which sports?</strong> — Pick from Soccer, NFL, NBA, NHL, MLB, F1</li>
+<li>🏆 <strong>Which teams?</strong> — Choose from popular teams or search for any team</li>
+<li>🔔 <strong>Alert style?</strong> — Live scores, final only, or daily digest</li>
+<li>⏰ <strong>Game-day reminders?</strong> — Get a heads-up 30 mins before kick-off</li>
+<li>🌙 <strong>Quiet hours?</strong> — Pause alerts while you sleep</li>
+</ol>
+<p>After setup, your <code>config.json</code> is ready and you can start tracking!</p>
+<p><strong>Re-run setup anytime:</strong></p>
+<pre><code class="language-bash">python3 scripts/setup.py --force  # Overwrites existing config
+</code></pre>
 <h2>Quick Start</h2>
-<pre><code class="language-bash"># Setup
-cp config.example.json config.json
-python3 scripts/setup.py  # Interactive setup
+<pre><code class="language-bash"># First time? Just run setup!
+python3 scripts/setup.py  # Interactive wizard
 
 # Find team IDs (any sport)
 python3 scripts/setup.py find &quot;Lakers&quot; basketball
@@ -111,6 +126,19 @@ python3 scripts/live_monitor.py
 python3 scripts/ticker.py league nba basketball
 python3 scripts/ticker.py league nfl football
 python3 scripts/ticker.py league eng.1 soccer
+
+# 📅 Schedule - View upcoming fixtures (NEW in v3!)
+python3 scripts/schedule.py                    # All teams, next 14 days
+python3 scripts/schedule.py --days 30          # Look further ahead
+python3 scripts/schedule.py --team spurs       # Specific team
+python3 scripts/schedule.py --compact          # One-liner format
+python3 scripts/schedule.py --json             # JSON output
+
+# 🤖 Auto Setup Crons - Generate match-day crons (NEW in v3!)
+python3 scripts/auto_setup_crons.py            # All teams, next 7 days
+python3 scripts/auto_setup_crons.py --team spurs --days 14
+python3 scripts/auto_setup_crons.py --json     # Machine-readable
+python3 scripts/auto_setup_crons.py --commands # OpenClaw CLI commands
 
 # ESPN direct
 python3 scripts/espn.py leagues
@@ -155,6 +183,10 @@ python3 scripts/espn.py search &quot;Chiefs&quot; football
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                   Download SKILL.md
                 </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
               </div>
               <div class="sidebar-card">
                 <div class="sidebar-title">Details</div>

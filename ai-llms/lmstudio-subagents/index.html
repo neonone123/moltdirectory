@@ -64,538 +64,81 @@
                   </button>
                 </div>
                 <div class="markdown-content">
-                  <h1>LM Studio Local Models</h1>
-<p>Use <strong>LM Studio</strong> local models directly via API calls to offload tasks to free, local AI models. This skill equips agents to discover available models, select appropriate ones based on task requirements, and use them for cost-effective local processing without requiring pre-configuration in Clawdbot.</p>
-<h2>Why this skill exists (when to reach for it)</h2>
-<p>Use this skill to <strong>offload self-contained work to local/free models</strong> when quality is sufficient—saving paid tokens for tasks that truly need your primary model.</p>
-<p>Great fits:</p>
-<ul>
-<li>Summarization, extraction, classification, rewriting</li>
-<li>“First-pass” code review or refactoring suggestions</li>
-<li>Drafting outlines, alternatives, and brainstorming</li>
-</ul>
-<p>Avoid / be cautious:</p>
-<ul>
-<li>Tasks requiring web access, proprietary tools, or high-stakes correctness (use your primary model)</li>
-</ul>
+                  <h1>LM Studio Models</h1>
+<p>Offload tasks to local models when quality suffices. Base URL: <a href="http://127.0.0.1:1234">http://127.0.0.1:1234</a>. Auth: <code>Authorization: Bearer lmstudio</code>. instance_id = <code>loaded_instances[].id</code> (same model can have multiple, e.g. <code>key</code> and <code>key:2</code>).</p>
 <h2>Key Terms</h2>
 <ul>
-<li><strong>model_key</strong>: The identifier used by <code>lms</code> commands (from <code>lms ls</code>). This is what you pass to <code>lms load</code>.</li>
-<li><strong>model_identifier</strong>: The identifier used when loading with <code>--identifier</code>. Can be the same as <code>model_key</code> or a custom name. This is what you use in API calls to LM Studio.</li>
-<li><strong>lm_studio_api_url</strong>: The base URL for LM Studio&#39;s API. Default is <code>http://127.0.0.1:1234/v1</code>. No Clawdbot config required - the skill works with LM Studio&#39;s default server.</li>
+<li><strong>model</strong>: From GET models key; use in chat and optional load.</li>
+<li><strong>lm_studio_api_url</strong>: Default <a href="http://127.0.0.1:1234">http://127.0.0.1:1234</a> (paths /api/v1/...).</li>
+<li><strong>response_id</strong> / <strong>previous_response_id</strong>: Chat returns response_id; pass as previous_response_id for stateful.</li>
+<li><strong>instance_id</strong>: For unload, use only the value from GET /api/v1/models for that model: each <code>loaded_instances[].id</code>. Do not assume it equals the model key; with multiple instances ids can be like key:2. LM Studio docs: List (loaded_instances[].id), Unload (instance_id).</li>
 </ul>
-<p><strong>Note:</strong> The description above contains all triggering information. The sections below provide implementation details for using the skill once triggered.</p>
+<p>Trigger in frontmatter; below = implementation.</p>
 <h2>Prerequisites</h2>
-<ul>
-<li>LM Studio installed with <code>lms</code> CLI available on PATH</li>
-<li>LM Studio server running (default: <a href="http://127.0.0.1:1234">http://127.0.0.1:1234</a>)</li>
-<li>Models downloaded in LM Studio</li>
-<li>Node.js available (for helper script; curl can be used as alternative)</li>
-</ul>
+<p>LM Studio 0.4+, server :1234, models on disk; load/unload via API (JIT optional); Node for script (curl ok).</p>
+<h2>Quick start</h2>
+<p>Minimal path: list models, then one chat. Replace <code>&lt;model&gt;</code> with a key from GET /api/v1/models and <code>&lt;task&gt;</code> with the task text.</p>
+<pre><code class="language-bash">curl -s -H &#39;Authorization: Bearer lmstudio&#39; http://127.0.0.1:1234/api/v1/models
+node scripts/lmstudio-api.mjs &lt;model&gt; &#39;&lt;task&gt;&#39; --temperature=0.5 --max-output-tokens=200
+</code></pre>
+<p>Stateful multi-turn: pass <code>--previous-response-id=&lt;id&gt;</code> from the prior script output. Or use <code>--stateful</code> to persist response_id automatically. Optional <code>--log &lt;path&gt;</code> for request/response.</p>
+<pre><code class="language-bash">node scripts/lmstudio-api.mjs &lt;model&gt; &#39;First turn...&#39; --previous-response-id=$ID1
+node scripts/lmstudio-api.mjs &lt;model&gt; &#39;Second turn...&#39; --previous-response-id=$ID2
+</code></pre>
 <h2>Complete Workflow</h2>
-<h3>Step 0: Preflight (Required)</h3>
-<ol>
-<li>Verify LM Studio CLI is available:</li>
-</ol>
-<pre><code class="language-bash">exec command:&quot;lms --help&quot;
+<h3>Step 0: Preflight</h3>
+<p>GET <base>/api/v1/models; non-200 or connection error = server not ready.</p>
+<pre><code class="language-bash">exec command:&quot;curl -s -o /dev/null -w &#39;%{http_code}&#39; -H &#39;Authorization: Bearer lmstudio&#39; http://127.0.0.1:1234/api/v1/models&quot;
 </code></pre>
-<ol start="2">
-<li>Verify the LM Studio server is running and reachable:</li>
-</ol>
-<pre><code class="language-bash">exec command:&quot;lms server status --json&quot;
+<h3>Step 1: List Models and Select</h3>
+<p>GET /api/v1/models to list models. Parse each entry: key, type, loaded_instances, max_context_length, capabilities. If a model already has loaded_instances.length &gt; 0 and fits the task, skip to Step 5; otherwise pick a key for chat (and optional load in Step 3). Choose by task: vision -&gt; capabilities.vision; embedding -&gt; type=embedding; context -&gt; max_context_length. Prefer already-loaded; prefer smaller for speed, larger for reasoning. Note loaded_instances[].id for optional unload later.</p>
+<p><strong>Example — list models:</strong></p>
+<pre><code class="language-bash">exec command:&quot;curl -s -H &#39;Authorization: Bearer lmstudio&#39; http://127.0.0.1:1234/api/v1/models&quot;
 </code></pre>
-<h3>Step 1: List Available Models</h3>
-<p>Get all downloaded models:</p>
-<pre><code class="language-bash">exec command:&quot;lms ls --json&quot;
+<p>Parse models[] (key, type, loaded_instances, max_context_length, capabilities, params_string). If a model has loaded_instances.length &gt; 0 and fits task, skip to Step 5; else pick key for chat (and optional load). Note loaded_instances[].id for optional unload.</p>
+<h3>Step 2: Model Selection</h3>
+<p>Pick key from GET response; use as model in chat (optional load). Constraints: vision -&gt; capabilities.vision; embedding -&gt; type=embedding; context -&gt; max_context_length. Prefer loaded (loaded_instances non-empty), smaller for speed/larger for reasoning; fallback primary. If unsure, use the first loaded instance for that key or the smallest loaded model that fits the task. Optional POST load; else JIT on first chat.</p>
+<h3>Step 3: Load Model (optional)</h3>
+<p>Optional: POST /api/v1/models/load { model, context_length?, ... }. Or run scripts/load.mjs &lt;model&gt;. JIT: first chat loads; explicit load only for specific options.</p>
+<h3>Step 4: Verify Loaded (optional)</h3>
+<p>If explicit load: GET models, confirm loaded_instances. If JIT: no verify; first chat returns model_instance_id, stats.model_load_time_seconds.</p>
+<h3>Step 5: Call API</h3>
+<p>From the skill folder: node scripts/lmstudio-api.mjs &lt;model&gt; &#39;&lt;task&gt;&#39; [options].</p>
+<pre><code class="language-bash">exec command:&quot;node scripts/lmstudio-api.mjs &lt;model&gt; &#39;&lt;task&gt;&#39; --temperature=0.7 --max-output-tokens=2000&quot;
 </code></pre>
-<p>Parse JSON to extract:</p>
-<ul>
-<li>model_key (e.g., <code>meta-llama-3.1-8b-instruct</code> or <code>lmstudio-community/meta-llama-3.1-8b-instruct</code>)</li>
-<li>Type (llm, vlm, embeddings)</li>
-<li>Size (disk space)</li>
-<li>Architecture (Llama, Qwen2, etc.)</li>
-<li>Parameters (model size)</li>
-</ul>
-<p>Filter by type if needed:</p>
-<ul>
-<li><code>lms ls --json --llm</code> - Only LLM models</li>
-<li><code>lms ls --json --embedding</code> - Only embedding models</li>
-<li><code>lms ls --json --detailed</code> - More detailed information</li>
-</ul>
-<h3>Step 2: Check Currently Loaded Models</h3>
-<p>Check what&#39;s already in memory:</p>
-<pre><code class="language-bash">exec command:&quot;lms ps --json&quot;
+<p>Stateful: add --previous-response-id=<response_id>. Curl: POST <base>/api/v1/chat, body model, input, store, temperature, max_output_tokens; optional previous_response_id. Parse: output (type message) -&gt; content; response_id, model_instance_id, stats. Script outputs content, model_instance_id, response_id, usage.</p>
+<h3>Step 6: Unload (optional)</h3>
+<p>For the model key you used: GET /api/v1/models, then for <strong>each</strong> <code>loaded_instances[].id</code> for that model, POST /api/v1/models/unload with body <code>{&quot;instance_id&quot;: &quot;&lt;that id&gt;&quot;}</code>. Use the id from the response only (do not send the model key unless it exactly equals that id). Or run scripts/unload.mjs &lt;model_key&gt; (script does GET then unloads each instance id). Optional --unload-after (default off); use --keep to leave loaded. Unload only that model&#39;s instances. JIT+TTL auto-unload; explicit when needed.</p>
+<pre><code class="language-bash"># One unload per instance_id; repeat for each id in that model&#39;s loaded_instances
+exec command:&quot;curl -s -X POST http://127.0.0.1:1234/api/v1/models/unload -H &#39;Content-Type: application/json&#39; -H &#39;Authorization: Bearer lmstudio&#39; -d &#39;{\&quot;instance_id\&quot;: \&quot;&lt;instance_id&gt;\&quot;}&#39;&quot;
 </code></pre>
-<p>Parse JSON to see which models are currently loaded.</p>
-<p>If a suitable model is already loaded (check by model_identifier), skip to Step 6 (call API).</p>
-<h3>Step 3: Model Selection</h3>
-<p>Analyze task requirements and select appropriate model:</p>
-<p><strong>Selection Criteria:</strong></p>
-<ul>
-<li><strong>Task complexity</strong>: Smaller models (1B-3B) for simple tasks, larger models (7B+) for complex tasks</li>
-<li><strong>Context requirements</strong>: Match model&#39;s max context length to task needs</li>
-<li><strong>Model capabilities</strong>: VLM models for vision tasks, embeddings for search, LLMs for text generation</li>
-<li><strong>Memory constraints</strong>: Prefer already-loaded models when appropriate</li>
-<li><strong>Model size</strong>: Balance capability needs with available memory</li>
-</ul>
-<p><strong>Model Selection:</strong></p>
-<ul>
-<li>Pick a <code>model_key</code> from <code>lms ls</code> that matches task requirements.</li>
-<li>Use the <code>model_key</code> as the <code>model_identifier</code> when loading (or derive a clean identifier from it).</li>
-<li>Any model in LM Studio can be used - no configuration needed.</li>
-</ul>
-<h3>Step 4: Load Model</h3>
-<p>Before loading a large model, optionally estimate memory needs:</p>
-<pre><code class="language-bash">exec command:&quot;lms load --estimate-only &lt;model_key&gt;&quot;
+<h3>Step 7: Verify unload (optional)</h3>
+<p>After unloading, confirm no instances remain for that model key. Run the jq check below; result must be <code>0</code>. If non-zero, unload the remaining instance_id(s) from that model and re-run the check. Do not infer from &quot;model object exists&quot;; the object still exists with an empty <code>loaded_instances</code> array.</p>
+<pre><code class="language-bash">exec command:&quot;curl -s -H &#39;Authorization: Bearer lmstudio&#39; http://127.0.0.1:1234/api/v1/models | jq &#39;.models[]|select(.key==\&quot;&lt;model_key&gt;\&quot;)|.loaded_instances|length&#39;&quot;
 </code></pre>
-<p>Load the selected model into memory:</p>
-<pre><code class="language-bash">exec command:&quot;lms load &lt;model_key&gt; --identifier \&quot;&lt;model_identifier&gt;\&quot; --ttl 3600&quot;
-</code></pre>
-<p><strong>Optional flags:</strong></p>
-<ul>
-<li><code>--gpu=max|auto|0.0-1.0</code> - Control GPU offload (e.g., <code>--gpu=0.5</code> for 50% GPU, <code>--gpu=max</code> for full GPU)</li>
-<li><code>--context-length=&lt;N&gt;</code> - Set context length (e.g., <code>--context-length=4096</code>)</li>
-<li><code>--identifier=&quot;&lt;name&gt;&quot;</code> - Assign custom identifier for API reference (use model_key or derive clean identifier)</li>
-<li><code>--ttl=&lt;seconds&gt;</code> - Auto-unload after inactivity period (recommended default to avoid thrash and cleanup races)</li>
-</ul>
-<p><strong>Important</strong>: The <code>lms load</code> command blocks until the model is fully loaded. For large models (70B+), this can take 3+ minutes. The command will return when loading completes.</p>
-<p><strong>Example:</strong></p>
-<pre><code class="language-bash">exec command:&quot;lms load meta-llama-3.1-8b-instruct --identifier \&quot;meta-llama-3.1-8b-instruct\&quot; --gpu=auto --context-length=4096 --ttl 3600&quot;
-</code></pre>
-<h3>Step 5: Verify Model Loaded (CRITICAL SAFETY STEP)</h3>
-<p><strong>NEVER call the API without verifying the model is loaded.</strong></p>
-<p><strong>Note</strong>: Since <code>lms load</code> blocks until loading completes, verification should be straightforward. However, verify anyway as a safety check.</p>
-<p>Verify the model is actually in memory:</p>
-<pre><code class="language-bash">exec command:&quot;lms ps --json&quot;
-</code></pre>
-<p>Parse JSON response and check if model_identifier appears as a loaded identifier.</p>
-<p><strong>If model not found:</strong></p>
-<ol>
-<li>This should be rare since <code>lms load</code> blocks until complete, but if it happens:</li>
-<li>Wait 2-3 seconds (model may still be finalizing)</li>
-<li>Retry verification: <code>exec command:&quot;lms ps --json&quot;</code></li>
-<li>Repeat up to 3 attempts total</li>
-<li>If still not loaded after retries: <strong>ABORT</strong> with error message, do NOT call API</li>
-</ol>
-<p><strong>If model found:</strong> Proceed to call LM Studio API.</p>
-<h3>Step 6: Call LM Studio API Directly</h3>
-<p>Call LM Studio&#39;s OpenAI-compatible API directly using the loaded model.</p>
-<p><strong>Option A: Using helper script (recommended for reliability)</strong></p>
-<pre><code class="language-bash">exec command:&quot;node {baseDir}/scripts/lmstudio-api.mjs &lt;model_identifier&gt; &#39;&lt;task description&gt;&#39; --temperature=0.7 --max-tokens=2000&quot;
-</code></pre>
-<p>The script handles:</p>
-<ul>
-<li>Proper JSON encoding (no escaping issues)</li>
-<li>Error handling and retries</li>
-<li>Response validation (checks <code>response.model</code> matches request)</li>
-<li>Consistent output format</li>
-</ul>
-<p><strong>Option B: Direct curl call</strong></p>
-<p><strong>API URL:</strong> Use default <code>http://127.0.0.1:1234/v1</code> (LM Studio&#39;s standard default). No configuration needed.</p>
-<p><strong>Make API call:</strong></p>
-<pre><code class="language-bash">exec command:&quot;curl -X POST &lt;lm_studio_api_url&gt;/chat/completions \
-  -H &#39;Content-Type: application/json&#39; \
-  -H &#39;Authorization: Bearer lmstudio&#39; \
-  -d &#39;{
-    \&quot;model\&quot;: \&quot;&lt;model_identifier&gt;\&quot;,
-    \&quot;messages\&quot;: [{\&quot;role\&quot;: \&quot;user\&quot;, \&quot;content\&quot;: \&quot;&lt;task description&gt;\&quot;}],
-    \&quot;temperature\&quot;: 0.7,
-    \&quot;max_tokens\&quot;: 2000
-  }&#39;&quot;
-</code></pre>
-<p><strong>Parameters:</strong></p>
-<ul>
-<li><code>model</code> (required): The model_identifier used when loading (must match <code>--identifier</code> from Step 4)</li>
-<li><code>messages</code> (required): Array of message objects with <code>role</code> and <code>content</code></li>
-<li><code>temperature</code> (optional): Sampling temperature (0.0-2.0, default 0.7)</li>
-<li><code>max_tokens</code> (optional): Maximum tokens to generate (adjust based on task)</li>
-</ul>
-<p><strong>Response format:</strong></p>
-<ul>
-<li>Parse JSON response</li>
-<li><strong>Validate <code>response.model</code> field matches requested model_identifier</strong> (LM Studio may use different model if requested one isn&#39;t loaded)</li>
-<li>Extract <code>choices[0].message.content</code> for the model&#39;s response</li>
-<li>Check for <code>error</code> field in response for error handling</li>
-</ul>
-<p><strong>Example (using script):</strong></p>
-<pre><code class="language-bash">exec command:&quot;node {baseDir}/scripts/lmstudio-api.mjs meta-llama-3.1-8b-instruct &#39;Summarize this document and extract key points&#39; --temperature=0.7 --max-tokens=2000&quot;
-</code></pre>
-<p><strong>Example (using curl):</strong></p>
-<pre><code class="language-bash">exec command:&quot;curl -X POST http://127.0.0.1:1234/v1/chat/completions \
-  -H &#39;Content-Type: application/json&#39; \
-  -H &#39;Authorization: Bearer lmstudio&#39; \
-  -d &#39;{
-    \&quot;model\&quot;: \&quot;meta-llama-3.1-8b-instruct\&quot;,
-    \&quot;messages\&quot;: [{\&quot;role\&quot;: \&quot;user\&quot;, \&quot;content\&quot;: \&quot;Summarize this document and extract key points\&quot;}],
-    \&quot;temperature\&quot;: 0.7,
-    \&quot;max_tokens\&quot;: 2000
-  }&#39;&quot;
-</code></pre>
-<h3>Step 7: Format and Return Results</h3>
-<p>Extract and format the API response:</p>
-<p><strong>If using helper script:</strong></p>
-<ol>
-<li>Parse JSON output from script (already validated)</li>
-<li>Extract <code>content</code> field - this contains the model&#39;s response</li>
-<li>Optionally use <code>usage</code> field for token statistics</li>
-<li>Format the result appropriately for the task context</li>
-<li>Return the formatted result to the user</li>
-</ol>
-<p><strong>If using curl directly:</strong></p>
-<ol>
-<li>Parse the JSON response from the curl command</li>
-<li><strong>Validate <code>response.model</code> field</strong> - ensure it matches the requested <code>model_identifier</code> (important: LM Studio may auto-select models)</li>
-<li>Extract <code>choices[0].message.content</code> - this contains the model&#39;s response</li>
-<li>Check for errors: if response contains <code>error</code> field, handle appropriately</li>
-<li>If <code>response.model</code> doesn&#39;t match request, log warning but proceed (LM Studio behavior)</li>
-<li>Format the result appropriately for the task context</li>
-<li>Return the formatted result to the user</li>
-</ol>
-<p><strong>Error handling:</strong></p>
-<ul>
-<li>If <code>error</code> field present: report error message to user</li>
-<li>If <code>response.model</code> doesn&#39;t match: log warning, proceed with response (LM Studio may have auto-selected model)</li>
-<li>If response structure unexpected: log warning and attempt to extract content</li>
-<li>If API call fails (non-200 status): report HTTP error</li>
-</ul>
-<h3>Step 8: Unload Model (Cleanup)</h3>
-<p><strong>Default policy</strong>: Rely on <code>--ttl</code> for automatic cleanup to avoid thrash and races. Unload explicitly when you hit memory pressure or the user requests immediate cleanup.</p>
-<p>If unloading explicitly after API call completes:</p>
-<pre><code class="language-bash">exec command:&quot;lms unload &lt;model_identifier&gt;&quot;
-</code></pre>
-<p><strong>Note</strong>: <code>lms unload</code> accepts either the model_key or the identifier. Since we loaded with <code>--identifier</code>, use the model_identifier for consistency.</p>
-<p><strong>Handle errors gracefully:</strong></p>
-<ul>
-<li>If model already unloaded: No-op, continue</li>
-<li>If model still in use: Log warning, suggest manual cleanup later</li>
-<li>If unload fails: Log warning, suggest manual cleanup</li>
-</ul>
-<h2>Model Selection Guide</h2>
-<h3>Decision inputs (what to look at)</h3>
-<p>Pull these from <code>lms ls --json</code> (and optionally <code>lms ls --json --detailed</code>):</p>
-<ul>
-<li><code>type</code>: <code>llm</code> | <code>vlm</code> | <code>embedding</code></li>
-<li><code>vision</code>: boolean (if the task includes images, require <code>vision=true</code>)</li>
-<li><code>trainedForToolUse</code>: boolean (prefer true when tool/function calling is important)</li>
-<li><code>maxContextLength</code>: number (require enough context for long docs)</li>
-<li><code>paramsString</code> / model size: rough proxy for cost/speed</li>
-</ul>
-<p>Also check runtime state:</p>
-<ul>
-<li><code>lms ps --json</code> for already-loaded candidates (prefer these to avoid load time and memory churn)</li>
-</ul>
-<h3>Heuristics (simple selection policy)</h3>
-<p>Use a constraints-first approach, then score:</p>
-<ol>
-<li><strong>Hard constraints</strong></li>
-</ol>
-<ul>
-<li>If the task is vision/image-based → only consider models where <code>vision=true</code></li>
-<li>If you need embeddings → only consider <code>type=embedding</code></li>
-<li>If task requires a minimum context window → only consider models with <code>maxContextLength &gt;= needed</code></li>
-</ul>
-<ol start="2">
-<li><strong>Preferences / scoring</strong></li>
-</ol>
-<ul>
-<li>Prefer models already loaded (<code>lms ps</code>) if they meet constraints</li>
-<li>Prefer <code>trainedForToolUse=true</code> when the task benefits from structured tool use</li>
-<li>Prefer smaller models for cheap/fast tasks; larger models for deeper reasoning</li>
-</ul>
-<ol start="3">
-<li><strong>Fallbacks</strong></li>
-</ol>
-<ul>
-<li>If no model meets constraints: either pick the closest match (and warn) or fall back to your primary model.</li>
-</ul>
-<h3>Memory optimization</h3>
-<ul>
-<li>Check <code>lms ps</code> first — prefer already-loaded models when appropriate</li>
-<li>Use <code>lms load --estimate-only &lt;model_key&gt;</code> to preview requirements</li>
-<li>Use <code>--ttl</code> to avoid leaving large models resident indefinitely</li>
-</ul>
-<h2>Safety Checks</h2>
-<h3>CRITICAL: Load Verification</h3>
-<p><strong>Never call the API without verifying the model is loaded.</strong></p>
-<p>The verification step (Step 5) is mandatory. Without it:</p>
-<ul>
-<li>API call may fail with &quot;model not available&quot; errors</li>
-<li>Wasted resources making API calls that can&#39;t succeed</li>
-<li>Confusing error messages</li>
-</ul>
-<h3>Retry Logic</h3>
-<p>Load verification includes retry logic to handle eventual consistency:</p>
-<ol>
-<li>Initial check immediately after load</li>
-<li>Wait 2-3 seconds if not found</li>
-<li>Retry up to 3 total attempts</li>
-<li>Abort if still not loaded after retries</li>
-</ol>
-<h3>Model Identifier Consistency</h3>
-<p>Ensure consistent use of model identifiers:</p>
-<ul>
-<li>Use <code>model_key</code> from <code>lms ls</code> for <code>lms load</code></li>
-<li>Use the same <code>model_identifier</code> (from <code>--identifier</code>) for API calls</li>
-<li>The identifier used in API calls must match what was loaded</li>
-</ul>
+<p>Expect output <code>0</code>. If not, unload remaining instance_ids and re-run.</p>
 <h2>Error Handling</h2>
-<h3>Model Not Found</h3>
-<p><strong>Symptom:</strong> <code>lms ls</code> doesn&#39;t show the model, or <code>lms load</code> fails with &quot;model not found&quot;</p>
-<p><strong>Response:</strong></p>
 <ul>
-<li>Error message: &quot;Model <model-key> not found in LM Studio&quot;</li>
-<li>Suggest: &quot;Download the model first using <code>lms get &lt;model-key&gt;</code> or via LM Studio UI&quot;</li>
+<li>Script retries on transient failure (2-3 attempts with backoff).</li>
+<li>Model not found -&gt; pick another model from GET response.</li>
+<li>API/server errors -&gt; GET models, check URL.</li>
+<li>Invalid output -&gt; retry.</li>
+<li>Memory -&gt; unload or smaller model.</li>
+<li>Unload fails -&gt; instance_id must be exactly from GET /api/v1/models for that model&#39;s loaded_instances[].id (not the model key unless it matches).</li>
 </ul>
-<h3>API Call Failed</h3>
-<p><strong>Symptom:</strong> curl command returns non-200 status or error response</p>
-<p><strong>Response:</strong></p>
-<ul>
-<li>Check HTTP status code in response</li>
-<li>If 404: Model not found or not loaded - verify model_identifier matches loaded model</li>
-<li>If 500: LM Studio server error - check server logs, try reloading model</li>
-<li>If connection refused: LM Studio server not running - start server first</li>
-<li>Extract error message from response JSON if available</li>
-<li>Suggest: &quot;Verify model is loaded with <code>lms ps</code>, check LM Studio server status, or try reloading the model&quot;</li>
-</ul>
-<h3>Invalid API Response</h3>
-<p><strong>Symptom:</strong> API call succeeds but response structure is unexpected or missing content</p>
-<p><strong>Response:</strong></p>
-<ul>
-<li>Check if response contains <code>choices</code> array</li>
-<li>Check if <code>choices[0].message.content</code> exists</li>
-<li>If structure unexpected: Log warning, attempt to extract any available content</li>
-<li>If completely malformed: Report error and suggest retrying the API call</li>
-</ul>
-<h3>Load Timeout</h3>
-<p><strong>Symptom:</strong> <code>lms load</code> command hangs or takes extremely long</p>
-<p><strong>Response:</strong></p>
-<ul>
-<li><code>lms load</code> blocks until loading completes, which can take 3+ minutes for large models (70B+)</li>
-<li>The exec tool has a default timeout (1800 seconds / 30 minutes) which should be sufficient</li>
-<li>If timeout occurs: &quot;Model load timed out - this may indicate insufficient memory or a corrupted model file&quot;</li>
-<li>Suggest: &quot;Try smaller model, free up memory by unloading other models, or verify model file integrity&quot;</li>
-</ul>
-<h3>Load Verification Fails</h3>
-<p><strong>Symptom:</strong> Load command succeeds but <code>lms ps</code> doesn&#39;t show model after retries</p>
-<p><strong>Response:</strong></p>
-<ul>
-<li>This should be rare since <code>lms load</code> blocks until complete</li>
-<li>If it happens: Abort workflow with error: &quot;Model failed to appear after load completion&quot;</li>
-<li>Do NOT call API</li>
-<li>Suggest: &quot;Check LM Studio logs, verify the identifier matches what was loaded, try reloading&quot;</li>
-</ul>
-<h3>Insufficient Memory</h3>
-<p><strong>Symptom:</strong> <code>lms load</code> fails with memory-related errors</p>
-<p><strong>Response:</strong></p>
-<ul>
-<li>Error message: &quot;Insufficient memory to load model&quot;</li>
-<li>Suggest: &quot;Unload other models using <code>lms unload --all</code> or select smaller model&quot;</li>
-<li>Use <code>lms load --estimate-only</code> to preview requirements</li>
-</ul>
-<h3>API Call Fails After Verification</h3>
-<p><strong>Symptom:</strong> Model verified as loaded but API call fails</p>
-<p><strong>Response:</strong></p>
-<ul>
-<li>Report error to user</li>
-<li>Check if model is still loaded: <code>lms ps --json</code></li>
-<li>If model disappeared: Reload model and retry API call</li>
-<li>If model still loaded but API fails: Check API URL, verify model_identifier matches exactly</li>
-<li>Still attempt to unload model (cleanup) if requested</li>
-</ul>
-<h3>Model Already Loaded</h3>
-<p><strong>Symptom:</strong> <code>lms ps</code> shows model is already loaded</p>
-<p><strong>Response:</strong></p>
-<ul>
-<li>Skip load step (Step 4)</li>
-<li>Proceed directly to verification (Step 5) and then API call (Step 6)</li>
-<li>This is an optimization, not an error</li>
-<li>Ensure the model_identifier matches what&#39;s already loaded</li>
-</ul>
-<h3>Unload Fails</h3>
-<p><strong>Symptom:</strong> <code>lms unload</code> fails (model still in use, etc.)</p>
-<p><strong>Response:</strong></p>
-<ul>
-<li>Log warning: &quot;Failed to unload model <model-key>&quot;</li>
-<li>Suggest: &quot;Model may still be in use, unload manually later with <code>lms unload &lt;model-key&gt;</code>&quot;</li>
-<li>Continue workflow (unload failure doesn&#39;t block completion)</li>
-</ul>
-<h2>Examples</h2>
-<h3>Simple Task: Document Summarization</h3>
-<pre><code class="language-bash"># 1. List models
-exec command:&quot;lms ls --json --llm&quot;
-
-# 2. Check loaded
-exec command:&quot;lms ps --json&quot;
-
-# 3. Select small model (e.g., meta-llama-3.1-8b-instruct)
-
-# 4. Load model
-exec command:&quot;lms load meta-llama-3.1-8b-instruct --identifier \&quot;meta-llama-3.1-8b-instruct\&quot; --ttl 3600&quot;
-
-# 5. Verify loaded
-exec command:&quot;lms ps --json&quot;
-# Parse and confirm model appears
-
-# 6. Call LM Studio API (using helper script)
-exec command:&quot;node {baseDir}/scripts/lmstudio-api.mjs meta-llama-3.1-8b-instruct &#39;Summarize this document and extract 5 key points&#39; --temperature=0.7 --max-tokens=2000&quot;
-
-# 7. Parse response and extract content field
-
-# 8. Optional explicit unload after completion (otherwise rely on TTL)
-exec command:&quot;lms unload meta-llama-3.1-8b-instruct&quot;
-</code></pre>
-<h3>Complex Task: Codebase Analysis</h3>
-<pre><code class="language-bash"># 1-2. List and check (same as above)
-
-# 3. Select larger model (e.g., meta-llama-3.1-70b-instruct)
-
-# 4. Load with context length
-exec command:&quot;lms load meta-llama-3.1-70b-instruct --identifier \&quot;meta-llama-3.1-70b-instruct\&quot; --context-length=8192 --gpu=auto --ttl 3600&quot;
-
-# 5. Verify loaded
-exec command:&quot;lms ps --json&quot;
-
-# 6. Call LM Studio API with longer context (using helper script)
-exec command:&quot;node {baseDir}/scripts/lmstudio-api.mjs meta-llama-3.1-70b-instruct &#39;Analyze the codebase architecture, identify main components, and suggest improvements&#39; --temperature=0.3 --max-tokens=4000&quot;
-
-# 7. Parse response and format results
-
-# 8. Optional unload (same as above)
-</code></pre>
-<h3>Vision Task: Image Description</h3>
-<pre><code class="language-bash"># 1. List VLM models
-exec command:&quot;lms ls --json&quot;
-
-# 2-3. Select VLM model (e.g., qwen2-vl-7b-instruct)
-
-# 4. Load VLM model
-exec command:&quot;lms load qwen2-vl-7b-instruct --identifier \&quot;qwen2-vl-7b-instruct\&quot; --gpu=max --ttl 3600&quot;
-
-# 5. Verify loaded
-exec command:&quot;lms ps --json&quot;
-
-# 6. Call LM Studio API with image (if supported by model, using helper script)
-exec command:&quot;node {baseDir}/scripts/lmstudio-api.mjs qwen2-vl-7b-instruct &#39;Describe this image in detail, including objects, colors, composition, and any text visible&#39; --temperature=0.7 --max-tokens=2000&quot;
-
-# 7-8. Parse response and unload
+<h2>Copy-paste</h2>
+<p>Replace <code>&lt;model&gt;</code> with a key from GET /api/v1/models and <code>&lt;task&gt;</code> with the task text. Optional unload per Step 6 (instance_id from GET models for that key).</p>
+<pre><code class="language-bash">exec command:&quot;curl -s -H &#39;Authorization: Bearer lmstudio&#39; http://127.0.0.1:1234/api/v1/models&quot;
+exec command:&quot;node scripts/lmstudio-api.mjs &lt;model&gt; &#39;&lt;task&gt;&#39; --temperature=0.7 --max-output-tokens=2000&quot;
 </code></pre>
 <h2>LM Studio API Details</h2>
-<h3>Helper Script (Recommended)</h3>
-<p>The skill includes <code>scripts/lmstudio-api.mjs</code> for reliable API calls. This script is optional but recommended for better error handling and response validation.</p>
-<p><strong>Benefits:</strong></p>
-<ul>
-<li>Proper JSON encoding (no escaping issues)</li>
-<li>Built-in error handling</li>
-<li>Response validation (checks <code>response.model</code> matches request)</li>
-<li>Consistent output format</li>
-<li>Environment variable support (<code>LM_STUDIO_API_URL</code>)</li>
-</ul>
-<p><strong>Usage:</strong></p>
-<pre><code class="language-bash">node {baseDir}/scripts/lmstudio-api.mjs &lt;model_identifier&gt; &#39;&lt;task&gt;&#39; [--temperature=0.7] [--max-tokens=2000] [--api-url=http://127.0.0.1:1234/v1]
-</code></pre>
-<p><strong>Output:</strong></p>
-<pre><code class="language-json">{
-  &quot;content&quot;: &quot;&lt;model response&gt;&quot;,
-  &quot;model&quot;: &quot;&lt;model used&gt;&quot;,
-  &quot;usage&quot;: {&quot;prompt_tokens&quot;: 100, &quot;completion_tokens&quot;: 200, &quot;total_tokens&quot;: 300}
-}
-</code></pre>
-<p><strong>Note:</strong> If Node.js is not available, you can use curl directly (see Option B in Step 6).</p>
-<h3>API Endpoint Format</h3>
-<p>LM Studio exposes an OpenAI-compatible API endpoint:</p>
-<ul>
-<li>Base URL: <code>http://127.0.0.1:1234/v1</code> (default, no configuration required)</li>
-<li>Chat completions: <code>POST /v1/chat/completions</code></li>
-<li>Models list: <code>GET /v1/models</code></li>
-</ul>
-<h3>Determining API URL</h3>
-<p>The API URL defaults to <code>http://127.0.0.1:1234/v1</code> (LM Studio&#39;s standard default). <strong>No configuration is required</strong> - the skill works out of the box with LM Studio&#39;s default server.</p>
-<p>The helper script supports <code>LM_STUDIO_API_URL</code> environment variable if you need to override the default URL.</p>
-<h3>Request Format (OpenAI-Compatible)</h3>
-<pre><code class="language-json">{
-  &quot;model&quot;: &quot;&lt;model_identifier&gt;&quot;,
-  &quot;messages&quot;: [
-    {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&lt;task description&gt;&quot;}
-  ],
-  &quot;temperature&quot;: 0.7,
-  &quot;max_tokens&quot;: 2000
-}
-</code></pre>
-<p><strong>Required fields:</strong></p>
-<ul>
-<li><code>model</code>: Must match the identifier used when loading (<code>--identifier</code> value)</li>
-<li><code>messages</code>: Array of message objects with <code>role</code> (&quot;user&quot;, &quot;assistant&quot;, &quot;system&quot;) and <code>content</code></li>
-</ul>
-<p><strong>Optional fields:</strong></p>
-<ul>
-<li><code>temperature</code>: 0.0-2.0 (default 0.7)</li>
-<li><code>max_tokens</code>: Maximum tokens to generate</li>
-<li><code>stream</code>: <code>true</code> for streaming responses (not recommended for exec tool)</li>
-<li><code>top_p</code>: Nucleus sampling parameter</li>
-<li><code>frequency_penalty</code>: -2.0 to 2.0</li>
-<li><code>presence_penalty</code>: -2.0 to 2.0</li>
-</ul>
-<h3>Response Format</h3>
-<p><strong>Success response:</strong></p>
-<pre><code class="language-json">{
-  &quot;id&quot;: &quot;chatcmpl-...&quot;,
-  &quot;object&quot;: &quot;chat.completion&quot;,
-  &quot;created&quot;: 1234567890,
-  &quot;model&quot;: &quot;&lt;model_identifier&gt;&quot;,
-  &quot;choices&quot;: [
-    {
-      &quot;index&quot;: 0,
-      &quot;message&quot;: {
-        &quot;role&quot;: &quot;assistant&quot;,
-        &quot;content&quot;: &quot;&lt;model response&gt;&quot;
-      },
-      &quot;finish_reason&quot;: &quot;stop&quot;
-    }
-  ],
-  &quot;usage&quot;: {
-    &quot;prompt_tokens&quot;: 100,
-    &quot;completion_tokens&quot;: 200,
-    &quot;total_tokens&quot;: 300
-  }
-}
-</code></pre>
-<p><strong>Error response:</strong></p>
-<pre><code class="language-json">{
-  &quot;error&quot;: {
-    &quot;message&quot;: &quot;Error description&quot;,
-    &quot;type&quot;: &quot;invalid_request_error&quot;,
-    &quot;code&quot;: &quot;model_not_found&quot;
-  }
-}
-</code></pre>
-<h3>Response Parsing</h3>
-<ol>
-<li>Parse JSON response from curl command</li>
-<li>Check for <code>error</code> field - if present, handle error</li>
-<li><strong>Validate <code>response.model</code> field</strong> - ensure it matches the requested <code>model_identifier</code> (LM Studio may use a different model if the requested one isn&#39;t loaded)</li>
-<li>Extract <code>choices[0].message.content</code> for the model&#39;s response</li>
-<li>Optionally extract <code>usage</code> for token statistics</li>
-<li>Format and return content to user</li>
-</ol>
-<p><strong>Important:</strong> Always validate <code>response.model</code> matches the requested model. LM Studio may auto-select/auto-load models, so the API may succeed even if <code>lms ps</code> doesn&#39;t show your requested model. If <code>response.model</code> doesn&#39;t match, log a warning or handle appropriately.</p>
-<h3>Authentication</h3>
-<p>LM Studio API typically uses:</p>
-<ul>
-<li>Header: <code>Authorization: Bearer lmstudio</code></li>
-<li>Some setups may not require authentication (check LM Studio server settings)</li>
-</ul>
+<p>Helper/API: see Step 5. Output: content, model_instance_id, response_id, usage. Auth: Bearer lmstudio. List GET /api/v1/models. Load POST /api/v1/models/load (optional). Unload POST /api/v1/models/unload { instance_id }.</p>
+<h2>Scripts</h2>
+<p>lmstudio-api.mjs: chat; options --stateful, --unload-after, --keep, --log &lt;path&gt;, --previous-response-id, --temperature, --max-output-tokens. load.mjs: load model by key. unload.mjs: unload by model key (all instances). test.mjs: smoke test (load, chat, unload one model).</p>
 <h2>Notes</h2>
 <ul>
-<li><strong>Model identifier</strong>: Use the same identifier for <code>--identifier</code> when loading and <code>model</code> in API calls</li>
-<li><strong>JSON output</strong>: Always use <code>--json</code> flag for <code>lms</code> commands for machine-readable output</li>
-<li><strong>Already loaded</strong>: Check <code>lms ps</code> first - if model is already loaded, skip load step to save time</li>
-<li><strong>Cleanup policy</strong>: Prefer <code>--ttl</code> to avoid thrash; explicitly unload on memory pressure or when requested</li>
-<li><strong>No config required</strong>: Models do not need to be pre-configured in Clawdbot - any model in LM Studio can be used</li>
-<li><strong>Load time</strong>: <code>lms load</code> blocks until complete. Large models (70B+) can take 3+ minutes. This is normal and expected</li>
-<li><strong>API compatibility</strong>: LM Studio uses OpenAI-compatible API format, so standard OpenAI request/response patterns apply</li>
-<li><strong>Model validation</strong>: Always validate <code>response.model</code> field matches requested model_identifier. LM Studio may auto-select/auto-load models, so API calls may succeed even if <code>lms ps</code> doesn&#39;t show the requested model</li>
-<li><strong>Model name validation</strong>: LM Studio API may not reject unknown model names - it may use whatever model is currently loaded. Always validate model exists via <code>lms ls</code> before making API calls</li>
-<li><strong>Tested with</strong>: LM Studio version 0.3.39. Behavior may vary with different versions</li>
+<li>LM Studio 0.4+.</li>
+<li>JIT (first chat loads; model_load_time_seconds in stats); stateful (response_id / previous_response_id).</li>
 </ul>
 
                 </div>

@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tesla Fleet API: HVAC, charge controls, wake vehicle, OAuth flows">
+  <title>tesla-fleet-api - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Smart Home & IoT</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Smart Home & IoT</a>
+                <span class="skill-page-author">by @odrobnik</span>
+              </div>
+              <h1 class="skill-page-title">tesla-fleet-api</h1>
+              <p class="skill-page-desc">Tesla Fleet API: HVAC, charge controls, wake vehicle, OAuth flows</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Tesla Fleet API</h1>
+<p>Control Tesla vehicles via the official Fleet API.</p>
+<h2>Scripts Overview</h2>
+<table>
+<thead>
+<tr>
+<th>Script</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>command.py</code></td>
+<td>Vehicle commands (climate, charging, locks, etc.)</td>
+</tr>
+<tr>
+<td><code>vehicle_data.py</code></td>
+<td>Read vehicle data (battery, climate, location, etc.)</td>
+</tr>
+<tr>
+<td><code>vehicles.py</code></td>
+<td>List vehicles + refresh cache</td>
+</tr>
+<tr>
+<td><code>auth.py</code></td>
+<td>Authentication and configuration</td>
+</tr>
+<tr>
+<td><code>tesla_oauth_local.py</code></td>
+<td>OAuth helper with local callback server</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Setup / Configuration</h2>
+<p>Setup is documented in <strong><code>SETUP.md</code></strong>:</p>
+<ul>
+<li><a href="SETUP.md">SETUP.md</a></li>
+</ul>
+<p>(It covers <code>.env</code>, <code>config.json</code>/<code>auth.json</code>, proxy setup, and key enrollment.)</p>
+<hr>
+<h2>command.py — Vehicle Commands</h2>
+<p>Execute commands on your Tesla. Vehicle is auto-selected if you only have one.</p>
+<h3>Usage</h3>
+<pre><code class="language-bash">command.py [VEHICLE] &lt;command&gt; [options]
+</code></pre>
+<ul>
+<li><code>VEHICLE</code> — Vehicle name or VIN (optional if single vehicle)</li>
+<li>Commands can be run without specifying vehicle: <code>command.py honk</code></li>
+<li>Or with vehicle name: <code>command.py flash honk</code> (vehicle &quot;flash&quot;, command &quot;honk&quot;)</li>
+</ul>
+<hr>
+<h3>Climate Control</h3>
+<h4>Start/Stop Climate</h4>
+<pre><code class="language-bash">command.py climate start
+command.py climate stop
+command.py flash climate start          # specific vehicle
+</code></pre>
+<h4>Set Temperature</h4>
+<pre><code class="language-bash">command.py climate temps &lt;driver_temp&gt; [passenger_temp]
+command.py climate temps 21             # both seats 21°C
+command.py climate temps 22 20          # driver 22°C, passenger 20°C
+</code></pre>
+<h4>Climate Keeper Mode</h4>
+<pre><code class="language-bash">command.py climate keeper &lt;mode&gt;
+</code></pre>
+<p>Modes: <code>off</code>, <code>keep</code>, <code>dog</code>, <code>camp</code></p>
+<hr>
+<h3>Seat Heater</h3>
+<pre><code class="language-bash">command.py seat-heater --level &lt;level&gt; [--position &lt;position&gt;]
+command.py seat-heater -l &lt;level&gt; [-p &lt;position&gt;]
+</code></pre>
+<p><strong>Levels:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Name</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>off</td>
+</tr>
+<tr>
+<td>1</td>
+<td>low</td>
+</tr>
+<tr>
+<td>2</td>
+<td>medium</td>
+</tr>
+<tr>
+<td>3</td>
+<td>high</td>
+</tr>
+</tbody></table>
+<p><strong>Positions:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Names</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td><code>driver</code>, <code>front_left</code>, <code>fl</code></td>
+</tr>
+<tr>
+<td>1</td>
+<td><code>passenger</code>, <code>front_right</code>, <code>fr</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>rear_left</code>, <code>rl</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>rear_left_back</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>rear_center</code>, <code>rc</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>rear_right</code>, <code>rr</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>rear_right_back</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>third_left</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>third_right</code></td>
+</tr>
+</tbody></table>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-bash">command.py seat-heater -l high                    # driver (default)
+command.py seat-heater -l medium -p passenger
+command.py seat-heater --level low --position rear_left
+command.py seat-heater -l 2 -p 4                  # medium, rear center
+command.py seat-heater -l off -p driver           # turn off
+</code></pre>
+<hr>
+<h3>Seat Cooler (Ventilation)</h3>
+<pre><code class="language-bash">command.py seat-cooler --level &lt;level&gt; [--position &lt;position&gt;]
+command.py seat-cooler -l &lt;level&gt; [-p &lt;position&gt;]
+</code></pre>
+<p>Same levels and positions as seat heater.</p>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-bash">command.py seat-cooler -l medium -p driver
+command.py seat-cooler -l high -p passenger
+</code></pre>
+<hr>
+<h3>Seat Auto Climate</h3>
+<pre><code class="language-bash">command.py seat-climate [--position &lt;position&gt;] &lt;mode&gt;
+command.py seat-climate [-p &lt;position&gt;] &lt;mode&gt;
+</code></pre>
+<p>Modes: <code>auto</code>, <code>on</code>, <code>off</code></p>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-bash">command.py seat-climate auto                      # driver auto
+command.py seat-climate -p passenger auto
+command.py seat-climate -p driver off             # disable auto
+</code></pre>
+<hr>
+<h3>Steering Wheel Heater</h3>
+<pre><code class="language-bash">command.py steering-heater &lt;on|off&gt;
+</code></pre>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-bash">command.py steering-heater on
+command.py steering-heater off
+</code></pre>
+<hr>
+<h3>Precondition Schedules</h3>
+<p>Modern API for scheduling departure preconditioning (replaces deprecated <code>set_scheduled_departure</code>).</p>
+<h4>Add Schedule</h4>
+<pre><code class="language-bash">command.py precondition add --time &lt;HH:MM&gt; [--days &lt;days&gt;] [--id &lt;id&gt;] [--one-time] [--disabled]
+command.py precondition add -t &lt;HH:MM&gt; [-d &lt;days&gt;] [--id &lt;id&gt;]
+</code></pre>
+<p><strong>Days options:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>all</code></td>
+<td>Every day (default)</td>
+</tr>
+<tr>
+<td><code>weekdays</code></td>
+<td>Monday through Friday</td>
+</tr>
+<tr>
+<td><code>weekends</code></td>
+<td>Saturday and Sunday</td>
+</tr>
+<tr>
+<td><code>mon,tue,wed,...</code></td>
+<td>Specific days (comma-separated)</td>
+</tr>
+</tbody></table>
+<p>Day names: <code>sun</code>, <code>mon</code>, <code>tue</code>, <code>wed</code>, <code>thu</code>, <code>fri</code>, <code>sat</code> (or full names)</p>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-bash">command.py precondition add -t 08:00              # every day at 8am
+command.py precondition add -t 08:00 -d weekdays  # Mon-Fri
+command.py precondition add -t 07:30 -d mon,wed,fri
+command.py precondition add -t 09:00 --one-time   # one-time only
+command.py precondition add -t 08:30 --id 123     # modify existing schedule
+command.py precondition add -t 08:00 --disabled   # create but disabled
+</code></pre>
+<h4>Remove Schedule</h4>
+<pre><code class="language-bash">command.py precondition remove --id &lt;id&gt;
+</code></pre>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-bash">command.py precondition remove --id 123
+command.py precondition remove --id 1
+</code></pre>
+<hr>
+<h3>Charging Control</h3>
+<h4>Start/Stop Charging</h4>
+<pre><code class="language-bash">command.py charge start
+command.py charge stop
+</code></pre>
+<h4>Set Charge Limit</h4>
+<pre><code class="language-bash">command.py charge limit &lt;percent&gt;
+</code></pre>
+<p>Percent must be 50-100.</p>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-bash">command.py charge limit 80
+command.py charge limit 90
+command.py flash charge limit 70                  # specific vehicle
+</code></pre>
+<hr>
+<h3>Doors &amp; Security</h3>
+<pre><code class="language-bash">command.py lock                   # lock all doors
+command.py unlock                 # unlock all doors
+command.py honk                   # honk the horn
+command.py flash                  # flash the lights
+command.py wake                   # wake vehicle from sleep
+</code></pre>
+<p><strong>With vehicle name:</strong></p>
+<pre><code class="language-bash">command.py flash wake             # wake vehicle named &quot;flash&quot;
+command.py flash flash            # flash lights on vehicle &quot;flash&quot;
+</code></pre>
+<hr>
+<h2>vehicle_data.py — Read Vehicle Data</h2>
+<p>Fetch vehicle data with human-readable output by default.</p>
+<h3>Usage</h3>
+<pre><code class="language-bash">vehicle_data.py [VEHICLE] [flags] [--json]
+</code></pre>
+<ul>
+<li><code>VEHICLE</code> — Vehicle name or VIN (optional if single vehicle)</li>
+<li>No flags = all data</li>
+<li><code>--json</code> = raw JSON output</li>
+</ul>
+<h3>Flags</h3>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Long</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>-c</code></td>
+<td><code>--charge</code></td>
+<td>Battery level, charge limit, charging status</td>
+</tr>
+<tr>
+<td><code>-t</code></td>
+<td><code>--climate</code></td>
+<td>Interior/exterior temp, HVAC status</td>
+</tr>
+<tr>
+<td><code>-d</code></td>
+<td><code>--drive</code></td>
+<td>Gear, speed, power, heading</td>
+</tr>
+<tr>
+<td><code>-l</code></td>
+<td><code>--location</code></td>
+<td>GPS coordinates</td>
+</tr>
+<tr>
+<td><code>-s</code></td>
+<td><code>--state</code></td>
+<td>Locks, doors, windows, odometer, software</td>
+</tr>
+<tr>
+<td><code>-g</code></td>
+<td><code>--gui</code></td>
+<td>GUI settings (units, 24h time)</td>
+</tr>
+<tr>
+<td></td>
+<td><code>--config-data</code></td>
+<td>Vehicle config (model, color, wheels)</td>
+</tr>
+</tbody></table>
+<h3>Examples</h3>
+<pre><code class="language-bash"># All data
+vehicle_data.py
+vehicle_data.py flash
+
+# Specific data
+vehicle_data.py -c                        # charge only
+vehicle_data.py -c -t                     # charge + climate
+vehicle_data.py flash -c -l               # charge + location
+
+# Raw JSON
+vehicle_data.py --json
+vehicle_data.py -c --json
+</code></pre>
+<h3>Sample Output</h3>
+<pre><code>🚗 My Tesla (online)
+   VIN: 5YJ... (redacted)
+
+⚡ Charge State
+────────────────────────────────────────
+  Battery:    [███████████████░░░░░] 78%
+  Limit:      80%
+  State:      Charging
+  Power:      11 kW (16A × 234V × 3φ)
+  Added:      37.2 kWh
+  Remaining:  10m
+  Range:      438 km (272 mi)
+  Cable:      IEC
+
+🌡️  Climate State
+────────────────────────────────────────
+  Inside:     11.9°C
+  Outside:    6.0°C
+  Set to:     20.5°C
+  Climate:    Off
+</code></pre>
+<hr>
+<h2>auth.py — Authentication</h2>
+<p>Manage OAuth tokens and configuration.</p>
+<h3>Usage</h3>
+<pre><code class="language-bash">auth.py &lt;command&gt; [options]
+</code></pre>
+<h3>Commands</h3>
+<h4>Login (OAuth Flow)</h4>
+<pre><code class="language-bash">auth.py login
+</code></pre>
+<p>Interactive: generates auth URL, prompts for code, exchanges for tokens.</p>
+<h4>Exchange Code</h4>
+<pre><code class="language-bash">auth.py exchange &lt;code&gt;
+</code></pre>
+<p>Exchange authorization code for tokens (non-interactive).</p>
+<h4>Refresh Tokens</h4>
+<pre><code class="language-bash">auth.py refresh
+</code></pre>
+<p>Refresh access token. Note: refresh tokens rotate — the new one is saved automatically.</p>
+<h4>Register Domain</h4>
+<pre><code class="language-bash">auth.py register --domain &lt;domain&gt;
+</code></pre>
+<p>Register your app domain with Tesla (required for signed commands).</p>
+<p>After registration, enroll your virtual key:</p>
+<pre><code>https://tesla.com/_ak/&lt;domain&gt;
+</code></pre>
+<h4>Show Config</h4>
+<pre><code class="language-bash">auth.py config
+</code></pre>
+<p>Display current configuration (secrets redacted).</p>
+<h4>Set Config</h4>
+<pre><code class="language-bash">auth.py config set [options]
+</code></pre>
+<p>Options:</p>
+<ul>
+<li><code>--client-id &lt;id&gt;</code></li>
+<li><code>--client-secret &lt;secret&gt;</code></li>
+<li><code>--redirect-uri &lt;uri&gt;</code></li>
+<li><code>--audience &lt;url&gt;</code></li>
+<li><code>--base-url &lt;url&gt;</code></li>
+<li><code>--ca-cert &lt;path&gt;</code></li>
+<li><code>--domain &lt;domain&gt;</code></li>
+</ul>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-bash"># Initial setup
+auth.py config set \
+  --client-id &quot;abc123&quot; \
+  --client-secret &quot;secret&quot; \
+  --redirect-uri &quot;http://localhost:18080/callback&quot;
+
+# Configure proxy
+auth.py config set \
+  --base-url &quot;https://localhost:4443&quot; \
+  --ca-cert &quot;/path/to/tls-cert.pem&quot;
+</code></pre>
+<hr>
+<h2>tesla_fleet.py — List Vehicles</h2>
+<p>List vehicles with human-readable output.</p>
+<pre><code class="language-bash">python3 scripts/tesla_fleet.py vehicles
+python3 scripts/tesla_fleet.py vehicles --json
+</code></pre>
+<h3>Sample Output</h3>
+<pre><code>🚗 Name:   My Tesla
+🔖 VIN:    5YJ... (redacted)
+🟢 Status: Online
+👤 Access: Owner
+</code></pre>
+<hr>
+<h2>Configuration / Proxy / File layout</h2>
+<p>All setup + configuration is documented in <strong><a href="SETUP.md">SETUP.md</a></strong>.</p>
+<hr>
+<h2>Regional Base URLs</h2>
+<table>
+<thead>
+<tr>
+<th>Region</th>
+<th>Audience URL</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Europe</td>
+<td><code>https://fleet-api.prd.eu.vn.cloud.tesla.com</code></td>
+</tr>
+<tr>
+<td>North America</td>
+<td><code>https://fleet-api.prd.na.vn.cloud.tesla.com</code></td>
+</tr>
+<tr>
+<td>China</td>
+<td><code>https://fleet-api.prd.cn.vn.cloud.tesla.cn</code></td>
+</tr>
+</tbody></table>
+<p>OAuth token endpoint (all regions):</p>
+<pre><code>https://fleet-auth.prd.vn.cloud.tesla.com/oauth2/v3/token
+</code></pre>
+<hr>
+<h2>Troubleshooting</h2>
+<h3>&quot;vehicle unavailable: vehicle is offline or asleep&quot;</h3>
+<p>Wake the vehicle first:</p>
+<pre><code class="language-bash">command.py wake
+</code></pre>
+<h3>&quot;command not signed&quot; / &quot;vehicle rejected&quot;</h3>
+<p>Ensure the proxy is running and configured:</p>
+<pre><code class="language-bash">./scripts/start_proxy.sh &lt;private-key.pem&gt;
+auth.py config set --base-url &quot;https://localhost:4443&quot; --ca-cert &quot;&lt;tls-cert.pem&gt;&quot;
+</code></pre>
+<h3>Token expired</h3>
+<pre><code class="language-bash">auth.py refresh
+</code></pre>
+<h3>Multiple vehicles</h3>
+<p>Specify vehicle by name or VIN:</p>
+<pre><code class="language-bash">command.py flash climate start
+command.py 5YJ... honk
+</code></pre>
+<hr>
+<h2>Complete Command Reference</h2>
+<h3>command.py</h3>
+<pre><code>climate start|stop
+climate temps &lt;driver&gt; [passenger]
+climate keeper off|keep|dog|camp
+
+seat-heater -l &lt;level&gt; [-p &lt;position&gt;]
+seat-cooler -l &lt;level&gt; [-p &lt;position&gt;]
+seat-climate [-p &lt;position&gt;] auto|on|off
+
+steering-heater on|off
+
+precondition add -t &lt;HH:MM&gt; [-d &lt;days&gt;] [--id &lt;id&gt;] [--one-time]
+precondition remove --id &lt;id&gt;
+
+charge start|stop
+charge limit &lt;percent&gt;
+
+lock
+unlock
+honk
+flash
+wake
+</code></pre>
+<h3>vehicle_data.py</h3>
+<pre><code>[VEHICLE] [-c] [-t] [-d] [-l] [-s] [-g] [--config-data] [--json]
+</code></pre>
+<h3>auth.py</h3>
+<pre><code>login
+exchange &lt;code&gt;
+refresh
+register --domain &lt;domain&gt;
+config
+config set [--client-id] [--client-secret] [--redirect-uri] [--audience] [--base-url] [--ca-cert] [--domain]
+</code></pre>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/odrobnik/tesla-fleet-api/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/odrobnik/tesla-fleet-api" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/odrobnik/tesla-fleet-api/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@odrobnik</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Smart Home & IoT</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

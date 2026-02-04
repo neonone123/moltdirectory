@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Add browser audio notifications to Moltbot/Clawdbot webchat with 5 intensity levels - from whisper to impossible-to-m">
+  <title>webchat-audio-notifications - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Speech & Transcription</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Speech & Transcription</a>
+                <span class="skill-page-author">by @brokemac79</span>
+              </div>
+              <h1 class="skill-page-title">webchat-audio-notifications</h1>
+              <p class="skill-page-desc">Add browser audio notifications to Moltbot/Clawdbot webchat with 5 intensity levels - from whisper to impossible-to-m</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>🔔 Webchat Audio Notifications</h1>
+<p>Browser audio notifications for Moltbot/Clawdbot webchat. Plays a notification sound when new messages arrive - but only when the tab is in the background.</p>
+<h2>Features</h2>
+<ul>
+<li>🔔 <strong>Smart notifications</strong> - Only plays when tab is hidden</li>
+<li>🎚️ <strong>Volume control</strong> - Adjustable 0-100%</li>
+<li>🎵 <strong>5 intensity levels</strong> - Whisper (1) to impossible-to-miss (5)</li>
+<li>📁 <strong>Custom sounds</strong> - Upload your own (MP3, WAV, OGG, WebM)</li>
+<li>🔕 <strong>Easy toggle</strong> - Enable/disable with one click</li>
+<li>💾 <strong>Persistent settings</strong> - Preferences saved in localStorage</li>
+<li>📱 <strong>Mobile-friendly</strong> - Graceful degradation on mobile</li>
+<li>🚫 <strong>Autoplay handling</strong> - Respects browser policies</li>
+<li>⏱️ <strong>Cooldown</strong> - Prevents spam (3s between alerts)</li>
+<li>🐞 <strong>Debug mode</strong> - Optional logging</li>
+</ul>
+<h2>Quick Start</h2>
+<h3>Test the POC</h3>
+<pre><code class="language-bash">cd examples
+python3 -m http.server 8080
+# Open http://localhost:8080/test.html
+</code></pre>
+<p><strong>Test steps:</strong></p>
+<ol>
+<li>Switch to another tab</li>
+<li>Click &quot;Trigger Notification&quot;</li>
+<li>Hear the sound! 🔊</li>
+</ol>
+<h3>Basic Integration</h3>
+<pre><code class="language-javascript">// Initialize
+const notifier = new WebchatNotifications({
+  soundPath: &#39;./sounds&#39;,
+  soundName: &#39;level3&#39;,  // Medium intensity (default)
+  defaultVolume: 0.7
+});
+
+await notifier.init();
+
+// Trigger on new message
+socket.on(&#39;message&#39;, () =&gt; notifier.notify());
+
+// Use different levels for different events
+socket.on(&#39;mention&#39;, () =&gt; {
+  notifier.setSound(&#39;level5&#39;);  // Loudest for mentions
+  notifier.notify();
+});
+</code></pre>
+<h2>API</h2>
+<h3>Constructor Options</h3>
+<pre><code class="language-javascript">new WebchatNotifications({
+  soundPath: &#39;./sounds&#39;,               // Path to sounds directory
+  soundName: &#39;level3&#39;,                 // level1 (whisper) to level5 (very loud)
+  defaultVolume: 0.7,                  // 0.0 to 1.0
+  cooldownMs: 3000,                    // Min time between alerts
+  enableButton: true,                  // Show enable prompt
+  debug: false                         // Console logging
+});
+</code></pre>
+<p><strong>Intensity Levels:</strong></p>
+<ul>
+<li><code>level1</code> - Whisper (9.5KB) - Most subtle</li>
+<li><code>level2</code> - Soft (12KB) - Gentle</li>
+<li><code>level3</code> - Medium (13KB) - Default</li>
+<li><code>level4</code> - Loud (43KB) - Attention-getting</li>
+<li><code>level5</code> - Very Loud (63KB) - Impossible to miss</li>
+</ul>
+<h3>Methods</h3>
+<ul>
+<li><code>init()</code> - Initialize (call after Howler loads)</li>
+<li><code>notify(eventType?)</code> - Trigger notification (only if tab hidden)</li>
+<li><code>test()</code> - Play sound immediately (ignore tab state)</li>
+<li><code>setEnabled(bool)</code> - Enable/disable notifications</li>
+<li><code>setVolume(0-1)</code> - Set volume</li>
+<li><code>setSound(level)</code> - Change intensity (&#39;level1&#39; through &#39;level5&#39;)</li>
+<li><code>getSettings()</code> - Get current settings</li>
+</ul>
+<h2>Browser Compatibility</h2>
+<table>
+<thead>
+<tr>
+<th>Browser</th>
+<th>Version</th>
+<th>Support</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Chrome</td>
+<td>92+</td>
+<td>✅ Full</td>
+</tr>
+<tr>
+<td>Firefox</td>
+<td>90+</td>
+<td>✅ Full</td>
+</tr>
+<tr>
+<td>Safari</td>
+<td>15+</td>
+<td>✅ Full</td>
+</tr>
+<tr>
+<td>Mobile</td>
+<td>Latest</td>
+<td>⚠️ Limited</td>
+</tr>
+</tbody></table>
+<p><strong>Overall:</strong> 92% of users (Web Audio API support)</p>
+<h2>File Structure</h2>
+<pre><code>webchat-audio-notifications/
+├── client/
+│   ├── notification.js       # Main class (10KB)
+│   ├── howler.min.js         # Audio library (36KB)
+│   └── sounds/
+│       ├── level1.mp3        # Whisper (9.5KB)
+│       ├── level2.mp3        # Soft (12KB)
+│       ├── level3.mp3        # Medium (13KB, default)
+│       ├── level4.mp3        # Loud (43KB)
+│       └── level5.mp3        # Very Loud (63KB)
+├── examples/
+│   └── test.html            # Standalone test with all levels
+├── docs/
+│   └── integration.md       # Integration guide
+└── README.md                # Full documentation
+</code></pre>
+<h2>Integration Guide</h2>
+<p>See <code>docs/integration.md</code> for:</p>
+<ul>
+<li>Step-by-step setup</li>
+<li>Moltbot-specific hooks</li>
+<li>React/Vue examples</li>
+<li>Common patterns (@mentions, DND, badges)</li>
+<li>Testing checklist</li>
+</ul>
+<h2>Configuration Examples</h2>
+<h3>Simple</h3>
+<pre><code class="language-javascript">const notifier = new WebchatNotifications();
+await notifier.init();
+notifier.notify();
+</code></pre>
+<h3>Advanced</h3>
+<pre><code class="language-javascript">const notifier = new WebchatNotifications({
+  soundPath: &#39;/assets/sounds&#39;,
+  soundName: &#39;level2&#39;,  // Start with soft
+  defaultVolume: 0.8,
+  cooldownMs: 5000,
+  debug: true
+});
+
+await notifier.init();
+
+// Regular messages = soft
+socket.on(&#39;message&#39;, () =&gt; {
+  notifier.setSound(&#39;level2&#39;);
+  notifier.notify();
+});
+
+// Mentions = very loud
+socket.on(&#39;mention&#39;, () =&gt; {
+  notifier.setSound(&#39;level5&#39;);
+  notifier.notify();
+});
+
+// DMs = loud
+socket.on(&#39;dm&#39;, () =&gt; {
+  notifier.setSound(&#39;level4&#39;);
+  notifier.notify();
+});
+</code></pre>
+<h3>With UI Controls</h3>
+<pre><code class="language-html">&lt;input type=&quot;range&quot; min=&quot;0&quot; max=&quot;100&quot; 
+       onchange=&quot;notifier.setVolume(this.value / 100)&quot;&gt;
+&lt;button onclick=&quot;notifier.test()&quot;&gt;Test 🔊&lt;/button&gt;
+</code></pre>
+<h2>Troubleshooting</h2>
+<p><strong>No sound?</strong></p>
+<ul>
+<li>Click page first (autoplay restriction)</li>
+<li>Check tab is actually hidden</li>
+<li>Verify volume &gt; 0</li>
+<li>Check console for errors</li>
+</ul>
+<p><strong>Sound plays when tab active?</strong></p>
+<ul>
+<li>Enable debug mode</li>
+<li>Check for &quot;Tab is visible, skipping&quot; message</li>
+<li>Report as bug if missing</li>
+</ul>
+<p><strong>Mobile not working?</strong></p>
+<ul>
+<li>iOS requires user gesture per play</li>
+<li>Consider visual fallback (flashing favicon)</li>
+</ul>
+<h2>Performance</h2>
+<ul>
+<li><strong>Bundle:</strong> ~122KB total (minified)</li>
+<li><strong>Memory:</strong> ~2MB during playback</li>
+<li><strong>CPU:</strong> Negligible (browser-native)</li>
+<li><strong>Network:</strong> One-time download, cached</li>
+</ul>
+<h2>Security</h2>
+<ul>
+<li>✅ No external requests</li>
+<li>✅ localStorage only</li>
+<li>✅ No tracking</li>
+<li>✅ No special permissions</li>
+</ul>
+<h2>License</h2>
+<p>MIT License</p>
+<h2>Credits</h2>
+<ul>
+<li><strong>Audio library:</strong> <a href="https://howlerjs.com/">Howler.js</a> (MIT)</li>
+<li><strong>Sounds:</strong> <a href="https://mixkit.co/">Mixkit.co</a> (Royalty-free)</li>
+<li><strong>Author:</strong> @brokemac79</li>
+<li><strong>For:</strong> <a href="https://github.com/moltbot/moltbot">Moltbot/Clawdbot</a> community</li>
+</ul>
+<h2>Contributing</h2>
+<ol>
+<li>Test with <code>examples/test.html</code></li>
+<li>Enable debug mode</li>
+<li>Report issues with browser + console output</li>
+</ol>
+<h2>Roadmap</h2>
+<ul>
+<li><input disabled="" type="checkbox"> WebM format (smaller files)</li>
+<li><input disabled="" type="checkbox"> Per-event sounds (mention, DM, etc.)</li>
+<li><input disabled="" type="checkbox"> Visual fallback (favicon flash)</li>
+<li><input disabled="" type="checkbox"> System notifications API</li>
+<li><input disabled="" type="checkbox"> Settings UI component</li>
+<li><input disabled="" type="checkbox"> Do Not Disturb mode</li>
+</ul>
+<hr>
+<p><strong>Status:</strong> ✅ v1.1.0 Complete - 5 Intensity Levels<br><strong>Tested:</strong> Chrome, Firefox, Safari<br><strong>Ready for:</strong> Production use &amp; ClawdHub publishing</p>
+<h2>Links</h2>
+<ul>
+<li>📖 <a href="./README.md">README</a> - Full documentation</li>
+<li>🔧 <a href="./docs/integration.md">Integration Guide</a> - Setup instructions</li>
+<li>🧪 <a href="./examples/test.html">Test Page</a> - Try it yourself</li>
+<li>💬 <a href="https://discord.com/channels/1456350064065904867/1466181146374307881">Discord Thread</a> - Community discussion</li>
+</ul>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/brokemac79/webchat-audio-notifications/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/brokemac79/webchat-audio-notifications" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/brokemac79/webchat-audio-notifications/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@brokemac79</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Speech & Transcription</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

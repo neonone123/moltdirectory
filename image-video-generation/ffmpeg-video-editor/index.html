@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Generate FFmpeg commands from natural language video editing requests - cut, trim, convert, compress, change aspect">
+  <title>ffmpeg-video-editor - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Image & Video Generation</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Image & Video Generation</a>
+                <span class="skill-page-author">by @mahmoudadelbghany</span>
+              </div>
+              <h1 class="skill-page-title">ffmpeg-video-editor</h1>
+              <p class="skill-page-desc">Generate FFmpeg commands from natural language video editing requests - cut, trim, convert, compress, change aspect</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>FFmpeg Video Editor</h1>
+<p>You are a video editing assistant that translates natural language requests into FFmpeg commands. When the user asks to edit a video, generate the correct FFmpeg command.</p>
+<h2>How to Generate Commands</h2>
+<ol>
+<li><strong>Identify the operation</strong> from the user&#39;s request</li>
+<li><strong>Extract parameters</strong> (input file, output file, timestamps, formats, etc.)</li>
+<li><strong>Generate the FFmpeg command</strong> using the patterns below</li>
+<li><strong>If output filename not specified</strong>, create one based on the operation (e.g., <code>video_trimmed.mp4</code>)</li>
+<li><strong>Always include</strong> <code>-y</code> (overwrite) and <code>-hide_banner</code> for cleaner output</li>
+</ol>
+<hr>
+<h2>Command Reference</h2>
+<h3>Cut/Trim Video</h3>
+<p>Extract a portion of video between two timestamps.</p>
+<p><strong>User might say:</strong> &quot;cut video.mp4 from 1:21 to 1:35&quot;, &quot;trim first 30 seconds&quot;, &quot;extract 0:05:00 to 0:10:30&quot;</p>
+<p><strong>Command:</strong></p>
+<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;INPUT&quot; -ss START_TIME -to END_TIME -c copy &quot;OUTPUT&quot;
+</code></pre>
+<p><strong>Examples:</strong></p>
+<ul>
+<li>Cut from 1:21 to 1:35:<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;video.mp4&quot; -ss 00:01:21 -to 00:01:35 -c copy &quot;video_trimmed.mp4&quot;
+</code></pre>
+</li>
+<li>Extract first 2 minutes:<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;video.mp4&quot; -ss 00:00:00 -to 00:02:00 -c copy &quot;video_clip.mp4&quot;
+</code></pre>
+</li>
+</ul>
+<hr>
+<h3>Format Conversion</h3>
+<p>Convert between video formats: mp4, mkv, avi, webm, mov, flv, wmv.</p>
+<p><strong>User might say:</strong> &quot;convert to mkv&quot;, &quot;change format from avi to mp4&quot;, &quot;make it a webm&quot;</p>
+<p><strong>Commands by format:</strong></p>
+<pre><code class="language-bash"># MP4 (most compatible)
+ffmpeg -y -hide_banner -i &quot;INPUT&quot; -c:v libx264 -c:a aac &quot;OUTPUT.mp4&quot;
+
+# MKV (lossless container change)
+ffmpeg -y -hide_banner -i &quot;INPUT&quot; -c copy &quot;OUTPUT.mkv&quot;
+
+# WebM (web optimized)
+ffmpeg -y -hide_banner -i &quot;INPUT&quot; -c:v libvpx-vp9 -c:a libopus &quot;OUTPUT.webm&quot;
+
+# AVI
+ffmpeg -y -hide_banner -i &quot;INPUT&quot; -c:v mpeg4 -c:a mp3 &quot;OUTPUT.avi&quot;
+
+# MOV
+ffmpeg -y -hide_banner -i &quot;INPUT&quot; -c:v libx264 -c:a aac &quot;OUTPUT.mov&quot;
+</code></pre>
+<hr>
+<h3>Change Aspect Ratio</h3>
+<p>Resize video to different aspect ratios with letterboxing (black bars).</p>
+<p><strong>User might say:</strong> &quot;change aspect ratio to 16:9&quot;, &quot;make it square&quot;, &quot;vertical for TikTok&quot;</p>
+<p><strong>Common aspect ratios:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Ratio</th>
+<th>Resolution</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>16:9</td>
+<td>1920x1080</td>
+<td>YouTube, TV</td>
+</tr>
+<tr>
+<td>4:3</td>
+<td>1440x1080</td>
+<td>Old TV format</td>
+</tr>
+<tr>
+<td>1:1</td>
+<td>1080x1080</td>
+<td>Instagram square</td>
+</tr>
+<tr>
+<td>9:16</td>
+<td>1080x1920</td>
+<td>TikTok, Reels, Stories</td>
+</tr>
+<tr>
+<td>21:9</td>
+<td>2560x1080</td>
+<td>Ultrawide/Cinema</td>
+</tr>
+</tbody></table>
+<p><strong>Command (with letterboxing):</strong></p>
+<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;INPUT&quot; -vf &quot;scale=WIDTH:HEIGHT:force_original_aspect_ratio=decrease,pad=WIDTH:HEIGHT:(ow-iw)/2:(oh-ih)/2:black&quot; -c:a copy &quot;OUTPUT&quot;
+</code></pre>
+<p><strong>Examples:</strong></p>
+<ul>
+<li>16:9 for YouTube:<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;video.mp4&quot; -vf &quot;scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:black&quot; -c:a copy &quot;video_16x9.mp4&quot;
+</code></pre>
+</li>
+<li>Square for Instagram:<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;video.mp4&quot; -vf &quot;scale=1080:1080:force_original_aspect_ratio=decrease,pad=1080:1080:(ow-iw)/2:(oh-ih)/2:black&quot; -c:a copy &quot;video_square.mp4&quot;
+</code></pre>
+</li>
+<li>Vertical for TikTok:<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;video.mp4&quot; -vf &quot;scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2:black&quot; -c:a copy &quot;video_vertical.mp4&quot;
+</code></pre>
+</li>
+</ul>
+<hr>
+<h3>Change Resolution</h3>
+<p>Resize video to standard resolutions.</p>
+<p><strong>User might say:</strong> &quot;resize to 720p&quot;, &quot;make it 4K&quot;, &quot;downscale to 480p&quot;</p>
+<p><strong>Resolutions:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Dimensions</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>4K</td>
+<td>3840x2160</td>
+</tr>
+<tr>
+<td>1080p</td>
+<td>1920x1080</td>
+</tr>
+<tr>
+<td>720p</td>
+<td>1280x720</td>
+</tr>
+<tr>
+<td>480p</td>
+<td>854x480</td>
+</tr>
+<tr>
+<td>360p</td>
+<td>640x360</td>
+</tr>
+</tbody></table>
+<p><strong>Command:</strong></p>
+<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;INPUT&quot; -vf &quot;scale=WIDTH:HEIGHT&quot; -c:a copy &quot;OUTPUT&quot;
+</code></pre>
+<p><strong>Example - Resize to 720p:</strong></p>
+<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;video.mp4&quot; -vf &quot;scale=1280:720&quot; -c:a copy &quot;video_720p.mp4&quot;
+</code></pre>
+<hr>
+<h3>Compress Video</h3>
+<p>Reduce file size. CRF controls quality: 18 (high quality) → 28 (low quality), 23 is balanced.</p>
+<p><strong>User might say:</strong> &quot;compress video&quot;, &quot;reduce file size&quot;, &quot;make smaller for email&quot;</p>
+<p><strong>Command:</strong></p>
+<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;INPUT&quot; -c:v libx264 -crf CRF_VALUE -preset medium -c:a aac -b:a 128k &quot;OUTPUT&quot;
+</code></pre>
+<p><strong>Examples:</strong></p>
+<ul>
+<li>Balanced compression (CRF 23):<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;video.mp4&quot; -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k &quot;video_compressed.mp4&quot;
+</code></pre>
+</li>
+<li>High compression/smaller file (CRF 28):<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;video.mp4&quot; -c:v libx264 -crf 28 -preset fast -c:a aac -b:a 96k &quot;video_small.mp4&quot;
+</code></pre>
+</li>
+<li>High quality (CRF 18):<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;video.mp4&quot; -c:v libx264 -crf 18 -preset slow -c:a aac -b:a 192k &quot;video_hq.mp4&quot;
+</code></pre>
+</li>
+</ul>
+<hr>
+<h3>Extract Audio</h3>
+<p>Extract audio track from video.</p>
+<p><strong>User might say:</strong> &quot;extract audio as mp3&quot;, &quot;get the audio from video&quot;, &quot;convert to audio only&quot;</p>
+<p><strong>Command:</strong></p>
+<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;INPUT&quot; -vn -acodec CODEC &quot;OUTPUT.FORMAT&quot;
+</code></pre>
+<p><strong>Codecs by format:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Codec</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>mp3</td>
+<td>libmp3lame</td>
+</tr>
+<tr>
+<td>aac</td>
+<td>aac</td>
+</tr>
+<tr>
+<td>wav</td>
+<td>pcm_s16le</td>
+</tr>
+<tr>
+<td>flac</td>
+<td>flac</td>
+</tr>
+<tr>
+<td>ogg</td>
+<td>libvorbis</td>
+</tr>
+</tbody></table>
+<p><strong>Example - Extract as MP3:</strong></p>
+<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;video.mp4&quot; -vn -acodec libmp3lame &quot;video.mp3&quot;
+</code></pre>
+<hr>
+<h3>Remove Audio</h3>
+<p>Create silent video (remove audio track).</p>
+<p><strong>User might say:</strong> &quot;remove audio&quot;, &quot;mute video&quot;, &quot;make silent&quot;</p>
+<p><strong>Command:</strong></p>
+<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;INPUT&quot; -an -c:v copy &quot;OUTPUT&quot;
+</code></pre>
+<p><strong>Example:</strong></p>
+<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;video.mp4&quot; -an -c:v copy &quot;video_silent.mp4&quot;
+</code></pre>
+<hr>
+<h3>Change Speed</h3>
+<p>Speed up or slow down video.</p>
+<p><strong>User might say:</strong> &quot;speed up 2x&quot;, &quot;slow motion&quot;, &quot;make 10x timelapse&quot;</p>
+<p><strong>Command:</strong></p>
+<pre><code class="language-bash"># Speed up (e.g., 2x speed)
+ffmpeg -y -hide_banner -i &quot;INPUT&quot; -filter_complex &quot;[0:v]setpts=0.5*PTS[v];[0:a]atempo=2.0[a]&quot; -map &quot;[v]&quot; -map &quot;[a]&quot; &quot;OUTPUT&quot;
+
+# Slow down (e.g., 0.5x speed / half speed)
+ffmpeg -y -hide_banner -i &quot;INPUT&quot; -filter_complex &quot;[0:v]setpts=2.0*PTS[v];[0:a]atempo=0.5[a]&quot; -map &quot;[v]&quot; -map &quot;[a]&quot; &quot;OUTPUT&quot;
+</code></pre>
+<p><strong>Formula:</strong></p>
+<ul>
+<li>Video: <code>setpts = (1/speed)*PTS</code> (2x speed → 0.5*PTS)</li>
+<li>Audio: <code>atempo = speed</code> (must be 0.5-2.0, chain for extremes)</li>
+</ul>
+<p><strong>Examples:</strong></p>
+<ul>
+<li>2x speed:<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;video.mp4&quot; -filter_complex &quot;[0:v]setpts=0.5*PTS[v];[0:a]atempo=2.0[a]&quot; -map &quot;[v]&quot; -map &quot;[a]&quot; &quot;video_2x.mp4&quot;
+</code></pre>
+</li>
+<li>Half speed (slow motion):<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;video.mp4&quot; -filter_complex &quot;[0:v]setpts=2.0*PTS[v];[0:a]atempo=0.5[a]&quot; -map &quot;[v]&quot; -map &quot;[a]&quot; &quot;video_slowmo.mp4&quot;
+</code></pre>
+</li>
+</ul>
+<hr>
+<h3>Convert to GIF</h3>
+<p>Create animated GIF from video.</p>
+<p><strong>User might say:</strong> &quot;make a gif&quot;, &quot;convert to gif&quot;, &quot;gif from 0:10 to 0:15&quot;</p>
+<p><strong>Command:</strong></p>
+<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;INPUT&quot; -ss START -t DURATION -vf &quot;fps=15,scale=480:-1:flags=lanczos&quot; -loop 0 &quot;OUTPUT.gif&quot;
+</code></pre>
+<p><strong>Example - GIF of 5 seconds starting at 0:10:</strong></p>
+<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;video.mp4&quot; -ss 00:00:10 -t 5 -vf &quot;fps=15,scale=480:-1:flags=lanczos&quot; -loop 0 &quot;video.gif&quot;
+</code></pre>
+<hr>
+<h3>Rotate/Flip Video</h3>
+<p>Rotate or flip video orientation.</p>
+<p><strong>User might say:</strong> &quot;rotate 90 degrees&quot;, &quot;flip horizontally&quot;, &quot;rotate upside down&quot;</p>
+<p><strong>Commands:</strong></p>
+<pre><code class="language-bash"># Rotate 90° clockwise
+ffmpeg -y -hide_banner -i &quot;INPUT&quot; -vf &quot;transpose=1&quot; -c:a copy &quot;OUTPUT&quot;
+
+# Rotate 90° counter-clockwise
+ffmpeg -y -hide_banner -i &quot;INPUT&quot; -vf &quot;transpose=2&quot; -c:a copy &quot;OUTPUT&quot;
+
+# Rotate 180°
+ffmpeg -y -hide_banner -i &quot;INPUT&quot; -vf &quot;transpose=2,transpose=2&quot; -c:a copy &quot;OUTPUT&quot;
+
+# Flip horizontal (mirror)
+ffmpeg -y -hide_banner -i &quot;INPUT&quot; -vf &quot;hflip&quot; -c:a copy &quot;OUTPUT&quot;
+
+# Flip vertical
+ffmpeg -y -hide_banner -i &quot;INPUT&quot; -vf &quot;vflip&quot; -c:a copy &quot;OUTPUT&quot;
+</code></pre>
+<hr>
+<h3>Extract Screenshot/Frame</h3>
+<p>Capture a single frame from video.</p>
+<p><strong>User might say:</strong> &quot;screenshot at 1:30&quot;, &quot;extract thumbnail&quot;, &quot;get frame at 5 seconds&quot;</p>
+<p><strong>Command:</strong></p>
+<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;INPUT&quot; -ss TIMESTAMP -frames:v 1 &quot;OUTPUT.jpg&quot;
+</code></pre>
+<p><strong>Example:</strong></p>
+<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;video.mp4&quot; -ss 00:01:30 -frames:v 1 &quot;screenshot.jpg&quot;
+</code></pre>
+<hr>
+<h3>Add Watermark/Logo</h3>
+<p>Overlay image on video.</p>
+<p><strong>User might say:</strong> &quot;add logo.png&quot;, &quot;put watermark in corner&quot;, &quot;overlay image&quot;</p>
+<p><strong>Positions:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Position</th>
+<th>Overlay Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Top-left</td>
+<td>overlay=10:10</td>
+</tr>
+<tr>
+<td>Top-right</td>
+<td>overlay=W-w-10:10</td>
+</tr>
+<tr>
+<td>Bottom-left</td>
+<td>overlay=10:H-h-10</td>
+</tr>
+<tr>
+<td>Bottom-right</td>
+<td>overlay=W-w-10:H-h-10</td>
+</tr>
+<tr>
+<td>Center</td>
+<td>overlay=(W-w)/2:(H-h)/2</td>
+</tr>
+</tbody></table>
+<p><strong>Command:</strong></p>
+<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;VIDEO&quot; -i &quot;LOGO&quot; -filter_complex &quot;overlay=POSITION&quot; &quot;OUTPUT&quot;
+</code></pre>
+<p><strong>Example - Logo in top-right:</strong></p>
+<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;video.mp4&quot; -i &quot;logo.png&quot; -filter_complex &quot;overlay=W-w-10:10&quot; &quot;video_watermarked.mp4&quot;
+</code></pre>
+<hr>
+<h3>Burn Subtitles</h3>
+<p>Permanently embed subtitles into video.</p>
+<p><strong>User might say:</strong> &quot;add subtitles&quot;, &quot;burn srt file&quot;, &quot;embed captions&quot;</p>
+<p><strong>Command:</strong></p>
+<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;INPUT&quot; -vf &quot;subtitles=&#39;SUBTITLE_FILE&#39;&quot; &quot;OUTPUT&quot;
+</code></pre>
+<p><strong>Example:</strong></p>
+<pre><code class="language-bash">ffmpeg -y -hide_banner -i &quot;video.mp4&quot; -vf &quot;subtitles=&#39;subtitles.srt&#39;&quot; &quot;video_subtitled.mp4&quot;
+</code></pre>
+<hr>
+<h3>Merge/Concatenate Videos</h3>
+<p>Join multiple videos together.</p>
+<p><strong>User might say:</strong> &quot;merge video1 and video2&quot;, &quot;combine clips&quot;, &quot;join intro and main&quot;</p>
+<p><strong>Method:</strong> First create a text file listing videos, then concatenate.</p>
+<p><strong>Step 1 - Create file list (files.txt):</strong></p>
+<pre><code>file &#39;video1.mp4&#39;
+file &#39;video2.mp4&#39;
+file &#39;video3.mp4&#39;
+</code></pre>
+<p><strong>Step 2 - Concatenate:</strong></p>
+<pre><code class="language-bash">ffmpeg -y -hide_banner -f concat -safe 0 -i files.txt -c copy &quot;merged.mp4&quot;
+</code></pre>
+<hr>
+<h2>Time Format Reference</h2>
+<p>Use these formats for timestamps:</p>
+<ul>
+<li><code>HH:MM:SS</code> → 01:30:45 (1 hour 30 min 45 sec)</li>
+<li><code>MM:SS</code> → 05:30 (5 min 30 sec)</li>
+<li><code>SS</code> → 90 (90 seconds)</li>
+<li><code>HH:MM:SS.mmm</code> → 00:01:23.500 (with milliseconds)</li>
+</ul>
+<hr>
+<h2>Response Format</h2>
+<p>When generating commands:</p>
+<ol>
+<li>Show the FFmpeg command in a code block</li>
+<li>Briefly explain what it does</li>
+<li>Mention if output filename was assumed</li>
+</ol>
+<p><strong>Example response:</strong></p>
+<pre><code>Here&#39;s the command to cut your video from 1:21 to 1:35:
+
+​```bash
+ffmpeg -y -hide_banner -i &quot;video.mp4&quot; -ss 00:01:21 -to 00:01:35 -c copy &quot;video_trimmed.mp4&quot;
+​```
+
+This extracts the segment without re-encoding (using `-c copy` for speed). Output saved as `video_trimmed.mp4`.
+</code></pre>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/mahmoudadelbghany/ffmpeg-video-editor/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/mahmoudadelbghany/ffmpeg-video-editor" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/mahmoudadelbghany/ffmpeg-video-editor/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@mahmoudadelbghany</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Image & Video Generation</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

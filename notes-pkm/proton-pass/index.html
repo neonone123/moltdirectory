@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage Proton Pass vaults, items (logins, SSH keys, aliases, notes), passwords, SSH agent integration">
+  <title>proton-pass - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Notes & PKM</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Notes & PKM</a>
+                <span class="skill-page-author">by @kakatkarakshay</span>
+              </div>
+              <h1 class="skill-page-title">proton-pass</h1>
+              <p class="skill-page-desc">Manage Proton Pass vaults, items (logins, SSH keys, aliases, notes), passwords, SSH agent integration</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Proton Pass CLI</h1>
+<p>Comprehensive password and secret management via the Proton Pass CLI. Manage vaults, items, SSH keys, share credentials, inject secrets, and integrate with SSH workflows.</p>
+<h2>Installation</h2>
+<h3>Quick install</h3>
+<p>macOS/Linux:</p>
+<pre><code class="language-bash">curl -fsSL https://proton.me/download/pass-cli/install.sh | bash
+</code></pre>
+<p>Windows:</p>
+<pre><code class="language-powershell">Invoke-WebRequest -Uri https://proton.me/download/pass-cli/install.ps1 -OutFile install.ps1; .\install.ps1
+</code></pre>
+<h3>Homebrew (macOS)</h3>
+<pre><code class="language-bash">brew install protonpass/tap/pass-cli
+</code></pre>
+<p><strong>Note:</strong> Package manager installations (Homebrew, etc.) do not support <code>pass-cli update</code> command or track switching.</p>
+<h3>Verify installation</h3>
+<pre><code class="language-bash">pass-cli --version
+</code></pre>
+<h2>Authentication</h2>
+<h3>Web login (recommended)</h3>
+<p>Default authentication method supporting all login flows (SSO, U2F):</p>
+<pre><code class="language-bash">pass-cli login
+# Open the URL displayed in your browser and complete authentication
+</code></pre>
+<h3>Interactive login</h3>
+<p>Terminal-based authentication (supports password + TOTP, but not SSO or U2F):</p>
+<pre><code class="language-bash">pass-cli login --interactive user@proton.me
+</code></pre>
+<h4>Environment variables for automation</h4>
+<pre><code class="language-bash"># Credentials as plain text (less secure)
+export PROTON_PASS_PASSWORD=&#39;your-password&#39;
+export PROTON_PASS_TOTP=&#39;123456&#39;
+export PROTON_PASS_EXTRA_PASSWORD=&#39;your-extra-password&#39;
+
+# Or from files (more secure)
+export PROTON_PASS_PASSWORD_FILE=&#39;/secure/password.txt&#39;
+export PROTON_PASS_TOTP_FILE=&#39;/secure/totp.txt&#39;
+export PROTON_PASS_EXTRA_PASSWORD_FILE=&#39;/secure/extra-password.txt&#39;
+
+pass-cli login --interactive user@proton.me
+</code></pre>
+<h3>Verify session</h3>
+<pre><code class="language-bash">pass-cli info          # Show session info
+pass-cli test          # Test connection
+</code></pre>
+<h3>Logout</h3>
+<pre><code class="language-bash">pass-cli logout        # Normal logout
+pass-cli logout --force  # Force local cleanup if remote fails
+</code></pre>
+<h2>Vault Management</h2>
+<h3>List vaults</h3>
+<pre><code class="language-bash">pass-cli vault list
+pass-cli vault list --output json
+</code></pre>
+<h3>Create vault</h3>
+<pre><code class="language-bash">pass-cli vault create --name &quot;Vault Name&quot;
+</code></pre>
+<h3>Update vault</h3>
+<pre><code class="language-bash"># By share ID
+pass-cli vault update --share-id &quot;abc123def&quot; --name &quot;New Name&quot;
+
+# By name
+pass-cli vault update --vault-name &quot;Old Name&quot; --name &quot;New Name&quot;
+</code></pre>
+<h3>Delete vault</h3>
+<p>⚠️ <strong>Warning:</strong> Permanently deletes vault and all items.</p>
+<pre><code class="language-bash"># By share ID
+pass-cli vault delete --share-id &quot;abc123def&quot;
+
+# By name
+pass-cli vault delete --vault-name &quot;Old Vault&quot;
+</code></pre>
+<h3>Share vault</h3>
+<pre><code class="language-bash"># Share with viewer access (default)
+pass-cli vault share --share-id &quot;abc123def&quot; colleague@company.com
+
+# Share with specific role
+pass-cli vault share --vault-name &quot;Team Vault&quot; colleague@company.com --role editor
+
+# Roles: viewer, editor, manager
+</code></pre>
+<h3>Manage vault members</h3>
+<pre><code class="language-bash"># List members
+pass-cli vault member list --share-id &quot;abc123def&quot;
+pass-cli vault member list --vault-name &quot;Team Vault&quot; --output json
+
+# Update member role
+pass-cli vault member update --share-id &quot;abc123def&quot; --member-share-id &quot;member123&quot; --role editor
+
+# Remove member
+pass-cli vault member remove --share-id &quot;abc123def&quot; --member-share-id &quot;member123&quot;
+</code></pre>
+<h3>Transfer vault ownership</h3>
+<pre><code class="language-bash">pass-cli vault transfer --share-id &quot;abc123def&quot; &quot;member_share_id_xyz&quot;
+pass-cli vault transfer --vault-name &quot;My Vault&quot; &quot;member_share_id_xyz&quot;
+</code></pre>
+<h2>Item Management</h2>
+<h3>List items</h3>
+<pre><code class="language-bash"># List from specific vault
+pass-cli item list &quot;Vault Name&quot;
+pass-cli item list --share-id &quot;abc123def&quot;
+
+# List with default vault (if configured)
+pass-cli item list
+</code></pre>
+<h3>View item</h3>
+<pre><code class="language-bash"># By IDs
+pass-cli item view --share-id &quot;abc123def&quot; --item-id &quot;item456&quot;
+
+# By names
+pass-cli item view --vault-name &quot;MyVault&quot; --item-title &quot;MyItem&quot;
+
+# Using Pass URI
+pass-cli item view &quot;pass://abc123def/item456&quot;
+pass-cli item view &quot;pass://MyVault/MyItem&quot;
+
+# View specific field
+pass-cli item view &quot;pass://abc123def/item456/password&quot;
+pass-cli item view --share-id &quot;abc123def&quot; --item-id &quot;item456&quot; --field &quot;username&quot;
+
+# Output format
+pass-cli item view --share-id &quot;abc123def&quot; --item-id &quot;item456&quot; --output json
+</code></pre>
+<h3>Create login item</h3>
+<pre><code class="language-bash"># Basic login
+pass-cli item create login \
+  --share-id &quot;abc123def&quot; \
+  --title &quot;GitHub Account&quot; \
+  --username &quot;myuser&quot; \
+  --password &quot;mypassword&quot; \
+  --url &quot;https://github.com&quot;
+
+# With vault name
+pass-cli item create login \
+  --vault-name &quot;Personal&quot; \
+  --title &quot;Account&quot; \
+  --username &quot;user&quot; \
+  --email &quot;user@example.com&quot; \
+  --url &quot;https://example.com&quot;
+
+# With generated password
+pass-cli item create login \
+  --share-id &quot;abc123def&quot; \
+  --title &quot;New Account&quot; \
+  --username &quot;myuser&quot; \
+  --generate-password \
+  --url &quot;https://example.com&quot;
+
+# Custom password generation: &quot;length,uppercase,symbols&quot;
+pass-cli item create login \
+  --vault-name &quot;Work&quot; \
+  --title &quot;Secure Account&quot; \
+  --username &quot;myuser&quot; \
+  --generate-password=&quot;20,true,true&quot; \
+  --url &quot;https://example.com&quot;
+
+# Generate passphrase
+pass-cli item create login \
+  --share-id &quot;abc123def&quot; \
+  --title &quot;Account&quot; \
+  --username &quot;user&quot; \
+  --generate-passphrase=&quot;5&quot; \
+  --url &quot;https://example.com&quot;
+</code></pre>
+<h4>Login template</h4>
+<pre><code class="language-bash"># Get template structure
+pass-cli item create login --get-template &gt; template.json
+
+# Create from template
+pass-cli item create login --from-template template.json --share-id &quot;abc123def&quot;
+
+# Create from stdin
+echo &#39;{&quot;title&quot;:&quot;Test&quot;,&quot;username&quot;:&quot;user&quot;,&quot;password&quot;:&quot;pass&quot;,&quot;urls&quot;:[&quot;https://test.com&quot;]}&#39; | \
+  pass-cli item create login --share-id &quot;abc123def&quot; --from-template -
+</code></pre>
+<p>Template format:</p>
+<pre><code class="language-json">{
+  &quot;title&quot;: &quot;Item Title&quot;,
+  &quot;username&quot;: &quot;optional_username&quot;,
+  &quot;email&quot;: &quot;optional_email@example.com&quot;,
+  &quot;password&quot;: &quot;optional_password&quot;,
+  &quot;urls&quot;: [&quot;https://example.com&quot;, &quot;https://app.example.com&quot;]
+}
+</code></pre>
+<h3>Create SSH key items</h3>
+<h4>Generate new SSH key</h4>
+<pre><code class="language-bash"># Generate Ed25519 key (recommended)
+pass-cli item create ssh-key generate \
+  --share-id &quot;abc123def&quot; \
+  --title &quot;GitHub Deploy Key&quot;
+
+# Using vault name
+pass-cli item create ssh-key generate \
+  --vault-name &quot;Development Keys&quot; \
+  --title &quot;GitHub Deploy Key&quot;
+
+# Generate RSA 4096 key with comment
+pass-cli item create ssh-key generate \
+  --share-id &quot;abc123def&quot; \
+  --title &quot;Production Server&quot; \
+  --key-type rsa4096 \
+  --comment &quot;prod-server-deploy&quot;
+
+# Key types: ed25519 (default), rsa2048, rsa4096
+
+# With passphrase protection
+pass-cli item create ssh-key generate \
+  --share-id &quot;abc123def&quot; \
+  --title &quot;Secure Key&quot; \
+  --password
+
+# Passphrase from environment
+PROTON_PASS_SSH_KEY_PASSWORD=&quot;my-passphrase&quot; \
+  pass-cli item create ssh-key generate \
+  --share-id &quot;abc123def&quot; \
+  --title &quot;Automated Key&quot; \
+  --password
+</code></pre>
+<h4>Import existing SSH key</h4>
+<pre><code class="language-bash"># Import unencrypted key
+pass-cli item create ssh-key import \
+  --from-private-key ~/.ssh/id_ed25519 \
+  --share-id &quot;abc123def&quot; \
+  --title &quot;My SSH Key&quot;
+
+# Import with vault name
+pass-cli item create ssh-key import \
+  --from-private-key ~/.ssh/id_rsa \
+  --vault-name &quot;Personal Keys&quot; \
+  --title &quot;Old RSA Key&quot;
+
+# Import passphrase-protected key (will prompt)
+pass-cli item create ssh-key import \
+  --from-private-key ~/.ssh/id_ed25519 \
+  --share-id &quot;abc123def&quot; \
+  --title &quot;Protected Key&quot; \
+  --password
+
+# Passphrase from environment
+PROTON_PASS_SSH_KEY_PASSWORD=&quot;my-key-passphrase&quot; \
+  pass-cli item create ssh-key import \
+  --from-private-key ~/.ssh/id_ed25519 \
+  --share-id &quot;abc123def&quot; \
+  --title &quot;Automated Import&quot; \
+  --password
+</code></pre>
+<p><strong>Recommendation:</strong> For importing passphrase-protected keys, consider removing the passphrase first since keys will be encrypted in your vault:</p>
+<pre><code class="language-bash"># Create unencrypted copy
+cp ~/.ssh/id_ed25519 /tmp/id_ed25519_temp
+ssh-keygen -p -f /tmp/id_ed25519_temp -N &quot;&quot;
+
+# Import
+pass-cli item create ssh-key import \
+  --from-private-key /tmp/id_ed25519_temp \
+  --share-id &quot;abc123def&quot; \
+  --title &quot;My SSH Key&quot;
+
+# Securely delete temp copy
+shred -u /tmp/id_ed25519_temp  # Linux
+rm -P /tmp/id_ed25519_temp     # macOS
+</code></pre>
+<h3>Create email alias</h3>
+<pre><code class="language-bash"># Create alias
+pass-cli item alias create --share-id &quot;abc123def&quot; --prefix &quot;newsletter&quot;
+pass-cli item alias create --vault-name &quot;Personal&quot; --prefix &quot;shopping&quot;
+
+# With JSON output
+pass-cli item alias create --vault-name &quot;Personal&quot; --prefix &quot;temp&quot; --output json
+</code></pre>
+<h3>Update item</h3>
+<pre><code class="language-bash"># Update single field
+pass-cli item update \
+  --share-id &quot;abc123def&quot; \
+  --item-id &quot;item456&quot; \
+  --field &quot;password=newpassword123&quot;
+
+# By vault name and item title
+pass-cli item update \
+  --vault-name &quot;Personal&quot; \
+  --item-title &quot;GitHub Account&quot; \
+  --field &quot;password=newpassword123&quot;
+
+# Update multiple fields
+pass-cli item update \
+  --share-id &quot;abc123def&quot; \
+  --item-id &quot;item456&quot; \
+  --field &quot;username=newusername&quot; \
+  --field &quot;password=newpassword&quot; \
+  --field &quot;email=newemail@example.com&quot;
+
+# Rename item
+pass-cli item update \
+  --vault-name &quot;Work&quot; \
+  --item-title &quot;Old Title&quot; \
+  --field &quot;title=New Title&quot;
+
+# Create/update custom fields
+pass-cli item update \
+  --share-id &quot;abc123def&quot; \
+  --item-id &quot;item456&quot; \
+  --field &quot;api_key=sk_live_abc123&quot; \
+  --field &quot;environment=production&quot;
+</code></pre>
+<p><strong>Note:</strong> Item update does not support TOTP or time fields. Use another Proton Pass client for those.</p>
+<h3>Delete item</h3>
+<p>⚠️ <strong>Warning:</strong> Permanent deletion.</p>
+<pre><code class="language-bash">pass-cli item delete --share-id &quot;abc123def&quot; --item-id &quot;item456&quot;
+</code></pre>
+<h3>Share item</h3>
+<pre><code class="language-bash"># Share with viewer access (default)
+pass-cli item share --share-id &quot;abc123def&quot; --item-id &quot;item456&quot; colleague@company.com
+
+# Share with editor access
+pass-cli item share --share-id &quot;abc123def&quot; --item-id &quot;item456&quot; colleague@company.com --role editor
+</code></pre>
+<h3>Generate TOTP codes</h3>
+<pre><code class="language-bash"># Generate all TOTPs for an item
+pass-cli item totp &quot;pass://TOTP vault/WithTOTPs&quot;
+
+# Specific TOTP field
+pass-cli item totp &quot;pass://TOTP vault/WithTOTPs/TOTP 1&quot;
+
+# JSON output
+pass-cli item totp &quot;pass://TOTP vault/WithTOTPs&quot; --output json
+
+# Extract specific value
+pass-cli item totp &quot;pass://TOTP vault/WithTOTPs/TOTP 1&quot; --output json | jq -r &#39;.[&quot;TOTP 1&quot;]&#39;
+</code></pre>
+<h2>Password Generation &amp; Analysis</h2>
+<h3>Generate passwords</h3>
+<pre><code class="language-bash"># Random password (default settings)
+pass-cli password generate random
+
+# Custom random password
+pass-cli password generate random --length 20 --numbers true --uppercase true --symbols true
+
+# Simple password without symbols
+pass-cli password generate random --length 16 --symbols false
+
+# Generate passphrase
+pass-cli password generate passphrase
+
+# Custom passphrase
+pass-cli password generate passphrase --count 5
+pass-cli password generate passphrase --count 4 --separator hyphens
+pass-cli password generate passphrase --count 4 --capitalize true --numbers true
+</code></pre>
+<h3>Analyze password strength</h3>
+<pre><code class="language-bash"># Score a password
+pass-cli password score &quot;mypassword123&quot;
+
+# JSON output
+pass-cli password score &quot;MySecureP@ssw0rd*&quot; --output json
+</code></pre>
+<p>Example JSON output:</p>
+<pre><code class="language-json">{
+  &quot;numeric_score&quot;: 51.666666666666664,
+  &quot;password_score&quot;: &quot;Vulnerable&quot;,
+  &quot;penalties&quot;: [
+    &quot;ContainsCommonPassword&quot;,
+    &quot;Consecutive&quot;
+  ]
+}
+</code></pre>
+<h2>SSH Agent Integration</h2>
+<h3>Load SSH keys into existing agent</h3>
+<p>Load Proton Pass SSH keys into your existing SSH agent:</p>
+<pre><code class="language-bash"># Load all SSH keys
+pass-cli ssh-agent load
+
+# Load from specific vault
+pass-cli ssh-agent load --share-id MY_SHARE_ID
+pass-cli ssh-agent load --vault-name MySshKeysVault
+</code></pre>
+<p><strong>Prerequisite:</strong> Ensure <code>SSH_AUTH_SOCK</code> environment variable is defined.</p>
+<h3>Run Proton Pass CLI as SSH agent</h3>
+<p>Start Proton Pass CLI as a standalone SSH agent:</p>
+<pre><code class="language-bash"># Start agent
+pass-cli ssh-agent start
+
+# From specific vault
+pass-cli ssh-agent start --share-id MY_SHARE_ID
+pass-cli ssh-agent start --vault-name MySshKeysVault
+
+# Custom socket path
+pass-cli ssh-agent start --socket-path /custom/path/agent.sock
+
+# Custom refresh interval (default 3600 seconds)
+pass-cli ssh-agent start --refresh-interval 7200  # 2 hours
+</code></pre>
+<p>After starting, export the socket:</p>
+<pre><code class="language-bash">export SSH_AUTH_SOCK=/Users/youruser/.ssh/proton-pass-agent.sock
+</code></pre>
+<h4>Auto-create SSH key items (v1.3.0+)</h4>
+<p>Automatically save SSH keys added via <code>ssh-add</code>:</p>
+<pre><code class="language-bash"># Enable auto-creation
+pass-cli ssh-agent start --create-new-identities MySshKeysVault
+
+# In another terminal
+export SSH_AUTH_SOCK=$HOME/.ssh/proton-pass-agent.sock
+ssh-add ~/.ssh/my_new_key
+# Key is now automatically saved to Proton Pass!
+</code></pre>
+<h3>Troubleshooting SSH</h3>
+<h4>ssh-copy-id fails with many keys</h4>
+<p>Force password authentication:</p>
+<pre><code class="language-bash">ssh-copy-id -o PreferredAuthentications=password -o PubkeyAuthentication=no user@server
+</code></pre>
+<h2>Pass URI Syntax (Secret References)</h2>
+<p>Reference secrets using the format: <code>pass://vault/item/field</code></p>
+<h3>Syntax</h3>
+<pre><code>pass://&lt;vault-identifier&gt;/&lt;item-identifier&gt;/&lt;field-name&gt;
+</code></pre>
+<ul>
+<li><strong>vault-identifier:</strong> Vault&#39;s Share ID or name</li>
+<li><strong>item-identifier:</strong> Item&#39;s ID or title</li>
+<li><strong>field-name:</strong> Specific field to retrieve (required)</li>
+</ul>
+<h3>Examples</h3>
+<pre><code class="language-bash"># By names
+pass://Work/GitHub Account/password
+pass://Personal/Email Login/username
+
+# By IDs
+pass://AbCdEf123456/XyZ789/password
+pass://ShareId123/ItemId456/api_key
+
+# Mixed (vault by name, item by ID)
+pass://Work/XyZ789/password
+
+# Custom fields (case-sensitive)
+pass://Work/API Keys/api_key
+pass://Production/Database/connection_string
+</code></pre>
+<h3>Common fields</h3>
+<ul>
+<li><code>username</code> - Username/login name</li>
+<li><code>password</code> - Password</li>
+<li><code>email</code> - Email address</li>
+<li><code>url</code> - Website URL</li>
+<li><code>note</code> - Additional notes</li>
+<li><code>totp</code> - TOTP secret (for 2FA)</li>
+<li>Custom fields with any name (case-sensitive)</li>
+</ul>
+<h3>Rules</h3>
+<ul>
+<li>All three components (vault/item/field) are required</li>
+<li>Names with spaces are supported</li>
+<li>Resolution is case-sensitive</li>
+<li>If duplicates exist, first match is used (prefer IDs for precision)</li>
+</ul>
+<p><strong>Invalid formats:</strong></p>
+<pre><code class="language-bash">pass://vault/item              # Missing field name
+pass://vault/item/             # Trailing slash
+pass://vault/                  # Missing item and field
+</code></pre>
+<h2>Secret Injection</h2>
+<h3>Run commands with secrets (<code>run</code>)</h3>
+<p>Execute commands with secrets from Proton Pass injected as environment variables.</p>
+<p><strong>Synopsis:</strong></p>
+<pre><code class="language-bash">pass-cli run [--env-file FILE]... [--no-masking] -- COMMAND [ARGS...]
+</code></pre>
+<p><strong>How it works:</strong></p>
+<ol>
+<li>Collects environment variables from current process and <code>.env</code> files</li>
+<li>Scans for <code>pass://</code> URIs in variable values</li>
+<li>Resolves secrets from Proton Pass</li>
+<li>Replaces URIs with actual secret values</li>
+<li>Masks secrets in output (unless <code>--no-masking</code>)</li>
+<li>Executes command with resolved environment</li>
+<li>Forwards stdin/stdout/stderr and signals (SIGTERM/SIGINT)</li>
+</ol>
+<p><strong>Arguments:</strong></p>
+<ul>
+<li><code>--env-file FILE</code> - Load environment variables from dotenv file (can specify multiple, processed in order)</li>
+<li><code>--no-masking</code> - Disable automatic masking of secrets in output</li>
+<li><code>COMMAND [ARGS...]</code> - Command to execute (must come after <code>--</code>)</li>
+</ul>
+<h4>Basic usage</h4>
+<pre><code class="language-bash"># Set secret reference in environment
+export DB_PASSWORD=&#39;pass://Production/Database/password&#39;
+
+# Run application with injected secret
+pass-cli run -- ./my-app
+</code></pre>
+<h4>Using .env files</h4>
+<p>Create <code>.env</code>:</p>
+<pre><code class="language-bash">DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=admin
+DB_PASSWORD=pass://Production/Database/password
+API_KEY=pass://Work/External API/api_key
+</code></pre>
+<p>Run:</p>
+<pre><code class="language-bash">pass-cli run --env-file .env -- ./my-app
+
+# Multiple env files (later override earlier)
+pass-cli run \
+  --env-file base.env \
+  --env-file secrets.env \
+  --env-file local.env \
+  -- ./my-app
+</code></pre>
+<h4>Multiple secrets in single value</h4>
+<pre><code class="language-bash"># Mix secrets with plain text
+DATABASE_URL=&quot;postgresql://user:pass://vault/db/password@localhost/db&quot;
+API_ENDPOINT=&quot;https://api.example.com?key=pass://vault/api/key&quot;
+</code></pre>
+<h4>Secret masking</h4>
+<p><strong>Default (masked):</strong></p>
+<pre><code class="language-bash">pass-cli run -- ./my-app
+# If app logs: API_KEY: sk_live_abc123
+# Output shows: API_KEY: &lt;concealed by Proton Pass&gt;
+</code></pre>
+<p><strong>Unmasked:</strong></p>
+<pre><code class="language-bash">pass-cli run --no-masking -- ./my-app
+</code></pre>
+<h4>Running with arguments</h4>
+<pre><code class="language-bash">pass-cli run -- ./my-app --config production --verbose
+</code></pre>
+<h4>CI/CD integration</h4>
+<pre><code class="language-bash">#!/bin/bash
+# Load production secrets
+pass-cli run --env-file .env.production -- ./deploy.sh
+</code></pre>
+<h3>Inject secrets into templates (<code>inject</code>)</h3>
+<p>Process template files and replace secret references with actual values using handlebars-style syntax.</p>
+<p><strong>Synopsis:</strong></p>
+<pre><code class="language-bash">pass-cli inject [--in-file FILE] [--out-file FILE] [--force] [--file-mode MODE]
+</code></pre>
+<p><strong>How it works:</strong></p>
+<ol>
+<li>Reads template from <code>--in-file</code> or stdin</li>
+<li>Finds <code>{{ pass://vault/item/field }}</code> patterns</li>
+<li>Resolves secrets from Proton Pass</li>
+<li>Replaces references with actual values</li>
+<li>Outputs to <code>--out-file</code> or stdout</li>
+<li>Sets file permissions (Unix)</li>
+</ol>
+<p><strong>Arguments:</strong></p>
+<ul>
+<li><code>--in-file</code>, <code>-i</code> - Path to template file (or stdin)</li>
+<li><code>--out-file</code>, <code>-o</code> - Path to write output (or stdout)</li>
+<li><code>--force</code>, <code>-f</code> - Overwrite output file without prompting</li>
+<li><code>--file-mode</code> - Set file permissions (Unix, default: <code>0600</code>)</li>
+</ul>
+<h4>Template syntax</h4>
+<p><strong>Important:</strong> Use double braces <code>{{ }}</code> (unlike <code>run</code> which uses bare <code>pass://</code>)</p>
+<pre><code class="language-yaml"># config.yaml.template
+database:
+  host: localhost
+  username: {{ pass://Production/Database/username }}
+  password: {{ pass://Production/Database/password }}
+
+api:
+  key: {{ pass://Work/API Keys/api_key }}
+  secret: {{ pass://Work/API Keys/secret }}
+
+# This comment with pass://fake/uri is ignored
+# Only {{ }} wrapped references are processed
+</code></pre>
+<h4>Inject to stdout</h4>
+<pre><code class="language-bash">pass-cli inject --in-file config.yaml.template
+</code></pre>
+<h4>Inject to file</h4>
+<pre><code class="language-bash">pass-cli inject \
+  --in-file config.yaml.template \
+  --out-file config.yaml
+
+# Overwrite existing
+pass-cli inject \
+  --in-file config.yaml.template \
+  --out-file config.yaml \
+  --force
+</code></pre>
+<h4>Read from stdin</h4>
+<pre><code class="language-bash">cat template.txt | pass-cli inject
+
+# Or with heredoc
+pass-cli inject &lt;&lt; EOF
+{
+  &quot;database&quot;: {
+    &quot;password&quot;: &quot;{{ pass://Production/Database/password }}&quot;
+  }
+}
+EOF
+</code></pre>
+<h4>Custom file permissions</h4>
+<pre><code class="language-bash">pass-cli inject \
+  --in-file template.txt \
+  --out-file config.txt \
+  --file-mode 0644
+</code></pre>
+<h4>JSON template example</h4>
+<pre><code class="language-json">{
+  &quot;database&quot;: {
+    &quot;host&quot;: &quot;localhost&quot;,
+    &quot;password&quot;: &quot;{{ pass://Production/Database/password }}&quot;
+  },
+  &quot;api&quot;: {
+    &quot;key&quot;: &quot;{{ pass://Work/API/key }}&quot;
+  }
+}
+</code></pre>
+<h2>Settings Management</h2>
+<p>Configure persistent preferences:</p>
+<h3>View settings</h3>
+<pre><code class="language-bash">pass-cli settings view
+</code></pre>
+<h3>Set default vault</h3>
+<pre><code class="language-bash"># By name
+pass-cli settings set default-vault --vault-name &quot;Personal Vault&quot;
+
+# By share ID
+pass-cli settings set default-vault --share-id &quot;3GqM1RhVZL8uXR_abc123&quot;
+</code></pre>
+<p><strong>Affected commands:</strong> <code>item list</code>, <code>item view</code>, <code>item totp</code>, <code>item create</code>, <code>item update</code>, etc.</p>
+<h3>Set default output format</h3>
+<pre><code class="language-bash">pass-cli settings set default-format human
+pass-cli settings set default-format json
+</code></pre>
+<p><strong>Affected commands:</strong> <code>item list</code>, <code>item view</code>, <code>item totp</code>, <code>vault list</code>, etc.</p>
+<h3>Unset defaults</h3>
+<pre><code class="language-bash">pass-cli settings unset default-vault
+pass-cli settings unset default-format
+</code></pre>
+<h2>Share Management</h2>
+<h3>List all shares</h3>
+<pre><code class="language-bash">pass-cli share list
+pass-cli share list --output json
+</code></pre>
+<p>Shows all resources (vaults and items) shared with you and your role.</p>
+<h2>Invitation Management</h2>
+<h3>List pending invitations</h3>
+<pre><code class="language-bash">pass-cli invite list
+pass-cli invite list --output json
+</code></pre>
+<h3>Accept invitation</h3>
+<pre><code class="language-bash">pass-cli invite accept --invite-token &quot;abc123def456&quot;
+</code></pre>
+<h3>Reject invitation</h3>
+<pre><code class="language-bash">pass-cli invite reject --invite-token &quot;abc123def456&quot;
+</code></pre>
+<h2>User &amp; Session Info</h2>
+<h3>View session info</h3>
+<pre><code class="language-bash">pass-cli info
+</code></pre>
+<p>Shows: Release track, User ID, Username, Email.</p>
+<h3>View detailed user info</h3>
+<pre><code class="language-bash">pass-cli user info
+pass-cli user info --output json
+</code></pre>
+<p>Shows: Account details, subscription, storage usage.</p>
+<h3>Test connection</h3>
+<pre><code class="language-bash">pass-cli test
+</code></pre>
+<p>Verifies session validity and API connectivity.</p>
+<h2>Updates</h2>
+<p><strong>Note:</strong> Only for manual installations (not package managers).</p>
+<h3>Update to latest version</h3>
+<pre><code class="language-bash">pass-cli update
+pass-cli update --yes  # Skip confirmation
+</code></pre>
+<h3>Change release track</h3>
+<pre><code class="language-bash"># Switch to beta
+pass-cli update --set-track beta
+pass-cli update
+
+# Switch back to stable
+pass-cli update --set-track stable
+pass-cli update
+</code></pre>
+<h3>Disable automatic update checks</h3>
+<pre><code class="language-bash">export PROTON_PASS_NO_UPDATE_CHECK=1
+</code></pre>
+<h2>Object Types</h2>
+<h3>Share</h3>
+<p>A Share represents the relationship between a user and a resource (vault or item). Defines access and permissions.</p>
+<ul>
+<li><strong>Vault shares:</strong> Access to entire vault and all items within it</li>
+<li><strong>Item shares:</strong> Access to a single specific item only</li>
+<li><strong>Roles:</strong><ul>
+<li><strong>Viewer:</strong> Read-only access</li>
+<li><strong>Editor:</strong> Read and write, can manage items (but not share or manage members)</li>
+<li><strong>Manager:</strong> Full control including sharing and member management</li>
+<li><strong>Owner:</strong> Created the vault, only one who can delete it</li>
+</ul>
+</li>
+</ul>
+<h3>Vault</h3>
+<p>A container that organizes items. Items exist in exactly one vault.</p>
+<h3>Item Types</h3>
+<ul>
+<li><strong>Login:</strong> Username/password credentials with URLs, TOTP support</li>
+<li><strong>Note:</strong> Secure text notes</li>
+<li><strong>Credit Card:</strong> Payment card information (encrypted)</li>
+<li><strong>Identity:</strong> Personal information about a person</li>
+<li><strong>Alias:</strong> Email aliases for privacy protection</li>
+<li><strong>SSH Key:</strong> SSH private keys for authentication</li>
+<li><strong>Wifi:</strong> Credentials to access a WiFi network</li>
+</ul>
+<p><strong>Note:</strong> Items are identified by Item ID, but this ID is only unique when combined with Share ID (ShareID + ItemID = globally unique).</p>
+<h2>Best Practices</h2>
+<h3>Security</h3>
+<ul>
+<li>Use web login for maximum compatibility (SSO, U2F)</li>
+<li>Generate unique passwords for each account</li>
+<li>Use SSH keys stored in Pass instead of local filesystem</li>
+<li>Logout on shared systems</li>
+<li>Regularly review share permissions</li>
+</ul>
+<h3>Organization</h3>
+<ul>
+<li>Create separate vaults for different contexts (work, personal)</li>
+<li>Use descriptive titles for items and vaults</li>
+<li>Set default vault for frequently used vault</li>
+<li>Configure default output format (JSON for scripts, human for interactive)</li>
+</ul>
+<h3>Automation</h3>
+<ul>
+<li>Store credentials in files (not env vars) for better security</li>
+<li>Use Pass URIs for programmatic secret access</li>
+<li>Leverage JSON output for scripting</li>
+<li>Include <code>pass-cli logout</code> in automation cleanup</li>
+</ul>
+<h3>Sharing</h3>
+<ul>
+<li>Use principle of least privilege (start with viewer)</li>
+<li>Prefer vault shares for ongoing collaboration</li>
+<li>Use item shares for specific, limited access</li>
+<li>Regularly audit members and permissions</li>
+</ul>
+<h2>Docker Usage</h2>
+<p>Running in Docker containers requires filesystem key storage (keyring unavailable):</p>
+<pre><code class="language-bash"># 1. Ensure logged out
+pass-cli logout --force
+
+# 2. Set filesystem key provider
+export PROTON_PASS_KEY_PROVIDER=fs
+
+# 3. Login as normal
+pass-cli login
+</code></pre>
+<p><strong>Why filesystem storage?</strong></p>
+<ul>
+<li>Containers cannot access kernel secret service</li>
+<li>D-Bus unavailable in headless environments</li>
+<li>Filesystem storage is the only option</li>
+</ul>
+<p>⚠️ <strong>Security note:</strong> Key stored side-by-side with encrypted data. Secure your container environment.</p>
+<h2>Troubleshooting</h2>
+<h3>Authentication issues</h3>
+<pre><code class="language-bash"># Check session status
+pass-cli info
+pass-cli test
+
+# Re-authenticate
+pass-cli logout
+pass-cli login
+</code></pre>
+<h3>Network issues</h3>
+<ul>
+<li>Verify internet connectivity</li>
+<li>Check firewall settings for Proton domains</li>
+<li>Test with <code>pass-cli test</code></li>
+</ul>
+<h3>Permission errors</h3>
+<ul>
+<li>Verify your role: <code>pass-cli share list</code></li>
+<li>Ensure you have required permissions for the operation</li>
+<li>Contact vault owner to adjust permissions</li>
+</ul>
+<h3>Missing resources</h3>
+<ul>
+<li>Check you&#39;re looking in the right vault</li>
+<li>Verify resource hasn&#39;t been deleted</li>
+<li>Confirm access hasn&#39;t been revoked</li>
+<li>Check pending invitations: <code>pass-cli invite list</code></li>
+</ul>
+<h3>Secret reference resolution errors</h3>
+<p><strong>&quot;Invalid reference format&quot;:</strong></p>
+<ul>
+<li>Ensure format is <code>pass://vault/item/field</code></li>
+<li>Check for trailing slashes</li>
+<li>Verify all three components present</li>
+</ul>
+<p><strong>&quot;Secret reference requires a field name&quot;:</strong></p>
+<ul>
+<li>Add field name: <code>pass://vault/item/field</code> (not <code>pass://vault/item</code>)</li>
+</ul>
+<p><strong>&quot;Field not found&quot;:</strong></p>
+<ul>
+<li>Verify field exists: <code>pass-cli item view --share-id &lt;id&gt; --item-id &lt;id&gt;</code></li>
+<li>Check field name spelling (case-sensitive)</li>
+</ul>
+<p><strong>Reference not found:</strong></p>
+<ol>
+<li>Check vault access: <code>pass-cli vault list</code></li>
+<li>Verify item exists: <code>pass-cli item list --share-id &lt;id&gt;</code></li>
+<li>Confirm field name: <code>pass-cli item view &lt;uri&gt;</code></li>
+</ol>
+<h2>Configuration</h2>
+<h3>Logging</h3>
+<pre><code class="language-bash"># Levels: trace, debug, info, warn, error, off
+export PASS_LOG_LEVEL=debug
+</code></pre>
+<p><strong>Note:</strong> Logs are sent to <code>stderr</code> (won&#39;t interfere with piping/command integration).</p>
+<h3>Session storage</h3>
+<p><strong>Default locations:</strong></p>
+<ul>
+<li>macOS: <code>~/Library/Application Support/proton-pass-cli/.session/</code></li>
+<li>Linux: <code>~/.local/share/proton-pass-cli/.session/</code></li>
+</ul>
+<p><strong>Override:</strong></p>
+<pre><code class="language-bash">export PROTON_PASS_SESSION_DIR=&#39;/custom/path&#39;
+</code></pre>
+<h3>Key storage providers</h3>
+<p>Control how encryption keys are stored with <code>PROTON_PASS_KEY_PROVIDER</code>:</p>
+<h4>1. Keyring storage (default, most secure)</h4>
+<pre><code class="language-bash">export PROTON_PASS_KEY_PROVIDER=keyring  # or unset
+</code></pre>
+<p>Uses OS secure storage:</p>
+<ul>
+<li><strong>macOS:</strong> macOS Keychain</li>
+<li><strong>Linux:</strong> Kernel-based secret storage (kernel keyring)</li>
+<li><strong>Windows:</strong> Windows Credential Manager</li>
+</ul>
+<p><strong>How it works:</strong></p>
+<ul>
+<li>Generates random 256-bit key on first run</li>
+<li>Stores in system keyring</li>
+<li>Retrieves on subsequent runs</li>
+<li>If keyring unavailable but session exists, forces logout for security</li>
+</ul>
+<p><strong>Linux note:</strong> Uses kernel keyring (no D-Bus required), works in headless environments. <strong>Secrets cleared on reboot.</strong></p>
+<p><strong>Docker limitation:</strong> Containers cannot access kernel secret service. Use filesystem storage instead.</p>
+<h4>2. Filesystem storage</h4>
+<p>⚠️ <strong>Warning:</strong> Less secure - key stored side-by-side with encrypted data.</p>
+<pre><code class="language-bash">export PROTON_PASS_KEY_PROVIDER=fs
+</code></pre>
+<p>Stores key in <code>&lt;session-dir&gt;/local.key</code> with permissions <code>0600</code>.</p>
+<p><strong>Advantages:</strong></p>
+<ul>
+<li>Works in all environments (headless, containers)</li>
+<li>Survives reboots</li>
+<li>No dependency on system services</li>
+</ul>
+<p><strong>When to use:</strong></p>
+<ul>
+<li>Docker containers</li>
+<li>Development/testing</li>
+<li>When system keyring unavailable</li>
+</ul>
+<h4>3. Environment variable storage</h4>
+<p>⚠️ <strong>Warning:</strong> Key visible to other processes in same session.</p>
+<pre><code class="language-bash">export PROTON_PASS_KEY_PROVIDER=env
+export PROTON_PASS_ENCRYPTION_KEY=your-secret-key
+</code></pre>
+<p>Derives encryption key from <code>PROTON_PASS_ENCRYPTION_KEY</code> (must be set and non-empty).</p>
+<p><strong>Generate safe key:</strong></p>
+<pre><code class="language-bash">dd if=/dev/urandom bs=1 count=2048 2&gt;/dev/null | sha256sum | awk &#39;{print $1}&#39;
+</code></pre>
+<p><strong>Advantages:</strong></p>
+<ul>
+<li>Portable across all environments</li>
+<li>No filesystem/keyring dependency</li>
+<li>User controls key value</li>
+<li>Works in CI/CD, containers, headless</li>
+</ul>
+<p><strong>When to use:</strong></p>
+<ul>
+<li>CI/CD pipelines</li>
+<li>Containers where filesystem persistence undesirable</li>
+<li>Automation scripts</li>
+<li>Explicit control over encryption key needed</li>
+</ul>
+<h3>Telemetry</h3>
+<p><strong>Disable telemetry:</strong></p>
+<pre><code class="language-bash">export PROTON_PASS_DISABLE_TELEMETRY=1
+</code></pre>
+<p>Or globally: <a href="https://account.proton.me/pass/security">Account security settings</a> → Disable &quot;Collect usage diagnostics&quot;</p>
+<p><strong>What&#39;s sent:</strong> Anonymized usage data (e.g., &quot;item created of type note&quot;) - <strong>never</strong> personal/sensitive data.</p>
+<h2>Environment Variables</h2>
+<h3>Login credentials (interactive login)</h3>
+<pre><code class="language-bash">export PROTON_PASS_PASSWORD=&#39;password&#39;
+export PROTON_PASS_PASSWORD_FILE=&#39;/path/to/file&#39;
+export PROTON_PASS_TOTP=&#39;123456&#39;
+export PROTON_PASS_TOTP_FILE=&#39;/path/to/file&#39;
+export PROTON_PASS_EXTRA_PASSWORD=&#39;extra-password&#39;
+export PROTON_PASS_EXTRA_PASSWORD_FILE=&#39;/path/to/file&#39;
+</code></pre>
+<h3>SSH key passphrase</h3>
+<pre><code class="language-bash">export PROTON_PASS_SSH_KEY_PASSWORD=&#39;passphrase&#39;
+export PROTON_PASS_SSH_KEY_PASSWORD_FILE=&#39;/path/to/file&#39;
+</code></pre>
+<h3>Update checks</h3>
+<pre><code class="language-bash">export PROTON_PASS_NO_UPDATE_CHECK=1
+</code></pre>
+<h3>Installation</h3>
+<pre><code class="language-bash">export PROTON_PASS_CLI_INSTALL_DIR=/custom/path
+export PROTON_PASS_CLI_INSTALL_CHANNEL=beta
+</code></pre>
+<h2>Common Workflows</h2>
+<h3>Create and populate a new vault</h3>
+<pre><code class="language-bash"># Create vault
+pass-cli vault create --name &quot;Project Alpha&quot;
+
+# List to get share ID
+pass-cli vault list
+
+# Create login items
+pass-cli item create login \
+  --share-id &quot;new_vault_id&quot; \
+  --title &quot;API Key&quot; \
+  --username &quot;api_user&quot; \
+  --generate-password \
+  --url &quot;https://api.example.com&quot;
+
+# Share with team
+pass-cli vault share --share-id &quot;new_vault_id&quot; alice@team.com --role editor
+</code></pre>
+<h3>Import and use SSH keys</h3>
+<pre><code class="language-bash"># Import existing key
+pass-cli item create ssh-key import \
+  --from-private-key ~/.ssh/id_ed25519 \
+  --vault-name &quot;SSH Keys&quot; \
+  --title &quot;GitHub Key&quot;
+
+# Load into SSH agent
+pass-cli ssh-agent load --vault-name &quot;SSH Keys&quot;
+
+# Or start Pass as SSH agent
+pass-cli ssh-agent start --vault-name &quot;SSH Keys&quot;
+export SSH_AUTH_SOCK=$HOME/.ssh/proton-pass-agent.sock
+</code></pre>
+<h3>Scripted access to secrets</h3>
+<pre><code class="language-bash">#!/bin/bash
+# Automated login
+export PROTON_PASS_PASSWORD_FILE=&quot;$HOME/.secrets/pass-password&quot;
+pass-cli login --interactive user@proton.me
+
+# Retrieve secret
+DB_PASSWORD=$(pass-cli item view &quot;pass://Production/Database/password&quot; --output json | jq -r &#39;.password&#39;)
+
+# Use secret
+connect-to-db --password &quot;$DB_PASSWORD&quot;
+
+# Cleanup
+pass-cli logout
+</code></pre>
+<h3>Application deployment with secrets</h3>
+<pre><code class="language-bash">#!/bin/bash
+# Create .env.production with secret references
+cat &gt; .env.production &lt;&lt; EOF
+NODE_ENV=production
+DATABASE_URL=pass://Production/Database/connection_string
+API_KEY=pass://Production/API/key
+STRIPE_SECRET=pass://Production/Stripe/secret_key
+EOF
+
+# Deploy application with secrets injected
+pass-cli run --env-file .env.production -- npm start
+
+# Or generate config file from template
+pass-cli inject \
+  --in-file config.yaml.template \
+  --out-file config.yaml \
+  --force
+
+# Then run app with generated config
+./app --config config.yaml
+</code></pre>
+<h3>CI/CD pipeline integration</h3>
+<pre><code class="language-bash">#!/bin/bash
+# Login with environment variable key storage
+export PROTON_PASS_KEY_PROVIDER=env
+export PROTON_PASS_ENCRYPTION_KEY=&quot;${CI_PASS_ENCRYPTION_KEY}&quot;
+export PROTON_PASS_PASSWORD_FILE=/run/secrets/pass-password
+
+pass-cli login --interactive user@proton.me
+
+# Run tests with secrets
+pass-cli run --env-file .env.test -- npm test
+
+# Deploy with secrets
+pass-cli run --env-file .env.production -- ./deploy.sh
+
+# Cleanup
+pass-cli logout
+</code></pre>
+<h2>Notes</h2>
+<ul>
+<li><strong>Beta status:</strong> Proton Pass CLI is currently in beta</li>
+<li><strong>Track switching:</strong> Only available for manual installations (not package managers)</li>
+<li><strong>Item update limitations:</strong> Cannot update TOTP or time fields via CLI</li>
+<li><strong>Passphrase recommendations:</strong> Passphrases optional for generated keys (already encrypted in vault)</li>
+<li><strong>SSH agent refresh:</strong> Default 1 hour, customizable with <code>--refresh-interval</code></li>
+<li><strong>Docker containers:</strong> Must use filesystem key storage (<code>PROTON_PASS_KEY_PROVIDER=fs</code>)</li>
+<li><strong>Linux keyring:</strong> Uses kernel keyring (no D-Bus), secrets cleared on reboot</li>
+<li><strong>Telemetry:</strong> Anonymized only (no personal data), can be disabled</li>
+<li><strong>Secret masking:</strong> Automatically masks secrets in <code>run</code> command output</li>
+<li><strong>Template syntax:</strong> <code>inject</code> requires <code>{{ }}</code> braces, <code>run</code> uses bare <code>pass://</code> URIs</li>
+<li><strong>Item ID uniqueness:</strong> Item ID only unique when combined with Share ID</li>
+</ul>
+<h2>Command Reference Quick List</h2>
+<p><strong>Authentication:</strong></p>
+<ul>
+<li><code>login</code>, <code>logout</code>, <code>info</code>, <code>test</code></li>
+</ul>
+<p><strong>Vault:</strong></p>
+<ul>
+<li><code>vault list</code>, <code>vault create</code>, <code>vault update</code>, <code>vault delete</code>, <code>vault share</code>, <code>vault member</code>, <code>vault transfer</code></li>
+</ul>
+<p><strong>Item:</strong></p>
+<ul>
+<li><code>item list</code>, <code>item view</code>, <code>item create</code>, <code>item update</code>, <code>item delete</code>, <code>item share</code>, <code>item totp</code>, <code>item alias</code>, <code>item attachment</code></li>
+</ul>
+<p><strong>Secret Injection:</strong></p>
+<ul>
+<li><code>run</code> - Execute commands with secrets injected as environment variables</li>
+<li><code>inject</code> - Process template files with secret references</li>
+</ul>
+<p><strong>Password:</strong></p>
+<ul>
+<li><code>password generate</code>, <code>password score</code></li>
+</ul>
+<p><strong>SSH:</strong></p>
+<ul>
+<li><code>ssh-agent load</code>, <code>ssh-agent start</code></li>
+</ul>
+<p><strong>Settings:</strong></p>
+<ul>
+<li><code>settings view</code>, <code>settings set</code>, <code>settings unset</code></li>
+</ul>
+<p><strong>Share &amp; Invite:</strong></p>
+<ul>
+<li><code>share list</code>, <code>invite list</code>, <code>invite accept</code>, <code>invite reject</code></li>
+</ul>
+<p><strong>User:</strong></p>
+<ul>
+<li><code>user info</code></li>
+</ul>
+<p><strong>Update:</strong></p>
+<ul>
+<li><code>update</code></li>
+</ul>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/kakatkarakshay/proton-pass/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/kakatkarakshay/proton-pass" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/kakatkarakshay/proton-pass/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@kakatkarakshay</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Notes & PKM</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

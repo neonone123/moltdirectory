@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Use @youdotcom-oss/teams-anthropic to add Anthropic Claude models (Opus, Sonnet, Haiku) to Microsoft Teams.ai applica">
+  <title>teams-anthropic-integration - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to AI & LLMs</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">AI & LLMs</a>
+                <span class="skill-page-author">by @edwardirby</span>
+              </div>
+              <h1 class="skill-page-title">teams-anthropic-integration</h1>
+              <p class="skill-page-desc">Use @youdotcom-oss/teams-anthropic to add Anthropic Claude models (Opus, Sonnet, Haiku) to Microsoft Teams.ai applica</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Build Teams.ai Apps with Anthropic Claude</h1>
+<p>Use <code>@youdotcom-oss/teams-anthropic</code> to add Claude models (Opus, Sonnet, Haiku) to Microsoft Teams.ai applications. Optionally integrate You.com MCP server for web search and content extraction.</p>
+<h2>Choose Your Path</h2>
+<p><strong>Path A: Basic Setup</strong> (Recommended for getting started)</p>
+<ul>
+<li>Use Anthropic Claude models in Teams.ai</li>
+<li>Chat, streaming, function calling</li>
+<li>No additional dependencies</li>
+</ul>
+<p><strong>Path B: With You.com MCP</strong> (For web search capabilities)</p>
+<ul>
+<li>Everything in Path A</li>
+<li>Web search and content extraction via You.com</li>
+<li>Real-time information access</li>
+</ul>
+<h2>Decision Point</h2>
+<p><strong>Ask: Do you need web search and content extraction in your Teams app?</strong></p>
+<ul>
+<li><strong>NO</strong> → Use <strong>Path A: Basic Setup</strong> (simpler, faster)</li>
+<li><strong>YES</strong> → Use <strong>Path B: With You.com MCP</strong></li>
+</ul>
+<hr>
+<h2>Path A: Basic Setup</h2>
+<p>Use Anthropic Claude models in your Teams.ai app without additional dependencies.</p>
+<h3>A1. Install Package</h3>
+<pre><code class="language-bash">npm install @youdotcom-oss/teams-anthropic @anthropic-ai/sdk @microsoft/teams.ai
+</code></pre>
+<h3>A2. Get Anthropic API Key</h3>
+<p>Get your API key from <a href="https://console.anthropic.com/">console.anthropic.com</a></p>
+<pre><code class="language-bash"># Add to .env
+ANTHROPIC_API_KEY=your-anthropic-api-key
+</code></pre>
+<h3>A3. Ask: New or Existing App?</h3>
+<ul>
+<li><strong>New Teams app</strong>: Use entire template below</li>
+<li><strong>Existing app</strong>: Add Claude model to existing setup</li>
+</ul>
+<h3>A4. Basic Template</h3>
+<p><strong>For NEW Apps:</strong></p>
+<pre><code class="language-typescript">import { App } from &#39;@microsoft/teams.apps&#39;;
+import { AnthropicChatModel, AnthropicModel } from &#39;@youdotcom-oss/teams-anthropic&#39;;
+
+if (!process.env.ANTHROPIC_API_KEY) {
+  throw new Error(&#39;ANTHROPIC_API_KEY environment variable is required&#39;);
+}
+
+const model = new AnthropicChatModel({
+  model: AnthropicModel.CLAUDE_SONNET_4_5,
+  apiKey: process.env.ANTHROPIC_API_KEY,
+  requestOptions: {
+    max_tokens: 2048,
+    temperature: 0.7,
+  },
+});
+
+const app = new App();
+
+app.on(&#39;message&#39;, async ({ send, activity }) =&gt; {
+  await send({ type: &#39;typing&#39; });
+
+  const response = await model.send(
+    { role: &#39;user&#39;, content: activity.text }
+  );
+
+  if (response.content) {
+    await send(response.content);
+  }
+});
+
+app.start().catch(console.error);
+</code></pre>
+<p><strong>For EXISTING Apps:</strong></p>
+<p>Add to your existing imports:</p>
+<pre><code class="language-typescript">import { AnthropicChatModel, AnthropicModel } from &#39;@youdotcom-oss/teams-anthropic&#39;;
+</code></pre>
+<p>Replace your existing model:</p>
+<pre><code class="language-typescript">const model = new AnthropicChatModel({
+  model: AnthropicModel.CLAUDE_SONNET_4_5,
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
+</code></pre>
+<h3>A5. Choose Your Model</h3>
+<pre><code class="language-typescript">// Most capable - best for complex tasks
+AnthropicModel.CLAUDE_OPUS_4_5
+
+// Balanced intelligence and speed (recommended)
+AnthropicModel.CLAUDE_SONNET_4_5
+
+// Fast and efficient
+AnthropicModel.CLAUDE_HAIKU_3_5
+</code></pre>
+<h3>A6. Test Basic Setup</h3>
+<pre><code class="language-bash">npm start
+</code></pre>
+<p>Send a message in Teams to verify Claude responds.</p>
+<hr>
+<h2>Path B: With You.com MCP</h2>
+<p>Add web search and content extraction to your Claude-powered Teams app.</p>
+<h3>B1. Install Packages</h3>
+<pre><code class="language-bash">npm install @youdotcom-oss/teams-anthropic @anthropic-ai/sdk @microsoft/teams.ai @microsoft/teams.mcpclient
+</code></pre>
+<h3>B2. Get API Keys</h3>
+<ul>
+<li><strong>Anthropic API key</strong>: <a href="https://console.anthropic.com/">console.anthropic.com</a></li>
+<li><strong>You.com API key</strong>: <a href="https://you.com/platform/api-keys">you.com/platform/api-keys</a></li>
+</ul>
+<pre><code class="language-bash"># Add to .env
+ANTHROPIC_API_KEY=your-anthropic-api-key
+YDC_API_KEY=your-you-com-api-key
+</code></pre>
+<h3>B3. Ask: New or Existing App?</h3>
+<ul>
+<li><strong>New Teams app</strong>: Use entire template below</li>
+<li><strong>Existing app</strong>: Add MCP to existing Claude setup</li>
+</ul>
+<h3>B4. MCP Template</h3>
+<p><strong>For NEW Apps:</strong></p>
+<pre><code class="language-typescript">import { App } from &#39;@microsoft/teams.apps&#39;;
+import { ChatPrompt } from &#39;@microsoft/teams.ai&#39;;
+import { ConsoleLogger } from &#39;@microsoft/teams.common&#39;;
+import { McpClientPlugin } from &#39;@microsoft/teams.mcpclient&#39;;
+import {
+  AnthropicChatModel,
+  AnthropicModel,
+  getYouMcpConfig,
+} from &#39;@youdotcom-oss/teams-anthropic&#39;;
+
+// Validate environment
+if (!process.env.ANTHROPIC_API_KEY) {
+  throw new Error(&#39;ANTHROPIC_API_KEY environment variable is required&#39;);
+}
+
+if (!process.env.YDC_API_KEY) {
+  throw new Error(&#39;YDC_API_KEY environment variable is required&#39;);
+}
+
+// Configure logger
+const logger = new ConsoleLogger(&#39;mcp-client&#39;, { level: &#39;info&#39; });
+
+// Create prompt with MCP integration
+const prompt = new ChatPrompt(
+  {
+    instructions: &#39;You are a helpful assistant with access to web search and content extraction. Use these tools to provide accurate, up-to-date information.&#39;,
+    model: new AnthropicChatModel({
+      model: AnthropicModel.CLAUDE_SONNET_4_5,
+      apiKey: process.env.ANTHROPIC_API_KEY,
+      requestOptions: {
+        max_tokens: 2048,
+      },
+    }),
+  },
+  [new McpClientPlugin({ logger })],
+).usePlugin(&#39;mcpClient&#39;, getYouMcpConfig());
+
+const app = new App();
+
+app.on(&#39;message&#39;, async ({ send, activity }) =&gt; {
+  await send({ type: &#39;typing&#39; });
+
+  const result = await prompt.send(activity.text);
+  if (result.content) {
+    await send(result.content);
+  }
+});
+
+app.start().catch(console.error);
+</code></pre>
+<p><strong>For EXISTING Apps with Claude:</strong></p>
+<p>If you already have Path A setup, add MCP integration:</p>
+<ol>
+<li><p><strong>Install MCP dependencies:</strong></p>
+<pre><code class="language-bash">npm install @microsoft/teams.mcpclient
+</code></pre>
+</li>
+<li><p><strong>Add imports:</strong></p>
+<pre><code class="language-typescript">import { ChatPrompt } from &#39;@microsoft/teams.ai&#39;;
+import { ConsoleLogger } from &#39;@microsoft/teams.common&#39;;
+import { McpClientPlugin } from &#39;@microsoft/teams.mcpclient&#39;;
+import { getYouMcpConfig } from &#39;@youdotcom-oss/teams-anthropic&#39;;
+</code></pre>
+</li>
+<li><p><strong>Validate You.com API key:</strong></p>
+<pre><code class="language-typescript">if (!process.env.YDC_API_KEY) {
+  throw new Error(&#39;YDC_API_KEY environment variable is required&#39;);
+}
+</code></pre>
+</li>
+<li><p><strong>Replace model with ChatPrompt:</strong></p>
+<pre><code class="language-typescript">const logger = new ConsoleLogger(&#39;mcp-client&#39;, { level: &#39;info&#39; });
+
+const prompt = new ChatPrompt(
+  {
+    instructions: &#39;Your instructions here&#39;,
+    model: new AnthropicChatModel({
+      model: AnthropicModel.CLAUDE_SONNET_4_5,
+      apiKey: process.env.ANTHROPIC_API_KEY,
+    }),
+  },
+  [new McpClientPlugin({ logger })],
+).usePlugin(&#39;mcpClient&#39;, getYouMcpConfig());
+</code></pre>
+</li>
+<li><p><strong>Use prompt.send() instead of model.send():</strong></p>
+<pre><code class="language-typescript">const result = await prompt.send(activity.text);
+</code></pre>
+</li>
+</ol>
+<h3>B5. Test MCP Integration</h3>
+<pre><code class="language-bash">npm start
+</code></pre>
+<p>Ask Claude a question that requires web search:</p>
+<ul>
+<li>&quot;What are the latest developments in AI?&quot;</li>
+<li>&quot;Search for React documentation&quot;</li>
+<li>&quot;Extract content from <a href="https://example.com">https://example.com</a>&quot;</li>
+</ul>
+<hr>
+<h2>Available Claude Models</h2>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Enum</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Claude Opus 4.5</td>
+<td><code>AnthropicModel.CLAUDE_OPUS_4_5</code></td>
+<td>Complex tasks, highest capability</td>
+</tr>
+<tr>
+<td>Claude Sonnet 4.5</td>
+<td><code>AnthropicModel.CLAUDE_SONNET_4_5</code></td>
+<td>Balanced intelligence and speed (recommended)</td>
+</tr>
+<tr>
+<td>Claude Haiku 3.5</td>
+<td><code>AnthropicModel.CLAUDE_HAIKU_3_5</code></td>
+<td>Fast responses, efficiency</td>
+</tr>
+<tr>
+<td>Claude Sonnet 3.5</td>
+<td><code>AnthropicModel.CLAUDE_SONNET_3_5</code></td>
+<td>Previous generation, stable</td>
+</tr>
+</tbody></table>
+<h2>Advanced Features</h2>
+<h3>Streaming Responses</h3>
+<pre><code class="language-typescript">const response = await model.send(
+  { role: &#39;user&#39;, content: &#39;Write a short story&#39; },
+  {
+    onChunk: async (delta) =&gt; {
+      // Stream each token as it arrives
+      process.stdout.write(delta);
+    },
+  }
+);
+</code></pre>
+<h3>Function Calling</h3>
+<pre><code class="language-typescript">const response = await model.send(
+  { role: &#39;user&#39;, content: &#39;What is the weather in San Francisco?&#39; },
+  {
+    functions: {
+      get_weather: {
+        description: &#39;Get the current weather for a location&#39;,
+        parameters: {
+          location: { type: &#39;string&#39;, description: &#39;City name&#39; },
+        },
+        handler: async (args: { location: string }) =&gt; {
+          // Your API call here
+          return { temperature: 72, conditions: &#39;Sunny&#39; };
+        },
+      },
+    },
+  }
+);
+</code></pre>
+<h3>Conversation Memory</h3>
+<pre><code class="language-typescript">import { LocalMemory } from &#39;@microsoft/teams.ai&#39;;
+
+const memory = new LocalMemory();
+
+// First message
+await model.send(
+  { role: &#39;user&#39;, content: &#39;My name is Alice&#39; },
+  { messages: memory }
+);
+
+// Second message - Claude remembers
+const response = await model.send(
+  { role: &#39;user&#39;, content: &#39;What is my name?&#39; },
+  { messages: memory }
+);
+// Response: &quot;Your name is Alice.&quot;
+</code></pre>
+<h2>Validation Checklist</h2>
+<h3>Path A Checklist</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Package installed: <code>@youdotcom-oss/teams-anthropic</code></li>
+<li><input disabled="" type="checkbox"> Environment variable set: <code>ANTHROPIC_API_KEY</code></li>
+<li><input disabled="" type="checkbox"> Model configured with <code>AnthropicChatModel</code></li>
+<li><input disabled="" type="checkbox"> Model selection chosen (Opus/Sonnet/Haiku)</li>
+<li><input disabled="" type="checkbox"> App tested with basic messages</li>
+</ul>
+<h3>Path B Checklist</h3>
+<ul>
+<li><input disabled="" type="checkbox"> All Path A items completed</li>
+<li><input disabled="" type="checkbox"> Additional package installed: <code>@microsoft/teams.mcpclient</code></li>
+<li><input disabled="" type="checkbox"> Environment variable set: <code>YDC_API_KEY</code></li>
+<li><input disabled="" type="checkbox"> Logger configured</li>
+<li><input disabled="" type="checkbox"> ChatPrompt configured with <code>getYouMcpConfig()</code></li>
+<li><input disabled="" type="checkbox"> App tested with web search queries</li>
+</ul>
+<h2>Common Issues</h2>
+<h3>Path A Issues</h3>
+<p><strong>&quot;Cannot find module @youdotcom-oss/teams-anthropic&quot;</strong></p>
+<pre><code class="language-bash">npm install @youdotcom-oss/teams-anthropic @anthropic-ai/sdk
+</code></pre>
+<p><strong>&quot;ANTHROPIC_API_KEY environment variable is required&quot;</strong></p>
+<ul>
+<li>Get key from: <a href="https://console.anthropic.com/">https://console.anthropic.com/</a></li>
+<li>Add to .env: <code>ANTHROPIC_API_KEY=your-key-here</code></li>
+</ul>
+<p><strong>&quot;Invalid model identifier&quot;</strong></p>
+<ul>
+<li>Use enum: <code>AnthropicModel.CLAUDE_SONNET_4_5</code></li>
+<li>Don&#39;t use string: <code>&#39;claude-sonnet-4-5-20250929&#39;</code></li>
+</ul>
+<h3>Path B Issues</h3>
+<p><strong>&quot;YDC_API_KEY environment variable is required&quot;</strong></p>
+<ul>
+<li>Get key from: <a href="https://you.com/platform/api-keys">https://you.com/platform/api-keys</a></li>
+<li>Add to .env: <code>YDC_API_KEY=your-key-here</code></li>
+</ul>
+<p><strong>&quot;MCP connection fails&quot;</strong></p>
+<ul>
+<li>Verify API key is valid at <a href="https://you.com/platform/api-keys">https://you.com/platform/api-keys</a></li>
+<li>Check network connectivity</li>
+<li>Review logger output for details</li>
+</ul>
+<p><strong>&quot;Cannot find module @microsoft/teams.mcpclient&quot;</strong></p>
+<pre><code class="language-bash">npm install @microsoft/teams.mcpclient
+</code></pre>
+<h2>getYouMcpConfig() Utility</h2>
+<p>Automatically configures You.com MCP connection:</p>
+<ul>
+<li><strong>URL</strong>: <code>https://api.you.com/mcp</code></li>
+<li><strong>Authentication</strong>: Bearer token from <code>YDC_API_KEY</code></li>
+<li><strong>User-Agent</strong>: Includes package version for telemetry</li>
+</ul>
+<pre><code class="language-typescript">// Option 1: Use environment variable (recommended)
+getYouMcpConfig()
+
+// Option 2: Custom API key
+getYouMcpConfig({ apiKey: &#39;your-custom-key&#39; })
+</code></pre>
+<h2>Resources</h2>
+<ul>
+<li><strong>Package</strong>: <a href="https://github.com/youdotcom-oss/dx-toolkit/tree/main/packages/teams-anthropic">https://github.com/youdotcom-oss/dx-toolkit/tree/main/packages/teams-anthropic</a></li>
+<li><strong>You.com MCP</strong>: <a href="https://documentation.you.com/developer-resources/mcp-server">https://documentation.you.com/developer-resources/mcp-server</a></li>
+<li><strong>Anthropic API</strong>: <a href="https://console.anthropic.com/">https://console.anthropic.com/</a></li>
+<li><strong>You.com API Keys</strong>: <a href="https://you.com/platform/api-keys">https://you.com/platform/api-keys</a></li>
+</ul>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/edwardirby/teams-anthropic-integration/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/edwardirby/teams-anthropic-integration" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/edwardirby/teams-anthropic-integration/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@edwardirby</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">AI & LLMs</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

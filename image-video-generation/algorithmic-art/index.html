@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Creating algorithmic art using p5.js with seeded randomness and interactive parameter exploration">
+  <title>algorithmic-art - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Image & Video Generation</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Image & Video Generation</a>
+                <span class="skill-page-author">by @seanphan</span>
+              </div>
+              <h1 class="skill-page-title">algorithmic-art</h1>
+              <p class="skill-page-desc">Creating algorithmic art using p5.js with seeded randomness and interactive parameter exploration</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <p>Algorithmic philosophies are computational aesthetic movements that are then expressed through code. Output .md files (philosophy), .html files (interactive viewer), and .js files (generative algorithms).</p>
+<p>This happens in two steps:</p>
+<ol>
+<li>Algorithmic Philosophy Creation (.md file)</li>
+<li>Express by creating p5.js generative art (.html + .js files)</li>
+</ol>
+<p>First, undertake this task:</p>
+<h2>ALGORITHMIC PHILOSOPHY CREATION</h2>
+<p>To begin, create an ALGORITHMIC PHILOSOPHY (not static images or templates) that will be interpreted through:</p>
+<ul>
+<li>Computational processes, emergent behavior, mathematical beauty</li>
+<li>Seeded randomness, noise fields, organic systems</li>
+<li>Particles, flows, fields, forces</li>
+<li>Parametric variation and controlled chaos</li>
+</ul>
+<h3>THE CRITICAL UNDERSTANDING</h3>
+<ul>
+<li>What is received: Some subtle input or instructions by the user to take into account, but use as a foundation; it should not constrain creative freedom.</li>
+<li>What is created: An algorithmic philosophy/generative aesthetic movement.</li>
+<li>What happens next: The same version receives the philosophy and EXPRESSES IT IN CODE - creating p5.js sketches that are 90% algorithmic generation, 10% essential parameters.</li>
+</ul>
+<p>Consider this approach:</p>
+<ul>
+<li>Write a manifesto for a generative art movement</li>
+<li>The next phase involves writing the algorithm that brings it to life</li>
+</ul>
+<p>The philosophy must emphasize: Algorithmic expression. Emergent behavior. Computational beauty. Seeded variation.</p>
+<h3>HOW TO GENERATE AN ALGORITHMIC PHILOSOPHY</h3>
+<p><strong>Name the movement</strong> (1-2 words): &quot;Organic Turbulence&quot; / &quot;Quantum Harmonics&quot; / &quot;Emergent Stillness&quot;</p>
+<p><strong>Articulate the philosophy</strong> (4-6 paragraphs - concise but complete):</p>
+<p>To capture the ALGORITHMIC essence, express how this philosophy manifests through:</p>
+<ul>
+<li>Computational processes and mathematical relationships?</li>
+<li>Noise functions and randomness patterns?</li>
+<li>Particle behaviors and field dynamics?</li>
+<li>Temporal evolution and system states?</li>
+<li>Parametric variation and emergent complexity?</li>
+</ul>
+<p><strong>CRITICAL GUIDELINES:</strong></p>
+<ul>
+<li><strong>Avoid redundancy</strong>: Each algorithmic aspect should be mentioned once. Avoid repeating concepts about noise theory, particle dynamics, or mathematical principles unless adding new depth.</li>
+<li><strong>Emphasize craftsmanship REPEATEDLY</strong>: The philosophy MUST stress multiple times that the final algorithm should appear as though it took countless hours to develop, was refined with care, and comes from someone at the absolute top of their field. This framing is essential - repeat phrases like &quot;meticulously crafted algorithm,&quot; &quot;the product of deep computational expertise,&quot; &quot;painstaking optimization,&quot; &quot;master-level implementation.&quot;</li>
+<li><strong>Leave creative space</strong>: Be specific about the algorithmic direction, but concise enough that the next Claude has room to make interpretive implementation choices at an extremely high level of craftsmanship.</li>
+</ul>
+<p>The philosophy must guide the next version to express ideas ALGORITHMICALLY, not through static images. Beauty lives in the process, not the final frame.</p>
+<h3>PHILOSOPHY EXAMPLES</h3>
+<p><strong>&quot;Organic Turbulence&quot;</strong>
+Philosophy: Chaos constrained by natural law, order emerging from disorder.
+Algorithmic expression: Flow fields driven by layered Perlin noise. Thousands of particles following vector forces, their trails accumulating into organic density maps. Multiple noise octaves create turbulent regions and calm zones. Color emerges from velocity and density - fast particles burn bright, slow ones fade to shadow. The algorithm runs until equilibrium - a meticulously tuned balance where every parameter was refined through countless iterations by a master of computational aesthetics.</p>
+<p><strong>&quot;Quantum Harmonics&quot;</strong>
+Philosophy: Discrete entities exhibiting wave-like interference patterns.
+Algorithmic expression: Particles initialized on a grid, each carrying a phase value that evolves through sine waves. When particles are near, their phases interfere - constructive interference creates bright nodes, destructive creates voids. Simple harmonic motion generates complex emergent mandalas. The result of painstaking frequency calibration where every ratio was carefully chosen to produce resonant beauty.</p>
+<p><strong>&quot;Recursive Whispers&quot;</strong>
+Philosophy: Self-similarity across scales, infinite depth in finite space.
+Algorithmic expression: Branching structures that subdivide recursively. Each branch slightly randomized but constrained by golden ratios. L-systems or recursive subdivision generate tree-like forms that feel both mathematical and organic. Subtle noise perturbations break perfect symmetry. Line weights diminish with each recursion level. Every branching angle the product of deep mathematical exploration.</p>
+<p><strong>&quot;Field Dynamics&quot;</strong>
+Philosophy: Invisible forces made visible through their effects on matter.
+Algorithmic expression: Vector fields constructed from mathematical functions or noise. Particles born at edges, flowing along field lines, dying when they reach equilibrium or boundaries. Multiple fields can attract, repel, or rotate particles. The visualization shows only the traces - ghost-like evidence of invisible forces. A computational dance meticulously choreographed through force balance.</p>
+<p><strong>&quot;Stochastic Crystallization&quot;</strong>
+Philosophy: Random processes crystallizing into ordered structures.
+Algorithmic expression: Randomized circle packing or Voronoi tessellation. Start with random points, let them evolve through relaxation algorithms. Cells push apart until equilibrium. Color based on cell size, neighbor count, or distance from center. The organic tiling that emerges feels both random and inevitable. Every seed produces unique crystalline beauty - the mark of a master-level generative algorithm.</p>
+<p><em>These are condensed examples. The actual algorithmic philosophy should be 4-6 substantial paragraphs.</em></p>
+<h3>ESSENTIAL PRINCIPLES</h3>
+<ul>
+<li><strong>ALGORITHMIC PHILOSOPHY</strong>: Creating a computational worldview to be expressed through code</li>
+<li><strong>PROCESS OVER PRODUCT</strong>: Always emphasize that beauty emerges from the algorithm&#39;s execution - each run is unique</li>
+<li><strong>PARAMETRIC EXPRESSION</strong>: Ideas communicate through mathematical relationships, forces, behaviors - not static composition</li>
+<li><strong>ARTISTIC FREEDOM</strong>: The next Claude interprets the philosophy algorithmically - provide creative implementation room</li>
+<li><strong>PURE GENERATIVE ART</strong>: This is about making LIVING ALGORITHMS, not static images with randomness</li>
+<li><strong>EXPERT CRAFTSMANSHIP</strong>: Repeatedly emphasize the final algorithm must feel meticulously crafted, refined through countless iterations, the product of deep expertise by someone at the absolute top of their field in computational aesthetics</li>
+</ul>
+<p><strong>The algorithmic philosophy should be 4-6 paragraphs long.</strong> Fill it with poetic computational philosophy that brings together the intended vision. Avoid repeating the same points. Output this algorithmic philosophy as a .md file.</p>
+<hr>
+<h2>DEDUCING THE CONCEPTUAL SEED</h2>
+<p><strong>CRITICAL STEP</strong>: Before implementing the algorithm, identify the subtle conceptual thread from the original request.</p>
+<p><strong>THE ESSENTIAL PRINCIPLE</strong>:
+The concept is a <strong>subtle, niche reference embedded within the algorithm itself</strong> - not always literal, always sophisticated. Someone familiar with the subject should feel it intuitively, while others simply experience a masterful generative composition. The algorithmic philosophy provides the computational language. The deduced concept provides the soul - the quiet conceptual DNA woven invisibly into parameters, behaviors, and emergence patterns.</p>
+<p>This is <strong>VERY IMPORTANT</strong>: The reference must be so refined that it enhances the work&#39;s depth without announcing itself. Think like a jazz musician quoting another song through algorithmic harmony - only those who know will catch it, but everyone appreciates the generative beauty.</p>
+<hr>
+<h2>P5.JS IMPLEMENTATION</h2>
+<p>With the philosophy AND conceptual framework established, express it through code. Pause to gather thoughts before proceeding. Use only the algorithmic philosophy created and the instructions below.</p>
+<h3>⚠️ STEP 0: READ THE TEMPLATE FIRST ⚠️</h3>
+<p><strong>CRITICAL: BEFORE writing any HTML:</strong></p>
+<ol>
+<li><strong>Read</strong> <code>templates/viewer.html</code> using the Read tool</li>
+<li><strong>Study</strong> the exact structure, styling, and Anthropic branding</li>
+<li><strong>Use that file as the LITERAL STARTING POINT</strong> - not just inspiration</li>
+<li><strong>Keep all FIXED sections exactly as shown</strong> (header, sidebar structure, Anthropic colors/fonts, seed controls, action buttons)</li>
+<li><strong>Replace only the VARIABLE sections</strong> marked in the file&#39;s comments (algorithm, parameters, UI controls for parameters)</li>
+</ol>
+<p><strong>Avoid:</strong></p>
+<ul>
+<li>❌ Creating HTML from scratch</li>
+<li>❌ Inventing custom styling or color schemes</li>
+<li>❌ Using system fonts or dark themes</li>
+<li>❌ Changing the sidebar structure</li>
+</ul>
+<p><strong>Follow these practices:</strong></p>
+<ul>
+<li>✅ Copy the template&#39;s exact HTML structure</li>
+<li>✅ Keep Anthropic branding (Poppins/Lora fonts, light colors, gradient backdrop)</li>
+<li>✅ Maintain the sidebar layout (Seed → Parameters → Colors? → Actions)</li>
+<li>✅ Replace only the p5.js algorithm and parameter controls</li>
+</ul>
+<p>The template is the foundation. Build on it, don&#39;t rebuild it.</p>
+<hr>
+<p>To create gallery-quality computational art that lives and breathes, use the algorithmic philosophy as the foundation.</p>
+<h3>TECHNICAL REQUIREMENTS</h3>
+<p><strong>Seeded Randomness (Art Blocks Pattern)</strong>:</p>
+<pre><code class="language-javascript">// ALWAYS use a seed for reproducibility
+let seed = 12345; // or hash from user input
+randomSeed(seed);
+noiseSeed(seed);
+</code></pre>
+<p><strong>Parameter Structure - FOLLOW THE PHILOSOPHY</strong>:</p>
+<p>To establish parameters that emerge naturally from the algorithmic philosophy, consider: &quot;What qualities of this system can be adjusted?&quot;</p>
+<pre><code class="language-javascript">let params = {
+  seed: 12345,  // Always include seed for reproducibility
+  // colors
+  // Add parameters that control YOUR algorithm:
+  // - Quantities (how many?)
+  // - Scales (how big? how fast?)
+  // - Probabilities (how likely?)
+  // - Ratios (what proportions?)
+  // - Angles (what direction?)
+  // - Thresholds (when does behavior change?)
+};
+</code></pre>
+<p><strong>To design effective parameters, focus on the properties the system needs to be tunable rather than thinking in terms of &quot;pattern types&quot;.</strong></p>
+<p><strong>Core Algorithm - EXPRESS THE PHILOSOPHY</strong>:</p>
+<p><strong>CRITICAL</strong>: The algorithmic philosophy should dictate what to build.</p>
+<p>To express the philosophy through code, avoid thinking &quot;which pattern should I use?&quot; and instead think &quot;how to express this philosophy through code?&quot;</p>
+<p>If the philosophy is about <strong>organic emergence</strong>, consider using:</p>
+<ul>
+<li>Elements that accumulate or grow over time</li>
+<li>Random processes constrained by natural rules</li>
+<li>Feedback loops and interactions</li>
+</ul>
+<p>If the philosophy is about <strong>mathematical beauty</strong>, consider using:</p>
+<ul>
+<li>Geometric relationships and ratios</li>
+<li>Trigonometric functions and harmonics</li>
+<li>Precise calculations creating unexpected patterns</li>
+</ul>
+<p>If the philosophy is about <strong>controlled chaos</strong>, consider using:</p>
+<ul>
+<li>Random variation within strict boundaries</li>
+<li>Bifurcation and phase transitions</li>
+<li>Order emerging from disorder</li>
+</ul>
+<p><strong>The algorithm flows from the philosophy, not from a menu of options.</strong></p>
+<p>To guide the implementation, let the conceptual essence inform creative and original choices. Build something that expresses the vision for this particular request.</p>
+<p><strong>Canvas Setup</strong>: Standard p5.js structure:</p>
+<pre><code class="language-javascript">function setup() {
+  createCanvas(1200, 1200);
+  // Initialize your system
+}
+
+function draw() {
+  // Your generative algorithm
+  // Can be static (noLoop) or animated
+}
+</code></pre>
+<h3>CRAFTSMANSHIP REQUIREMENTS</h3>
+<p><strong>CRITICAL</strong>: To achieve mastery, create algorithms that feel like they emerged through countless iterations by a master generative artist. Tune every parameter carefully. Ensure every pattern emerges with purpose. This is NOT random noise - this is CONTROLLED CHAOS refined through deep expertise.</p>
+<ul>
+<li><strong>Balance</strong>: Complexity without visual noise, order without rigidity</li>
+<li><strong>Color Harmony</strong>: Thoughtful palettes, not random RGB values</li>
+<li><strong>Composition</strong>: Even in randomness, maintain visual hierarchy and flow</li>
+<li><strong>Performance</strong>: Smooth execution, optimized for real-time if animated</li>
+<li><strong>Reproducibility</strong>: Same seed ALWAYS produces identical output</li>
+</ul>
+<h3>OUTPUT FORMAT</h3>
+<p>Output:</p>
+<ol>
+<li><strong>Algorithmic Philosophy</strong> - As markdown or text explaining the generative aesthetic</li>
+<li><strong>Single HTML Artifact</strong> - Self-contained interactive generative art built from <code>templates/viewer.html</code> (see STEP 0 and next section)</li>
+</ol>
+<p>The HTML artifact contains everything: p5.js (from CDN), the algorithm, parameter controls, and UI - all in one file that works immediately in claude.ai artifacts or any browser. Start from the template file, not from scratch.</p>
+<hr>
+<h2>INTERACTIVE ARTIFACT CREATION</h2>
+<p><strong>REMINDER: <code>templates/viewer.html</code> should have already been read (see STEP 0). Use that file as the starting point.</strong></p>
+<p>To allow exploration of the generative art, create a single, self-contained HTML artifact. Ensure this artifact works immediately in claude.ai or any browser - no setup required. Embed everything inline.</p>
+<h3>CRITICAL: WHAT&#39;S FIXED VS VARIABLE</h3>
+<p>The <code>templates/viewer.html</code> file is the foundation. It contains the exact structure and styling needed.</p>
+<p><strong>FIXED (always include exactly as shown):</strong></p>
+<ul>
+<li>Layout structure (header, sidebar, main canvas area)</li>
+<li>Anthropic branding (UI colors, fonts, gradients)</li>
+<li>Seed section in sidebar:<ul>
+<li>Seed display</li>
+<li>Previous/Next buttons</li>
+<li>Random button</li>
+<li>Jump to seed input + Go button</li>
+</ul>
+</li>
+<li>Actions section in sidebar:<ul>
+<li>Regenerate button</li>
+<li>Reset button</li>
+</ul>
+</li>
+</ul>
+<p><strong>VARIABLE (customize for each artwork):</strong></p>
+<ul>
+<li>The entire p5.js algorithm (setup/draw/classes)</li>
+<li>The parameters object (define what the art needs)</li>
+<li>The Parameters section in sidebar:<ul>
+<li>Number of parameter controls</li>
+<li>Parameter names</li>
+<li>Min/max/step values for sliders</li>
+<li>Control types (sliders, inputs, etc.)</li>
+</ul>
+</li>
+<li>Colors section (optional):<ul>
+<li>Some art needs color pickers</li>
+<li>Some art might use fixed colors</li>
+<li>Some art might be monochrome (no color controls needed)</li>
+<li>Decide based on the art&#39;s needs</li>
+</ul>
+</li>
+</ul>
+<p><strong>Every artwork should have unique parameters and algorithm!</strong> The fixed parts provide consistent UX - everything else expresses the unique vision.</p>
+<h3>REQUIRED FEATURES</h3>
+<p><strong>1. Parameter Controls</strong></p>
+<ul>
+<li>Sliders for numeric parameters (particle count, noise scale, speed, etc.)</li>
+<li>Color pickers for palette colors</li>
+<li>Real-time updates when parameters change</li>
+<li>Reset button to restore defaults</li>
+</ul>
+<p><strong>2. Seed Navigation</strong></p>
+<ul>
+<li>Display current seed number</li>
+<li>&quot;Previous&quot; and &quot;Next&quot; buttons to cycle through seeds</li>
+<li>&quot;Random&quot; button for random seed</li>
+<li>Input field to jump to specific seed</li>
+<li>Generate 100 variations when requested (seeds 1-100)</li>
+</ul>
+<p><strong>3. Single Artifact Structure</strong></p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;!-- p5.js from CDN - always available --&gt;
+  &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js&quot;&gt;&lt;/script&gt;
+  &lt;style&gt;
+    /* All styling inline - clean, minimal */
+    /* Canvas on top, controls below */
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div id=&quot;canvas-container&quot;&gt;&lt;/div&gt;
+  &lt;div id=&quot;controls&quot;&gt;
+    &lt;!-- All parameter controls --&gt;
+  &lt;/div&gt;
+  &lt;script&gt;
+    // ALL p5.js code inline here
+    // Parameter objects, classes, functions
+    // setup() and draw()
+    // UI handlers
+    // Everything self-contained
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p><strong>CRITICAL</strong>: This is a single artifact. No external files, no imports (except p5.js CDN). Everything inline.</p>
+<p><strong>4. Implementation Details - BUILD THE SIDEBAR</strong></p>
+<p>The sidebar structure:</p>
+<p><strong>1. Seed (FIXED)</strong> - Always include exactly as shown:</p>
+<ul>
+<li>Seed display</li>
+<li>Prev/Next/Random/Jump buttons</li>
+</ul>
+<p><strong>2. Parameters (VARIABLE)</strong> - Create controls for the art:</p>
+<pre><code class="language-html">&lt;div class=&quot;control-group&quot;&gt;
+    &lt;label&gt;Parameter Name&lt;/label&gt;
+    &lt;input type=&quot;range&quot; id=&quot;param&quot; min=&quot;...&quot; max=&quot;...&quot; step=&quot;...&quot; value=&quot;...&quot; oninput=&quot;updateParam(&#39;param&#39;, this.value)&quot;&gt;
+    &lt;span class=&quot;value-display&quot; id=&quot;param-value&quot;&gt;...&lt;/span&gt;
+&lt;/div&gt;
+</code></pre>
+<p>Add as many control-group divs as there are parameters.</p>
+<p><strong>3. Colors (OPTIONAL/VARIABLE)</strong> - Include if the art needs adjustable colors:</p>
+<ul>
+<li>Add color pickers if users should control palette</li>
+<li>Skip this section if the art uses fixed colors</li>
+<li>Skip if the art is monochrome</li>
+</ul>
+<p><strong>4. Actions (FIXED)</strong> - Always include exactly as shown:</p>
+<ul>
+<li>Regenerate button</li>
+<li>Reset button</li>
+<li>Download PNG button</li>
+</ul>
+<p><strong>Requirements</strong>:</p>
+<ul>
+<li>Seed controls must work (prev/next/random/jump/display)</li>
+<li>All parameters must have UI controls</li>
+<li>Regenerate, Reset, Download buttons must work</li>
+<li>Keep Anthropic branding (UI styling, not art colors)</li>
+</ul>
+<h3>USING THE ARTIFACT</h3>
+<p>The HTML artifact works immediately:</p>
+<ol>
+<li><strong>In claude.ai</strong>: Displayed as an interactive artifact - runs instantly</li>
+<li><strong>As a file</strong>: Save and open in any browser - no server needed</li>
+<li><strong>Sharing</strong>: Send the HTML file - it&#39;s completely self-contained</li>
+</ol>
+<hr>
+<h2>VARIATIONS &amp; EXPLORATION</h2>
+<p>The artifact includes seed navigation by default (prev/next/random buttons), allowing users to explore variations without creating multiple files. If the user wants specific variations highlighted:</p>
+<ul>
+<li>Include seed presets (buttons for &quot;Variation 1: Seed 42&quot;, &quot;Variation 2: Seed 127&quot;, etc.)</li>
+<li>Add a &quot;Gallery Mode&quot; that shows thumbnails of multiple seeds side-by-side</li>
+<li>All within the same single artifact</li>
+</ul>
+<p>This is like creating a series of prints from the same plate - the algorithm is consistent, but each seed reveals different facets of its potential. The interactive nature means users discover their own favorites by exploring the seed space.</p>
+<hr>
+<h2>THE CREATIVE PROCESS</h2>
+<p><strong>User request</strong> → <strong>Algorithmic philosophy</strong> → <strong>Implementation</strong></p>
+<p>Each request is unique. The process involves:</p>
+<ol>
+<li><strong>Interpret the user&#39;s intent</strong> - What aesthetic is being sought?</li>
+<li><strong>Create an algorithmic philosophy</strong> (4-6 paragraphs) describing the computational approach</li>
+<li><strong>Implement it in code</strong> - Build the algorithm that expresses this philosophy</li>
+<li><strong>Design appropriate parameters</strong> - What should be tunable?</li>
+<li><strong>Build matching UI controls</strong> - Sliders/inputs for those parameters</li>
+</ol>
+<p><strong>The constants</strong>:</p>
+<ul>
+<li>Anthropic branding (colors, fonts, layout)</li>
+<li>Seed navigation (always present)</li>
+<li>Self-contained HTML artifact</li>
+</ul>
+<p><strong>Everything else is variable</strong>:</p>
+<ul>
+<li>The algorithm itself</li>
+<li>The parameters</li>
+<li>The UI controls</li>
+<li>The visual outcome</li>
+</ul>
+<p>To achieve the best results, trust creativity and let the philosophy guide the implementation.</p>
+<hr>
+<h2>RESOURCES</h2>
+<p>This skill includes helpful templates and documentation:</p>
+<ul>
+<li><p><strong>templates/viewer.html</strong>: REQUIRED STARTING POINT for all HTML artifacts.</p>
+<ul>
+<li>This is the foundation - contains the exact structure and Anthropic branding</li>
+<li><strong>Keep unchanged</strong>: Layout structure, sidebar organization, Anthropic colors/fonts, seed controls, action buttons</li>
+<li><strong>Replace</strong>: The p5.js algorithm, parameter definitions, and UI controls in Parameters section</li>
+<li>The extensive comments in the file mark exactly what to keep vs replace</li>
+</ul>
+</li>
+<li><p><strong>templates/generator_template.js</strong>: Reference for p5.js best practices and code structure principles.</p>
+<ul>
+<li>Shows how to organize parameters, use seeded randomness, structure classes</li>
+<li>NOT a pattern menu - use these principles to build unique algorithms</li>
+<li>Embed algorithms inline in the HTML artifact (don&#39;t create separate .js files)</li>
+</ul>
+</li>
+</ul>
+<p><strong>Critical reminder</strong>:</p>
+<ul>
+<li>The <strong>template is the STARTING POINT</strong>, not inspiration</li>
+<li>The <strong>algorithm is where to create</strong> something unique</li>
+<li>Don&#39;t copy the flow field example - build what the philosophy demands</li>
+<li>But DO keep the exact UI structure and Anthropic branding from the template</li>
+</ul>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/seanphan/algorithmic-art/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/seanphan/algorithmic-art" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/seanphan/algorithmic-art/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@seanphan</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Image & Video Generation</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

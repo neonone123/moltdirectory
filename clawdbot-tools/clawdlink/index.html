@@ -64,10 +64,13 @@
                   </button>
                 </div>
                 <div class="markdown-content">
-                  <h1>ClawdLink</h1>
+                  <h1>ClawPhone</h1>
 <p>Encrypted peer-to-peer messaging between Clawdbots via central relay.</p>
+<h2>Philosophy</h2>
+<p>Communication should be async by default, context-aware, and translated to how the recipient wants to receive it. AI on both ends handles the mediation.</p>
+<p><strong>Your Clawdbot</strong> packages and encrypts your message → sends to <strong>their Clawdbot</strong> → which waits for the right moment and delivers it in their preferred voice.</p>
 <h2>Installation</h2>
-<pre><code class="language-bash">cd ~/clawd/skills/clawdlink
+<pre><code class="language-bash">cd ~/clawd/skills/clawphone
 npm install
 node scripts/install.js      # Adds to HEARTBEAT.md
 node cli.js setup &quot;Your Name&quot;
@@ -94,7 +97,7 @@ node cli.js setup &quot;Your Name&quot;
 </tr>
 <tr>
 <td><code>add</code></td>
-<td><code>add &quot;clawdlink://...&quot;</code></td>
+<td><code>add &quot;clawphone://...&quot;</code></td>
 </tr>
 <tr>
 <td><code>accept</code></td>
@@ -127,76 +130,53 @@ node cli.js setup &quot;Your Name&quot;
 </tr>
 <tr>
 <td><code>quiet-hours</code></td>
-<td><code>quiet-hours on</code> / <code>quiet-hours 22:00 08:00</code></td>
+<td><code>quiet-hours 22:00 08:00</code> or <code>quiet-hours off</code></td>
 </tr>
 <tr>
 <td><code>batch</code></td>
-<td><code>batch on</code> / <code>batch off</code></td>
+<td><code>batch on</code> or <code>batch off</code></td>
 </tr>
 <tr>
 <td><code>tone</code></td>
-<td><code>tone casual</code> / <code>tone formal</code> / <code>tone brief</code></td>
+<td><code>tone casual/formal/brief/natural</code></td>
+</tr>
+<tr>
+<td><code>friend-priority</code></td>
+<td><code>friend-priority &quot;Sophie&quot; high</code></td>
 </tr>
 </tbody></table>
-<h2>Delivery Preferences</h2>
-<p>Users control how they receive messages:</p>
-<h3>Quiet Hours</h3>
-<pre><code class="language-bash">node handler.js quiet-hours 22:00 07:30
-</code></pre>
-<p>Messages held during quiet hours, delivered when they end. Urgent messages still come through.</p>
-<h3>Batch Delivery</h3>
-<pre><code class="language-bash">node handler.js batch on
-node handler.js preferences set schedule.batchDelivery.times &#39;[&quot;09:00&quot;,&quot;18:00&quot;]&#39;
-</code></pre>
-<p>Non-urgent messages batched and delivered at set times.</p>
-<h3>Communication Tone</h3>
-<pre><code class="language-bash">node handler.js tone casual
-</code></pre>
-<p>Options: <code>natural</code>, <code>casual</code>, <code>formal</code>, <code>brief</code></p>
-<h3>Per-Friend Settings</h3>
-<pre><code class="language-bash">node handler.js preferences set friends.&quot;Sophie Bakalar&quot;.priority high
-node handler.js preferences set friends.&quot;Sophie Bakalar&quot;.alwaysDeliver true
-</code></pre>
-<h2>Message Metadata</h2>
-<p>When sending, include context:</p>
-<pre><code class="language-bash">node handler.js send &quot;Sophie&quot; &quot;Need to discuss budget&quot; --urgent --context=work
-</code></pre>
-<p>Options:</p>
+<h2>Natural Language (for Clawdbot)</h2>
+<p>These phrases trigger ClawPhone:</p>
 <ul>
-<li><code>--urgent</code> — Bypasses quiet hours and batching</li>
-<li><code>--fyi</code> — Low priority, always batchable</li>
-<li><code>--context=work|personal|social</code> — Helps with batching decisions</li>
+<li>&quot;Send a message to Sophie saying...&quot;</li>
+<li>&quot;Tell Matt that...&quot;</li>
+<li>&quot;Add this friend: clawphone://...&quot;</li>
+<li>&quot;Accept the friend request from...&quot;</li>
+<li>&quot;Show my friend link&quot;</li>
+<li>&quot;Set quiet hours from 10pm to 7am&quot;</li>
+<li>&quot;What messages do I have?&quot;</li>
 </ul>
-<h2>Conversation Patterns</h2>
-<h3>Setting preferences</h3>
-<p><strong>User:</strong> &quot;Set quiet hours from 10pm to 8am&quot;
-<strong>Action:</strong> <code>node handler.js quiet-hours 22:00 08:00</code></p>
-<p><strong>User:</strong> &quot;I prefer casual communication&quot;
-<strong>Action:</strong> <code>node handler.js tone casual</code></p>
-<p><strong>User:</strong> &quot;Batch my ClawdLink messages and deliver at 9am and 6pm&quot;
-<strong>Action:</strong> </p>
-<pre><code class="language-bash">node handler.js batch on
-node handler.js preferences set schedule.batchDelivery.times &#39;[&quot;09:00&quot;,&quot;18:00&quot;]&#39;
-</code></pre>
-<p><strong>User:</strong> &quot;Always let messages from Sophie through&quot;
-<strong>Action:</strong> <code>node handler.js preferences set friends.&quot;Sophie&quot;.alwaysDeliver true</code></p>
-<h3>Sending with context</h3>
-<p><strong>User:</strong> &quot;Tell Matt I need the files urgently&quot;
-<strong>Action:</strong> <code>node handler.js send &quot;Matt&quot; &quot;I need the files&quot; --urgent --context=work</code></p>
-<h2>Preferences Schema</h2>
+<h2>Security</h2>
+<ul>
+<li><strong>Ed25519</strong> identity keys (your Clawdbot ID)</li>
+<li><strong>X25519</strong> key exchange (Diffie-Hellman)</li>
+<li><strong>XChaCha20-Poly1305</strong> authenticated encryption</li>
+<li>Keys never leave your device</li>
+<li>Relay sees only encrypted blobs</li>
+</ul>
+<h2>Delivery Preferences</h2>
+<p>Recipients control how they receive messages:</p>
 <pre><code class="language-json">{
   &quot;schedule&quot;: {
     &quot;quietHours&quot;: { &quot;enabled&quot;: true, &quot;start&quot;: &quot;22:00&quot;, &quot;end&quot;: &quot;08:00&quot; },
-    &quot;batchDelivery&quot;: { &quot;enabled&quot;: false, &quot;times&quot;: [&quot;09:00&quot;, &quot;18:00&quot;] },
-    &quot;timezone&quot;: &quot;America/Los_Angeles&quot;
+    &quot;batchDelivery&quot;: { &quot;enabled&quot;: false, &quot;times&quot;: [&quot;09:00&quot;, &quot;18:00&quot;] }
   },
   &quot;delivery&quot;: {
     &quot;allowUrgentDuringQuiet&quot;: true,
-    &quot;summarizeFirst&quot;: true,
-    &quot;includeContext&quot;: true
+    &quot;summarizeFirst&quot;: true
   },
   &quot;style&quot;: {
-    &quot;tone&quot;: &quot;natural&quot;,
+    &quot;tone&quot;: &quot;casual&quot;,
     &quot;greetingStyle&quot;: &quot;friendly&quot;
   },
   &quot;friends&quot;: {
@@ -204,31 +184,41 @@ node handler.js preferences set schedule.batchDelivery.times &#39;[&quot;09:00&q
   }
 }
 </code></pre>
-<h2>Data Storage</h2>
-<p><code>~/.clawdbot/clawdlink/</code></p>
+<h2>Relay</h2>
 <ul>
-<li><code>identity.json</code> — Keypair</li>
-<li><code>config.json</code> — Display name</li>
-<li><code>friends.json</code> — Friends with shared secrets</li>
+<li><strong>URL:</strong> <a href="https://clawphone-relay.vercel.app">https://clawphone-relay.vercel.app</a></li>
+<li>Stores only encrypted messages temporarily</li>
+<li>Cannot read message contents</li>
+<li>Verifies signatures to prevent spam</li>
+</ul>
+<h2>File Structure</h2>
+<pre><code>~/clawd/skills/clawphone/
+├── lib/
+│   ├── crypto.js       # Ed25519/X25519/XChaCha20
+│   ├── relay.js        # Relay API client
+│   ├── requests.js     # Friend request protocol
+│   ├── clawdbot.js     # Clawdbot integration
+│   ├── preferences.js  # Delivery preferences
+│   └── style.js        # Message formatting
+├── scripts/
+│   ├── setup.js
+│   ├── friends.js
+│   ├── send.js
+│   ├── poll.js
+│   ├── preferences.js
+│   └── install.js
+├── cli.js
+├── handler.js          # JSON API
+├── heartbeat.js        # Auto-poll
+├── manifest.json
+└── SKILL.md
+</code></pre>
+<h2>Data Location</h2>
+<p>All ClawPhone data stored at: <code>~/.config/clawdbot/clawphone/</code></p>
+<ul>
+<li><code>identity.json</code> — Your Ed25519 keypair</li>
+<li><code>friends.json</code> — Friend list with shared secrets</li>
 <li><code>preferences.json</code> — Delivery preferences</li>
-<li><code>held_messages.json</code> — Messages waiting for delivery</li>
-<li><code>pending_requests.json</code> — Friend requests</li>
-</ul>
-<h2>Auto-Polling</h2>
-<p><code>heartbeat.js</code> runs on each Clawdbot heartbeat:</p>
-<ul>
-<li>Polls relay for messages/requests</li>
-<li>Applies delivery preferences</li>
-<li>Holds messages during quiet hours</li>
-<li>Delivers batched messages at scheduled times</li>
-<li>Outputs formatted text when there&#39;s something to deliver</li>
-</ul>
-<h2>Security</h2>
-<ul>
-<li><strong>E2E encrypted</strong> — XChaCha20-Poly1305</li>
-<li><strong>Ed25519 signatures</strong> — Sender verification</li>
-<li><strong>X25519 key exchange</strong> — Shared secrets</li>
-<li><strong>7-day TTL</strong> — Messages auto-expire</li>
 </ul>
 
                 </div>

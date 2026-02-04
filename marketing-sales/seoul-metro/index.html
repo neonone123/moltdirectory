@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Seoul Metro assistant for real-time arrivals, route planning, and service alerts (Korean/English)">
+  <title>seoul-metro - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Marketing & Sales</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Marketing & Sales</a>
+                <span class="skill-page-author">by @dukbong</span>
+              </div>
+              <h1 class="skill-page-title">seoul-metro</h1>
+              <p class="skill-page-desc">Seoul Metro assistant for real-time arrivals, route planning, and service alerts (Korean/English)</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Seoul Metro Skill</h1>
+<p>Query real-time Seoul Metro information.</p>
+<h2>Features</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Description</th>
+<th>Trigger Example (KO)</th>
+<th>Trigger Example (EN)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Real-time Arrival</td>
+<td>Train arrival times by station</td>
+<td>&quot;강남역 도착정보&quot;</td>
+<td>&quot;Gangnam station arrivals&quot;</td>
+</tr>
+<tr>
+<td>Station Search</td>
+<td>Line and station code lookup</td>
+<td>&quot;강남역 몇호선?&quot;</td>
+<td>&quot;What line is Gangnam?&quot;</td>
+</tr>
+<tr>
+<td>Route Search</td>
+<td>Shortest path with time/fare</td>
+<td>&quot;신도림에서 서울역&quot;</td>
+<td>&quot;Sindorim to Seoul Station&quot;</td>
+</tr>
+<tr>
+<td>Service Alerts</td>
+<td>Delays, incidents, non-stops</td>
+<td>&quot;지하철 지연 있어?&quot;</td>
+<td>&quot;Any subway delays?&quot;</td>
+</tr>
+</tbody></table>
+<h2>Environment Variables</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Usage</th>
+<th>Provider</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>SEOUL_OPENAPI_KEY</code></td>
+<td>Arrival info, station search</td>
+<td>data.seoul.go.kr</td>
+</tr>
+<tr>
+<td><code>DATA_GO_KR_KEY</code></td>
+<td>Route search, alerts</td>
+<td>data.go.kr</td>
+</tr>
+</tbody></table>
+<p><strong>How to get API keys:</strong></p>
+<ol>
+<li><strong>SEOUL_OPENAPI_KEY</strong>: Sign up at <a href="https://data.seoul.go.kr">data.seoul.go.kr</a>, go to &quot;My Page&quot; &gt; &quot;API Key Management&quot;</li>
+<li><strong>DATA_GO_KR_KEY</strong>: Sign up at <a href="https://www.data.go.kr">data.go.kr</a>, search for the API service, and request access</li>
+</ol>
+<hr>
+<h2>API Reference</h2>
+<h3>1. Real-time Arrival Info</h3>
+<p><strong>Endpoint</strong></p>
+<pre><code>http://swopenAPI.seoul.go.kr/api/subway/{KEY}/json/realtimeStationArrival/{start}/{end}/{station}
+</code></pre>
+<p><strong>Response Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>subwayId</code></td>
+<td>Line ID (1002=Line 2, 1077=Sinbundang)</td>
+</tr>
+<tr>
+<td><code>trainLineNm</code></td>
+<td>Direction (e.g., &quot;성수행 - 역삼방면&quot;)</td>
+</tr>
+<tr>
+<td><code>arvlMsg2</code></td>
+<td>Arrival time (e.g., &quot;4분 20초 후&quot;)</td>
+</tr>
+<tr>
+<td><code>arvlMsg3</code></td>
+<td>Current location</td>
+</tr>
+<tr>
+<td><code>btrainSttus</code></td>
+<td>Train type (일반/급행)</td>
+</tr>
+<tr>
+<td><code>lstcarAt</code></td>
+<td>Last train (0=No, 1=Yes)</td>
+</tr>
+</tbody></table>
+<hr>
+<h3>2. Station Search</h3>
+<p><strong>Endpoint</strong></p>
+<pre><code>http://openapi.seoul.go.kr:8088/{KEY}/json/SearchInfoBySubwayNameService/{start}/{end}/{station}
+</code></pre>
+<p><strong>Response Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>STATION_CD</code></td>
+<td>Station code</td>
+</tr>
+<tr>
+<td><code>STATION_NM</code></td>
+<td>Station name</td>
+</tr>
+<tr>
+<td><code>LINE_NUM</code></td>
+<td>Line name (e.g., &quot;02호선&quot;)</td>
+</tr>
+<tr>
+<td><code>FR_CODE</code></td>
+<td>External station code</td>
+</tr>
+</tbody></table>
+<hr>
+<h3>3. Route Search</h3>
+<p><strong>Endpoint</strong></p>
+<pre><code>https://apis.data.go.kr/B553766/path/getShtrmPath
+</code></pre>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>serviceKey</code></td>
+<td>Yes</td>
+<td>DATA_GO_KR_KEY</td>
+</tr>
+<tr>
+<td><code>dptreStnNm</code></td>
+<td>Yes</td>
+<td>Departure station</td>
+</tr>
+<tr>
+<td><code>arvlStnNm</code></td>
+<td>Yes</td>
+<td>Arrival station</td>
+</tr>
+<tr>
+<td><code>searchDt</code></td>
+<td>Yes</td>
+<td>Datetime (yyyy-MM-dd HH:mm:ss)</td>
+</tr>
+<tr>
+<td><code>dataType</code></td>
+<td>Yes</td>
+<td>JSON</td>
+</tr>
+<tr>
+<td><code>searchType</code></td>
+<td>No</td>
+<td>duration / distance / transfer</td>
+</tr>
+</tbody></table>
+<p><strong>Response Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>totalDstc</code></td>
+<td>Total distance (m)</td>
+</tr>
+<tr>
+<td><code>totalreqHr</code></td>
+<td>Total time (seconds)</td>
+</tr>
+<tr>
+<td><code>totalCardCrg</code></td>
+<td>Fare (KRW)</td>
+</tr>
+<tr>
+<td><code>paths[].trainno</code></td>
+<td>Train number</td>
+</tr>
+<tr>
+<td><code>paths[].trainDptreTm</code></td>
+<td>Departure time</td>
+</tr>
+<tr>
+<td><code>paths[].trainArvlTm</code></td>
+<td>Arrival time</td>
+</tr>
+<tr>
+<td><code>paths[].trsitYn</code></td>
+<td>Transfer flag</td>
+</tr>
+</tbody></table>
+<hr>
+<h3>4. Service Alerts</h3>
+<p><strong>Endpoint</strong></p>
+<pre><code>https://apis.data.go.kr/B553766/ntce/getNtceList
+</code></pre>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>serviceKey</code></td>
+<td>Yes</td>
+<td>DATA_GO_KR_KEY</td>
+</tr>
+<tr>
+<td><code>dataType</code></td>
+<td>Yes</td>
+<td>JSON</td>
+</tr>
+<tr>
+<td><code>pageNo</code></td>
+<td>No</td>
+<td>Page number</td>
+</tr>
+<tr>
+<td><code>numOfRows</code></td>
+<td>No</td>
+<td>Results per page</td>
+</tr>
+<tr>
+<td><code>lineNm</code></td>
+<td>No</td>
+<td>Filter by line</td>
+</tr>
+</tbody></table>
+<p><strong>Response Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>noftTtl</code></td>
+<td>Alert title</td>
+</tr>
+<tr>
+<td><code>noftCn</code></td>
+<td>Alert content</td>
+</tr>
+<tr>
+<td><code>noftOcrnDt</code></td>
+<td>Timestamp</td>
+</tr>
+<tr>
+<td><code>lineNmLst</code></td>
+<td>Affected line(s)</td>
+</tr>
+<tr>
+<td><code>nonstopYn</code></td>
+<td>Non-stop flag</td>
+</tr>
+<tr>
+<td><code>xcseSitnBgngDt</code></td>
+<td>Incident start</td>
+</tr>
+<tr>
+<td><code>xcseSitnEndDt</code></td>
+<td>Incident end</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Line ID Mapping</h2>
+<table>
+<thead>
+<tr>
+<th>Line</th>
+<th>ID</th>
+<th>Line</th>
+<th>ID</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Line 1</td>
+<td>1001</td>
+<td>Line 6</td>
+<td>1006</td>
+</tr>
+<tr>
+<td>Line 2</td>
+<td>1002</td>
+<td>Line 7</td>
+<td>1007</td>
+</tr>
+<tr>
+<td>Line 3</td>
+<td>1003</td>
+<td>Line 8</td>
+<td>1008</td>
+</tr>
+<tr>
+<td>Line 4</td>
+<td>1004</td>
+<td>Line 9</td>
+<td>1009</td>
+</tr>
+<tr>
+<td>Line 5</td>
+<td>1005</td>
+<td>Sinbundang</td>
+<td>1077</td>
+</tr>
+<tr>
+<td>Gyeongui-Jungang</td>
+<td>1063</td>
+<td>Gyeongchun</td>
+<td>1067</td>
+</tr>
+<tr>
+<td>Airport Railroad</td>
+<td>1065</td>
+<td>Suin-Bundang</td>
+<td>1075</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Station Name Mapping (English → Korean)</h2>
+<p>주요 역 이름의 영어-한글 매핑 테이블입니다. API 호출 시 영어 입력을 한글로 변환해야 합니다.</p>
+<h3>Line 1 (1호선)</h3>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>Korean</th>
+<th>English</th>
+<th>Korean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Seoul Station</td>
+<td>서울역</td>
+<td>City Hall</td>
+<td>시청</td>
+</tr>
+<tr>
+<td>Jonggak</td>
+<td>종각</td>
+<td>Jongno 3-ga</td>
+<td>종로3가</td>
+</tr>
+<tr>
+<td>Jongno 5-ga</td>
+<td>종로5가</td>
+<td>Dongdaemun</td>
+<td>동대문</td>
+</tr>
+<tr>
+<td>Cheongnyangni</td>
+<td>청량리</td>
+<td>Yongsan</td>
+<td>용산</td>
+</tr>
+<tr>
+<td>Noryangjin</td>
+<td>노량진</td>
+<td>Yeongdeungpo</td>
+<td>영등포</td>
+</tr>
+<tr>
+<td>Guro</td>
+<td>구로</td>
+<td>Incheon</td>
+<td>인천</td>
+</tr>
+<tr>
+<td>Bupyeong</td>
+<td>부평</td>
+<td>Suwon</td>
+<td>수원</td>
+</tr>
+</tbody></table>
+<h3>Line 2 (2호선)</h3>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>Korean</th>
+<th>English</th>
+<th>Korean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Gangnam</td>
+<td>강남</td>
+<td>Yeoksam</td>
+<td>역삼</td>
+</tr>
+<tr>
+<td>Samseong</td>
+<td>삼성</td>
+<td>Jamsil</td>
+<td>잠실</td>
+</tr>
+<tr>
+<td>Sindorim</td>
+<td>신도림</td>
+<td>Hongdae (Hongik Univ.)</td>
+<td>홍대입구</td>
+</tr>
+<tr>
+<td>Hapjeong</td>
+<td>합정</td>
+<td>Dangsan</td>
+<td>당산</td>
+</tr>
+<tr>
+<td>Yeouido</td>
+<td>여의도</td>
+<td>Konkuk Univ.</td>
+<td>건대입구</td>
+</tr>
+<tr>
+<td>Seolleung</td>
+<td>선릉</td>
+<td>Samsung</td>
+<td>삼성</td>
+</tr>
+<tr>
+<td>Sports Complex</td>
+<td>종합운동장</td>
+<td>Gangbyeon</td>
+<td>강변</td>
+</tr>
+<tr>
+<td>Ttukseom</td>
+<td>뚝섬</td>
+<td>Seongsu</td>
+<td>성수</td>
+</tr>
+<tr>
+<td>Wangsimni</td>
+<td>왕십리</td>
+<td>Euljiro 3-ga</td>
+<td>을지로3가</td>
+</tr>
+<tr>
+<td>Euljiro 1-ga</td>
+<td>을지로입구</td>
+<td>City Hall</td>
+<td>시청</td>
+</tr>
+<tr>
+<td>Chungjeongno</td>
+<td>충정로</td>
+<td>Ewha Womans Univ.</td>
+<td>이대</td>
+</tr>
+<tr>
+<td>Sinchon</td>
+<td>신촌</td>
+<td>Sadang</td>
+<td>사당</td>
+</tr>
+<tr>
+<td>Nakseongdae</td>
+<td>낙성대</td>
+<td>Seoul Nat&#39;l Univ.</td>
+<td>서울대입구</td>
+</tr>
+<tr>
+<td>Guro Digital Complex</td>
+<td>구로디지털단지</td>
+<td>Mullae</td>
+<td>문래</td>
+</tr>
+</tbody></table>
+<h3>Line 3 (3호선)</h3>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>Korean</th>
+<th>English</th>
+<th>Korean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Gyeongbokgung</td>
+<td>경복궁</td>
+<td>Anguk</td>
+<td>안국</td>
+</tr>
+<tr>
+<td>Jongno 3-ga</td>
+<td>종로3가</td>
+<td>Chungmuro</td>
+<td>충무로</td>
+</tr>
+<tr>
+<td>Dongguk Univ.</td>
+<td>동대입구</td>
+<td>Yaksu</td>
+<td>약수</td>
+</tr>
+<tr>
+<td>Apgujeong</td>
+<td>압구정</td>
+<td>Sinsa</td>
+<td>신사</td>
+</tr>
+<tr>
+<td>Express Bus Terminal</td>
+<td>고속터미널</td>
+<td>Gyodae</td>
+<td>교대</td>
+</tr>
+<tr>
+<td>Nambu Bus Terminal</td>
+<td>남부터미널</td>
+<td>Yangjae</td>
+<td>양재</td>
+</tr>
+<tr>
+<td>Daehwa</td>
+<td>대화</td>
+<td>Juyeop</td>
+<td>주엽</td>
+</tr>
+</tbody></table>
+<h3>Line 4 (4호선)</h3>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>Korean</th>
+<th>English</th>
+<th>Korean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Myeongdong</td>
+<td>명동</td>
+<td>Hoehyeon</td>
+<td>회현</td>
+</tr>
+<tr>
+<td>Seoul Station</td>
+<td>서울역</td>
+<td>Sookmyung Women&#39;s Univ.</td>
+<td>숙대입구</td>
+</tr>
+<tr>
+<td>Dongdaemun History &amp; Culture Park</td>
+<td>동대문역사문화공원</td>
+<td>Hyehwa</td>
+<td>혜화</td>
+</tr>
+<tr>
+<td>Hansung Univ.</td>
+<td>한성대입구</td>
+<td>Mia</td>
+<td>미아</td>
+</tr>
+<tr>
+<td>Mia Sageori</td>
+<td>미아사거리</td>
+<td>Gireum</td>
+<td>길음</td>
+</tr>
+<tr>
+<td>Chongshin Univ.</td>
+<td>총신대입구</td>
+<td>Sadang</td>
+<td>사당</td>
+</tr>
+</tbody></table>
+<h3>Line 5 (5호선)</h3>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>Korean</th>
+<th>English</th>
+<th>Korean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Gwanghwamun</td>
+<td>광화문</td>
+<td>Jongno 3-ga</td>
+<td>종로3가</td>
+</tr>
+<tr>
+<td>Dongdaemun History &amp; Culture Park</td>
+<td>동대문역사문화공원</td>
+<td>Cheonggu</td>
+<td>청구</td>
+</tr>
+<tr>
+<td>Wangsimni</td>
+<td>왕십리</td>
+<td>Haengdang</td>
+<td>행당</td>
+</tr>
+<tr>
+<td>Yeouido</td>
+<td>여의도</td>
+<td>Yeouinaru</td>
+<td>여의나루</td>
+</tr>
+<tr>
+<td>Mapo</td>
+<td>마포</td>
+<td>Gongdeok</td>
+<td>공덕</td>
+</tr>
+<tr>
+<td>Gimpo Airport</td>
+<td>김포공항</td>
+<td>Banghwa</td>
+<td>방화</td>
+</tr>
+</tbody></table>
+<h3>Line 6 (6호선)</h3>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>Korean</th>
+<th>English</th>
+<th>Korean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Itaewon</td>
+<td>이태원</td>
+<td>Samgakji</td>
+<td>삼각지</td>
+</tr>
+<tr>
+<td>Noksapyeong</td>
+<td>녹사평</td>
+<td>Hangang</td>
+<td>한강진</td>
+</tr>
+<tr>
+<td>Sangsu</td>
+<td>상수</td>
+<td>Hapjeong</td>
+<td>합정</td>
+</tr>
+<tr>
+<td>World Cup Stadium</td>
+<td>월드컵경기장</td>
+<td>Digital Media City</td>
+<td>디지털미디어시티</td>
+</tr>
+</tbody></table>
+<h3>Line 7 (7호선)</h3>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>Korean</th>
+<th>English</th>
+<th>Korean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Gangnam-gu Office</td>
+<td>강남구청</td>
+<td>Cheongdam</td>
+<td>청담</td>
+</tr>
+<tr>
+<td>Konkuk Univ.</td>
+<td>건대입구</td>
+<td>Children&#39;s Grand Park</td>
+<td>어린이대공원</td>
+</tr>
+<tr>
+<td>Junggok</td>
+<td>중곡</td>
+<td>Ttukseom Resort</td>
+<td>뚝섬유원지</td>
+</tr>
+<tr>
+<td>Express Bus Terminal</td>
+<td>고속터미널</td>
+<td>Nonhyeon</td>
+<td>논현</td>
+</tr>
+<tr>
+<td>Hakdong</td>
+<td>학동</td>
+<td>Bogwang</td>
+<td>보광</td>
+</tr>
+<tr>
+<td>Jangam</td>
+<td>장암</td>
+<td>Dobongsan</td>
+<td>도봉산</td>
+</tr>
+</tbody></table>
+<h3>Line 8 (8호선)</h3>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>Korean</th>
+<th>English</th>
+<th>Korean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Jamsil</td>
+<td>잠실</td>
+<td>Mongchontoseong</td>
+<td>몽촌토성</td>
+</tr>
+<tr>
+<td>Gangdong-gu Office</td>
+<td>강동구청</td>
+<td>Cheonho</td>
+<td>천호</td>
+</tr>
+<tr>
+<td>Bokjeong</td>
+<td>복정</td>
+<td>Sanseong</td>
+<td>산성</td>
+</tr>
+<tr>
+<td>Moran</td>
+<td>모란</td>
+<td>Amsa</td>
+<td>암사</td>
+</tr>
+</tbody></table>
+<h3>Line 9 (9호선)</h3>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>Korean</th>
+<th>English</th>
+<th>Korean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Sinnonhyeon</td>
+<td>신논현</td>
+<td>Express Bus Terminal</td>
+<td>고속터미널</td>
+</tr>
+<tr>
+<td>Dongjak</td>
+<td>동작</td>
+<td>Noryangjin</td>
+<td>노량진</td>
+</tr>
+<tr>
+<td>Yeouido</td>
+<td>여의도</td>
+<td>National Assembly</td>
+<td>국회의사당</td>
+</tr>
+<tr>
+<td>Dangsan</td>
+<td>당산</td>
+<td>Yeomchang</td>
+<td>염창</td>
+</tr>
+<tr>
+<td>Gimpo Airport</td>
+<td>김포공항</td>
+<td>Gaehwa</td>
+<td>개화</td>
+</tr>
+<tr>
+<td>Olympic Park</td>
+<td>올림픽공원</td>
+<td>Sports Complex</td>
+<td>종합운동장</td>
+</tr>
+</tbody></table>
+<h3>Sinbundang Line (신분당선)</h3>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>Korean</th>
+<th>English</th>
+<th>Korean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Gangnam</td>
+<td>강남</td>
+<td>Sinsa</td>
+<td>신사</td>
+</tr>
+<tr>
+<td>Yangjae</td>
+<td>양재</td>
+<td>Yangjae Citizen&#39;s Forest</td>
+<td>양재시민의숲</td>
+</tr>
+<tr>
+<td>Pangyo</td>
+<td>판교</td>
+<td>Jeongja</td>
+<td>정자</td>
+</tr>
+<tr>
+<td>Dongcheon</td>
+<td>동천</td>
+<td>Suji District Office</td>
+<td>수지구청</td>
+</tr>
+<tr>
+<td>Gwanggyo</td>
+<td>광교</td>
+<td>Gwanggyo Jungang</td>
+<td>광교중앙</td>
+</tr>
+</tbody></table>
+<h3>Gyeongui-Jungang Line (경의중앙선)</h3>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>Korean</th>
+<th>English</th>
+<th>Korean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Seoul Station</td>
+<td>서울역</td>
+<td>Hongdae (Hongik Univ.)</td>
+<td>홍대입구</td>
+</tr>
+<tr>
+<td>Gongdeok</td>
+<td>공덕</td>
+<td>Hyochang Park</td>
+<td>효창공원앞</td>
+</tr>
+<tr>
+<td>Yongsan</td>
+<td>용산</td>
+<td>Oksu</td>
+<td>옥수</td>
+</tr>
+<tr>
+<td>Wangsimni</td>
+<td>왕십리</td>
+<td>Cheongnyangni</td>
+<td>청량리</td>
+</tr>
+<tr>
+<td>DMC</td>
+<td>디지털미디어시티</td>
+<td>Susaek</td>
+<td>수색</td>
+</tr>
+<tr>
+<td>Ilsan</td>
+<td>일산</td>
+<td>Paju</td>
+<td>파주</td>
+</tr>
+</tbody></table>
+<h3>Airport Railroad (공항철도)</h3>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>Korean</th>
+<th>English</th>
+<th>Korean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Seoul Station</td>
+<td>서울역</td>
+<td>Gongdeok</td>
+<td>공덕</td>
+</tr>
+<tr>
+<td>Hongdae (Hongik Univ.)</td>
+<td>홍대입구</td>
+<td>Digital Media City</td>
+<td>디지털미디어시티</td>
+</tr>
+<tr>
+<td>Gimpo Airport</td>
+<td>김포공항</td>
+<td>Incheon Airport T1</td>
+<td>인천공항1터미널</td>
+</tr>
+<tr>
+<td>Incheon Airport T2</td>
+<td>인천공항2터미널</td>
+<td>Cheongna Int&#39;l City</td>
+<td>청라국제도시</td>
+</tr>
+</tbody></table>
+<h3>Suin-Bundang Line (수인분당선)</h3>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>Korean</th>
+<th>English</th>
+<th>Korean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Wangsimni</td>
+<td>왕십리</td>
+<td>Seolleung</td>
+<td>선릉</td>
+</tr>
+<tr>
+<td>Gangnam-gu Office</td>
+<td>강남구청</td>
+<td>Seonjeongneung</td>
+<td>선정릉</td>
+</tr>
+<tr>
+<td>Jeongja</td>
+<td>정자</td>
+<td>Migeum</td>
+<td>미금</td>
+</tr>
+<tr>
+<td>Ori</td>
+<td>오리</td>
+<td>Jukjeon</td>
+<td>죽전</td>
+</tr>
+<tr>
+<td>Suwon</td>
+<td>수원</td>
+<td>Incheon</td>
+<td>인천</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Usage Examples</h2>
+<p><strong>Real-time Arrival</strong></p>
+<pre><code class="language-bash">curl &quot;http://swopenAPI.seoul.go.kr/api/subway/${SEOUL_OPENAPI_KEY}/json/realtimeStationArrival/0/10/강남&quot;
+</code></pre>
+<p><strong>Station Search</strong></p>
+<pre><code class="language-bash">curl &quot;http://openapi.seoul.go.kr:8088/${SEOUL_OPENAPI_KEY}/json/SearchInfoBySubwayNameService/1/10/강남&quot;
+</code></pre>
+<p><strong>Route Search</strong></p>
+<pre><code class="language-bash">curl -G &quot;https://apis.data.go.kr/B553766/path/getShtrmPath?serviceKey=${DATA_GO_KR_KEY}&amp;dataType=JSON&quot; \
+  --data-urlencode &quot;dptreStnNm=신도림&quot; \
+  --data-urlencode &quot;arvlStnNm=서울역&quot; \
+  --data-urlencode &quot;searchDt=$(date &#39;+%Y-%m-%d %H:%M:%S&#39;)&quot;
+</code></pre>
+<p><strong>Service Alerts</strong></p>
+<pre><code class="language-bash">curl &quot;https://apis.data.go.kr/B553766/ntce/getNtceList?serviceKey=${DATA_GO_KR_KEY}&amp;dataType=JSON&amp;pageNo=1&amp;numOfRows=10&quot;
+</code></pre>
+<hr>
+<h2>Output Format Guide</h2>
+<h3>Real-time Arrival</h3>
+<p><strong>Korean:</strong></p>
+<pre><code>[강남역 도착 정보]
+
+| 호선 | 방향 | 도착 | 위치 | 유형 |
+|------|------|------|------|------|
+| 2호선 | 성수행 | 3분 | 역삼 | 일반 |
+</code></pre>
+<p><strong>English:</strong></p>
+<pre><code>[Gangnam Station Arrivals]
+
+| Line | Direction | Arrival | Location | Type |
+|------|-----------|---------|----------|------|
+| Line 2 | Seongsu-bound | 3 min | Yeoksam | Regular |
+</code></pre>
+<h3>Station Search</h3>
+<p><strong>Korean:</strong></p>
+<pre><code>[강남역]
+
+| 호선 | 역코드 | 외부코드 |
+|------|--------|----------|
+| 2호선 | 222 | 0222 |
+</code></pre>
+<p><strong>English:</strong></p>
+<pre><code>[Gangnam Station]
+
+| Line | Station Code | External Code |
+|------|--------------|---------------|
+| Line 2 | 222 | 0222 |
+</code></pre>
+<h3>Route Search</h3>
+<p><strong>Korean:</strong></p>
+<pre><code>[강남 -&gt; 홍대입구]
+
+소요시간: 38분 | 거리: 22.1 km | 요금: 1,650원 | 환승: 1회
+
+1. 09:03 강남 출발 (2호선 성수방면)
+2. 09:18 신도림 환승 (2호선 -&gt; 1호선)
+3. 09:42 홍대입구 도착
+</code></pre>
+<p><strong>English:</strong></p>
+<pre><code>[Gangnam -&gt; Hongdae]
+
+Time: 38 min | Distance: 22.1 km | Fare: 1,650 KRW | Transfers: 1
+
+1. 09:03 Depart Gangnam (Line 2 towards Seongsu)
+2. 09:18 Transfer at Sindorim (Line 2 -&gt; Line 1)
+3. 09:42 Arrive Hongdae
+</code></pre>
+<h3>Service Alerts</h3>
+<p><strong>Korean:</strong></p>
+<pre><code>[운행 알림]
+
+[1호선] 종로3가역 무정차 (15:00 ~ 15:22)
+- 코레일 열차 연기 발생으로 인함
+
+[2호선] 정상 운행
+</code></pre>
+<p><strong>English:</strong></p>
+<pre><code>[Service Alerts]
+
+[Line 1] Jongno 3-ga Non-stop (15:00 ~ 15:22)
+- Due to smoke from Korail train
+
+[Line 2] Normal operation
+</code></pre>
+<h3>Error</h3>
+<p><strong>Korean:</strong></p>
+<pre><code>오류: 역을 찾을 수 없습니다.
+&quot;강남&quot; (역 이름만)으로 검색해 보세요.
+</code></pre>
+<p><strong>English:</strong></p>
+<pre><code>Error: Station not found.
+Try searching with &quot;Gangnam&quot; (station name only).
+</code></pre>
+<h3>API Key Errors</h3>
+<p><strong>Korean:</strong></p>
+<pre><code>오류: API 인증키가 설정되지 않았습니다.
+환경 변수를 설정해주세요: SEOUL_OPENAPI_KEY
+
+발급 안내:
+- 서울열린데이터광장: https://data.seoul.go.kr
+- 공공데이터포털: https://www.data.go.kr
+</code></pre>
+<p><strong>English:</strong></p>
+<pre><code>Error: API key is not configured.
+Please set environment variable: SEOUL_OPENAPI_KEY
+
+Get your API key:
+- Seoul Open Data Plaza: https://data.seoul.go.kr
+- Korea Public Data Portal: https://www.data.go.kr
+</code></pre>
+<p><strong>Korean:</strong></p>
+<pre><code>오류: API 인증키가 유효하지 않습니다.
+인증키를 확인해주세요.
+</code></pre>
+<p><strong>English:</strong></p>
+<pre><code>Error: Invalid API key.
+Please verify your API key.
+</code></pre>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/dukbong/seoul-metro/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/dukbong/seoul-metro" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/dukbong/seoul-metro/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@dukbong</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Marketing & Sales</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Control a Reachy Mini robot (by Pollen Robotics / Hugging Face) via its REST API and SSH">
+  <title>reachy-mini - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to AI & LLMs</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">AI & LLMs</a>
+                <span class="skill-page-author">by @afalk42</span>
+              </div>
+              <h1 class="skill-page-title">reachy-mini</h1>
+              <p class="skill-page-desc">Control a Reachy Mini robot (by Pollen Robotics / Hugging Face) via its REST API and SSH</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Reachy Mini Robot Control</h1>
+<h2>Quick Start</h2>
+<p>Use the CLI script or <code>curl</code> to control the robot. The script lives at:</p>
+<pre><code>~/clawd/skills/reachy-mini/scripts/reachy.sh
+</code></pre>
+<p>Set the robot IP via <code>REACHY_HOST</code> env var or <code>--host</code> flag. Default: <code>192.168.8.17</code>.</p>
+<h3>Common Commands</h3>
+<pre><code class="language-bash">reachy.sh status                    # Daemon status, version, IP
+reachy.sh state                     # Full robot state
+reachy.sh wake-up                   # Wake the robot
+reachy.sh sleep                     # Put to sleep
+reachy.sh snap                      # Camera snapshot → /tmp/reachy_snap.jpg
+reachy.sh snap /path/to/photo.jpg   # Snapshot to custom path
+reachy.sh play-emotion cheerful1    # Play an emotion
+reachy.sh play-dance groovy_sway_and_roll  # Play a dance
+reachy.sh goto --head 0.2,0,0 --duration 1.5  # Nod down
+reachy.sh volume-set 70             # Set speaker volume
+reachy.sh emotions                  # List all emotions
+reachy.sh dances                    # List all dances
+</code></pre>
+<h2>Environment</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>REACHY_HOST</code></td>
+<td><code>192.168.8.17</code></td>
+<td>Robot IP address</td>
+</tr>
+<tr>
+<td><code>REACHY_PORT</code></td>
+<td><code>8000</code></td>
+<td>REST API port</td>
+</tr>
+<tr>
+<td><code>REACHY_SSH_USER</code></td>
+<td><code>pollen</code></td>
+<td>SSH username (for <code>snap</code> command)</td>
+</tr>
+<tr>
+<td><code>REACHY_SSH_PASS</code></td>
+<td><code>root</code></td>
+<td>SSH password (for <code>snap</code> command, uses <code>sshpass</code>)</td>
+</tr>
+</tbody></table>
+<h2>Movement Guide</h2>
+<h3>Head Control (6 DoF)</h3>
+<p>The head accepts pitch, yaw, roll in <strong>radians</strong>:</p>
+<ul>
+<li><strong>Pitch</strong> (look up/down): -0.5 (up) to 0.5 (down)</li>
+<li><strong>Yaw</strong> (look left/right): -0.8 (right) to 0.8 (left)</li>
+<li><strong>Roll</strong> (tilt sideways): -0.5 to 0.5</li>
+</ul>
+<pre><code class="language-bash"># Look up
+reachy.sh goto --head -0.3,0,0 --duration 1.0
+
+# Look left
+reachy.sh goto --head 0,0.4,0 --duration 1.0
+
+# Tilt head right, look slightly up
+reachy.sh goto --head -0.1,0,-0.3 --duration 1.5
+
+# Return to neutral
+reachy.sh goto --head 0,0,0 --duration 1.0
+</code></pre>
+<h3>Body Rotation (360°)</h3>
+<p>Body yaw in radians. 0 = forward, positive = left, negative = right.</p>
+<pre><code class="language-bash">reachy.sh goto --body 1.57 --duration 2.0   # Turn 90° left
+reachy.sh goto --body -1.57 --duration 2.0  # Turn 90° right
+reachy.sh goto --body 0 --duration 2.0      # Face forward
+</code></pre>
+<h3>Antennas</h3>
+<p>Two antennas [left, right] in radians. Range ~-0.5 to 0.5.</p>
+<pre><code class="language-bash">reachy.sh goto --antennas 0.4,0.4 --duration 0.5    # Both up
+reachy.sh goto --antennas -0.3,-0.3 --duration 0.5   # Both down
+reachy.sh goto --antennas 0.4,-0.4 --duration 0.5    # Asymmetric
+</code></pre>
+<h3>Combined Movements</h3>
+<pre><code class="language-bash"># Look left and turn body left with antennas up
+reachy.sh goto --head 0,0.3,0 --body 0.5 --antennas 0.4,0.4 --duration 2.0
+</code></pre>
+<h3>Interpolation Modes</h3>
+<p>Use <code>--interp</code> with goto:</p>
+<ul>
+<li><code>minjerk</code> — Smooth, natural (default)</li>
+<li><code>linear</code> — Constant speed</li>
+<li><code>ease</code> — Ease in/out</li>
+<li><code>cartoon</code> — Bouncy, exaggerated</li>
+</ul>
+<h2>Emotions &amp; Dances</h2>
+<h3>Playing Emotions</h3>
+<p>80+ pre-recorded expressive animations. Select contextually appropriate ones:</p>
+<pre><code class="language-bash">reachy.sh play-emotion curious1       # Curious look
+reachy.sh play-emotion cheerful1      # Happy expression
+reachy.sh play-emotion surprised1     # Surprise reaction
+reachy.sh play-emotion thoughtful1    # Thinking pose
+reachy.sh play-emotion welcoming1     # Greeting gesture
+reachy.sh play-emotion yes1           # Nodding yes
+reachy.sh play-emotion no1            # Shaking no
+</code></pre>
+<h3>Playing Dances</h3>
+<p>19 dance moves, great for fun or celebration:</p>
+<pre><code class="language-bash">reachy.sh play-dance groovy_sway_and_roll
+reachy.sh play-dance chicken_peck
+reachy.sh play-dance dizzy_spin
+</code></pre>
+<h3>Full Lists</h3>
+<p>Run <code>reachy.sh emotions</code> or <code>reachy.sh dances</code> to see all available moves.</p>
+<h2>Motor Modes</h2>
+<p>Before movement, motors must be <code>enabled</code>. Check with <code>reachy.sh motors</code>.</p>
+<pre><code class="language-bash">reachy.sh motors-enable     # Enable (needed for movement commands)
+reachy.sh motors-disable    # Disable (robot goes limp)
+reachy.sh motors-gravity    # Gravity compensation (manually pose the robot)
+</code></pre>
+<h2>Volume Control</h2>
+<pre><code class="language-bash">reachy.sh volume            # Current speaker volume
+reachy.sh volume-set 50     # Set speaker to 50%
+reachy.sh volume-test       # Play test sound
+reachy.sh mic-volume        # Microphone level
+reachy.sh mic-volume-set 80 # Set microphone to 80%
+</code></pre>
+<h2>App Management</h2>
+<p>Reachy Mini runs HuggingFace Space apps. Manage them via:</p>
+<pre><code class="language-bash">reachy.sh apps              # List all available apps
+reachy.sh apps-installed    # Installed apps only
+reachy.sh app-status        # What&#39;s running now
+reachy.sh app-start NAME    # Start an app
+reachy.sh app-stop          # Stop current app
+</code></pre>
+<p><strong>Important</strong>: Only one app runs at a time. Starting a new app stops the current one. Apps may take exclusive control of the robot — stop the running app before sending manual movement commands if the robot doesn&#39;t respond.</p>
+<h2>Camera Snapshots</h2>
+<p>Capture JPEG photos from the robot&#39;s camera (IMX708 wide-angle) via WebRTC — <strong>non-disruptive</strong> to the running daemon.</p>
+<pre><code class="language-bash">reachy.sh snap                        # Save to /tmp/reachy_snap.jpg
+reachy.sh snap /path/to/output.jpg    # Custom output path
+</code></pre>
+<p><strong>Requirements</strong>: SSH access to the robot (uses <code>sshpass</code> + <code>REACHY_SSH_PASS</code> env var, default: <code>root</code>).</p>
+<p><strong>How it works</strong>: Connects to the daemon&#39;s WebRTC signalling server (port 8443) using GStreamer&#39;s <code>webrtcsrc</code> plugin on the robot, captures one H264-decoded frame, and saves as JPEG. No daemon restart, no motor disruption.</p>
+<p><strong>Note</strong>: The robot must be <strong>awake</strong> (head up) for a useful image. If asleep, the camera faces into the body. Run <code>reachy.sh wake-up</code> first.</p>
+<h2>Audio Sensing</h2>
+<pre><code class="language-bash">reachy.sh doa               # Direction of Arrival from mic array
+</code></pre>
+<p>Returns angle in radians (0=left, π/2=front, π=right) and speech detection boolean.</p>
+<h2>Contextual Reactions (Clawdbot Integration)</h2>
+<p>Use <code>reachy-react.sh</code> to trigger contextual robot behaviors from heartbeats, cron jobs, or session responses.</p>
+<pre><code>~/clawd/skills/reachy-mini/scripts/reachy-react.sh
+</code></pre>
+<h3>Reactions</h3>
+<pre><code class="language-bash">reachy-react.sh ack           # Nod acknowledgment (received a request)
+reachy-react.sh success       # Cheerful emotion (task done)
+reachy-react.sh alert         # Surprised + antennas up (urgent email, alert)
+reachy-react.sh remind        # Welcoming/curious (meeting reminder, to-do)
+reachy-react.sh idle          # Subtle animation (heartbeat presence)
+reachy-react.sh morning       # Wake up + greeting (morning briefing)
+reachy-react.sh goodnight     # Sleepy emotion + sleep (night mode)
+reachy-react.sh patrol        # Camera snapshot, prints image path
+reachy-react.sh doa-track     # Turn head toward detected sound source
+reachy-react.sh celebrate     # Random dance (fun moments)
+</code></pre>
+<p>Pass <code>--bg</code> to run in background (non-blocking).</p>
+<h3>Built-in Behaviors</h3>
+<ul>
+<li><strong>Quiet hours</strong> (22:00–06:29 ET): All reactions except <code>morning</code>, <code>goodnight</code>, and <code>patrol</code> are silently skipped.</li>
+<li><strong>Auto-wake</strong>: Reactions ensure the robot is awake before acting (starts daemon + wakes if needed).</li>
+<li><strong>Fault-tolerant</strong>: If robot is unreachable, reactions exit cleanly without errors.</li>
+</ul>
+<h3>Integration Points</h3>
+<table>
+<thead>
+<tr>
+<th>Trigger</th>
+<th>Reaction</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Morning briefing cron (6:30 AM)</td>
+<td><code>morning</code></td>
+<td>Robot wakes up and greets</td>
+</tr>
+<tr>
+<td>Goodnight cron (10:00 PM)</td>
+<td><code>goodnight</code></td>
+<td>Robot plays sleepy emotion, goes to sleep</td>
+</tr>
+<tr>
+<td>Heartbeat (periodic)</td>
+<td><code>idle</code></td>
+<td>Subtle head tilt, antenna wave, or look-around</td>
+</tr>
+<tr>
+<td>Heartbeat (~1 in 4)</td>
+<td><code>doa-track</code></td>
+<td>Checks for nearby speech, turns toward it</td>
+</tr>
+<tr>
+<td>Heartbeat (~1 in 6)</td>
+<td><code>patrol</code></td>
+<td>Camera snapshot for room awareness</td>
+</tr>
+<tr>
+<td>Important unread email</td>
+<td><code>alert</code></td>
+<td>Antennas up + surprised emotion</td>
+</tr>
+<tr>
+<td>Meeting &lt;2h away</td>
+<td><code>remind</code></td>
+<td>Welcoming/curious emotion</td>
+</tr>
+<tr>
+<td>Request from Alexander</td>
+<td><code>ack</code></td>
+<td>Quick head nod</td>
+</tr>
+<tr>
+<td>Task completed</td>
+<td><code>success</code></td>
+<td>Random cheerful/happy emotion</td>
+</tr>
+<tr>
+<td>Good news or celebration</td>
+<td><code>celebrate</code></td>
+<td>Random dance move</td>
+</tr>
+</tbody></table>
+<h3>DOA (Direction of Arrival) Tracking</h3>
+<p>The <code>doa-track</code> reaction uses the robot&#39;s 4-mic array to detect speech direction and turn the head toward the speaker. The DOA angle (0=left, π/2=front, π=right) is mapped to head yaw. Only triggers when speech is actively detected.</p>
+<h3>Camera Patrol</h3>
+<p>The <code>patrol</code> reaction captures a snapshot and prints the image path. Use this during heartbeats to check the room periodically. Combine with image analysis to detect activity or changes.</p>
+<h2>Direct API Access</h2>
+<p>For anything not covered by the CLI, use <code>curl</code> or the <code>raw</code> command:</p>
+<pre><code class="language-bash"># Via raw command
+reachy.sh raw GET /api/state/full
+reachy.sh raw POST /api/move/goto &#39;{&quot;duration&quot;:1.0,&quot;head_pose&quot;:{&quot;pitch&quot;:0.2,&quot;yaw&quot;:0,&quot;roll&quot;:0}}&#39;
+
+# Via curl directly
+curl -s http://192.168.8.17:8000/api/state/full | jq
+curl -s -X POST -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;duration&quot;:1.5,&quot;head_pose&quot;:{&quot;pitch&quot;:0,&quot;yaw&quot;:0.3,&quot;roll&quot;:0}}&#39; \
+  http://192.168.8.17:8000/api/move/goto
+</code></pre>
+<h2>Reference</h2>
+<p>For the complete API endpoint list, schemas (GotoModelRequest, FullBodyTarget, XYZRPYPose), and full emotion/dance catalogs, see <a href="references/api-reference.md">references/api-reference.md</a>.</p>
+<h2>Troubleshooting</h2>
+<ul>
+<li><strong>Robot doesn&#39;t move</strong>: Check <code>reachy.sh motors</code> — must be <code>enabled</code>. Run <code>reachy.sh motors-enable</code>.</li>
+<li><strong>No response</strong>: Check <code>reachy.sh status</code>. State should be <code>running</code>. If not, run <code>reachy.sh reboot-daemon</code>.</li>
+<li><strong>Movements ignored</strong>: An app may have exclusive control. Run <code>reachy.sh app-stop</code> first.</li>
+<li><strong>Network unreachable</strong>: Verify the robot IP with <code>ping $REACHY_HOST</code>. Check <code>reachy.sh wifi-status</code>.</li>
+<li><strong>Snap shows black image</strong>: Robot is likely asleep (head down). Run <code>reachy.sh wake-up</code> first.</li>
+<li><strong>Snap fails with SSH error</strong>: Ensure <code>sshpass</code> is installed and <code>REACHY_SSH_PASS</code> is set correctly.</li>
+</ul>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/afalk42/reachy-mini/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/afalk42/reachy-mini" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/afalk42/reachy-mini/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@afalk42</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">AI & LLMs</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="TickTick task manager: projects, tasks, reminders">
+  <meta name="description" content="Manage TickTick tasks and projects from the command line with OAuth2 auth, batch operations">
   <title>ticktick - MoltDirectory</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,10 +47,10 @@
               <a href="../index.html" class="back-link">← Back to Productivity & Tasks</a>
               <div class="skill-page-meta">
                 <a href="../index.html" class="skill-page-category">Productivity & Tasks</a>
-                <span class="skill-page-author">by @kaiofreitas</span>
+                <span class="skill-page-author">by @manuelhettich</span>
               </div>
               <h1 class="skill-page-title">ticktick</h1>
-              <p class="skill-page-desc">TickTick task manager: projects, tasks, reminders</p>
+              <p class="skill-page-desc">Manage TickTick tasks and projects from the command line with OAuth2 auth, batch operations</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -64,94 +64,201 @@
                   </button>
                 </div>
                 <div class="markdown-content">
-                  <h1>TickTick Integration</h1>
-<p>Manage tasks via TickTick&#39;s Open API.</p>
+                  <h1>TickTick CLI Skill</h1>
+<p>Manage TickTick tasks and projects from the command line.</p>
 <h2>Setup</h2>
-<p>First time only:</p>
+<h3>1. Register a TickTick Developer App</h3>
 <ol>
-<li>Go to <a href="https://developer.ticktick.com">https://developer.ticktick.com</a> and create an app</li>
-<li>Add redirect URI: <code>http://127.0.0.1:8765/callback</code></li>
-<li>Run setup:</li>
+<li>Go to <a href="https://developer.ticktick.com/manage">TickTick Developer Center</a></li>
+<li>Create a new application</li>
+<li>Set the redirect URI to <code>http://localhost:8080</code></li>
+<li>Note your <code>Client ID</code> and <code>Client Secret</code></li>
 </ol>
-<pre><code class="language-bash">ticktick-setup &lt;client_id&gt; &lt;client_secret&gt;
+<h3>2. Authenticate</h3>
+<pre><code class="language-bash"># Set credentials and start OAuth flow
+bun run scripts/ticktick.ts auth --client-id YOUR_CLIENT_ID --client-secret YOUR_CLIENT_SECRET
+
+# Check authentication status
+bun run scripts/ticktick.ts auth --status
+
+# Logout (clear tokens, keep credentials)
+bun run scripts/ticktick.ts auth --logout
 </code></pre>
-<ol start="4">
-<li>Open the auth URL in browser, authorize, paste the callback URL</li>
+<h3>Headless / Manual Authentication</h3>
+<pre><code class="language-bash"># Use manual mode on headless servers
+bun run scripts/ticktick.ts auth --client-id YOUR_CLIENT_ID --client-secret YOUR_CLIENT_SECRET --manual
+</code></pre>
+<p>This prints an authorization URL. Open it in a browser, approve access, then copy the full redirect URL (it looks like <code>http://localhost:8080/?code=XXXXX&amp;state=STATE</code>) and paste it back into the CLI.</p>
+<p>The CLI will open your browser to authorize access. After approving, tokens are stored in <code>~/.clawdbot/credentials/ticktick-cli/config.json</code>.</p>
+<h2>Commands</h2>
+<h3>List Tasks</h3>
+<pre><code class="language-bash"># List all tasks
+bun run scripts/ticktick.ts tasks
+
+# List tasks from a specific project
+bun run scripts/ticktick.ts tasks --list &quot;Work&quot;
+
+# Filter by status
+bun run scripts/ticktick.ts tasks --status pending
+bun run scripts/ticktick.ts tasks --status completed
+
+# JSON output
+bun run scripts/ticktick.ts tasks --json
+</code></pre>
+<h3>Create Task</h3>
+<pre><code class="language-bash"># Basic task creation
+bun run scripts/ticktick.ts task &quot;Buy groceries&quot; --list &quot;Personal&quot;
+
+# With description and priority
+bun run scripts/ticktick.ts task &quot;Review PR&quot; --list &quot;Work&quot; --content &quot;Check the new auth changes&quot; --priority high
+
+# With due date
+bun run scripts/ticktick.ts task &quot;Submit report&quot; --list &quot;Work&quot; --due tomorrow
+bun run scripts/ticktick.ts task &quot;Plan vacation&quot; --list &quot;Personal&quot; --due &quot;in 7 days&quot;
+bun run scripts/ticktick.ts task &quot;Meeting&quot; --list &quot;Work&quot; --due &quot;2024-12-25&quot;
+
+# With tags
+bun run scripts/ticktick.ts task &quot;Research&quot; --list &quot;Work&quot; --tag research important
+</code></pre>
+<h3>Update Task</h3>
+<pre><code class="language-bash"># Update by task name or ID
+bun run scripts/ticktick.ts task &quot;Buy groceries&quot; --update --priority medium
+bun run scripts/ticktick.ts task &quot;abc123&quot; --update --due tomorrow --content &quot;Updated notes&quot;
+
+# Limit search to specific project
+bun run scripts/ticktick.ts task &quot;Review PR&quot; --update --list &quot;Work&quot; --priority low
+</code></pre>
+<h3>Complete Task</h3>
+<pre><code class="language-bash"># Mark task as complete
+bun run scripts/ticktick.ts complete &quot;Buy groceries&quot;
+
+# Complete with project filter
+bun run scripts/ticktick.ts complete &quot;Review PR&quot; --list &quot;Work&quot;
+</code></pre>
+<h3>Abandon Task (Won&#39;t Do)</h3>
+<pre><code class="language-bash"># Mark task as won&#39;t do
+bun run scripts/ticktick.ts abandon &quot;Old task&quot;
+
+# Abandon with project filter
+bun run scripts/ticktick.ts abandon &quot;Obsolete item&quot; --list &quot;Do&quot;
+</code></pre>
+<h3>Batch Abandon (Multiple Tasks)</h3>
+<pre><code class="language-bash"># Abandon multiple tasks in a single API call
+bun run scripts/ticktick.ts batch-abandon &lt;taskId1&gt; &lt;taskId2&gt; &lt;taskId3&gt;
+
+# With JSON output
+bun run scripts/ticktick.ts batch-abandon abc123def456... xyz789... --json
+</code></pre>
+<p>Note: <code>batch-abandon</code> requires task IDs (24-character hex strings), not task names. Use <code>tasks --json</code> to get task IDs first.</p>
+<h3>List Projects</h3>
+<pre><code class="language-bash"># List all projects
+bun run scripts/ticktick.ts lists
+
+# JSON output
+bun run scripts/ticktick.ts lists --json
+</code></pre>
+<h3>Create Project</h3>
+<pre><code class="language-bash"># Create new project
+bun run scripts/ticktick.ts list &quot;New Project&quot;
+
+# With color
+bun run scripts/ticktick.ts list &quot;Work Tasks&quot; --color &quot;#FF5733&quot;
+</code></pre>
+<h3>Update Project</h3>
+<pre><code class="language-bash"># Rename project
+bun run scripts/ticktick.ts list &quot;Old Name&quot; --update --name &quot;New Name&quot;
+
+# Change color
+bun run scripts/ticktick.ts list &quot;Work&quot; --update --color &quot;#00FF00&quot;
+</code></pre>
+<h2>Options Reference</h2>
+<h3>Priority Levels</h3>
+<ul>
+<li><code>none</code> - No priority (default)</li>
+<li><code>low</code> - Low priority</li>
+<li><code>medium</code> - Medium priority</li>
+<li><code>high</code> - High priority</li>
+</ul>
+<h3>Due Date Formats</h3>
+<ul>
+<li><code>today</code> - Due today</li>
+<li><code>tomorrow</code> - Due tomorrow</li>
+<li><code>in N days</code> - Due in N days (e.g., &quot;in 3 days&quot;)</li>
+<li><code>next monday</code> - Next occurrence of weekday</li>
+<li>ISO date - <code>YYYY-MM-DD</code> or full ISO format</li>
+</ul>
+<h3>Global Options</h3>
+<ul>
+<li><code>--json</code> - Output results in JSON format (useful for scripting)</li>
+<li><code>--help</code> - Show help for any command</li>
+</ul>
+<h2>Agent Usage Tips</h2>
+<p>When using this skill as an AI agent:</p>
+<ol>
+<li><strong>Always use <code>--json</code> flag</strong> for machine-readable output</li>
+<li><strong>List projects first</strong> with <code>lists --json</code> to get valid project IDs</li>
+<li><strong>Use project IDs</strong> rather than names when possible for reliability</li>
+<li><strong>Check task status</strong> before completing to avoid errors</li>
 </ol>
-<h2>Usage</h2>
-<pre><code class="language-bash"># List projects
-ticktick projects
+<p>Example agent workflow:</p>
+<pre><code class="language-bash"># 1. Get available projects
+bun run scripts/ticktick.ts lists --json
 
-# List all tasks
-ticktick tasks
+# 2. Create a task in a specific project
+bun run scripts/ticktick.ts task &quot;Agent task&quot; --list &quot;PROJECT_ID&quot; --priority high --json
 
-# List tasks from specific project
-ticktick tasks &lt;project_id&gt;
-
-# Add task (inbox)
-ticktick add &quot;Buy milk&quot;
-
-# Add task to project with due date
-ticktick add &quot;Buy milk&quot; --project &lt;id&gt; --due 2026-01-30
-
-# Complete task
-ticktick complete &lt;project_id&gt; &lt;task_id&gt;
-
-# Delete task
-ticktick delete &lt;project_id&gt; &lt;task_id&gt;
+# 3. Later, mark it complete
+bun run scripts/ticktick.ts complete &quot;Agent task&quot; --list &quot;PROJECT_ID&quot; --json
 </code></pre>
-<h2>API Reference</h2>
-<p>Base URL: <code>https://api.ticktick.com/open/v1</code></p>
-<table>
-<thead>
-<tr>
-<th>Endpoint</th>
-<th>Method</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>/project</td>
-<td>GET</td>
-<td>List all projects</td>
-</tr>
-<tr>
-<td>/project/{id}/data</td>
-<td>GET</td>
-<td>Get project with tasks</td>
-</tr>
-<tr>
-<td>/task</td>
-<td>POST</td>
-<td>Create task</td>
-</tr>
-<tr>
-<td>/task/{id}</td>
-<td>POST</td>
-<td>Update task</td>
-</tr>
-<tr>
-<td>/project/{pid}/task/{tid}/complete</td>
-<td>POST</td>
-<td>Complete task</td>
-</tr>
-<tr>
-<td>/task/{pid}/{tid}</td>
-<td>DELETE</td>
-<td>Delete task</td>
-</tr>
-</tbody></table>
-<h2>Task Object</h2>
+<h2>Configuration</h2>
+<p>Tokens are stored in <code>~/.clawdbot/credentials/ticktick-cli/config.json</code>:</p>
 <pre><code class="language-json">{
-  &quot;title&quot;: &quot;Task title&quot;,
-  &quot;content&quot;: &quot;Description&quot;, 
-  &quot;projectId&quot;: &quot;project-id&quot;,
-  &quot;dueDate&quot;: &quot;2026-01-25T12:00:00+0000&quot;,
-  &quot;priority&quot;: 0,
-  &quot;tags&quot;: [&quot;tag1&quot;]
+  &quot;clientId&quot;: &quot;YOUR_CLIENT_ID&quot;,
+  &quot;clientSecret&quot;: &quot;YOUR_CLIENT_SECRET&quot;,
+  &quot;accessToken&quot;: &quot;...&quot;,
+  &quot;refreshToken&quot;: &quot;...&quot;,
+  &quot;tokenExpiry&quot;: 1234567890000,
+  &quot;redirectUri&quot;: &quot;http://localhost:8080&quot;
 }
 </code></pre>
-<p>Priority: 0=none, 1=low, 3=medium, 5=high</p>
+<p>Note: Credentials are stored in plaintext. The CLI attempts to set file permissions to 700/600; treat this file as sensitive.</p>
+<p>The CLI automatically refreshes tokens when they expire.</p>
+<h2>Troubleshooting</h2>
+<h3>&quot;Not authenticated&quot; error</h3>
+<p>Run <code>bun run scripts/ticktick.ts auth</code> to authenticate.</p>
+<h3>&quot;Project not found&quot; error</h3>
+<p>Use <code>bun run scripts/ticktick.ts lists</code> to see available projects and their IDs.</p>
+<h3>&quot;Task not found&quot; error</h3>
+<ul>
+<li>Check the task title matches exactly (case-insensitive)</li>
+<li>Try using the task ID instead</li>
+<li>Use <code>--list</code> to narrow the search to a specific project</li>
+</ul>
+<h3>Token expired errors</h3>
+<p>The CLI should auto-refresh tokens. If issues persist, run <code>bun run scripts/ticktick.ts auth</code> again.</p>
+<h2>API Notes</h2>
+<p>This CLI uses the <a href="https://developer.ticktick.com/api">TickTick Open API v1</a>.</p>
+<h3>Rate Limits</h3>
+<ul>
+<li><strong>100 requests per minute</strong></li>
+<li><strong>300 requests per 5 minutes</strong></li>
+</ul>
+<p>The CLI makes multiple API calls per operation (listing projects to find task), so bulk operations can hit limits quickly.</p>
+<h3>Batch Endpoint</h3>
+<p>The CLI supports TickTick&#39;s batch endpoint for bulk operations:</p>
+<pre><code>POST https://api.ticktick.com/open/v1/batch/task
+{
+  &quot;add&quot;: [...],    // CreateTaskInput[]
+  &quot;update&quot;: [...], // UpdateTaskInput[]
+  &quot;delete&quot;: [...]  // { taskId, projectId }[]
+}
+</code></pre>
+<p>Use <code>batch-abandon</code> to abandon multiple tasks in one API call. The batch API method is also exposed for programmatic use.</p>
+<h3>Other Limitations</h3>
+<ul>
+<li>Maximum 500 tasks per project</li>
+<li>Some advanced features (focus time, habits) not supported by the API</li>
+</ul>
 
                 </div>
               </div>
@@ -159,15 +266,15 @@ ticktick delete &lt;project_id&gt; &lt;task_id&gt;
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/kaiofreitas/ticktick-tasks/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/tree/main/skills/manuelhettich/ticktick/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
-                <a href="https://clawdhub.com/kaiofreitas/ticktick" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                <a href="https://clawdhub.com/manuelhettich/ticktick" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/kaiofreitas/ticktick-tasks/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/manuelhettich/ticktick/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                   Download SKILL.md
                 </a>
@@ -181,7 +288,7 @@ ticktick delete &lt;project_id&gt; &lt;task_id&gt;
                 <div class="sidebar-info">
                   <div class="sidebar-info-item">
                     <span class="sidebar-info-label">Author</span>
-                    <span class="sidebar-info-value">@kaiofreitas</span>
+                    <span class="sidebar-info-value">@manuelhettich</span>
                   </div>
                   <div class="sidebar-info-item">
                     <span class="sidebar-info-label">Category</span>

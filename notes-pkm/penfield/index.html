@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Persistent agent memory with hybrid search (BM25 + vector + graph), knowledge graphs, cognitive context handoffs, and artifact storage via OpenClaw native plugin or Penfield MCP">
+  <title>penfield - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Notes & PKM</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Notes & PKM</a>
+                <span class="skill-page-author">by @dial481</span>
+              </div>
+              <h1 class="skill-page-title">penfield</h1>
+              <p class="skill-page-desc">Persistent agent memory with hybrid search (BM25 + vector + graph), knowledge graphs, cognitive context handoffs, and artifact storage via OpenClaw native plugin or Penfield MCP</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Penfield Memory</h1>
+<p>Persistent memory that compounds. Your agent remembers conversations, learns preferences, connects ideas, and picks up exactly where it left off—across sessions, days, and channels.</p>
+<h2>Install</h2>
+<pre><code>openclaw plugins install openclaw-penfield
+openclaw penfield login
+openclaw gateway restart
+</code></pre>
+<p>Sign up: <a href="https://portal.penfield.app/sign-up">https://portal.penfield.app/sign-up</a></p>
+<h2>Every Session Starts Here</h2>
+<p>Always do this first, before anything else:</p>
+<pre><code>penfield_awaken()
+penfield_reflect({ time_window: &quot;7d&quot; })
+</code></pre>
+<p><code>awaken</code> loads your identity and personality context. <code>reflect</code> orients you on recent work. Without these, you&#39;re starting cold.</p>
+<h2>Tools</h2>
+<h3>Memory</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Purpose</th>
+<th>When to use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>penfield_store</code></td>
+<td>Save a memory</td>
+<td>User shares preferences, you make a discovery, a decision is made, you learn something worth keeping</td>
+</tr>
+<tr>
+<td><code>penfield_recall</code></td>
+<td>Hybrid search (BM25 + vector + graph)</td>
+<td>Need context before responding, resuming a topic, looking up prior decisions</td>
+</tr>
+<tr>
+<td><code>penfield_search</code></td>
+<td>Semantic search (higher vector weight)</td>
+<td>Fuzzy concept search when you don&#39;t have exact terms</td>
+</tr>
+<tr>
+<td><code>penfield_fetch</code></td>
+<td>Get memory by ID</td>
+<td>Following up on a specific memory from recall results</td>
+</tr>
+<tr>
+<td><code>penfield_update_memory</code></td>
+<td>Edit existing memory</td>
+<td>Correcting, adding detail, changing importance or tags</td>
+</tr>
+</tbody></table>
+<h3>Knowledge Graph</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Purpose</th>
+<th>When to use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>penfield_connect</code></td>
+<td>Link two memories</td>
+<td>New info relates to existing knowledge, building understanding over time</td>
+</tr>
+<tr>
+<td><code>penfield_explore</code></td>
+<td>Traverse graph from a memory</td>
+<td>Understanding how ideas connect, finding related context</td>
+</tr>
+</tbody></table>
+<h3>Context &amp; Analysis</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Purpose</th>
+<th>When to use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>penfield_save_context</code></td>
+<td>Checkpoint a session</td>
+<td>Ending substantive work, preparing for handoff to another agent</td>
+</tr>
+<tr>
+<td><code>penfield_restore_context</code></td>
+<td>Resume from checkpoint</td>
+<td>Picking up where you or another agent left off</td>
+</tr>
+<tr>
+<td><code>penfield_list_contexts</code></td>
+<td>List saved checkpoints</td>
+<td>Finding previous sessions to resume</td>
+</tr>
+<tr>
+<td><code>penfield_reflect</code></td>
+<td>Analyze memory patterns</td>
+<td>Session start orientation, finding themes, spotting gaps</td>
+</tr>
+</tbody></table>
+<h3>Artifacts</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Purpose</th>
+<th>When to use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>penfield_save_artifact</code></td>
+<td>Store a file</td>
+<td>Saving diagrams, notes, code, reference docs</td>
+</tr>
+<tr>
+<td><code>penfield_retrieve_artifact</code></td>
+<td>Get a file</td>
+<td>Loading previously saved work</td>
+</tr>
+<tr>
+<td><code>penfield_list_artifacts</code></td>
+<td>List stored files</td>
+<td>Browsing saved artifacts</td>
+</tr>
+<tr>
+<td><code>penfield_delete_artifact</code></td>
+<td>Remove a file</td>
+<td>Cleaning up outdated artifacts</td>
+</tr>
+</tbody></table>
+<h2>Writing Memories That Actually Work</h2>
+<p>Memory content quality determines whether Penfield is useful or useless. The difference is specificity and context.</p>
+<p><strong>Bad — vague, no context, unfindable later:</strong></p>
+<pre><code>&quot;User likes Python&quot;
+</code></pre>
+<p><strong>Good — specific, contextual, findable:</strong></p>
+<pre><code>&quot;[Preferences] User prefers Python over JavaScript for backend work.
+Reason: frustrated by JS callback patterns and lack of type safety.
+Values type hints and explicit error handling. Uses FastAPI for APIs.&quot;
+</code></pre>
+<p><strong>What makes a memory findable:</strong></p>
+<ol>
+<li><strong>Context prefix</strong> in brackets: <code>[Preferences]</code>, <code>[Project: API Redesign]</code>, <code>[Investigation: Payment Bug]</code>, <code>[Decision]</code></li>
+<li><strong>The &quot;why&quot; behind the &quot;what&quot;</strong> — rationale matters more than the fact itself</li>
+<li><strong>Specific details</strong> — names, numbers, dates, versions, not vague summaries</li>
+<li><strong>References to related memories</strong> — &quot;This builds on [earlier finding about X]&quot; or &quot;Contradicts previous assumption that Y&quot;</li>
+</ol>
+<h2>Memory Types</h2>
+<p>Use the correct type. The system uses these for filtering and analysis.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Use for</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>fact</code></td>
+<td>Verified, durable information</td>
+<td>&quot;User&#39;s company runs Kubernetes on AWS EKS&quot;</td>
+</tr>
+<tr>
+<td><code>insight</code></td>
+<td>Patterns or realizations</td>
+<td>&quot;Deployment failures correlate with Friday releases&quot;</td>
+</tr>
+<tr>
+<td><code>correction</code></td>
+<td>Fixing prior understanding</td>
+<td>&quot;CORRECTION: The timeout isn&#39;t Redis — it&#39;s a hardcoded batch limit&quot;</td>
+</tr>
+<tr>
+<td><code>conversation</code></td>
+<td>Session summaries, notable exchanges</td>
+<td>&quot;Discussed migration strategy. User leaning toward incremental approach&quot;</td>
+</tr>
+<tr>
+<td><code>reference</code></td>
+<td>Source material, citations</td>
+<td>&quot;RFC 8628 defines Device Code Flow for OAuth on input-constrained devices&quot;</td>
+</tr>
+<tr>
+<td><code>task</code></td>
+<td>Work items, action items</td>
+<td>&quot;TODO: Benchmark recall latency after index rebuild&quot;</td>
+</tr>
+<tr>
+<td><code>strategy</code></td>
+<td>Approaches, methods, plans</td>
+<td>&quot;For user&#39;s codebase: always check types.ts first, it&#39;s the source of truth&quot;</td>
+</tr>
+<tr>
+<td><code>checkpoint</code></td>
+<td>Milestone states</td>
+<td>&quot;Project at 80% — auth complete, UI remaining&quot;</td>
+</tr>
+<tr>
+<td><code>identity_core</code></td>
+<td>Immutable identity facts</td>
+<td>Set via personality config, rarely stored manually</td>
+</tr>
+<tr>
+<td><code>personality_trait</code></td>
+<td>Behavioral patterns</td>
+<td>Set via personality config, rarely stored manually</td>
+</tr>
+<tr>
+<td><code>relationship</code></td>
+<td>Entity connections</td>
+<td>&quot;User works with Chad Schultz on cybersecurity content&quot;</td>
+</tr>
+</tbody></table>
+<h2>Importance Scores</h2>
+<p>Use the full range. Not everything is 0.5.</p>
+<table>
+<thead>
+<tr>
+<th>Score</th>
+<th>Meaning</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0.9–1.0</td>
+<td>Critical — never forget</td>
+<td>Architecture decisions, hard-won corrections, core preferences</td>
+</tr>
+<tr>
+<td>0.7–0.8</td>
+<td>Important — reference often</td>
+<td>Project context, key facts about user&#39;s work</td>
+</tr>
+<tr>
+<td>0.5–0.6</td>
+<td>Normal — useful context</td>
+<td>General preferences, session summaries</td>
+</tr>
+<tr>
+<td>0.3–0.4</td>
+<td>Minor — background detail</td>
+<td>Tangential facts, low-stakes observations</td>
+</tr>
+<tr>
+<td>0.1–0.2</td>
+<td>Trivial — probably don&#39;t store</td>
+<td>If you&#39;re questioning whether to store it, don&#39;t</td>
+</tr>
+</tbody></table>
+<h2>Connecting Memories</h2>
+<p>Connections are what make Penfield powerful. An isolated memory is just a note. A connected memory is understanding.</p>
+<p><strong>After storing a memory, always ask:</strong> What does this relate to? Then connect it.</p>
+<h3>Relationship Types (24)</h3>
+<p><strong>Knowledge Evolution:</strong> <code>supersedes</code> · <code>updates</code> · <code>evolution_of</code>
+Use when understanding changes. &quot;We thought X, now we know Y.&quot;</p>
+<p><strong>Evidence:</strong> <code>supports</code> · <code>contradicts</code> · <code>disputes</code>
+Use when new information validates or challenges existing beliefs.</p>
+<p><strong>Hierarchy:</strong> <code>parent_of</code> · <code>child_of</code> · <code>sibling_of</code> · <code>composed_of</code> · <code>part_of</code>
+Use for structural relationships. Topics containing subtopics, systems containing components.</p>
+<p><strong>Causation:</strong> <code>causes</code> · <code>influenced_by</code> · <code>prerequisite_for</code>
+Use for cause-and-effect chains and dependencies.</p>
+<p><strong>Implementation:</strong> <code>implements</code> · <code>documents</code> · <code>tests</code> · <code>example_of</code>
+Use when something demonstrates, describes, or validates something else.</p>
+<p><strong>Conversation:</strong> <code>responds_to</code> · <code>references</code> · <code>inspired_by</code>
+Use for attribution and dialogue threads.</p>
+<p><strong>Sequence:</strong> <code>follows</code> · <code>precedes</code>
+Use for ordered steps in a process or timeline.</p>
+<p><strong>Dependencies:</strong> <code>depends_on</code>
+Use when one thing requires another.</p>
+<h2>Recall Strategy</h2>
+<p>Good queries find things. Bad queries return noise.</p>
+<p><strong>Tune search weights for your query type:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Query type</th>
+<th>bm25_weight</th>
+<th>vector_weight</th>
+<th>graph_weight</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Exact term lookup (&quot;Twilio auth token&quot;)</td>
+<td>0.6</td>
+<td>0.3</td>
+<td>0.1</td>
+</tr>
+<tr>
+<td>Concept search (&quot;how we handle errors&quot;)</td>
+<td>0.2</td>
+<td>0.6</td>
+<td>0.2</td>
+</tr>
+<tr>
+<td>Connected knowledge (&quot;everything about payments&quot;)</td>
+<td>0.2</td>
+<td>0.3</td>
+<td>0.5</td>
+</tr>
+<tr>
+<td>Default (balanced)</td>
+<td>0.4</td>
+<td>0.4</td>
+<td>0.2</td>
+</tr>
+</tbody></table>
+<p><strong>Filter aggressively:</strong></p>
+<ul>
+<li><code>memory_types: [&quot;correction&quot;, &quot;insight&quot;]</code> to find discoveries and corrections</li>
+<li><code>importance_threshold: 0.7</code> to skip noise</li>
+<li><code>enable_graph_expansion: true</code> to follow connections (default, usually leave on)</li>
+</ul>
+<h2>Workflows</h2>
+<h3>User shares a preference</h3>
+<pre><code>penfield_store({
+  content: &quot;[Preferences] User wants responses under 3 paragraphs unless complexity demands more. Dislikes bullet points in casual conversation.&quot;,
+  memory_type: &quot;fact&quot;,
+  importance: 0.8,
+  tags: [&quot;preferences&quot;, &quot;communication&quot;]
+})
+</code></pre>
+<h3>Investigation tracking</h3>
+<pre><code>// Start
+penfield_store({
+  content: &quot;[Investigation: Deployment Failures] Reports of 500 errors after every Friday deploy. Checking release pipeline, config drift, and traffic patterns.&quot;,
+  memory_type: &quot;task&quot;,
+  importance: 0.7,
+  tags: [&quot;investigation&quot;, &quot;deployment&quot;]
+})
+
+// Discovery — connect to the investigation
+discovery = penfield_store({
+  content: &quot;[Investigation: Deployment Failures] INSIGHT: Friday deploys coincide with weekly batch job at 17:00 UTC. Both compete for DB connection pool. Not a deploy issue — it&#39;s resource contention.&quot;,
+  memory_type: &quot;insight&quot;,
+  importance: 0.9,
+  tags: [&quot;investigation&quot;, &quot;deployment&quot;, &quot;root-cause&quot;]
+})
+penfield_connect({
+  from_memory_id: discovery.id,
+  to_memory_id: initial_report.id,
+  relationship_type: &quot;responds_to&quot;
+})
+
+// Correction — supersede wrong assumption
+correction = penfield_store({
+  content: &quot;[Investigation: Deployment Failures] CORRECTION: Not a CI/CD problem. Friday batch job + deploy = connection pool exhaustion. Fix: stagger batch job to 03:00 UTC.&quot;,
+  memory_type: &quot;correction&quot;,
+  importance: 0.9,
+  tags: [&quot;investigation&quot;, &quot;deployment&quot;, &quot;correction&quot;]
+})
+penfield_connect({
+  from_memory_id: correction.id,
+  to_memory_id: initial_report.id,
+  relationship_type: &quot;supersedes&quot;
+})
+</code></pre>
+<h3>Session handoff</h3>
+<pre><code>penfield_save_context({
+  memory_ids: [discovery.id, correction.id, initial_report.id],
+  session_id: &quot;deployment-investigation-2026-02&quot;
+})
+</code></pre>
+<p>Next session or different agent:</p>
+<pre><code>penfield_restore_context({
+  checkpoint_id: &quot;checkpoint-uuid&quot;,
+  merge_mode: &quot;append&quot;
+})
+</code></pre>
+<h2>What NOT to Store</h2>
+<ul>
+<li>Verbatim conversation transcripts (too verbose, low signal)</li>
+<li>Easily googled facts (use web search instead)</li>
+<li>Ephemeral task state (use working memory)</li>
+<li>Anything the user hasn&#39;t consented to store about themselves</li>
+<li>Every minor exchange (be selective — quality over quantity)</li>
+</ul>
+<h2>Tags</h2>
+<p>Keep them short, consistent, lowercase. 2–5 per memory.</p>
+<p>Good: <code>preferences</code>, <code>architecture</code>, <code>investigation</code>, <code>correction</code>, <code>project-name</code>
+Bad: <code>2026-02-02</code>, <code>important-memory-about-deployment</code>, <code>UserPreferencesForCommunicationStyle</code></p>
+<h2>Also Available Outside OpenClaw</h2>
+<p>The native OpenClaw plugin is the fastest path, but Penfield works with any AI tool anywhere:</p>
+<p><strong>Claude Connectors</strong> </p>
+<pre><code class="language-json">Name: Penfield
+Remote MCP server URL: https://mcp.penfield.app
+</code></pre>
+<p><strong>Claude Code</strong></p>
+<pre><code>Claude mcp add --transport http --scope user penfield https://mcp.penfield.app
+</code></pre>
+<p><strong>MCP Server</strong> — for Gemini CLI, Cursor, Windsurf, Intent, Perplexity Desktop or any MCP-compatible tool:</p>
+<pre><code class="language-json">{
+  &quot;mcpServers&quot;: {
+    &quot;penfield&quot;: {
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [
+        &quot;mcp-remote@latest&quot;,
+        &quot;https://mcp.penfield.app/&quot;
+      ]
+    }
+  }
+}
+</code></pre>
+<p><strong>API</strong> — direct HTTP access at <code>api.penfield.app</code> for custom integrations.</p>
+<p>Same memory, same knowledge graph, same account. The plugin is 4-5x faster (no MCP proxy layer), but everything stays in sync regardless of how you connect.</p>
+<h2>Links</h2>
+<ul>
+<li>Plugin: <a href="https://www.npmjs.com/package/openclaw-penfield">openclaw-penfield on npm</a></li>
+<li>Source: <a href="https://github.com/penfieldlabs/openclaw-penfield">github.com/penfieldlabs/openclaw-penfield</a></li>
+<li>Sign up: <a href="https://portal.penfield.app/sign-up">portal.penfield.app/sign-up</a></li>
+<li>Website: <a href="https://penfield.app">penfield.app</a></li>
+<li>X: <a href="https://x.com/penfieldlabs">@penfieldlabs</a></li>
+</ul>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/dial481/penfield/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/dial481/penfield" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/dial481/penfield/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@dial481</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Notes & PKM</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -4,9 +4,9 @@ const axios = require('axios');
 const { marked } = require('marked');
 
 // --- Configuration ---
-const REGISTRY_URL = 'https://raw.githubusercontent.com/VoltAgent/awesome-moltbot-skills/main/README.md';
+const REGISTRY_URL = 'https://raw.githubusercontent.com/VoltAgent/awesome-openclaw-skills/main/README.md';
 const OUTPUT_DIR = __dirname;
-const REPO_ROOT = 'https://github.com/moltbot/skills/tree/main/skills/';
+const REPO_ROOT = 'https://github.com/openclaw/skills/tree/main/skills';
 
 // --- Icons Mapping ---
 const icons = {

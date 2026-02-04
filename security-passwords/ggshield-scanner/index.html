@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Detect 500+ types of hardcoded secrets (API keys, credentials, tokens) before they leak into git">
+  <title>ggshield-scanner - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Security & Passwords</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Security & Passwords</a>
+                <span class="skill-page-author">by @amascia-gg</span>
+              </div>
+              <h1 class="skill-page-title">ggshield-scanner</h1>
+              <p class="skill-page-desc">Detect 500+ types of hardcoded secrets (API keys, credentials, tokens) before they leak into git</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>ggshield Secret Scanner</h1>
+<h2>Overview</h2>
+<p><strong>ggshield</strong> is a CLI tool that detects hardcoded secrets in your codebase. This Moltbot skill brings secret scanning capabilities to your AI agent.</p>
+<h3>What Are &quot;Secrets&quot;?</h3>
+<p>Secrets are sensitive credentials that should NEVER be committed to version control:</p>
+<ul>
+<li>AWS Access Keys, GCP Service Accounts, Azure credentials</li>
+<li>API tokens (GitHub, Slack, Stripe, etc.)</li>
+<li>Database passwords and connection strings</li>
+<li>Private encryption keys and certificates</li>
+<li>OAuth tokens and refresh tokens</li>
+<li>PayPal/Stripe API keys</li>
+<li>Email server credentials</li>
+</ul>
+<h3>Why This Matters</h3>
+<p>A single leaked secret can:</p>
+<ul>
+<li>🔓 Compromise your infrastructure</li>
+<li>💸 Incur massive cloud bills (attackers abuse your AWS account)</li>
+<li>📊 Expose customer data (GDPR/CCPA violation)</li>
+<li>🚨 Trigger security incidents and audits</li>
+</ul>
+<p>ggshield catches these <strong>before</strong> they reach your repository.</p>
+<h2>Features</h2>
+<h3>Commands Available</h3>
+<h4>1. <code>scan-repo</code></h4>
+<p>Scans an entire git repository for secrets (including history).</p>
+<pre><code>@clawd scan-repo /path/to/my/project
+</code></pre>
+<p><strong>Output</strong>:</p>
+<pre><code>🔍 Scanning repository...
+✅ Repository clean: 1,234 files scanned, 0 secrets found
+</code></pre>
+<p><strong>Output on detection</strong>:</p>
+<pre><code>❌ Found 2 secrets:
+
+- AWS Access Key ID in config/prod.py:42
+- Slack API token in .env.backup:8
+
+Use &#39;ggshield secret ignore --last-found&#39; to ignore, or remove them.
+</code></pre>
+<h4>2. <code>scan-file</code></h4>
+<p>Scans a single file for secrets.</p>
+<pre><code>@clawd scan-file /path/to/config.py
+</code></pre>
+<h4>3. <code>scan-staged</code></h4>
+<p>Scans only staged git changes (useful pre-commit check).</p>
+<pre><code>@clawd scan-staged
+</code></pre>
+<p>This runs on your <code>git add</code>-ed changes only (fast!).</p>
+<h4>4. <code>install-hooks</code></h4>
+<p>Installs ggshield as a git pre-commit hook.</p>
+<pre><code>@clawd install-hooks
+</code></pre>
+<p>After this, every commit is automatically scanned:</p>
+<pre><code>$ git commit -m &quot;Add config&quot;
+🔍 Running ggshield pre-commit hook...
+❌ Secrets detected! Commit blocked.
+Remove the secrets and try again.
+</code></pre>
+<h4>5. <code>scan-docker</code></h4>
+<p>Scans Docker images for secrets in their layers.</p>
+<pre><code>@clawd scan-docker my-app:latest
+</code></pre>
+<h2>Installation</h2>
+<h3>Prerequisites</h3>
+<ol>
+<li><p><strong>ggshield CLI</strong>: Install via pip</p>
+<pre><code class="language-bash">pip install ggshield&gt;=1.15.0
+</code></pre>
+</li>
+<li><p><strong>GitGuardian API Key</strong>: Required for secret detection</p>
+<ul>
+<li>Sign up: <a href="https://dashboard.gitguardian.com">https://dashboard.gitguardian.com</a> (free)</li>
+<li>Generate API key in Settings</li>
+<li>Set environment variable:</li>
+</ul>
+</li>
+</ol>
+<pre><code class="language-bash">export GITGUARDIAN_API_KEY=&quot;your-api-key-here&quot;
+</code></pre>
+<ol start="3">
+<li><strong>Python 3.8+</strong>: Required by ggshield</li>
+</ol>
+<h3>Install Skill</h3>
+<pre><code class="language-bash">clawdhub install ggshield-scanner
+</code></pre>
+<p>The skill is now available in your Moltbot workspace.</p>
+<h3>In Your Moltbot Workspace</h3>
+<p>Start a new Moltbot session to pick up the skill:</p>
+<pre><code class="language-bash">moltbot start
+# or via messaging: @clawd list-skills
+</code></pre>
+<h2>Usage Patterns</h2>
+<h3>Pattern 1: Before Pushing (Security Check)</h3>
+<pre><code>Dev: @clawd scan-repo .
+Moltbot: ✅ Repository clean. All good to push!
+
+Dev: git push
+</code></pre>
+<h3>Pattern 2: Audit Existing Repo</h3>
+<pre><code>Dev: @clawd scan-repo ~/my-old-project
+Moltbot: ❌ Found 5 secrets in history!
+         - AWS keys in config/secrets.json
+         - Database password in docker-compose.yml
+         - Slack webhook in .env.example
+Moltbot: Recommendation: Rotate these credentials immediately.
+         Consider using git-filter-repo to remove from history.
+</code></pre>
+<h3>Pattern 3: Pre-Commit Enforcement</h3>
+<pre><code>Dev: @clawd install-hooks
+Moltbot: ✅ Installed pre-commit hook
+
+Dev: echo &quot;SECRET_TOKEN=xyz&quot; &gt; config.py
+Dev: git add config.py
+Dev: git commit -m &quot;Add config&quot;
+Moltbot: ❌ Pre-commit hook detected secret!
+Dev: rm config.py &amp;&amp; git reset
+Dev: (add config to .gitignore and to environment variables instead)
+Dev: git commit -m &quot;Add config&quot; # Now works!
+</code></pre>
+<h3>Pattern 4: Docker Image Security</h3>
+<pre><code>Dev: @clawd scan-docker my-api:v1.2.3
+Moltbot: ✅ Docker image clean
+</code></pre>
+<h2>Configuration</h2>
+<h3>Environment Variables</h3>
+<p>These are required for the skill to work:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Variable</th>
+<th align="left">Value</th>
+<th align="left">Where to Set</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>GITGUARDIAN_API_KEY</code></td>
+<td align="left">Your API key from <a href="https://dashboard.gitguardian.com">https://dashboard.gitguardian.com</a></td>
+<td align="left"><code>~/.bashrc</code> or <code>~/.zshrc</code></td>
+</tr>
+<tr>
+<td align="left"><code>GITGUARDIAN_ENDPOINT</code></td>
+<td align="left"><code>https://api.gitguardian.com</code> (default, optional)</td>
+<td align="left">Usually not needed</td>
+</tr>
+</tbody></table>
+<h3>Optional ggshield Config</h3>
+<p>Create <code>~/.gitguardian/.gitguardian.yml</code> for persistent settings:</p>
+<pre><code class="language-yaml">verbose: false
+output-format: json
+exit-code: true
+</code></pre>
+<p>For details: <a href="https://docs.gitguardian.com/ggshield-docs/">https://docs.gitguardian.com/ggshield-docs/</a></p>
+<h2>Privacy &amp; Security</h2>
+<h3>What Data is Sent to GitGuardian?</h3>
+<p>✅ <strong>ONLY metadata is sent</strong>:</p>
+<ul>
+<li>Hash of the secret pattern (not the actual secret)</li>
+<li>File path (relative path only)</li>
+<li>Line number</li>
+</ul>
+<p>❌ <strong>NEVER sent</strong>:</p>
+<ul>
+<li>Your actual secrets or credentials</li>
+<li>File contents</li>
+<li>Private keys</li>
+<li>Credentials</li>
+</ul>
+<p><strong>Reference</strong>: GitGuardian Enterprise customers can use on-premise scanning with no data sent anywhere.</p>
+<h3>How Secrets Are Detected</h3>
+<p>ggshield uses:</p>
+<ol>
+<li><strong>Entropy-based detection</strong>: Identifies high-entropy strings (random tokens)</li>
+<li><strong>Pattern matching</strong>: Looks for known secret formats (AWS key prefixes, etc.)</li>
+<li><strong>Public CVEs</strong>: Cross-references disclosed secrets</li>
+<li><strong>Machine learning</strong>: Trained on leaked secrets database</li>
+</ol>
+<h2>Troubleshooting</h2>
+<h3>&quot;ggshield: command not found&quot;</h3>
+<p>ggshield is not installed or not in your PATH.</p>
+<p><strong>Fix</strong>:</p>
+<pre><code class="language-bash">pip install ggshield
+which ggshield  # Should return a path
+</code></pre>
+<h3>&quot;GITGUARDIAN_API_KEY not found&quot;</h3>
+<p>The environment variable is not set.</p>
+<p><strong>Fix</strong>:</p>
+<pre><code class="language-bash">export GITGUARDIAN_API_KEY=&quot;your-key&quot;
+# For persistence, add to ~/.bashrc or ~/.zshrc:
+echo &#39;export GITGUARDIAN_API_KEY=&quot;your-key&quot;&#39; &gt;&gt; ~/.bashrc
+source ~/.bashrc
+</code></pre>
+<h3>&quot;401 Unauthorized&quot;</h3>
+<p>API key is invalid or expired.</p>
+<p><strong>Fix</strong>:</p>
+<pre><code class="language-bash"># Test the API key
+ggshield auth status
+
+# If invalid, regenerate at https://dashboard.gitguardian.com → API Tokens
+# Then: export GITGUARDIAN_API_KEY=&quot;new-key&quot;
+</code></pre>
+<h3>&quot;Slow on large repositories&quot;</h3>
+<p>Scanning a 50GB monorepo takes time. ggshield is doing a lot of work.</p>
+<p><strong>Workaround</strong>:</p>
+<pre><code class="language-bash"># Scan only staged changes (faster):
+@clawd scan-staged
+
+# Or specify a subdirectory:
+@clawd scan-file ./app/config.py
+</code></pre>
+<h2>Advanced Topics</h2>
+<h3>Ignoring False Positives</h3>
+<p>Sometimes ggshield flags a string that&#39;s NOT a secret (e.g., a test key):</p>
+<pre><code class="language-bash"># Ignore the last secret found
+ggshield secret ignore --last-found
+
+# Ignore all in a file
+ggshield secret ignore --path ./config-example.py
+</code></pre>
+<p>This creates <code>.gitguardian/config.json</code> with ignore rules.</p>
+<h3>Integrating with CI/CD</h3>
+<p>You can add secret scanning to GitHub Actions / GitLab CI:</p>
+<pre><code class="language-yaml"># .github/workflows/secret-scan.yml
+name: Secret Scan
+on: [push]
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: pip install ggshield
+      - run: ggshield secret scan repo .
+        env:
+          GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
+</code></pre>
+<h3>Enterprise: On-Premise Scanning</h3>
+<p>If your company uses GitGuardian Enterprise, you can scan without sending data to the cloud:</p>
+<pre><code class="language-bash">export GITGUARDIAN_ENDPOINT=&quot;https://your-instance.gitguardian.com&quot;
+export GITGUARDIAN_API_KEY=&quot;your-enterprise-key&quot;
+</code></pre>
+<h2>Related Resources</h2>
+<ul>
+<li><strong>ggshield Documentation</strong>: <a href="https://docs.gitguardian.com/ggshield-docs/">https://docs.gitguardian.com/ggshield-docs/</a></li>
+<li><strong>GitGuardian Dashboard</strong>: <a href="https://dashboard.gitguardian.com">https://dashboard.gitguardian.com</a> (view all secrets found)</li>
+<li><strong>Moltbot Skills</strong>: <a href="https://docs.molt.bot/tools/clawdhub">https://docs.molt.bot/tools/clawdhub</a></li>
+<li><strong>Secret Management Best Practices</strong>: <a href="https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html">https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html</a></li>
+</ul>
+<h2>Support</h2>
+<ul>
+<li><strong>Bug reports</strong>: <a href="https://github.com/GitGuardian/ggshield-skill/issues">https://github.com/GitGuardian/ggshield-skill/issues</a></li>
+<li><strong>Questions</strong>: Open an issue or comment on ClawdHub</li>
+<li><strong>ggshield issues</strong>: <a href="https://github.com/GitGuardian/ggshield/issues">https://github.com/GitGuardian/ggshield/issues</a></li>
+</ul>
+<h2>License</h2>
+<p>MIT License - See LICENSE file</p>
+<h2>Contributors</h2>
+<ul>
+<li>GitGuardian Team</li>
+<li>[Your contributions welcome!]</li>
+</ul>
+<hr>
+<p><strong>Version</strong>: 1.0.0
+<strong>Last updated</strong>: January 2026
+<strong>Maintainer</strong>: GitGuardian</p>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/amascia-gg/ggshield-scanner/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/amascia-gg/ggshield-scanner" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/amascia-gg/ggshield-scanner/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@amascia-gg</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Security & Passwords</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

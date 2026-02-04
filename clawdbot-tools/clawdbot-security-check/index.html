@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Perform a comprehensive read-only security audit of Clawdbot's own configuration">
+  <title>clawdbot-security-check - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Clawdbot Tools</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Clawdbot Tools</a>
+                <span class="skill-page-author">by @thesethrose</span>
+              </div>
+              <h1 class="skill-page-title">clawdbot-security-check</h1>
+              <p class="skill-page-desc">Perform a comprehensive read-only security audit of Clawdbot's own configuration</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Clawdbot Self-Security Audit Framework</h1>
+<p>This skill empowers Clawdbot to audit its own security posture using first-principles reasoning. Rather than relying on a static script, Clawdbot learns the framework and applies it dynamically to detect vulnerabilities, understand their impact, and recommend specific remediations.</p>
+<h2>Core Philosophy</h2>
+<blockquote>
+<p>&quot;Security through transparency and self-awareness.&quot; — Inspired by ᴅᴀɴɪᴇʟ ᴍɪᴇssʟᴇʀ</p>
+</blockquote>
+<p>Clawdbot should know its own attack surface. This skill embeds that knowledge directly.</p>
+<h2>Security Principles</h2>
+<p>Running an AI agent with shell access requires caution. Focus on three areas:</p>
+<ol>
+<li><strong>Who can talk to the bot</strong> — DM policies, group allowlists, channel restrictions</li>
+<li><strong>Where the bot is allowed to act</strong> — Network exposure, gateway binding, proxy configs</li>
+<li><strong>What the bot can touch</strong> — Tool access, file permissions, credential storage</li>
+</ol>
+<p>Start with the smallest access possible and widen it as you gain confidence.</p>
+<h2>Trust Hierarchy</h2>
+<p>Apply appropriate trust levels based on role:</p>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Entity</th>
+<th>Trust Model</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>Owner</strong></td>
+<td>Full trust — has all access</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>AI</strong></td>
+<td>Trust but verify — sandboxed, logged</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Allowlists</strong></td>
+<td>Limited trust — only specified users</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Strangers</strong></td>
+<td>No trust — blocked by default</td>
+</tr>
+</tbody></table>
+<h2>Audit Commands</h2>
+<p>Use these commands to run security audits:</p>
+<ul>
+<li><code>clawdbot security audit</code> — Standard audit of common issues</li>
+<li><code>clawdbot security audit --deep</code> — Comprehensive audit with all checks</li>
+<li><code>clawdbot security audit --fix</code> — Apply guardrail remediations</li>
+</ul>
+<h2>The 12 Security Domains</h2>
+<p>When auditing Clawdbot, systematically evaluate these domains:</p>
+<h3>1. Gateway Exposure 🔴 Critical</h3>
+<p><strong>What to check:</strong></p>
+<ul>
+<li>Where is the gateway binding? (<code>gateway.bind</code>)</li>
+<li>Is authentication configured? (<code>gateway.auth_token</code> or <code>CLAWDBOT_GATEWAY_TOKEN</code> env var)</li>
+<li>What port is exposed? (default: 18789)</li>
+<li>Is WebSocket auth enabled?</li>
+</ul>
+<p><strong>How to detect:</strong></p>
+<pre><code class="language-bash">cat ~/.clawdbot/clawdbot.json | grep -A10 &#39;&quot;gateway&quot;&#39;
+env | grep CLAWDBOT_GATEWAY_TOKEN
+</code></pre>
+<p><strong>Vulnerability:</strong> Binding to <code>0.0.0.0</code> or <code>lan</code> without auth allows network access.</p>
+<p><strong>Remediation:</strong></p>
+<pre><code class="language-bash"># Generate gateway token
+clawdbot doctor --generate-gateway-token
+export CLAWDBOT_GATEWAY_TOKEN=&quot;$(openssl rand -hex 32)&quot;
+</code></pre>
+<hr>
+<h3>2. DM Policy Configuration 🟠 High</h3>
+<p><strong>What to check:</strong></p>
+<ul>
+<li>What is <code>dm_policy</code> set to?</li>
+<li>If <code>allowlist</code>, who is explicitly allowed via <code>allowFrom</code>?</li>
+</ul>
+<p><strong>How to detect:</strong></p>
+<pre><code class="language-bash">cat ~/.clawdbot/clawdbot.json | grep -E &#39;&quot;dm_policy|&quot;allowFrom&quot;&#39;
+</code></pre>
+<p><strong>Vulnerability:</strong> Setting to <code>allow</code> or <code>open</code> means any user can DM Clawdbot.</p>
+<p><strong>Remediation:</strong></p>
+<pre><code class="language-json">{
+  &quot;channels&quot;: {
+    &quot;telegram&quot;: {
+      &quot;dmPolicy&quot;: &quot;allowlist&quot;,
+      &quot;allowFrom&quot;: [&quot;@trusteduser1&quot;, &quot;@trusteduser2&quot;]
+    }
+  }
+}
+</code></pre>
+<hr>
+<h3>3. Group Access Control 🟠 High</h3>
+<p><strong>What to check:</strong></p>
+<ul>
+<li>What is <code>groupPolicy</code> set to?</li>
+<li>Are groups explicitly allowlisted?</li>
+<li>Are mention gates configured?</li>
+</ul>
+<p><strong>How to detect:</strong></p>
+<pre><code class="language-bash">cat ~/.clawdbot/clawdbot.json | grep -E &#39;&quot;groupPolicy&quot;|&quot;groups&quot;&#39; 
+cat ~/.clawdbot/clawdbot.json | grep -i &quot;mention&quot;
+</code></pre>
+<p><strong>Vulnerability:</strong> Open group policy allows anyone in the room to trigger commands.</p>
+<p><strong>Remediation:</strong></p>
+<pre><code class="language-json">{
+  &quot;channels&quot;: {
+    &quot;telegram&quot;: {
+      &quot;groupPolicy&quot;: &quot;allowlist&quot;,
+      &quot;groups&quot;: {
+        &quot;-100123456789&quot;: true
+      }
+    }
+  }
+}
+</code></pre>
+<hr>
+<h3>4. Credentials Security 🔴 Critical</h3>
+<p><strong>What to check:</strong></p>
+<ul>
+<li>Credential file locations and permissions</li>
+<li>Environment variable usage</li>
+<li>Auth profile storage</li>
+</ul>
+<p><strong>Credential Storage Map:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Path</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>WhatsApp</td>
+<td><code>~/.clawdbot/credentials/whatsapp/{accountId}/creds.json</code></td>
+</tr>
+<tr>
+<td>Telegram</td>
+<td><code>~/.clawdbot/clawdbot.json</code> or env</td>
+</tr>
+<tr>
+<td>Discord</td>
+<td><code>~/.clawdbot/clawdbot.json</code> or env</td>
+</tr>
+<tr>
+<td>Slack</td>
+<td><code>~/.clawdbot/clawdbot.json</code> or env</td>
+</tr>
+<tr>
+<td>Pairing allowlists</td>
+<td><code>~/.clawdbot/credentials/channel-allowFrom.json</code></td>
+</tr>
+<tr>
+<td>Auth profiles</td>
+<td><code>~/.clawdbot/agents/{agentId}/auth-profiles.json</code></td>
+</tr>
+<tr>
+<td>Legacy OAuth</td>
+<td><code>~/.clawdbot/credentials/oauth.json</code></td>
+</tr>
+</tbody></table>
+<p><strong>How to detect:</strong></p>
+<pre><code class="language-bash">ls -la ~/.clawdbot/credentials/
+ls -la ~/.clawdbot/agents/*/auth-profiles.json 2&gt;/dev/null
+stat -c &quot;%a&quot; ~/.clawdbot/credentials/oauth.json 2&gt;/dev/null
+</code></pre>
+<p><strong>Vulnerability:</strong> Plaintext credentials with loose permissions can be read by any process.</p>
+<p><strong>Remediation:</strong></p>
+<pre><code class="language-bash">chmod 700 ~/.clawdbot
+chmod 600 ~/.clawdbot/credentials/oauth.json
+chmod 600 ~/.clawdbot/clawdbot.json
+</code></pre>
+<hr>
+<h3>5. Browser Control Exposure 🟠 High</h3>
+<p><strong>What to check:</strong></p>
+<ul>
+<li>Is browser control enabled?</li>
+<li>Are authentication tokens set for remote control?</li>
+<li>Is HTTPS required for Control UI?</li>
+<li>Is a dedicated browser profile configured?</li>
+</ul>
+<p><strong>How to detect:</strong></p>
+<pre><code class="language-bash">cat ~/.clawdbot/clawdbot.json | grep -A5 &#39;&quot;browser&quot;&#39;
+cat ~/.clawdbot/clawdbot.json | grep -i &quot;controlUi|insecureAuth&quot;
+ls -la ~/.clawdbot/browser/
+</code></pre>
+<p><strong>Vulnerability:</strong> Exposed browser control without auth allows remote UI takeover. Browser access allows the model to use logged-in sessions.</p>
+<p><strong>Remediation:</strong></p>
+<pre><code class="language-json">{
+  &quot;browser&quot;: {
+    &quot;remoteControlUrl&quot;: &quot;https://...&quot;,
+    &quot;remoteControlToken&quot;: &quot;...&quot;,
+    &quot;dedicatedProfile&quot;: true,
+    &quot;disableHostControl&quot;: true
+  },
+  &quot;gateway&quot;: {
+    &quot;controlUi&quot;: {
+      &quot;allowInsecureAuth&quot;: false
+    }
+  }
+}
+</code></pre>
+<p><strong>Security Note:</strong> Treat browser control URLs as admin APIs.</p>
+<hr>
+<h3>6. Gateway Bind &amp; Network Exposure 🟠 High</h3>
+<p><strong>What to check:</strong></p>
+<ul>
+<li>What is <code>gateway.bind</code> set to?</li>
+<li>Are trusted proxies configured?</li>
+<li>Is Tailscale enabled?</li>
+</ul>
+<p><strong>How to detect:</strong></p>
+<pre><code class="language-bash">cat ~/.clawdbot/clawdbot.json | grep -A10 &#39;&quot;gateway&quot;&#39;
+cat ~/.clawdbot/clawdbot.json | grep &#39;&quot;tailscale&quot;&#39;
+</code></pre>
+<p><strong>Vulnerability:</strong> Public binding without auth allows internet access to gateway.</p>
+<p><strong>Remediation:</strong></p>
+<pre><code class="language-json">{
+  &quot;gateway&quot;: {
+    &quot;bind&quot;: &quot;127.0.0.1&quot;,
+    &quot;mode&quot;: &quot;local&quot;,
+    &quot;trustedProxies&quot;: [&quot;127.0.0.1&quot;, &quot;10.0.0.0/8&quot;],
+    &quot;tailscale&quot;: {
+      &quot;mode&quot;: &quot;off&quot;
+    }
+  }
+}
+</code></pre>
+<hr>
+<h3>7. Tool Access &amp; Sandboxing 🟡 Medium</h3>
+<p><strong>What to check:</strong></p>
+<ul>
+<li>Are elevated tools allowlisted?</li>
+<li>Is <code>restrict_tools</code> or <code>mcp_tools</code> configured?</li>
+<li>What is <code>workspaceAccess</code> set to?</li>
+<li>Are sensitive tools running in sandbox?</li>
+</ul>
+<p><strong>How to detect:</strong></p>
+<pre><code class="language-bash">cat ~/.clawdbot/clawdbot.json | grep -i &quot;restrict|mcp|elevated&quot;
+cat ~/.clawdbot/clawdbot.json | grep -i &quot;workspaceAccess|sandbox&quot;
+cat ~/.clawdbot/clawdbot.json | grep -i &quot;openRoom&quot;
+</code></pre>
+<p><strong>Workspace Access Levels:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>none</code></td>
+<td>Workspace is off limits</td>
+</tr>
+<tr>
+<td><code>ro</code></td>
+<td>Workspace mounted read-only</td>
+</tr>
+<tr>
+<td><code>rw</code></td>
+<td>Workspace mounted read-write</td>
+</tr>
+</tbody></table>
+<p><strong>Vulnerability:</strong> Broad tool access means more blast radius if compromised. Smaller models are more susceptible to tool misuse.</p>
+<p><strong>Remediation:</strong></p>
+<pre><code class="language-json">{
+  &quot;restrict_tools&quot;: true,
+  &quot;mcp_tools&quot;: {
+    &quot;allowed&quot;: [&quot;read&quot;, &quot;write&quot;, &quot;bash&quot;],
+    &quot;blocked&quot;: [&quot;exec&quot;, &quot;gateway&quot;]
+  },
+  &quot;workspaceAccess&quot;: &quot;ro&quot;,
+  &quot;sandbox&quot;: &quot;all&quot;
+}
+</code></pre>
+<p><strong>Model Guidance:</strong> Use latest generation models for agents with filesystem or network access. If using small models, disable web search and browser tools.</p>
+<hr>
+<h3>8. File Permissions &amp; Local Disk Hygiene 🟡 Medium</h3>
+<p><strong>What to check:</strong></p>
+<ul>
+<li>Directory permissions (should be 700)</li>
+<li>Config file permissions (should be 600)</li>
+<li>Symlink safety</li>
+</ul>
+<p><strong>How to detect:</strong></p>
+<pre><code class="language-bash">stat -c &quot;%a&quot; ~/.clawdbot
+ls -la ~/.clawdbot/*.json
+</code></pre>
+<p><strong>Vulnerability:</strong> Loose permissions allow other users to read sensitive configs.</p>
+<p><strong>Remediation:</strong></p>
+<pre><code class="language-bash">chmod 700 ~/.clawdbot
+chmod 600 ~/.clawdbot/clawdbot.json
+chmod 600 ~/.clawdbot/credentials/*
+</code></pre>
+<hr>
+<h3>9. Plugin Trust &amp; Model Hygiene 🟡 Medium</h3>
+<p><strong>What to check:</strong></p>
+<ul>
+<li>Are plugins explicitly allowlisted?</li>
+<li>Are legacy models in use with tool access?</li>
+</ul>
+<p><strong>How to detect:</strong></p>
+<pre><code class="language-bash">cat ~/.clawdbot/clawdbot.json | grep -i &quot;plugin|allowlist&quot;
+cat ~/.clawdbot/clawdbot.json | grep -i &quot;model|anthropic&quot;
+</code></pre>
+<p><strong>Vulnerability:</strong> Untrusted plugins can execute code. Legacy models may lack modern safety.</p>
+<p><strong>Remediation:</strong></p>
+<pre><code class="language-json">{
+  &quot;plugins&quot;: {
+    &quot;allowlist&quot;: [&quot;trusted-plugin-1&quot;, &quot;trusted-plugin-2&quot;]
+  },
+  &quot;agents&quot;: {
+    &quot;defaults&quot;: {
+      &quot;model&quot;: {
+        &quot;primary&quot;: &quot;minimax/MiniMax-M2.1&quot;
+      }
+    }
+  }
+}
+</code></pre>
+<hr>
+<h3>10. Logging &amp; Redaction 🟡 Medium</h3>
+<p><strong>What is logging.redactSensitive set to?</strong></p>
+<ul>
+<li>Should be <code>tools</code> to redact sensitive tool output</li>
+<li>If <code>off</code>, credentials may leak in logs</li>
+</ul>
+<p><strong>How to detect:</strong></p>
+<pre><code class="language-bash">cat ~/.clawdbot/clawdbot.json | grep -i &quot;logging|redact&quot;
+ls -la ~/.clawdbot/logs/
+</code></pre>
+<p><strong>Remediation:</strong></p>
+<pre><code class="language-json">{
+  &quot;logging&quot;: {
+    &quot;redactSensitive&quot;: &quot;tools&quot;,
+    &quot;path&quot;: &quot;~/.clawdbot/logs/&quot;
+  }
+}
+</code></pre>
+<hr>
+<h3>11. Prompt Injection Protection 🟡 Medium</h3>
+<p><strong>What to check:</strong></p>
+<ul>
+<li>Is <code>wrap_untrusted_content</code> or <code>untrusted_content_wrapper</code> enabled?</li>
+<li>How is external/web content handled?</li>
+<li>Are links and attachments treated as hostile?</li>
+</ul>
+<p><strong>How to detect:</strong></p>
+<pre><code class="language-bash">cat ~/.clawdbot/clawdbot.json | grep -i &quot;untrusted|wrap&quot;
+</code></pre>
+<p><strong>Prompt Injection Mitigation Strategies:</strong></p>
+<ul>
+<li>Keep DMs locked to <code>pairing</code> or <code>allowlists</code></li>
+<li>Use mention gating in groups</li>
+<li>Treat all links and attachments as hostile</li>
+<li>Run sensitive tools in a sandbox</li>
+<li>Use instruction-hardened models like Anthropic Opus 4.5</li>
+</ul>
+<p><strong>Vulnerability:</strong> Untrusted content (web fetches, sandbox output) can inject malicious prompts.</p>
+<p><strong>Remediation:</strong></p>
+<pre><code class="language-json">{
+  &quot;wrap_untrusted_content&quot;: true,
+  &quot;untrusted_content_wrapper&quot;: &quot;&lt;untrusted&gt;&quot;,
+  &quot;treatLinksAsHostile&quot;: true,
+  &quot;mentionGate&quot;: true
+}
+</code></pre>
+<hr>
+<h3>12. Dangerous Command Blocking 🟡 Medium</h3>
+<p><strong>What to check:</strong></p>
+<ul>
+<li>What commands are in <code>blocked_commands</code>?</li>
+<li>Are these patterns included: <code>rm -rf</code>, <code>curl |</code>, <code>git push --force</code>, <code>mkfs</code>, fork bombs?</li>
+</ul>
+<p><strong>How to detect:</strong></p>
+<pre><code class="language-bash">cat ~/.clawdbot/clawdbot.json | grep -A10 &#39;&quot;blocked_commands&quot;&#39;
+</code></pre>
+<p><strong>Vulnerability:</strong> Without blocking, a malicious prompt could destroy data or exfiltrate credentials.</p>
+<p><strong>Remediation:</strong></p>
+<pre><code class="language-json">{
+  &quot;blocked_commands&quot;: [
+    &quot;rm -rf&quot;,
+    &quot;curl |&quot;,
+    &quot;git push --force&quot;,
+    &quot;mkfs&quot;,
+    &quot;:(){:|:&amp;}&quot;
+  ]
+}
+</code></pre>
+<hr>
+<h3>13. Secret Scanning Readiness 🟡 Medium</h3>
+<p><strong>What to check:</strong></p>
+<ul>
+<li>Is detect-secrets configured?</li>
+<li>Is there a <code>.secrets.baseline</code> file?</li>
+<li>Has a baseline scan been run?</li>
+</ul>
+<p><strong>How to detect:</strong></p>
+<pre><code class="language-bash">ls -la .secrets.baseline 2&gt;/dev/null
+which detect-secrets 2&gt;/dev/null
+</code></pre>
+<p><strong>Secret Scanning (CI):</strong></p>
+<pre><code class="language-bash"># Find candidates
+detect-secrets scan --baseline .secrets.baseline
+
+# Review findings
+detect-secrets audit
+
+# Update baseline after rotating secrets or marking false positives
+detect-secrets scan --baseline .secrets.baseline --update
+</code></pre>
+<p><strong>Vulnerability:</strong> Leaked credentials in the codebase can lead to compromise.</p>
+<hr>
+<h2>Audit Functions</h2>
+<p>The <code>--fix</code> flag applies these guardrails:</p>
+<ul>
+<li>Changes <code>groupPolicy</code> from <code>open</code> to <code>allowlist</code> for common channels</li>
+<li>Resets <code>logging.redactSensitive</code> from <code>off</code> to <code>tools</code></li>
+<li>Tightens local permissions: <code>.clawdbot</code> directory to <code>700</code>, config files to <code>600</code></li>
+<li>Secures state files including credentials and auth profiles</li>
+</ul>
+<h2>High-Level Audit Checklist</h2>
+<p>Treat findings in this priority order:</p>
+<ol>
+<li><strong>🔴 Lock down DMs and groups</strong> if tools are enabled on open settings</li>
+<li><strong>🔴 Fix public network exposure</strong> immediately</li>
+<li><strong>🟠 Secure browser control</strong> with tokens and HTTPS</li>
+<li><strong>🟠 Correct file permissions</strong> for credentials and config</li>
+<li><strong>🟡 Only load trusted plugins</strong></li>
+<li><strong>🟡 Use modern models</strong> for bots with tool access</li>
+</ol>
+<h2>Access Control Models</h2>
+<h3>DM Access Model</h3>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>pairing</code></td>
+<td>Default - unknown senders must be approved via code</td>
+</tr>
+<tr>
+<td><code>allowlist</code></td>
+<td>Unknown senders blocked without handshake</td>
+</tr>
+<tr>
+<td><code>open</code></td>
+<td>Public access - requires explicit asterisk in allowlist</td>
+</tr>
+<tr>
+<td><code>disabled</code></td>
+<td>All inbound DMs ignored</td>
+</tr>
+</tbody></table>
+<h3>Slash Commands</h3>
+<p>Slash commands are only available to authorized senders based on channel allowlists. The <code>/exec</code> command is a session convenience for operators and does not modify global config.</p>
+<h2>Threat Model &amp; Mitigation</h2>
+<h3>Potential Risks</h3>
+<table>
+<thead>
+<tr>
+<th>Risk</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Execution of shell commands</td>
+<td><code>blocked_commands</code>, <code>restrict_tools</code></td>
+</tr>
+<tr>
+<td>File and network access</td>
+<td><code>sandbox</code>, <code>workspaceAccess: none/ro</code></td>
+</tr>
+<tr>
+<td>Social engineering and prompt injection</td>
+<td><code>wrap_untrusted_content</code>, <code>mentionGate</code></td>
+</tr>
+<tr>
+<td>Browser session hijacking</td>
+<td>Dedicated profile, token auth, HTTPS</td>
+</tr>
+<tr>
+<td>Credential leakage</td>
+<td><code>logging.redactSensitive: tools</code>, env vars</td>
+</tr>
+</tbody></table>
+<h2>Incident Response</h2>
+<p>If a compromise is suspected, follow these steps:</p>
+<h3>Containment</h3>
+<ol>
+<li><strong>Stop the gateway process</strong> — <code>clawdbot daemon stop</code></li>
+<li><strong>Set gateway.bind to loopback</strong> — <code>&quot;bind&quot;: &quot;127.0.0.1&quot;</code></li>
+<li><strong>Disable risky DMs and groups</strong> — Set to <code>disabled</code></li>
+</ol>
+<h3>Rotation</h3>
+<ol>
+<li><strong>Change the gateway auth token</strong> — <code>clawdbot doctor --generate-gateway-token</code></li>
+<li><strong>Rotate browser control and hook tokens</strong></li>
+<li><strong>Revoke and rotate API keys</strong> for model providers</li>
+</ol>
+<h3>Review</h3>
+<ol>
+<li><strong>Check gateway logs and session transcripts</strong> — <code>~/.clawdbot/logs/</code></li>
+<li><strong>Review recent config changes</strong> — Git history or backups</li>
+<li><strong>Re-run the security audit with the deep flag</strong> — <code>clawdbot security audit --deep</code></li>
+</ol>
+<h2>Reporting Vulnerabilities</h2>
+<p>Report security issues to: <strong><a href="mailto:security@clawd.bot">security@clawd.bot</a></strong></p>
+<p><strong>Do not post vulnerabilities publicly</strong> until they have been fixed.</p>
+<h2>Audit Execution Steps</h2>
+<p>When running a security audit, follow this sequence:</p>
+<h3>Step 1: Locate Configuration</h3>
+<pre><code class="language-bash">CONFIG_PATHS=(
+  &quot;$HOME/.clawdbot/clawdbot.json&quot;
+  &quot;$HOME/.clawdbot/config.yaml&quot;
+  &quot;$HOME/.clawdbot/.clawdbotrc&quot;
+  &quot;.clawdbotrc&quot;
+)
+for path in &quot;${CONFIG_PATHS[@]}&quot;; do
+  if [ -f &quot;$path&quot; ]; then
+    echo &quot;Found config: $path&quot;
+    cat &quot;$path&quot;
+    break
+  fi
+done
+</code></pre>
+<h3>Step 2: Run Domain Checks</h3>
+<p>For each of the 13 domains above:</p>
+<ol>
+<li>Parse relevant config keys</li>
+<li>Compare against secure baseline</li>
+<li>Flag deviations with severity</li>
+</ol>
+<h3>Step 3: Generate Report</h3>
+<p>Format findings by severity:</p>
+<pre><code>🔴 CRITICAL: [vulnerability] - [impact]
+🟠 HIGH: [vulnerability] - [impact]
+🟡 MEDIUM: [vulnerability] - [impact]
+✅ PASSED: [check name]
+</code></pre>
+<h3>Step 4: Provide Remediation</h3>
+<p>For each finding, output:</p>
+<ul>
+<li>Specific config change needed</li>
+<li>Example configuration</li>
+<li>Command to apply (if safe)</li>
+</ul>
+<h2>Report Template</h2>
+<pre><code>═══════════════════════════════════════════════════════════════
+🔒 CLAWDBOT SECURITY AUDIT
+═══════════════════════════════════════════════════════════════
+Timestamp: $(date -Iseconds)
+
+┌─ SUMMARY ───────────────────────────────────────────────
+│ 🔴 Critical:  $CRITICAL_COUNT
+│ 🟠 High:      $HIGH_COUNT
+│ 🟡 Medium:    $MEDIUM_COUNT
+│ ✅ Passed:    $PASSED_COUNT
+└────────────────────────────────────────────────────────
+
+┌─ FINDINGS ──────────────────────────────────────────────
+│ 🔴 [CRITICAL] $VULN_NAME
+│    Finding: $DESCRIPTION
+│    → Fix: $REMEDIATION
+│
+│ 🟠 [HIGH] $VULN_NAME
+│    ...
+└────────────────────────────────────────────────────────
+
+This audit was performed by Clawdbot&#39;s self-security framework.
+No changes were made to your configuration.
+</code></pre>
+<h2>Extending the Skill</h2>
+<p>To add new security checks:</p>
+<ol>
+<li><strong>Identify the vulnerability</strong> - What misconfiguration creates risk?</li>
+<li><strong>Determine detection method</strong> - What config key or system state reveals it?</li>
+<li><strong>Define the baseline</strong> - What is the secure configuration?</li>
+<li><strong>Write detection logic</strong> - Shell commands or file parsing</li>
+<li><strong>Document remediation</strong> - Specific steps to fix</li>
+<li><strong>Assign severity</strong> - Critical, High, Medium, Low</li>
+</ol>
+<h3>Example: Adding SSH Hardening Check</h3>
+<pre><code>## 14. SSH Agent Forwarding 🟡 Medium
+
+**What to check:** Is SSH_AUTH_SOCK exposed to containers?
+
+**Detection:**
+```bash
+env | grep SSH_AUTH_SOCK
+</code></pre>
+<p><strong>Vulnerability:</strong> Container escape via SSH agent hijacking.</p>
+<p><strong>Severity:</strong> Medium</p>
+<pre><code>
+## Security Assessment Questions
+
+When auditing, ask:
+
+1. **Exposure:** What network interfaces can reach Clawdbot?
+2. **Authentication:** What verification does each access point require?
+3. **Isolation:** What boundaries exist between Clawdbot and the host?
+4. **Trust:** What content sources are considered &quot;trusted&quot;?
+5. **Auditability:** What evidence exists of Clawdbot&#39;s actions?
+6. **Least Privilege:** Does Clawdbot have only necessary permissions?
+
+## Principles Applied
+
+- **Zero modification** - This skill only reads; never changes configuration
+- **Defense in depth** - Multiple checks catch different attack vectors
+- **Actionable output** - Every finding includes a concrete remediation
+- **Extensible design** - New checks integrate naturally
+
+## References
+
+- Official docs: https://docs.clawd.bot/gateway/security
+- Original framework: [ᴅᴀɴɪᴇʟ ᴍɪᴇssʟᴇʀ on X](https://x.com/DanielMiessler/status/2015865548714975475)
+- Repository: https://github.com/TheSethRose/Clawdbot-Security-Check
+- Report vulnerabilities: security@clawd.bot
+
+---
+
+**Remember:** This skill exists to make Clawdbot self-aware of its security posture. Use it regularly, extend it as needed, and never skip the audit.
+</code></pre>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/thesethrose/clawdbot-security-check/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/thesethrose/clawdbot-security-check" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/thesethrose/clawdbot-security-check/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@thesethrose</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Clawdbot Tools</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

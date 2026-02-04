@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Security audit and inspection skill for Clawdbot skills">
+  <title>security-check-skill - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Clawdbot Tools</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Clawdbot Tools</a>
+                <span class="skill-page-author">by @wolffan</span>
+              </div>
+              <h1 class="skill-page-title">security-check-skill</h1>
+              <p class="skill-page-desc">Security audit and inspection skill for Clawdbot skills</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Security Check Skill</h1>
+<p>Comprehensive security auditing for Clawdbot skills to detect malicious intent, prompt injection, secrets exposure, and misaligned behavior.</p>
+<h2>Quick Start</h2>
+<h3>Pre-Installation Security Check</h3>
+<p>Before installing a new skill from ClawdHub or any source:</p>
+<ol>
+<li><strong>Download and inspect the skill files</strong></li>
+<li><strong>Run the automated security scanner</strong>:<pre><code class="language-bash">python3 scripts/scan_skill.py /path/to/skill
+</code></pre>
+</li>
+<li><strong>Review the scanner output</strong> - Block any skill with HIGH severity issues</li>
+<li><strong>Manual review</strong> for MEDIUM severity issues</li>
+<li><strong>Verify behavior matches description</strong> before installation</li>
+</ol>
+<h3>Daily Security Audit</h3>
+<p>Run daily to ensure installed skills remain secure:</p>
+<pre><code class="language-bash"># Scan all skills in the skills directory
+python3 scripts/scan_skill.py /path/to/skills/skill-1
+python3 scripts/scan_skill.py /path/to/skills/skill-2
+# ... repeat for each installed skill
+</code></pre>
+<h2>Security Scanner</h2>
+<h3>Running the Scanner</h3>
+<p>The <code>scripts/scan_skill.py</code> tool provides automated security analysis:</p>
+<pre><code class="language-bash">python3 scripts/scan_skill.py &lt;skill-path&gt;
+</code></pre>
+<p><strong>Output includes:</strong></p>
+<ul>
+<li>HIGH severity issues (immediate action required)</li>
+<li>MEDIUM severity warnings (review recommended)</li>
+<li>LOW severity notes (informational)</li>
+<li>Summary of checks performed</li>
+</ul>
+<p><strong>Example output:</strong></p>
+<pre><code class="language-json">{
+  &quot;skill_name&quot;: &quot;example-skill&quot;,
+  &quot;issues&quot;: [
+    {
+      &quot;severity&quot;: &quot;HIGH&quot;,
+      &quot;file&quot;: &quot;SKILL.md&quot;,
+      &quot;issue&quot;: &quot;Potential prompt injection pattern&quot;,
+      &quot;recommendation&quot;: &quot;Review and remove suspicious patterns&quot;
+    }
+  ],
+  &quot;warnings&quot;: [
+    {
+      &quot;severity&quot;: &quot;MEDIUM&quot;,
+      &quot;file&quot;: &quot;scripts/helper.py&quot;,
+      &quot;issue&quot;: &quot;os.system() usage detected&quot;,
+      &quot;recommendation&quot;: &quot;Review and ensure this is safe&quot;
+    }
+  ],
+  &quot;passed&quot;: [
+    {&quot;file&quot;: &quot;SKILL.md&quot;, &quot;check&quot;: &quot;Prompt injection scan&quot;, &quot;status&quot;: &quot;Completed&quot;}
+  ],
+  &quot;summary&quot;: &quot;SECURITY ISSUES FOUND: 1 issue(s), 1 warning(s)&quot;
+}
+</code></pre>
+<h3>What the Scanner Checks</h3>
+<ol>
+<li><p><strong>SKILL.md Analysis</strong></p>
+<ul>
+<li>Prompt injection patterns</li>
+<li>External network calls</li>
+<li>Suspicious instructions</li>
+</ul>
+</li>
+<li><p><strong>Scripts Directory Scan</strong></p>
+<ul>
+<li>Dangerous command patterns (rm -rf, eval, exec)</li>
+<li>Hardcoded secrets and credentials</li>
+<li>Unsafe subprocess usage</li>
+<li>File system operations outside skill directory</li>
+</ul>
+</li>
+<li><p><strong>References Directory Scan</strong></p>
+<ul>
+<li>Hardcoded secrets (passwords, API keys, tokens)</li>
+<li>Suspicious URLs (pastebin, raw GitHub links)</li>
+<li>Sensitive information exposure</li>
+</ul>
+</li>
+</ol>
+<h2>Manual Security Checklist</h2>
+<p>Use the comprehensive checklist in <code>references/security-checklist.md</code> for manual reviews.</p>
+<h3>Critical Checks (Before Installation)</h3>
+<h4>1. Documentation Integrity (SKILL.md)</h4>
+<ul>
+<li>✅ Description accurately reflects skill functionality</li>
+<li>❌ No prompt injection patterns (see <code>references/prompt-injection-patterns.md</code>)</li>
+<li>❌ No instructions to ignore/discard context</li>
+<li>❌ No system override commands</li>
+<li>✅ No hidden capabilities beyond description</li>
+</ul>
+<h4>2. Code Review (scripts/)</h4>
+<ul>
+<li>❌ No hardcoded credentials or secrets</li>
+<li>❌ No dangerous file operations (rm -rf outside skill dir)</li>
+<li>❌ No eval() or exec() with user input</li>
+<li>❌ No unauthorized network requests</li>
+<li>✅ All operations within skill directory</li>
+<li>✅ Proper input validation</li>
+</ul>
+<h4>3. Reference Materials (references/)</h4>
+<ul>
+<li>❌ No hardcoded passwords, API keys, or tokens</li>
+<li>❌ No production credentials in documentation</li>
+<li>✅ Links only to legitimate, trusted sources</li>
+<li>✅ No documentation of security bypasses</li>
+</ul>
+<h4>4. Behavior Alignment</h4>
+<ul>
+<li>✅ Every command matches stated purpose</li>
+<li>✅ No hidden capabilities</li>
+<li>✅ No unnecessary file system access</li>
+<li>✅ Network access only when explicitly required</li>
+</ul>
+<h3>Daily Audit Checks</h3>
+<ol>
+<li><strong>Scan all installed skills</strong> with the automated scanner</li>
+<li><strong>Review any new HIGH severity issues</strong></li>
+<li><strong>Check for modified files</strong> in skill directories</li>
+<li><strong>Verify skill descriptions still match behavior</strong></li>
+<li><strong>Audit new dependencies</strong> if added</li>
+</ol>
+<h2>Specific Security Concerns</h2>
+<h3>Prompt Injection Detection</h3>
+<p>Read <code>references/prompt-injection-patterns.md</code> for comprehensive patterns.</p>
+<p><strong>Key indicators:</strong></p>
+<ul>
+<li>Instructions to ignore/discard context</li>
+<li>System override or bypass commands</li>
+<li>Authority impersonation (act as administrator, etc.)</li>
+<li>Jailbreak attempts (unrestricted mode, etc.)</li>
+<li>Instruction replacement patterns</li>
+</ul>
+<p><strong>Detection:</strong></p>
+<pre><code class="language-python"># Automated pattern matching
+import re
+dangerous_patterns = [
+    r&#39;ignore\s+previous\s+instructions&#39;,
+    r&#39;override\s+security&#39;,
+    r&#39;act\s+as\s+administrator&#39;,
+]
+</code></pre>
+<h3>Secrets and Credentials Exposure</h3>
+<p><strong>What to scan for:</strong></p>
+<ul>
+<li>Hardcoded passwords, API keys, tokens</li>
+<li>AWS access keys and secret keys</li>
+<li>SSH private keys</li>
+<li>Database connection strings</li>
+<li>Other sensitive credentials</li>
+</ul>
+<p><strong>Patterns to detect:</strong></p>
+<pre><code>password=&quot;...&quot;
+secret=&#39;...&#39;
+token=&quot;1234567890abcdef&quot;
+api_key=&quot;...&quot;
+aws_access_key_id=&quot;...&quot;
+</code></pre>
+<h3>Local Configuration Access</h3>
+<p><strong>Block access to:</strong></p>
+<ul>
+<li><code>~/.clawdbot/credentials/</code></li>
+<li><code>~/.aws/credentials</code></li>
+<li><code>~/.ssh/</code> directory</li>
+<li><code>~/.npmrc</code> and other config files</li>
+<li>Shell history files</li>
+<li>System keychain</li>
+</ul>
+<p><strong>Allow only:</strong></p>
+<ul>
+<li>Skill-specific configuration files</li>
+<li>User-provided file paths</li>
+<li>Designated workspace directories</li>
+<li>Approved environment variables</li>
+</ul>
+<h3>Command-Behavior Alignment</h3>
+<p><strong>Verification process:</strong></p>
+<ol>
+<li>Extract all commands/operations from skill code</li>
+<li>Compare against description in SKILL.md</li>
+<li>Identify any operations not documented</li>
+<li>Flag suspicious or hidden capabilities</li>
+</ol>
+<p><strong>Example misalignment:</strong></p>
+<p>❌ <strong>BLOCK:</strong></p>
+<ul>
+<li>Description: &quot;Format text documents&quot;</li>
+<li>Actual: Scans filesystem, sends data to external server</li>
+</ul>
+<p>✅ <strong>SAFE:</strong></p>
+<ul>
+<li>Description: &quot;Convert Markdown to PDF with templates&quot;</li>
+<li>Actual: Reads Markdown, applies template, generates PDF</li>
+</ul>
+<h2>Security Severity Levels</h2>
+<h3>HIGH (Immediate Block)</h3>
+<ul>
+<li>Prompt injection patterns detected</li>
+<li>Hardcoded secrets or credentials</li>
+<li>Data exfiltration capabilities</li>
+<li>Unauthorized file system access</li>
+<li>Dangerous file operations (rm -rf, dd, etc.)</li>
+<li>eval() or exec() with untrusted input</li>
+</ul>
+<p><strong>Action:</strong> Do not install. Report to skill author.</p>
+<h3>MEDIUM (Review Required)</h3>
+<ul>
+<li>Suspicious but not clearly malicious</li>
+<li>Requires user approval for specific operations</li>
+<li>Limited network access to unverified endpoints</li>
+<li>Unsafe subprocess usage (shell=True)</li>
+<li>Environment variable exposure risks</li>
+</ul>
+<p><strong>Action:</strong> Manual review. Install only if justified and understood.</p>
+<h3>LOW (Informational)</h3>
+<ul>
+<li>Suspicious URLs (may be legitimate)</li>
+<li>Documentation of deprecated practices</li>
+<li>Minor code quality issues</li>
+<li>Potential improvements for security</li>
+</ul>
+<p><strong>Action:</strong> Note for future review. Generally safe to install.</p>
+<h2>Installation Decision Framework</h2>
+<h3>When to BLOCK (Do Not Install)</h3>
+<ul>
+<li>Any HIGH severity issues present</li>
+<li>Clear prompt injection attempts</li>
+<li>Hardcoded secrets</li>
+<li>Data exfiltration</li>
+<li>Unauthorized access patterns</li>
+</ul>
+<h3>When to WARN (Install with Caution)</h3>
+<ul>
+<li>MEDIUM severity issues present</li>
+<li>Suspicious patterns requiring verification</li>
+<li>Needs specific user approvals</li>
+<li>Network access to unknown endpoints</li>
+</ul>
+<p><strong>Before installing with WARN:</strong></p>
+<ol>
+<li>Understand the risk</li>
+<li>Verify the skill author&#39;s reputation</li>
+<li>Test in isolated environment first</li>
+<li>Monitor behavior closely</li>
+<li>Be prepared to uninstall</li>
+</ol>
+<h3>When to APPROVE (Safe to Install)</h3>
+<ul>
+<li>No security issues detected</li>
+<li>Well-documented and transparent</li>
+<li>Matches description perfectly</li>
+<li>From trusted source</li>
+<li>Regularly audited</li>
+</ul>
+<h2>Dependency Security</h2>
+<p>Check skill dependencies for vulnerabilities:</p>
+<pre><code class="language-bash"># For Node.js skills
+npm audit
+npm audit fix
+
+# For Python skills
+pip-audit
+safety check
+</code></pre>
+<p><strong>What to check:</strong></p>
+<ul>
+<li>Known CVEs in dependencies</li>
+<li>Outdated packages with security updates</li>
+<li>Transitive dependency vulnerabilities</li>
+<li>Untrusted or unmaintained packages</li>
+</ul>
+<h2>Security Reporting</h2>
+<h3>Report Template</h3>
+<pre><code class="language-markdown"># Security Audit Report
+**Date:** [Date]
+**Skill:** [Skill Name]
+**Version:** [Version]
+
+## Executive Summary
+[Overall security posture: SAFE, WARNING, or BLOCK]
+
+## Critical Issues (Immediate Action Required)
+[List HIGH severity issues]
+
+## Warnings (Review Recommended)
+[List MEDIUM severity issues]
+
+## Informational Notes
+[List LOW severity issues]
+
+## Recommendations
+[Actionable items to address issues]
+
+## Conclusion
+[Final verdict: Install/Block/Requires Changes]
+</code></pre>
+<h3>Escalation Process</h3>
+<ol>
+<li><strong>Detect issue</strong> during scan or review</li>
+<li><strong>Document findings</strong> using report template</li>
+<li><strong>Assess severity</strong> (HIGH/MEDIUM/LOW)</li>
+<li><strong>Take action:</strong><ul>
+<li>HIGH: Block skill, report to author</li>
+<li>MEDIUM: Review, install with caution or wait for fix</li>
+<li>LOW: Note, monitor</li>
+</ul>
+</li>
+<li><strong>Follow up</strong> on resolved issues</li>
+</ol>
+<h2>Reference Materials</h2>
+<h3>Essential Reading</h3>
+<ol>
+<li><p><strong>Security Checklist</strong> (<code>references/security-checklist.md</code>)</p>
+<ul>
+<li>Comprehensive security criteria</li>
+<li>Command alignment verification</li>
+<li>Secrets exposure checks</li>
+<li>Installation guidelines</li>
+<li>Daily audit procedures</li>
+</ul>
+</li>
+<li><p><strong>Prompt Injection Patterns</strong> (<code>references/prompt-injection-patterns.md</code>)</p>
+<ul>
+<li>Detection categories and patterns</li>
+<li>Automated detection strategies</li>
+<li>Red flag indicators</li>
+<li>Mitigation techniques</li>
+<li>Reporting templates</li>
+</ul>
+</li>
+</ol>
+<h3>Internal Security Docs</h3>
+<p>Refer to workspace security documents:</p>
+<ul>
+<li><code>SECURITY_AUDIT_REPORT.md</code> - Overall Clawdbot security posture</li>
+<li>Any additional security policies or guidelines</li>
+</ul>
+<h2>Workflow Examples</h2>
+<h3>Example 1: New Skill from ClawdHub</h3>
+<p><strong>User request:</strong> &quot;Check if skill &#39;xyz&#39; is safe to install&quot;</p>
+<p><strong>Response:</strong></p>
+<ol>
+<li>Download skill to temporary location</li>
+<li>Run scanner: <code>python3 scripts/scan_skill.py /tmp/xyz-skill</code></li>
+<li>Review output:<ul>
+<li>If HIGH issues: &quot;❌ BLOCKED: [list issues] - Do not install&quot;</li>
+<li>If MEDIUM issues: &quot;⚠️ WARNING: [list issues] - Requires manual review&quot;</li>
+<li>If clean: &quot;✅ SAFE: No security issues detected - Can install&quot;</li>
+</ul>
+</li>
+<li>If MEDIUM issues: Provide detailed manual review using checklist</li>
+</ol>
+<h3>Example 2: Daily Security Audit</h3>
+<p><strong>Daily routine:</strong></p>
+<pre><code class="language-bash"># Scan all installed skills
+for skill in /Users/rlapuente/clawd/skills/*/; do
+    python3 scripts/scan_skill.py &quot;$skill&quot;
+done
+
+# Review any HIGH issues immediately
+# Monitor MEDIUM issues for trends
+</code></pre>
+<h3>Example 3: Verification of Skill Update</h3>
+<p><strong>After skill update:</strong></p>
+<ol>
+<li>Compare new version with previous</li>
+<li>Scan new version with security scanner</li>
+<li>Check for new issues introduced</li>
+<li>Verify changes match update notes</li>
+<li>Re-approve only if security posture maintained</li>
+</ol>
+<h2>Best Practices</h2>
+<ol>
+<li><strong>Always scan before installing</strong> - Never skip security check</li>
+<li><strong>Review HIGH issues immediately</strong> - Don&#39;t ignore critical problems</li>
+<li><strong>Document all security findings</strong> - Maintain audit trail</li>
+<li><strong>Report issues to skill authors</strong> - Help improve ecosystem</li>
+<li><strong>Stay updated on threats</strong> - Monitor security research</li>
+<li><strong>Regular audits</strong> - Daily automated scans, weekly manual reviews</li>
+<li><strong>Isolate testing</strong> - Test new skills in sandbox environment</li>
+<li><strong>Monitor behavior</strong> - Watch for unexpected actions during use</li>
+</ol>
+<h2>Maintenance</h2>
+<h3>Regular Updates</h3>
+<ul>
+<li>Update detection patterns for new threats</li>
+<li>Add new security indicators to checklist</li>
+<li>Improve scanner accuracy based on false positives/negatives</li>
+<li>Update reference materials with latest security research</li>
+</ul>
+<h3>Feedback Loop</h3>
+<p>When security issues are found:</p>
+<ol>
+<li>Document the pattern</li>
+<li>Add to detection rules</li>
+<li>Share with community</li>
+<li>Improve security posture overall</li>
+</ol>
+<h2>Tools</h2>
+<ul>
+<li><strong><code>scripts/scan_skill.py</code></strong> - Automated security scanner</li>
+<li><strong><code>references/security-checklist.md</code></strong> - Manual security checklist</li>
+<li><strong><code>references/prompt-injection-patterns.md</code></strong> - Prompt injection detection guide</li>
+</ul>
+<p>Remember: Security is an ongoing process, not a one-time check. Regular audits and vigilance are essential to maintaining a secure Clawdbot environment.</p>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/wolffan/security-check-skill/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/wolffan/security-check-skill" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/wolffan/security-check-skill/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@wolffan</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Clawdbot Tools</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

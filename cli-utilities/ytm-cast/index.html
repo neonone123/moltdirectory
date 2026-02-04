@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Download music from YouTube/YouTube Music and stream to Chromecast via Home Assistant">
+  <title>ytm-cast - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to CLI Utilities</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">CLI Utilities</a>
+                <span class="skill-page-author">by @aidanthebandit</span>
+              </div>
+              <h1 class="skill-page-title">ytm-cast</h1>
+              <p class="skill-page-desc">Download music from YouTube/YouTube Music and stream to Chromecast via Home Assistant</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>YouTube Music Cast</h1>
+<p>YouTube music → your Chromecast. Simple, free, works.</p>
+<p>Download audio from YouTube or YouTube Music and stream it through Home Assistant to any Cast-enabled device. No subscriptions, no cloud services, just your local network.</p>
+<h2>Features</h2>
+<ul>
+<li>✅ <strong>Free forever</strong> — No subscriptions, no premium accounts needed</li>
+<li>✅ <strong>High quality</strong> — 320K MP3, crystal clear audio</li>
+<li>✅ <strong>Video mode</strong> — Create MP4 videos with album art and text overlays</li>
+<li>✅ <strong>Radio mode</strong> — Auto-discover and play related songs</li>
+<li>✅ <strong>Local storage</strong> — Your music stays on your machine, no cloud</li>
+<li>✅ <strong>Multi-room</strong> — Cast to any Chromecast device in your home</li>
+<li>✅ <strong>Batch download</strong> — Download entire playlists, stream anytime</li>
+<li>✅ <strong>Simple CLI</strong> — Fast commands, no browser required</li>
+<li>✅ <strong>Works offline</strong> — Once downloaded, music is yours to keep</li>
+</ul>
+<h2>Use Cases</h2>
+<h3>Daily Music</h3>
+<p>Download your favorite tracks in the morning, cast them throughout the day. No waiting, no buffering.</p>
+<h3>Party Mode</h3>
+<p>Download a playlist before guests arrive, then queue up songs without fumbling with phones or apps.</p>
+<h3>Background Audio</h3>
+<p>Play ambient music or podcasts while you work without worrying about ads or interruptions.</p>
+<h3>Multi-Room Sync</h3>
+<p>Stream the same track to multiple Chromecasts simultaneously (bedroom + living room + kitchen).</p>
+<h2>Why This Over Premium Services?</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>YouTube Music Cast</th>
+<th>Spotify Premium</th>
+<th>YouTube Premium</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cost</td>
+<td>Free forever</td>
+<td>$10.99/month</td>
+<td>$13.99/month</td>
+</tr>
+<tr>
+<td>Quality</td>
+<td>320K MP3</td>
+<td>Up to 320K</td>
+<td>Up to 1080p video</td>
+</tr>
+<tr>
+<td>Offline</td>
+<td>Yes, forever</td>
+<td>Download limit</td>
+<td>Download limit</td>
+</tr>
+<tr>
+<td>Ads</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Platforms</td>
+<td>Any Chromecast</td>
+<td>Spotify Connect devices</td>
+<td>YouTube apps</td>
+</tr>
+<tr>
+<td>Privacy</td>
+<td>Local only</td>
+<td>Cloud-based</td>
+<td>Cloud-based</td>
+</tr>
+</tbody></table>
+<h2>Quick Start</h2>
+<pre><code class="language-bash"># 1. Setup (one time, takes 2 minutes)
+cast-setup
+
+# 2. Download your first song
+cast-download https://youtube.com/watch?v=dQw4w9WgXcQ
+
+# 3. Start the web server
+cast-server start
+
+# 4. Cast it to your default device
+cast-play never-gonna-give-you-up.mp3
+</code></pre>
+<p>That&#39;s it. Your music is playing through your Chromecast.</p>
+<h2>What This Does</h2>
+<p>Three simple steps, one command each:</p>
+<h3>1. Download</h3>
+<p><code>yt-dlp</code> grabs audio from YouTube or YouTube Music, extracts it as MP3 (320K quality).</p>
+<h3>2. Host</h3>
+<p>A lightweight Python HTTP server makes your downloaded files accessible over your local network. No setup required — just Python 3.</p>
+<h3>3. Cast</h3>
+<p>Home Assistant&#39;s <code>media_player.play_media</code> service sends the HTTP URL to your Chromecast, which streams the audio.</p>
+<h3>Why a Web Server?</h3>
+<p>Home Assistant&#39;s <code>play_media</code> service requires a URL, not a file path. The web server bridges that gap.</p>
+<pre><code class="language-yaml"># ✅ This works — HA can fetch via HTTP
+media_content_id: &quot;http://192.168.1.81:8735/song.mp3&quot;
+
+# ❌ This fails — HA can&#39;t read file paths
+media_content_id: &quot;/tmp/youtube-music/song.mp3&quot;
+</code></pre>
+<p><strong>Architecture:</strong></p>
+<pre><code>YouTube URL → yt-dlp → MP3 file → Python HTTP server → Home Assistant API → Chromecast
+</code></pre>
+<h2>Installation</h2>
+<h3>What You Need</h3>
+<ul>
+<li><strong>Home Assistant</strong> with Google Cast integration</li>
+<li><strong>Chromecast</strong> or Cast-enabled device (Nest speakers, Google Home, TV)</li>
+<li><strong>System tools:</strong> <code>yt-dlp</code>, Python 3, <code>curl</code>, <code>jq</code></li>
+</ul>
+<h3>Step 1: Install Scripts</h3>
+<pre><code class="language-bash"># Clone or download the skill
+cd youtube-music-cast
+
+# Make all scripts executable
+chmod +x scripts/*
+
+# Install globally (recommended)
+./install.sh --global
+
+# Or install locally
+./install.sh
+</code></pre>
+<h3>Step 2: Run Setup Wizard</h3>
+<pre><code class="language-bash">cast-setup
+</code></pre>
+<p>The wizard will ask for:</p>
+<ul>
+<li><strong>Home Assistant URL</strong> — e.g., <code>http://homeassistant.local:8123</code></li>
+<li><strong>Long-Lived Access Token</strong> — Generate in HA → Profile → Long-Lived Access Tokens</li>
+<li><strong>Server IP</strong> — The machine running these scripts</li>
+<li><strong>Default media player</strong> — e.g., <code>media_player.bedroom_display</code></li>
+</ul>
+<h3>Step 3: Test Your Setup</h3>
+<pre><code class="language-bash"># Download a test song
+cast-download https://youtube.com/watch?v=dQw4w9WgXcQ
+
+# Start the server
+cast-server start
+
+# Cast it
+cast-play song.mp3
+</code></pre>
+<p>If music plays, you&#39;re ready!</p>
+<h2>Commands</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>cast-setup</code></td>
+<td>Run configuration wizard</td>
+<td><code>cast-setup</code></td>
+</tr>
+<tr>
+<td><code>cast-download &lt;URL&gt; [options]</code></td>
+<td>Download from YouTube/YouTube Music</td>
+<td><code>cast-download https://youtube.com/watch?v=... --video</code></td>
+</tr>
+<tr>
+<td><code>cast-radio &lt;URL&gt; [options]</code></td>
+<td>Start radio mode with related songs</td>
+<td><code>cast-radio https://youtube.com/watch?v=... --count 10</code></td>
+</tr>
+<tr>
+<td>`cast-server [start</td>
+<td>stop</td>
+<td>status]`</td>
+</tr>
+<tr>
+<td><code>cast-play &lt;file&gt; [device]</code></td>
+<td>Cast music or video file to device</td>
+<td><code>cast-play song.mp4</code></td>
+</tr>
+<tr>
+<td><code>cast-stop [device]</code></td>
+<td>Stop playback</td>
+<td><code>cast-stop</code></td>
+</tr>
+<tr>
+<td><code>cast-status [device]</code></td>
+<td>Show player status</td>
+<td><code>cast-status</code></td>
+</tr>
+<tr>
+<td><code>cast-devices</code></td>
+<td>List all available media players</td>
+<td><code>cast-devices</code></td>
+</tr>
+<tr>
+<td><code>cast-list</code></td>
+<td>List downloaded files</td>
+<td><code>cast-list</code></td>
+</tr>
+<tr>
+<td><code>cast-help</code></td>
+<td>Show help</td>
+<td><code>cast-help</code></td>
+</tr>
+</tbody></table>
+<h2>Usage Guide</h2>
+<h3>Your First Song</h3>
+<pre><code class="language-bash"># Download from YouTube
+cast-download https://youtube.com/watch?v=dQw4w9WgXcQ
+
+# Rename for cleaner URL (recommended)
+mv &quot;/tmp/youtube-music/Rick Astley - Never Gonna Give You Up.mp3&quot; \
+   &quot;/tmp/youtube-music/never-gonna-give-you-up.mp3&quot;
+
+# Start the web server
+cast-server start
+
+# Cast to your default device
+cast-play never-gonna-give-you-up.mp3
+</code></pre>
+<h3>Cast to Different Rooms</h3>
+<pre><code class="language-bash"># Living room TV
+cast-play song.mp3 media_player.living_room
+
+# Kitchen speaker
+cast-play song.mp3 media_player.kitchen_speaker
+
+# Bedroom Chromecast
+cast-play song.mp3 media_player.bedroom_display
+
+# Multiple rooms at once (run multiple commands)
+cast-play song.mp3 media_player.living_room &amp; \
+cast-play song.mp3 media_player.bedroom_display
+</code></pre>
+<h3>Check What&#39;s Playing</h3>
+<pre><code class="language-bash"># Default device
+cast-status
+
+# Specific device
+cast-status media_player.bedroom_display
+</code></pre>
+<p>Output:</p>
+<pre><code>📺 media_player.bedroom_display
+
+State: playing
+Friendly Name: Bedroom display
+Volume: 22%
+
+Now Playing:
+  Title: Never Gonna Give You Up
+  Artist: Rick Astley
+  Duration: 3:32
+
+App: Default Media Receiver
+</code></pre>
+<h3>Stop Playback</h3>
+<pre><code class="language-bash"># Stop default device
+cast-stop
+
+# Stop specific device
+cast-stop media_player.living_room
+</code></pre>
+<h3>See What You&#39;ve Downloaded</h3>
+<pre><code class="language-bash"># List all music files with sizes
+cast-list
+</code></pre>
+<p>Output:</p>
+<pre><code>🎵 Downloaded Music
+
+boneheads-bank-holiday.mp3                                    9.3M
+never-gonna-give-you-up.mp3                                 8.2M
+song-for-nary.mp3                                          7.8M
+
+Total: 3 files
+</code></pre>
+<h3>See Available Devices</h3>
+<pre><code class="language-bash">cast-devices
+</code></pre>
+<p>Output:</p>
+<pre><code>📺 Available Media Players
+
+media_player.bedroom_display
+  Name: Bedroom display
+  State: idle
+  Supported: play_media, volume_set, volume_mute, ...
+
+media_player.living_room
+  Name: Living room TV
+  State: off
+  Supported: play_media, volume_set, ...
+
+Default device: media_player.bedroom_display
+</code></pre>
+<h2>New Features: Radio Mode &amp; Video Mode</h2>
+<h3>📻 Radio Mode</h3>
+<p>Radio mode automatically discovers and downloads related songs based on YouTube recommendations. After downloading a seed song, it searches for similar tracks and adds them to your queue.</p>
+<p><strong>Start radio mode:</strong></p>
+<pre><code class="language-bash"># Basic radio (downloads seed + 3 related songs)
+cast-radio https://youtube.com/watch?v=dQw4w9WgXcQ
+
+# Custom number of related songs
+cast-radio https://youtube.com/watch?v=dQw4w9WgXcQ --count 10
+
+# Radio mode with video files
+cast-radio https://youtube.com/watch?v=dQw4w9WgXcQ --video --count 5
+</code></pre>
+<p><strong>Or use cast-download with --radio flag:</strong></p>
+<pre><code class="language-bash"># Download with radio mode
+cast-download https://youtube.com/watch?v=dQw4w9WgXcQ --radio
+
+# Download with custom count
+cast-download https://youtube.com/watch?v=dQw4w9WgXcQ --radio --radio-count 5
+
+# Radio + video mode combined
+cast-download https://youtube.com/watch?v=dQw4w9WgXcQ --radio --video
+</code></pre>
+<p><strong>How it works:</strong></p>
+<ol>
+<li>Downloads the seed song you specify</li>
+<li>Extracts artist/title from metadata</li>
+<li>Searches YouTube for similar videos</li>
+<li>Downloads related songs (prefixed with <code>radio_</code>)</li>
+<li>Related songs are ready to cast in sequence</li>
+</ol>
+<p><strong>Play your radio queue:</strong></p>
+<pre><code class="language-bash"># Start server
+cast-server start
+
+# Play the first song
+cast-play $(ls -t /tmp/youtube-music/*.mp3 | head -n 1 | xargs basename)
+
+# Or play related songs sequentially
+cast-play radio_some-song.mp3
+cast-play radio_another-song.mp3
+# ... etc
+</code></pre>
+<p><strong>Tips:</strong></p>
+<ul>
+<li>Related songs are prefixed with <code>radio_</code> for easy identification</li>
+<li>The radio mode searches based on the artist name from the seed song</li>
+<li>Use <code>--count</code> to control how many related songs to download</li>
+<li>Combine with <code>--video</code> flag for visual radio mode</li>
+</ul>
+<h3>🎬 Video Mode with Visuals</h3>
+<p>Video mode creates MP4 videos instead of plain MP3 files. Each video includes:</p>
+<ul>
+<li>The original audio track</li>
+<li>Album art thumbnail from YouTube</li>
+<li>Text overlay showing song title and artist</li>
+<li>Smooth, high-quality encoding</li>
+</ul>
+<p><strong>Download a video:</strong></p>
+<pre><code class="language-bash"># Download as MP4 with album art and text
+cast-download https://youtube.com/watch?v=dQw4w9WgXcQ --video
+
+# Cast the MP4 file
+cast-server start
+cast-play &quot;Never Gonna Give You Up.mp4&quot;
+</code></pre>
+<p><strong>Radio mode with videos:</strong></p>
+<pre><code class="language-bash"># Download seed + related songs as videos
+cast-radio https://youtube.com/watch?v=dQw4w9WgXcQ --video --count 5
+
+# Cast videos
+cast-play &quot;Never Gonna Give You Up.mp4&quot;
+cast-play &quot;radio_Together Forever.mp4&quot;
+# ... etc
+</code></pre>
+<p><strong>How it works:</strong></p>
+<ol>
+<li>Downloads the audio track (320K MP3 quality)</li>
+<li>Downloads the album art thumbnail from YouTube</li>
+<li>Uses ffmpeg to create an MP4 video with:<ul>
+<li>Looping album art background</li>
+<li>Audio track encoded as AAC</li>
+<li>Text overlay (song title and artist name) at bottom</li>
+</ul>
+</li>
+<li>Cast the MP4 to your Chromecast (TVs with video support)</li>
+</ol>
+<p><strong>Video output:</strong></p>
+<ul>
+<li>Codec: H.264 (libx264)</li>
+<li>Audio: AAC (192K)</li>
+<li>Resolution: Same as thumbnail (usually 480p or 720p)</li>
+<li>Text: White text with semi-transparent black box</li>
+<li>Compatible with all Chromecast devices with video support</li>
+</ul>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>Videos take more space than MP3s (~2-3x larger)</li>
+<li>Requires ffmpeg to be installed on your system</li>
+<li>Text overlay uses DejaVu Sans Bold font (included on most Linux systems)</li>
+<li>Chromecast audio devices (like Google Home Mini) will play audio only</li>
+<li>Chromecast with displays (TVs, Google Nest Hub) will show the full video</li>
+</ul>
+<p><strong>Requirements for video mode:</strong></p>
+<ul>
+<li><code>ffmpeg</code> must be installed on your system<pre><code class="language-bash"># Debian/Ubuntu
+sudo apt install ffmpeg
+
+# macOS
+brew install ffmpeg
+</code></pre>
+</li>
+</ul>
+<h3>Mixed MP3 and MP4</h3>
+<p><code>cast-play</code> automatically detects the file type:</p>
+<ul>
+<li><code>.mp3</code>, <code>.wav</code>, <code>.ogg</code>, <code>.m4a</code>, <code>.flac</code> → music</li>
+<li><code>.mp4</code>, <code>.mkv</code>, <code>.webm</code>, <code>.mov</code> → video</li>
+</ul>
+<p>You can mix both formats in the same directory:</p>
+<pre><code class="language-bash"># Download some as MP3
+cast-download https://youtube.com/watch?v=VIDEO_ID_1
+
+# Download some as MP4
+cast-download https://youtube.com/watch?v=VIDEO_ID_2 --video
+
+# Play both - cast-play handles the difference
+cast-play song.mp3
+cast-play video.mp4
+</code></pre>
+<h2>Configuration</h2>
+<p>Config file: <code>~/.youtube-music-cast/config.sh</code></p>
+<pre><code class="language-bash"># Home Assistant
+HA_URL=&quot;http://homeassistant.local:8123&quot;
+HA_TOKEN=&quot;your-long-lived-access-token-here&quot;
+
+# Web Server
+SERVER_IP=&quot;192.168.1.81&quot;
+SERVER_PORT=&quot;8735&quot;
+
+# Default Device (override per command)
+DEFAULT_DEVICE=&quot;media_player.bedroom_display&quot;
+
+# Directories
+DOWNLOAD_DIR=&quot;/tmp/youtube-music&quot;
+CAST_DIR=&quot;$HOME/.youtube-music-cast&quot;
+</code></pre>
+<p><strong>Edit the file directly</strong> or <strong>re-run <code>cast-setup</code></strong> to update.</p>
+<h2>File Naming Best Practices</h2>
+<p>Keep URLs clean. Simple filenames save you from headaches later.</p>
+<h3>The Problem</h3>
+<p>❌ Bad filenames:</p>
+<pre><code>http://192.168.1.81:8735/Bonehead&#39;s%20Bank%20Holiday%20(Remastered).mp3
+</code></pre>
+<p>This URL is messy, hard to type, and prone to encoding errors.</p>
+<h3>The Solution</h3>
+<p>✅ Good filenames:</p>
+<pre><code>http://192.168.1.81:8735/boneheads-bank-holiday.mp3
+</code></pre>
+<p>Clean, easy to type, no issues.</p>
+<h3>Practical Tips</h3>
+<pre><code class="language-bash"># After download, rename immediately
+mv &quot;Oasis - Bonehead&#39;s Bank Holiday (Remastered 1995).mp3&quot; \
+   &quot;oasis-boneheads-bank-holiday.mp3&quot;
+
+# Use lowercase, hyphens only
+mv &quot;My Awesome Song.mp3&quot; &quot;my-awesome-song.mp3&quot;
+
+# No special characters
+mv &quot;song@remix#.mp3&quot; &quot;song-remix.mp3&quot;
+</code></pre>
+<p><strong>Rule of thumb:</strong></p>
+<ul>
+<li>Lowercase</li>
+<li>Hyphens instead of spaces</li>
+<li>No special characters (@, #, ?, etc.)</li>
+<li>Keep it short</li>
+</ul>
+<h2>Troubleshooting</h2>
+<h3>Chromecast Not in Home Assistant</h3>
+<p><strong>Problem:</strong> <code>cast-devices</code> shows no Chromecast devices.</p>
+<p><strong>Solution:</strong> Add Google Cast integration</p>
+<ol>
+<li>Home Assistant → Settings → Devices &amp; Services</li>
+<li>Click &quot;+ Add Integration&quot;</li>
+<li>Search &quot;Google Cast&quot; → Select it</li>
+<li>Follow the discovery wizard</li>
+</ol>
+<p><strong>If discovery fails:</strong></p>
+<ul>
+<li>Ensure Chromecast and Home Assistant are on the same network</li>
+<li>Try adding manually with Chromecast IP address</li>
+</ul>
+<h3>Server Won&#39;t Start</h3>
+<p><strong>Problem:</strong> <code>cast-server start</code> fails or says &quot;port in use&quot;.</p>
+<p><strong>Solution:</strong></p>
+<pre><code class="language-bash"># Check if port 8735 is in use
+netstat -tlnp | grep 8735
+# or
+ss -tlnp | grep 8735
+
+# Stop any existing server
+cast-server stop
+
+# Try starting manually to see error
+cd /tmp/youtube-music
+python3 -m http.server 8735
+</code></pre>
+<p><strong>If port is in use by another process:</strong>
+Edit <code>~/.youtube-music-cast/config.sh</code>:</p>
+<pre><code class="language-bash">SERVER_PORT=&quot;8736&quot;  # Change to something else
+</code></pre>
+<h3>&quot;File Not Found&quot; Error</h3>
+<p><strong>Problem:</strong> <code>cast-play song.mp3</code> says file not found.</p>
+<p><strong>Solution:</strong></p>
+<pre><code class="language-bash"># List what&#39;s actually there
+cast-list
+
+# Check exact spelling (case-sensitive!)
+cast-play &quot;Exact-Filename.mp3&quot;  # Not &quot;exact-filename.mp3&quot;
+
+# Verify server is running
+cast-server status
+</code></pre>
+<p><strong>Common mistakes:</strong></p>
+<ul>
+<li>Wrong case: <code>Song.mp3</code> vs <code>song.mp3</code></li>
+<li>Wrong extension: <code>song.MP3</code> vs <code>song.mp3</code></li>
+<li>File in wrong directory: Check <code>DOWNLOAD_DIR</code> in config</li>
+</ul>
+<h3>Download Fails</h3>
+<p><strong>Problem:</strong> <code>cast-download</code> errors or hangs.</p>
+<p><strong>Solution:</strong></p>
+<pre><code class="language-bash"># Update yt-dlp (YouTube changes often)
+pip install --upgrade yt-dlp
+
+# Check version
+yt-dlp --version
+
+# Try verbose output to see what&#39;s wrong
+yt-dlp --verbose &quot;URL&quot;
+
+# Try different URL format
+# YouTube: https://youtube.com/watch?v=VIDEO_ID
+# YouTube Music: https://music.youtube.com/watch?v=VIDEO_ID
+</code></pre>
+<p><strong>If it&#39;s a geo-blocked video:</strong>
+Use a VPN or find an alternative upload of the same track.</p>
+<h3>Home Assistant Connection Error</h3>
+<p><strong>Problem:</strong> <code>curl</code> errors when contacting HA.</p>
+<p><strong>Solution:</strong></p>
+<pre><code class="language-bash"># Test your HA token manually
+curl -H &quot;Authorization: Bearer YOUR_TOKEN&quot; \
+     -H &quot;Content-Type: application/json&quot; \
+     &quot;http://homeassistant.local:8123/api/states&quot;
+
+# If you see JSON → token is good
+# If 401 Unauthorized → token is wrong or expired
+# If connection refused → URL is wrong or HA is down
+</code></pre>
+<p><strong>Regenerate token if needed:</strong>
+HA → Profile → Scroll down → Long-Lived Access Tokens → Generate new</p>
+<h3>Video Mode Issues</h3>
+<p><strong>Problem:</strong> <code>cast-download --video</code> fails with &quot;ffmpeg not found&quot; or similar error.</p>
+<p><strong>Solution:</strong></p>
+<pre><code class="language-bash"># Check if ffmpeg is installed
+ffmpeg -version
+
+# If not found, install it
+# Debian/Ubuntu
+sudo apt install ffmpeg
+
+# macOS
+brew install ffmpeg
+</code></pre>
+<p><strong>Problem:</strong> Video creation is slow or takes too long.</p>
+<p><strong>Solution:</strong></p>
+<ul>
+<li>Video encoding is CPU-intensive. First-time creation may take 10-30 seconds per song.</li>
+<li>Use MP3 mode (<code>cast-download</code> without <code>--video</code>) for faster downloads.</li>
+<li>Consider lowering video quality in the script (edit <code>cast-download</code> and change <code>-preset ultrafast</code> to <code>-preset fast</code> for better quality but slower encoding).</li>
+</ul>
+<p><strong>Problem:</strong> Text overlay doesn&#39;t appear or looks wrong.</p>
+<p><strong>Solution:</strong></p>
+<ul>
+<li>The script uses DejaVu Sans Bold font. If it&#39;s not installed, text won&#39;t appear.</li>
+<li>Install the font:<pre><code class="language-bash"># Debian/Ubuntu
+sudo apt install fonts-dejavu
+
+# macOS (usually pre-installed)
+</code></pre>
+</li>
+<li>Or edit the script to use a different font path.</li>
+</ul>
+<p><strong>Problem:</strong> Chromecast audio device plays video without visuals.</p>
+<p><strong>Solution:</strong></p>
+<ul>
+<li>This is expected behavior. Audio-only Chromecast devices (Google Home Mini, Chromecast Audio) will play the audio track from MP4 files but cannot display video.</li>
+<li>Use MP3 mode for audio-only devices to save bandwidth and storage.</li>
+</ul>
+<p><strong>Problem:</strong> MP4 files are too large.</p>
+<p><strong>Solution:</strong></p>
+<ul>
+<li>Videos are larger than MP3s (typically 2-3x the size).</li>
+<li>Reduce video bitrate by editing <code>cast-download</code> and changing <code>-b:a 192k</code> to <code>-b:a 128k</code> for audio, or adjust video codec settings.</li>
+<li>Use MP3 mode if storage is a concern.</li>
+</ul>
+<h3>Radio Mode Issues</h3>
+<p><strong>Problem:</strong> Radio mode downloads unrelated songs.</p>
+<p><strong>Solution:</strong></p>
+<ul>
+<li>Radio mode searches YouTube using the artist name from the seed song.</li>
+<li>Sometimes the search may return mixed results due to ambiguous artist names.</li>
+<li>Try using a different seed song with a clearer artist name.</li>
+<li>The <code>radio_</code> prefix makes it easy to identify and remove unwanted downloads.</li>
+</ul>
+<p><strong>Problem:</strong> Radio mode doesn&#39;t find any related songs.</p>
+<p><strong>Solution:</strong></p>
+<ul>
+<li>Ensure you have a stable internet connection.</li>
+<li>Check that the seed song has proper metadata (title/uploader).</li>
+<li>Try a different seed song — some videos have limited search results.</li>
+<li>Increase the count with <code>--radio-count 10</code> to get more results.</li>
+</ul>
+<p><strong>Problem:</strong> Related songs don&#39;t play in sequence automatically.</p>
+<p><strong>Solution:</strong></p>
+<ul>
+<li>Radio mode downloads the songs but doesn&#39;t auto-play them in sequence.</li>
+<li>You need to manually play each related song, or create a simple playlist script:<pre><code class="language-bash"># Play all radio songs in sequence
+for file in /tmp/youtube-music/radio_*.mp3; do
+    cast-play &quot;$(basename &quot;$file&quot;)&quot;
+    sleep 5  # Wait between songs
+done
+</code></pre>
+</li>
+</ul>
+<h3>Cast Commands Hang</h3>
+<p><strong>Problem:</strong> <code>cast-play</code> doesn&#39;t return or music never starts.</p>
+<p><strong>Common causes:</strong></p>
+<ol>
+<li><strong>Media player is offline</strong> — Check <code>cast-devices</code> for state</li>
+<li><strong>Server isn&#39;t accessible from HA</strong> — Verify <code>SERVER_IP</code> in config matches current IP</li>
+<li><strong>Chromecast network issue</strong> — Restart Chromecast</li>
+<li><strong>Wrong device ID</strong> — Copy exact ID from <code>cast-devices</code> output</li>
+</ol>
+<p><strong>Quick fix:</strong></p>
+<pre><code class="language-bash"># Restart everything
+cast-server stop
+cast-server start
+cast-play song.mp3
+
+# Check device is online
+cast-devices
+
+# Try casting from HA UI to isolate issue
+</code></pre>
+<h2>Project Structure</h2>
+<pre><code>youtube-music-cast/
+├── scripts/
+│   ├── cast-setup      # Configuration wizard (interactive)
+│   ├── cast-download   # Download from YouTube (uses yt-dlp)
+│   ├── cast-server     # HTTP server manager (start/stop/status)
+│   ├── cast-play       # Cast to device (HA API)
+│   ├── cast-stop       # Stop playback
+│   ├── cast-status     # Player status query
+│   ├── cast-devices    # List all HA media players
+│   ├── cast-list       # List downloaded files
+│   └── cast-help       # Help documentation
+├── install.sh          # Installation script (--global, --help)
+├── SKILL.md           # This file (ClawdHub skill definition)
+├── README.md          # User-facing documentation
+├── CHANGELOG.md       # Version history
+├── LICENSE            # MIT license
+├── .gitignore        # Protects secrets and state
+└── .clawdhub/
+    └── origin.json    # ClawdHub metadata
+
+~/.youtube-music-cast/
+└── config.sh         # Your configuration (don&#39;t commit to Git)
+
+/tmp/youtube-music/
+└── *.mp3            # Downloaded music files
+</code></pre>
+<h2>Requirements</h2>
+<h3>yt-dlp (YouTube downloader)</h3>
+<pre><code class="language-bash">pip install yt-dlp
+</code></pre>
+<p><strong>Update regularly:</strong> <code>pip install --upgrade yt-dlp</code></p>
+<h3>Python 3 (HTTP server)</h3>
+<pre><code class="language-bash"># Check version (usually pre-installed)
+python3 --version
+</code></pre>
+<h3>curl (HTTP client for HA API)</h3>
+<pre><code class="language-bash"># Check version (usually pre-installed)
+curl --version
+</code></pre>
+<h3>jq (JSON processor)</h3>
+<pre><code class="language-bash"># Debian/Ubuntu
+sudo apt install jq
+
+# macOS
+brew install jq
+</code></pre>
+<h3>ffmpeg (Video mode - optional)</h3>
+<p>Required for <code>--video</code> flag to create MP4 videos with album art and text overlays.</p>
+<pre><code class="language-bash"># Debian/Ubuntu
+sudo apt install ffmpeg
+
+# macOS
+brew install ffmpeg
+</code></pre>
+<p><strong>Check installation:</strong></p>
+<pre><code class="language-bash">ffmpeg -version
+</code></pre>
+<p><strong>Note:</strong> Video mode is optional. If you only download MP3s, you don&#39;t need ffmpeg.</p>
+<h2>Performance Tips</h2>
+<h3>1. Batch Downloads</h3>
+<p>Download multiple tracks or entire playlists at once:</p>
+<pre><code class="language-bash"># Download playlist
+yt-dlp -x --audio-format mp3 --audio-quality 320K \
+  -o &quot;/tmp/youtube-music/%(playlist_index)s-%(title)s.%(ext)s&quot; \
+  &quot;https://youtube.com/playlist?list=PLAYLIST_ID&quot;
+
+# Then cast them without waiting
+cast-play 01-song.mp3
+cast-play 02-song.mp3
+cast-play 03-song.mp3
+</code></pre>
+<h3>2. Keep Server Running</h3>
+<p>The HTTP server is lightweight (~5MB RAM). No need to stop/start between casts:</p>
+<pre><code class="language-bash"># Start once
+cast-server start
+
+# Cast as many songs as you want
+cast-play song1.mp3
+cast-play song2.mp3
+# ... etc
+</code></pre>
+<h3>3. Use Default Device</h3>
+<p>Set <code>DEFAULT_DEVICE</code> in config to avoid typing it every time:</p>
+<pre><code class="language-bash"># In ~/.youtube-music-cast/config.sh
+DEFAULT_DEVICE=&quot;media_player.bedroom_display&quot;
+
+# Now just cast
+cast-play song.mp3  # Automatically uses bedroom_display
+</code></pre>
+<h3>4. Clean Up Occasionally</h3>
+<p>Files in <code>/tmp/</code> are cleared on reboot by design, but you can manually clean:</p>
+<pre><code class="language-bash"># List all files with sizes
+cast-list
+
+# Remove old files
+rm /tmp/youtube-music/*.mp3
+</code></pre>
+<h3>5. WiFi Matters</h3>
+<p>If streaming glitches:</p>
+<ul>
+<li>Move Chromecast to 5GHz WiFi</li>
+<li>Reduce distance between Chromecast and server</li>
+<li>Check for WiFi interference</li>
+</ul>
+<h3>6. Alias Commands</h3>
+<p>Add shell aliases for faster access:</p>
+<pre><code class="language-bash"># Add to ~/.bashrc or ~/.zshrc
+alias cs=&#39;cast-server&#39;
+alias cd=&#39;cast-download&#39;
+alias cp=&#39;cast-play&#39;
+alias cl=&#39;cast-list&#39;
+alias cst=&#39;cast-status&#39;
+
+# Now just type
+cs      # Start server
+cd URL   # Download
+cp song  # Cast
+cl       # List
+</code></pre>
+<h2>Notes</h2>
+<ul>
+<li>Files are stored in <code>/tmp/youtube-music/</code> — cleared on reboot (by design)</li>
+<li>Web server runs in background, persists across sessions</li>
+<li>Keep filenames simple: lowercase, hyphens, no spaces/special chars</li>
+<li>Server and Chromecast must be on same network</li>
+<li>HA token is stored locally in <code>config.sh</code> — <strong>don&#39;t commit to Git</strong></li>
+<li>Quality is 320K MP3 — good balance of quality and file size</li>
+<li>No cloud services, no subscriptions, no tracking</li>
+</ul>
+<h2>Comparison: This vs Alternatives</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>YouTube Music Cast</th>
+<th>Spotify Free</th>
+<th>YouTube Premium</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cost</td>
+<td>Free</td>
+<td>Free (with ads)</td>
+<td>$13.99/month</td>
+</tr>
+<tr>
+<td>Ads</td>
+<td>None</td>
+<td>Yes, every few songs</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Offline</td>
+<td>Yes, forever</td>
+<td>No (premium only)</td>
+<td>Yes, with limit</td>
+</tr>
+<tr>
+<td>Quality</td>
+<td>320K MP3</td>
+<td>160K (variable)</td>
+<td>Up to 1080p video</td>
+</tr>
+<tr>
+<td>Privacy</td>
+<td>Local only</td>
+<td>Cloud-based</td>
+<td>Cloud-based</td>
+</tr>
+<tr>
+<td>Platform</td>
+<td>Any Chromecast</td>
+<td>Spotify Connect</td>
+<td>YouTube apps</td>
+</tr>
+<tr>
+<td>Queue management</td>
+<td>Manual</td>
+<td>Built-in</td>
+<td>Built-in</td>
+</tr>
+<tr>
+<td>Multi-room</td>
+<td>Manual</td>
+<td>Premium feature</td>
+<td>No</td>
+</tr>
+</tbody></table>
+<p><strong>Bottom line:</strong> If you value privacy, want to own your music, and don&#39;t need cloud features, this is for you.</p>
+<h2>License</h2>
+<p>MIT License — use it, modify it, share it.</p>
+<hr>
+<p><strong>Version:</strong> 6.0.0
+<strong>Author:</strong> Wobo
+<strong>License:</strong> MIT</p>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/aidanthebandit/ytm-cast/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/aidanthebandit/ytm-cast" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/aidanthebandit/ytm-cast/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@aidanthebandit</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">CLI Utilities</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

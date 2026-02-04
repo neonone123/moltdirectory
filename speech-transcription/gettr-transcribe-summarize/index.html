@@ -29,7 +29,7 @@
       </a>
       <nav class="header-links">
         <a href="../../start-here/index.html" class="header-link">Start Here</a>
-        <a href="../../security-auditor.html" class="header-link">Security Auditor</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
           <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -57,24 +57,31 @@
             <article class="skill-page-content">
               <div class="skill-source-wrapper">
                 <div class="skill-source-header">
-                  <span class="skill-source-label">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                    SKILL.md
-                  </span>
-                  <button class="skill-source-copy" onclick="copySkillContent(this)">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                     Copy
                   </button>
                 </div>
-                <div class="skill-source-content">
-              <div class="markdown-content">
-                <h1>Gettr Transcribe + Summarize (MLX Whisper)</h1>
-<h2>Quick start (single command)</h2>
-<p>Run the full pipeline (Steps 1–3) with one command:</p>
-<pre><code class="language-bash">bash scripts/run_pipeline.sh &quot;&lt;GETTR_POST_URL&gt;&quot;
+                <div class="markdown-content">
+                  <h1>Gettr Transcribe + Summarize (MLX Whisper)</h1>
+<h2>Quick start</h2>
+<pre><code class="language-bash"># 1. Parse the slug from the URL (just read it — no script needed)
+#    https://gettr.com/post/p1abc2def  → slug = p1abc2def
+#    https://gettr.com/streaming/p3xyz → slug = p3xyz
+
+# 2. Get the video URL
+#    For /post/ URLs: use the extraction script
+python3 scripts/extract_gettr_og_video.py &quot;&lt;GETTR_POST_URL&gt;&quot;
+
+#    For /streaming/ URLs: use browser automation directly (extraction script is unreliable)
+#    See Step 1 below for browser automation instructions
+
+# 3. Run download + transcription pipeline
+bash scripts/run_pipeline.sh &quot;&lt;VIDEO_URL&gt;&quot; &quot;&lt;SLUG&gt;&quot;
 </code></pre>
 <p>To explicitly set the transcription language (recommended for non-English content):</p>
-<pre><code class="language-bash">bash scripts/run_pipeline.sh --language zh &quot;&lt;GETTR_POST_URL&gt;&quot;
+<pre><code class="language-bash">bash scripts/run_pipeline.sh --language zh &quot;&lt;VIDEO_URL&gt;&quot; &quot;&lt;SLUG&gt;&quot;
 </code></pre>
 <p>Common language codes: <code>zh</code> (Chinese), <code>en</code> (English), <code>ja</code> (Japanese), <code>ko</code> (Korean), <code>es</code> (Spanish), <code>fr</code> (French), <code>de</code> (German), <code>ru</code> (Russian).</p>
 <p>This outputs:</p>
@@ -82,7 +89,7 @@
 <li><code>./out/gettr-transcribe-summarize/&lt;slug&gt;/audio.wav</code></li>
 <li><code>./out/gettr-transcribe-summarize/&lt;slug&gt;/audio.vtt</code></li>
 </ul>
-<p>Then proceed to Step 4 (Summarize) to generate the final deliverable.</p>
+<p>Then proceed to Step 3 (Summarize) to generate the final deliverable.</p>
 <hr>
 <h2>Workflow (GETTR URL → transcript → summary)</h2>
 <h3>Inputs to confirm</h3>
@@ -104,72 +111,61 @@
 <li><code>mlx_whisper</code> installed and on PATH</li>
 <li><code>ffmpeg</code> installed (recommended: <code>brew install ffmpeg</code>)</li>
 </ul>
-<h3>Step 0 — Pick an output directory</h3>
-<p>Recommended convention: <code>./out/gettr-transcribe-summarize/&lt;slug&gt;/</code></p>
-<p>Extract the slug from the GETTR post URL (e.g., <code>https://gettr.com/post/p1abc2def</code> → slug = <code>p1abc2def</code>).</p>
+<h3>Step 0 — Parse the slug and pick an output directory</h3>
+<p>Parse the slug directly from the GETTR URL — just read the last path segment, no script needed:</p>
+<ul>
+<li><code>https://gettr.com/post/p1abc2def</code> → slug = <code>p1abc2def</code></li>
+<li><code>https://gettr.com/streaming/p3xyz789</code> → slug = <code>p3xyz789</code></li>
+</ul>
+<p>Output directory: <code>./out/gettr-transcribe-summarize/&lt;slug&gt;/</code></p>
 <p>Directory structure:</p>
 <ul>
 <li><code>./out/gettr-transcribe-summarize/&lt;slug&gt;/audio.wav</code></li>
 <li><code>./out/gettr-transcribe-summarize/&lt;slug&gt;/audio.vtt</code></li>
 <li><code>./out/gettr-transcribe-summarize/&lt;slug&gt;/summary.md</code></li>
 </ul>
-<h3>Step 1 — Extract the media URL and slug</h3>
-<p>Preferred: fetch the post HTML and read <code>og:video*</code>.</p>
+<h3>Step 1 — Get the video URL</h3>
+<p>The approach depends on the URL type:</p>
+<h4>For <code>/post/</code> URLs — Use the extraction script</h4>
+<p>Run the extraction script to get the video URL from the post HTML:</p>
 <pre><code class="language-bash">python3 scripts/extract_gettr_og_video.py &quot;&lt;GETTR_POST_URL&gt;&quot;
 </code></pre>
-<p>This prints the best candidate video URL (often an HLS <code>.m3u8</code>) and the post slug.</p>
-<p>Extract the slug from the URL path (e.g., <code>/post/p1abc2def</code> → <code>p1abc2def</code>) to create the output directory.</p>
-<p><strong>Important: Streaming URLs require browser extraction</strong></p>
-<p>For streaming URLs (<code>gettr.com/streaming/&lt;slug&gt;</code>), the Python script may return a stale/invalid <code>og:video</code> URL that fails with HTTP 412. This is because GETTR dynamically generates signed stream URLs via JavaScript.</p>
-<p>If the URL is a streaming link OR if download fails with HTTP 412:</p>
+<p>This prints the best candidate video URL (often an HLS <code>.m3u8</code>) to stdout.</p>
+<p>If extraction fails, ask the user to provide the <code>.m3u8</code>/MP4 URL directly (common if the post is private/gated or the HTML is dynamic).</p>
+<h4>For <code>/streaming/</code> URLs — Use browser automation directly</h4>
+<p><strong>Do not use the extraction script for streaming URLs.</strong> The <code>og:video</code> URL from static HTML extraction is unreliable for streaming content — it either fails outright or the download stalls and fails near the end.</p>
+<p>Instead, use browser automation to get a fresh, dynamically-signed URL:</p>
 <ol>
-<li>Open the streaming URL in a browser and wait for the page to fully load (JavaScript must execute)</li>
+<li>Open the GETTR streaming URL and wait for the page to fully load (JavaScript must execute)</li>
 <li>Extract the <code>og:video</code> meta tag content from the rendered DOM:<pre><code class="language-javascript">document.querySelector(&#39;meta[property=&quot;og:video&quot;]&#39;).getAttribute(&#39;content&#39;)
 </code></pre>
 </li>
-<li>Use that fresh URL for the download step</li>
+<li>Use that fresh URL for the pipeline in Step 2</li>
 </ol>
-<p>The browser-extracted URL will have a valid signature and work with ffmpeg.</p>
-<p>If extraction fails, ask the user to provide the <code>.m3u8</code>/MP4 URL directly (common if the post is private/gated or the HTML is dynamic).</p>
-<h3>Step 2 — Download audio with ffmpeg</h3>
-<p>Extract audio-only (16kHz mono WAV) for faster and more stable transcription:</p>
-<pre><code class="language-bash">bash scripts/download_audio.sh &quot;&lt;M3U8_OR_MP4_URL&gt;&quot; &quot;./out/gettr-transcribe-summarize/&lt;slug&gt;/audio.wav&quot;
-</code></pre>
-<p>This directly extracts audio without intermediate video, reducing disk I/O and processing time.</p>
-<h3>Step 3 — Transcribe with MLX Whisper</h3>
-<p>Generate VTT output with timestamps:</p>
-<pre><code class="language-bash">mlx_whisper &quot;./out/gettr-transcribe-summarize/&lt;slug&gt;/audio.wav&quot; \
-  -f vtt \
-  -o &quot;./out/gettr-transcribe-summarize/&lt;slug&gt;&quot; \
-  --model mlx-community/whisper-large-v3-turbo \
-  --condition-on-previous-text False \
-  --word-timestamps True
+<p>If browser automation is not available or fails, see <code>references/troubleshooting.md</code> for how to guide the user to manually extract the fresh URL from their browser.</p>
+<h3>Step 2 — Run the pipeline (download + transcribe)</h3>
+<p>Feed the extracted video URL and slug into the pipeline:</p>
+<pre><code class="language-bash">bash scripts/run_pipeline.sh &quot;&lt;VIDEO_URL&gt;&quot; &quot;&lt;SLUG&gt;&quot;
 </code></pre>
 <p>To explicitly set the language (recommended when auto-detection fails):</p>
-<pre><code class="language-bash">mlx_whisper &quot;./out/gettr-transcribe-summarize/&lt;slug&gt;/audio.wav&quot; \
-  -f vtt \
-  -o &quot;./out/gettr-transcribe-summarize/&lt;slug&gt;&quot; \
-  --model mlx-community/whisper-large-v3-turbo \
-  --condition-on-previous-text False \
-  --word-timestamps True \
-  --language zh
+<pre><code class="language-bash">bash scripts/run_pipeline.sh --language zh &quot;&lt;VIDEO_URL&gt;&quot; &quot;&lt;SLUG&gt;&quot;
 </code></pre>
-<p>Flags explained:</p>
-<ul>
-<li><code>-f vtt</code>: VTT format provides timestamps for building the outline.</li>
-<li><code>--condition-on-previous-text False</code>: prevents hallucination errors from propagating across segments.</li>
-<li><code>--word-timestamps True</code>: more precise timing for section boundaries.</li>
-<li><code>--language &lt;code&gt;</code>: explicit language code (e.g., <code>zh</code>, <code>en</code>, <code>ja</code>, <code>ko</code>). Use when auto-detection fails.</li>
-</ul>
+<p>The pipeline does two things:</p>
+<ol>
+<li>Downloads audio as 16kHz mono WAV via ffmpeg</li>
+<li>Transcribes with MLX Whisper, outputting VTT with timestamps</li>
+</ol>
+<h4>If the pipeline fails with HTTP 412 (stale signed URL)</h4>
+<p>This error occurs with <code>/streaming/</code> URLs when the signed URL has expired. If browser automation returned a stale URL, retry by re-running browser automation to get a fresh URL, then retry the pipeline.</p>
+<p>If browser automation is not available or fails, see <code>references/troubleshooting.md</code> for how to guide the user to manually extract the fresh URL from their browser.</p>
 <p>Notes:</p>
 <ul>
 <li>By default, language is auto-detected. For non-English content where detection fails, use <code>--language</code>.</li>
-<li>Common language codes: <code>zh</code> (Chinese), <code>en</code> (English), <code>ja</code> (Japanese), <code>ko</code> (Korean), <code>es</code> (Spanish), <code>fr</code> (French), <code>de</code> (German), <code>ru</code> (Russian).</li>
 <li>If too slow or memory-heavy, try smaller models: <code>mlx-community/whisper-medium</code> or <code>mlx-community/whisper-small</code>.</li>
 <li>If quality is poor, try the full model: <code>mlx-community/whisper-large-v3</code> (slower but more accurate).</li>
-<li>If <code>--word-timestamps</code> causes issues, omit it (the pipeline script handles this automatically).</li>
+<li>If <code>--word-timestamps</code> causes issues, the pipeline retries automatically without it.</li>
 </ul>
-<h3>Step 4 — Summarize</h3>
+<h3>Step 3 — Summarize</h3>
 <p>Write the final deliverable to <code>./out/gettr-transcribe-summarize/&lt;slug&gt;/summary.md</code>.</p>
 <p>Pick a <strong>summary size</strong> (user-selectable):</p>
 <ul>
@@ -193,8 +189,8 @@
 </ul>
 <h2>Bundled scripts</h2>
 <ul>
-<li><code>scripts/run_pipeline.sh</code>: full pipeline wrapper (Steps 1–3 in one command)</li>
-<li><code>scripts/extract_gettr_og_video.py</code>: fetch GETTR HTML and extract <code>og:video*</code> URL + post slug (with retry/backoff)</li>
+<li><code>scripts/run_pipeline.sh</code>: download + transcription pipeline (takes a video URL and slug)</li>
+<li><code>scripts/extract_gettr_og_video.py</code>: fetch GETTR HTML and extract the <code>og:video</code> URL (with retry/backoff)</li>
 <li><code>scripts/download_audio.sh</code>: download/extract audio from HLS or MP4 URL to 16kHz mono WAV</li>
 </ul>
 <h3>Error handling</h3>
@@ -202,7 +198,7 @@
 <li><strong>Non-video posts</strong>: The extraction script detects image/text posts and provides a helpful error message.</li>
 <li><strong>Network errors</strong>: Automatic retry with exponential backoff (up to 3 attempts).</li>
 <li><strong>No audio track</strong>: The download script validates output and reports if the source has no audio.</li>
-<li><strong>HTTP 412 errors</strong>: The extracted <code>og:video</code> URL has an expired/invalid signature. Use browser extraction to get a fresh URL (see Step 1 and <code>references/troubleshooting.md</code>).</li>
+<li><strong>HTTP 412 errors</strong>: Occurs with <code>/streaming/</code> URLs when the signed URL has expired. Re-run browser automation to get a fresh URL (see Step 1); if that fails, see <code>references/troubleshooting.md</code>.</li>
 </ul>
 <h2>Troubleshooting</h2>
 <p>See <code>references/troubleshooting.md</code> for detailed solutions to common issues including:</p>
@@ -213,14 +209,13 @@
 <li>Transcription quality issues</li>
 </ul>
 
-              </div>
                 </div>
               </div>
             </article>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/moltbot/skills/tree/main/skills/kevin37li/gettr-transcribe-summarize/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/tree/main/skills/kevin37li/gettr-transcribe-summarize/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
@@ -228,7 +223,7 @@
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/moltbot/skills/main/skills/kevin37li/gettr-transcribe-summarize/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/kevin37li/gettr-transcribe-summarize/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                   Download SKILL.md
                 </a>
@@ -256,10 +251,22 @@
   <footer class="footer">
     <div class="footer-inner">
       <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
-      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. Created by: <a href="https://x.com/neonone1234" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">NeonOne</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
     </div>
   </footer>
   <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
     function copySkillContent(btn) {
       const wrapper = btn.closest('.skill-source-wrapper');
       const content = wrapper.querySelector('.markdown-content');
@@ -275,34 +282,17 @@
         });
       }
     }
-    
+
     async function sendToSecurityAuditor() {
       try {
-        // Get content from the rendered markdown in the DOM
         const contentElement = document.querySelector('.markdown-content');
         if (!contentElement) throw new Error('Could not find markdown content');
-        
         const skillContent = contentElement.innerText || contentElement.textContent;
-        
-        // Store in localStorage
         localStorage.setItem('skillAuditContent', skillContent);
-        
-        // Open security auditor in new tab (go up two levels)
-        window.open('../../security-auditor.html', '_blank');
+        window.open('/security-auditor', '_blank'); 
       } catch (error) {
         alert('Error: ' + error.message);
       }
-    }
-    function toggleTheme() {
-      const html = document.documentElement;
-      const currentTheme = html.getAttribute('data-theme');
-      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-      if (newTheme === 'light') {
-        html.setAttribute('data-theme', 'light');
-      } else {
-        html.removeAttribute('data-theme');
-      }
-      localStorage.setItem('theme', newTheme);
     }
   </script>
 </body>

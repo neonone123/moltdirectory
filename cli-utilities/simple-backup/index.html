@@ -67,59 +67,118 @@
                   <h1>Simple Backup</h1>
 <p>A robust backup script that:</p>
 <ol>
-<li><strong>Stages:</strong> Copies <code>~/clawd</code> (workspace), <code>~/.clawdbot</code> (state), and <code>skills/</code>.</li>
-<li><strong>Compresses:</strong> Creates a <code>.tgz</code> archive.</li>
-<li><strong>Encrypts:</strong> AES256 encryption using GPG (password required).</li>
-<li><strong>Prunes:</strong> Rotates backups (Daily/Hourly retention).</li>
-<li><strong>Syncs:</strong> Optionally pushes to a cloud provider via <code>rclone</code>.</li>
+<li><strong>Auto-detects</strong> workspace and state directories from OpenClaw config</li>
+<li><strong>Allows overrides</strong> for custom/non-standard setups</li>
+<li><strong>Compresses &amp; encrypts</strong> using GPG (AES256)</li>
+<li><strong>Prunes</strong> old backups (Daily/Hourly retention)</li>
+<li><strong>Syncs</strong> to cloud via <code>rclone</code> (optional)</li>
 </ol>
 <h2>Setup</h2>
 <ol>
-<li><strong>Dependencies:</strong> Ensure <code>rclone</code> and <code>gpg</code> are installed (<code>brew install rclone gnupg</code>).</li>
-<li><strong>Password:</strong> Set the encryption password:<ul>
-<li>Env Var: <code>export BACKUP_PASSWORD=&quot;my-secret-password&quot;</code></li>
-<li>File: <code>~/.clawdbot/credentials/backup.key</code></li>
+<li><p><strong>Dependencies:</strong></p>
+<pre><code class="language-bash">brew install rclone gnupg jq
+</code></pre>
+</li>
+<li><p><strong>Password:</strong> Set encryption password (choose one):</p>
+<ul>
+<li>File: <code>~/.openclaw/credentials/backup.key</code> (recommended)</li>
+<li>Env: <code>export BACKUP_PASSWORD=&quot;secret&quot;</code></li>
+<li>Config: Add <code>&quot;password&quot;: &quot;secret&quot;</code> to skill config</li>
 </ul>
 </li>
-<li><strong>Cloud (Optional):</strong> Configure an rclone remote:<pre><code class="language-bash">rclone config
+<li><p><strong>Cloud (Optional):</strong></p>
+<pre><code class="language-bash">rclone config
 </code></pre>
 </li>
 </ol>
 <h2>Usage</h2>
-<p>Run the backup:</p>
 <pre><code class="language-bash">simple-backup
 </code></pre>
-<h2>Configuration</h2>
-<p>You can override defaults with environment variables:</p>
+<h2>Auto-Detection</h2>
+<p>By default, paths are auto-detected from <code>~/.openclaw/openclaw.json</code>:</p>
+<ul>
+<li><strong>Workspace:</strong> <code>agents.defaults.workspace</code></li>
+<li><strong>State:</strong> <code>~/.openclaw</code> (where config lives)</li>
+<li><strong>Backup root:</strong> <code>&lt;workspace&gt;/BACKUPS</code></li>
+</ul>
+<h2>Custom Configuration</h2>
+<p>For non-standard setups, override any path in <code>~/.openclaw/openclaw.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;skills&quot;: {
+    &quot;entries&quot;: {
+      &quot;simple-backup&quot;: {
+        &quot;config&quot;: {
+          &quot;workspaceDir&quot;: &quot;/custom/path/workspace&quot;,
+          &quot;stateDir&quot;: &quot;/custom/path/state&quot;,
+          &quot;skillsDir&quot;: &quot;/custom/path/skills&quot;,
+          &quot;backupRoot&quot;: &quot;/custom/path/backups&quot;,
+          &quot;remoteDest&quot;: &quot;gdrive:backups&quot;
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<h2>Configuration Reference</h2>
 <table>
 <thead>
 <tr>
-<th>Variable</th>
-<th>Default</th>
+<th>Config Key</th>
+<th>Env Var</th>
+<th>Auto-Detected</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody><tr>
+<td><code>workspaceDir</code></td>
+<td><code>BRAIN_DIR</code></td>
+<td><code>agents.defaults.workspace</code></td>
+<td>Agent workspace</td>
+</tr>
+<tr>
+<td><code>stateDir</code></td>
+<td><code>BODY_DIR</code></td>
+<td><code>~/.openclaw</code></td>
+<td>OpenClaw state dir</td>
+</tr>
+<tr>
+<td><code>skillsDir</code></td>
+<td><code>SKILLS_DIR</code></td>
+<td><code>~/openclaw/skills</code></td>
+<td>Skills directory</td>
+</tr>
+<tr>
+<td><code>backupRoot</code></td>
 <td><code>BACKUP_ROOT</code></td>
-<td><code>~/clawd/BACKUPS</code></td>
-<td>Local storage location</td>
+<td><code>&lt;workspace&gt;/BACKUPS</code></td>
+<td>Local backup storage</td>
 </tr>
 <tr>
+<td><code>remoteDest</code></td>
 <td><code>REMOTE_DEST</code></td>
-<td>(empty)</td>
-<td>Rclone path (e.g. <code>gdrive:backups</code>)</td>
+<td>(none)</td>
+<td>Rclone remote path</td>
 </tr>
 <tr>
+<td><code>maxDays</code></td>
 <td><code>MAX_DAYS</code></td>
 <td>7</td>
 <td>Days to keep daily backups</td>
 </tr>
 <tr>
+<td><code>hourlyRetentionHours</code></td>
 <td><code>HOURLY_RETENTION_HOURS</code></td>
 <td>24</td>
-<td>Hours to keep hourly backups</td>
+<td>Hours to keep hourly</td>
+</tr>
+<tr>
+<td><code>password</code></td>
+<td><code>BACKUP_PASSWORD</code></td>
+<td>(none)</td>
+<td>Encryption password</td>
 </tr>
 </tbody></table>
+<p><strong>Priority:</strong> Config file → Env var → Auto-detect</p>
 
                 </div>
               </div>

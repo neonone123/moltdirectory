@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="This skill enables you to interact with your Arcane Docker Management API to manage Docker containers, compose stacks">
+  <title>arcane-docker-manager - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to DevOps & Cloud</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">DevOps & Cloud</a>
+                <span class="skill-page-author">by @cougz</span>
+              </div>
+              <h1 class="skill-page-title">arcane-docker-manager</h1>
+              <p class="skill-page-desc">This skill enables you to interact with your Arcane Docker Management API to manage Docker containers, compose stacks</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>OpenClaw - Arcane Docker Management Skill</h1>
+<h2>Overview</h2>
+<p>This skill enables you to interact with your Arcane Docker Management API to manage Docker containers, compose stacks, templates, networks, volumes, images, and system monitoring. Arcane is a comprehensive Docker management platform with a REST API.</p>
+<h2>When to Use This Skill</h2>
+<p>Use this skill when the user requests any of the following:</p>
+<ul>
+<li>Managing Docker containers (list, start, stop, restart, remove, inspect)</li>
+<li>Managing Docker Compose stacks (deploy, update, remove, view logs)</li>
+<li>Working with Docker templates (create, deploy, manage)</li>
+<li>Managing Docker images (list, pull, remove, prune)</li>
+<li>Managing Docker networks and volumes</li>
+<li>Monitoring system resources and Docker statistics</li>
+<li>Managing user accounts and API keys</li>
+<li>Viewing system logs and events</li>
+</ul>
+<h2>API Configuration</h2>
+<h3>Base URL</h3>
+<p>The API base URL should be configured by the user. Default: <code>http://localhost:3552/api</code></p>
+<h3>Authentication</h3>
+<p>Arcane supports two authentication methods:</p>
+<ol>
+<li><strong>Bearer Token (JWT)</strong>: Obtained via login endpoint</li>
+<li><strong>API Key</strong>: Long-lived authentication using <code>X-API-Key</code> header</li>
+</ol>
+<h4>Getting a Bearer Token</h4>
+<pre><code class="language-bash">curl -X POST &quot;$BASE_URL/auth/login&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;username&quot;: &quot;admin&quot;,
+    &quot;password&quot;: &quot;your_password&quot;
+  }&#39;
+</code></pre>
+<p>Response includes <code>token</code>, <code>refreshToken</code>, and <code>expiresAt</code>.</p>
+<h4>Using API Keys</h4>
+<p>API keys can be created and managed through the <code>/apikeys</code> endpoints. Use the <code>X-API-Key</code> header for authentication.</p>
+<h2>Core Functionality</h2>
+<h3>1. Container Management</h3>
+<h4>List Containers</h4>
+<pre><code class="language-bash"># Get all containers
+curl -X GET &quot;$BASE_URL/containers&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Filter by status
+curl -X GET &quot;$BASE_URL/containers?status=running&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Search containers
+curl -X GET &quot;$BASE_URL/containers?search=nginx&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+</code></pre>
+<h4>Container Operations</h4>
+<pre><code class="language-bash"># Start container
+curl -X POST &quot;$BASE_URL/containers/{id}/start&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Stop container
+curl -X POST &quot;$BASE_URL/containers/{id}/stop&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Restart container
+curl -X POST &quot;$BASE_URL/containers/{id}/restart&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Remove container
+curl -X DELETE &quot;$BASE_URL/containers/{id}&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Get container details
+curl -X GET &quot;$BASE_URL/containers/{id}&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Get container logs
+curl -X GET &quot;$BASE_URL/containers/{id}/logs?tail=100&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Get container stats
+curl -X GET &quot;$BASE_URL/containers/{id}/stats&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+</code></pre>
+<h4>Advanced Container Operations</h4>
+<pre><code class="language-bash"># Execute command in container
+curl -X POST &quot;$BASE_URL/containers/{id}/exec&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;command&quot;: [&quot;ls&quot;, &quot;-la&quot;],
+    &quot;workingDir&quot;: &quot;/app&quot;
+  }&#39;
+
+# Rename container
+curl -X POST &quot;$BASE_URL/containers/{id}/rename&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;name&quot;: &quot;new-container-name&quot;
+  }&#39;
+
+# Update container resources
+curl -X POST &quot;$BASE_URL/containers/{id}/update&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;cpuShares&quot;: 512,
+    &quot;memory&quot;: 536870912,
+    &quot;restartPolicy&quot;: &quot;unless-stopped&quot;
+  }&#39;
+</code></pre>
+<h3>2. Docker Compose Stack Management</h3>
+<h4>List Stacks</h4>
+<pre><code class="language-bash">curl -X GET &quot;$BASE_URL/stacks&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+</code></pre>
+<h4>Deploy Stack from Template</h4>
+<pre><code class="language-bash">curl -X POST &quot;$BASE_URL/stacks&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;name&quot;: &quot;my-stack&quot;,
+    &quot;templateId&quot;: &quot;template-id&quot;,
+    &quot;envVars&quot;: {
+      &quot;PORT&quot;: &quot;8080&quot;,
+      &quot;DATABASE_URL&quot;: &quot;postgres://...&quot;
+    }
+  }&#39;
+</code></pre>
+<h4>Deploy Stack from Compose File</h4>
+<pre><code class="language-bash">curl -X POST &quot;$BASE_URL/stacks&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;name&quot;: &quot;my-stack&quot;,
+    &quot;composeContent&quot;: &quot;version: \&quot;3.8\&quot;\nservices:\n  web:\n    image: nginx:latest\n    ports:\n      - \&quot;80:80\&quot;&quot;
+  }&#39;
+</code></pre>
+<h4>Stack Operations</h4>
+<pre><code class="language-bash"># Get stack details
+curl -X GET &quot;$BASE_URL/stacks/{id}&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Update stack
+curl -X PUT &quot;$BASE_URL/stacks/{id}&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;envVars&quot;: {
+      &quot;PORT&quot;: &quot;9090&quot;
+    }
+  }&#39;
+
+# Remove stack
+curl -X DELETE &quot;$BASE_URL/stacks/{id}&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Start stack
+curl -X POST &quot;$BASE_URL/stacks/{id}/start&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Stop stack
+curl -X POST &quot;$BASE_URL/stacks/{id}/stop&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Restart stack
+curl -X POST &quot;$BASE_URL/stacks/{id}/restart&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Get stack logs
+curl -X GET &quot;$BASE_URL/stacks/{id}/logs?tail=100&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Pull latest images for stack
+curl -X POST &quot;$BASE_URL/stacks/{id}/pull&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+</code></pre>
+<h3>3. Template Management</h3>
+<h4>List Templates</h4>
+<pre><code class="language-bash">curl -X GET &quot;$BASE_URL/templates&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+</code></pre>
+<h4>Create Template</h4>
+<pre><code class="language-bash">curl -X POST &quot;$BASE_URL/templates&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;name&quot;: &quot;nginx-template&quot;,
+    &quot;description&quot;: &quot;Basic nginx web server&quot;,
+    &quot;content&quot;: &quot;version: \&quot;3.8\&quot;\nservices:\n  web:\n    image: nginx:{{VERSION}}\n    ports:\n      - \&quot;{{PORT}}:80\&quot;&quot;,
+    &quot;variables&quot;: [
+      {
+        &quot;name&quot;: &quot;VERSION&quot;,
+        &quot;description&quot;: &quot;Nginx version&quot;,
+        &quot;defaultValue&quot;: &quot;latest&quot;
+      },
+      {
+        &quot;name&quot;: &quot;PORT&quot;,
+        &quot;description&quot;: &quot;Host port&quot;,
+        &quot;defaultValue&quot;: &quot;80&quot;
+      }
+    ],
+    &quot;category&quot;: &quot;web-servers&quot;,
+    &quot;tags&quot;: [&quot;nginx&quot;, &quot;web&quot;]
+  }&#39;
+</code></pre>
+<h4>Template Operations</h4>
+<pre><code class="language-bash"># Get template
+curl -X GET &quot;$BASE_URL/templates/{id}&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Update template
+curl -X PUT &quot;$BASE_URL/templates/{id}&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;name&quot;: &quot;updated-template-name&quot;,
+    &quot;description&quot;: &quot;Updated description&quot;
+  }&#39;
+
+# Delete template
+curl -X DELETE &quot;$BASE_URL/templates/{id}&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Get template content with parsed variables
+curl -X GET &quot;$BASE_URL/templates/{id}/content&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+</code></pre>
+<h4>Global Template Variables</h4>
+<pre><code class="language-bash"># Get global variables
+curl -X GET &quot;$BASE_URL/templates/global-variables&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Update global variables
+curl -X PUT &quot;$BASE_URL/templates/global-variables&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;GLOBAL_DOMAIN&quot;: &quot;example.com&quot;,
+    &quot;GLOBAL_NETWORK&quot;: &quot;traefik-public&quot;
+  }&#39;
+</code></pre>
+<h3>4. Image Management</h3>
+<h4>List Images</h4>
+<pre><code class="language-bash">curl -X GET &quot;$BASE_URL/images&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+</code></pre>
+<h4>Pull Image</h4>
+<pre><code class="language-bash">curl -X POST &quot;$BASE_URL/images/pull&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;image&quot;: &quot;nginx:latest&quot;
+  }&#39;
+</code></pre>
+<h4>Image Operations</h4>
+<pre><code class="language-bash"># Get image details
+curl -X GET &quot;$BASE_URL/images/{id}&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Remove image
+curl -X DELETE &quot;$BASE_URL/images/{id}&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Prune unused images
+curl -X POST &quot;$BASE_URL/images/prune&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Search images in registry
+curl -X GET &quot;$BASE_URL/images/search?term=nginx&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+</code></pre>
+<h3>5. Network Management</h3>
+<h4>List Networks</h4>
+<pre><code class="language-bash">curl -X GET &quot;$BASE_URL/networks&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+</code></pre>
+<h4>Create Network</h4>
+<pre><code class="language-bash">curl -X POST &quot;$BASE_URL/networks&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;name&quot;: &quot;my-network&quot;,
+    &quot;driver&quot;: &quot;bridge&quot;,
+    &quot;internal&quot;: false,
+    &quot;attachable&quot;: true
+  }&#39;
+</code></pre>
+<h4>Network Operations</h4>
+<pre><code class="language-bash"># Get network details
+curl -X GET &quot;$BASE_URL/networks/{id}&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Remove network
+curl -X DELETE &quot;$BASE_URL/networks/{id}&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Connect container to network
+curl -X POST &quot;$BASE_URL/networks/{id}/connect&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;containerId&quot;: &quot;container-id&quot;
+  }&#39;
+
+# Disconnect container from network
+curl -X POST &quot;$BASE_URL/networks/{id}/disconnect&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;containerId&quot;: &quot;container-id&quot;
+  }&#39;
+
+# Prune unused networks
+curl -X POST &quot;$BASE_URL/networks/prune&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+</code></pre>
+<h3>6. Volume Management</h3>
+<h4>List Volumes</h4>
+<pre><code class="language-bash">curl -X GET &quot;$BASE_URL/volumes&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+</code></pre>
+<h4>Create Volume</h4>
+<pre><code class="language-bash">curl -X POST &quot;$BASE_URL/volumes&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;name&quot;: &quot;my-volume&quot;,
+    &quot;driver&quot;: &quot;local&quot;,
+    &quot;labels&quot;: {
+      &quot;project&quot;: &quot;my-app&quot;
+    }
+  }&#39;
+</code></pre>
+<h4>Volume Operations</h4>
+<pre><code class="language-bash"># Get volume details
+curl -X GET &quot;$BASE_URL/volumes/{name}&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Remove volume
+curl -X DELETE &quot;$BASE_URL/volumes/{name}&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Prune unused volumes
+curl -X POST &quot;$BASE_URL/volumes/prune&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+</code></pre>
+<h3>7. System Monitoring</h3>
+<h4>System Information</h4>
+<pre><code class="language-bash"># Get Docker system info
+curl -X GET &quot;$BASE_URL/system/info&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Get Docker version
+curl -X GET &quot;$BASE_URL/system/version&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Get system stats
+curl -X GET &quot;$BASE_URL/system/stats&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Get disk usage
+curl -X GET &quot;$BASE_URL/system/df&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+</code></pre>
+<h4>Events and Logs</h4>
+<pre><code class="language-bash"># Get system events (streaming)
+curl -X GET &quot;$BASE_URL/system/events&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Get events with filters
+curl -X GET &quot;$BASE_URL/system/events?since=1609459200&amp;type=container&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+</code></pre>
+<h3>8. User Management</h3>
+<h4>List Users</h4>
+<pre><code class="language-bash">curl -X GET &quot;$BASE_URL/users&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+</code></pre>
+<h4>Create User</h4>
+<pre><code class="language-bash">curl -X POST &quot;$BASE_URL/users&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;username&quot;: &quot;newuser&quot;,
+    &quot;email&quot;: &quot;user@example.com&quot;,
+    &quot;password&quot;: &quot;securepassword123&quot;,
+    &quot;role&quot;: &quot;user&quot;
+  }&#39;
+</code></pre>
+<h4>User Operations</h4>
+<pre><code class="language-bash"># Get user details
+curl -X GET &quot;$BASE_URL/users/{userId}&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Update user
+curl -X PUT &quot;$BASE_URL/users/{userId}&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;email&quot;: &quot;newemail@example.com&quot;,
+    &quot;role&quot;: &quot;admin&quot;
+  }&#39;
+
+# Delete user
+curl -X DELETE &quot;$BASE_URL/users/{userId}&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Change password
+curl -X PUT &quot;$BASE_URL/auth/password&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;currentPassword&quot;: &quot;oldpassword&quot;,
+    &quot;newPassword&quot;: &quot;newpassword123&quot;
+  }&#39;
+</code></pre>
+<h3>9. API Key Management</h3>
+<h4>List API Keys</h4>
+<pre><code class="language-bash">curl -X GET &quot;$BASE_URL/apikeys&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+</code></pre>
+<h4>Create API Key</h4>
+<pre><code class="language-bash">curl -X POST &quot;$BASE_URL/apikeys&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;name&quot;: &quot;CI/CD Pipeline Key&quot;,
+    &quot;description&quot;: &quot;API key for automated deployments&quot;,
+    &quot;expiresAt&quot;: &quot;2025-12-31T23:59:59Z&quot;
+  }&#39;
+</code></pre>
+<h4>API Key Operations</h4>
+<pre><code class="language-bash"># Get API key details
+curl -X GET &quot;$BASE_URL/apikeys/{id}&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+
+# Update API key
+curl -X PUT &quot;$BASE_URL/apikeys/{id}&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;name&quot;: &quot;Updated Key Name&quot;,
+    &quot;description&quot;: &quot;Updated description&quot;
+  }&#39;
+
+# Delete API key
+curl -X DELETE &quot;$BASE_URL/apikeys/{id}&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot;
+</code></pre>
+<h2>Implementation Guidelines</h2>
+<h3>Error Handling</h3>
+<p>All API responses follow a standard format:</p>
+<pre><code class="language-json">{
+  &quot;success&quot;: true|false,
+  &quot;data&quot;: {...},
+  &quot;message&quot;: &quot;Success or error message&quot;
+}
+</code></pre>
+<p>Error responses use HTTP problem details (RFC 7807):</p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Error title&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Detailed error message&quot;
+}
+</code></pre>
+<h3>Pagination</h3>
+<p>List endpoints support pagination with these query parameters:</p>
+<ul>
+<li><code>start</code>: Starting index (default: 0)</li>
+<li><code>limit</code>: Items per page (default: 20)</li>
+<li><code>sort</code>: Column to sort by</li>
+<li><code>order</code>: Sort direction (asc/desc, default: asc)</li>
+<li><code>search</code>: Search query</li>
+</ul>
+<p>Response includes pagination metadata:</p>
+<pre><code class="language-json">{
+  &quot;success&quot;: true,
+  &quot;data&quot;: [...],
+  &quot;pagination&quot;: {
+    &quot;start&quot;: 0,
+    &quot;limit&quot;: 20,
+    &quot;total&quot;: 100,
+    &quot;hasMore&quot;: true
+  }
+}
+</code></pre>
+<h3>Using Python</h3>
+<p>When implementing Arcane operations in Python, use the <code>requests</code> library:</p>
+<pre><code class="language-python">import requests
+
+BASE_URL = &quot;http://localhost:3552/api&quot;
+TOKEN = &quot;your-jwt-token&quot;
+
+headers = {
+    &quot;Authorization&quot;: f&quot;Bearer {TOKEN}&quot;,
+    &quot;Content-Type&quot;: &quot;application/json&quot;
+}
+
+# List containers
+response = requests.get(f&quot;{BASE_URL}/containers&quot;, headers=headers)
+containers = response.json()
+
+# Deploy stack
+stack_data = {
+    &quot;name&quot;: &quot;my-stack&quot;,
+    &quot;templateId&quot;: &quot;template-id&quot;,
+    &quot;envVars&quot;: {
+        &quot;PORT&quot;: &quot;8080&quot;
+    }
+}
+response = requests.post(f&quot;{BASE_URL}/stacks&quot;, headers=headers, json=stack_data)
+result = response.json()
+</code></pre>
+<h3>Using Bash</h3>
+<p>For simple operations, use curl with error handling:</p>
+<pre><code class="language-bash">#!/bin/bash
+
+BASE_URL=&quot;http://localhost:3552/api&quot;
+TOKEN=&quot;your-jwt-token&quot;
+
+# Function to make authenticated requests
+api_call() {
+    local method=$1
+    local endpoint=$2
+    local data=$3
+    
+    if [ -z &quot;$data&quot; ]; then
+        curl -s -X &quot;$method&quot; &quot;$BASE_URL/$endpoint&quot; \
+            -H &quot;Authorization: Bearer $TOKEN&quot;
+    else
+        curl -s -X &quot;$method&quot; &quot;$BASE_URL/$endpoint&quot; \
+            -H &quot;Authorization: Bearer $TOKEN&quot; \
+            -H &quot;Content-Type: application/json&quot; \
+            -d &quot;$data&quot;
+    fi
+}
+
+# Example: List containers
+containers=$(api_call GET &quot;containers&quot;)
+echo &quot;$containers&quot; | jq &#39;.data[] | {id, name, status}&#39;
+</code></pre>
+<h2>Common Workflows</h2>
+<h3>1. Deploy Application Stack</h3>
+<pre><code class="language-python"># 1. Create or select template
+template_data = {
+    &quot;name&quot;: &quot;webapp-template&quot;,
+    &quot;content&quot;: &quot;version: &#39;3.8&#39;\nservices:\n  web:\n    image: myapp:{{VERSION}}\n    ports:\n      - &#39;{{PORT}}:8080&#39;&quot;,
+    &quot;variables&quot;: [
+        {&quot;name&quot;: &quot;VERSION&quot;, &quot;defaultValue&quot;: &quot;latest&quot;},
+        {&quot;name&quot;: &quot;PORT&quot;, &quot;defaultValue&quot;: &quot;80&quot;}
+    ]
+}
+template = requests.post(f&quot;{BASE_URL}/templates&quot;, headers=headers, json=template_data).json()
+
+# 2. Deploy stack from template
+stack_data = {
+    &quot;name&quot;: &quot;production-webapp&quot;,
+    &quot;templateId&quot;: template[&quot;data&quot;][&quot;id&quot;],
+    &quot;envVars&quot;: {
+        &quot;VERSION&quot;: &quot;v1.2.3&quot;,
+        &quot;PORT&quot;: &quot;8080&quot;
+    }
+}
+stack = requests.post(f&quot;{BASE_URL}/stacks&quot;, headers=headers, json=stack_data).json()
+
+# 3. Monitor deployment
+stack_id = stack[&quot;data&quot;][&quot;id&quot;]
+logs = requests.get(f&quot;{BASE_URL}/stacks/{stack_id}/logs?tail=50&quot;, headers=headers).json()
+</code></pre>
+<h3>2. Scale and Monitor Containers</h3>
+<pre><code class="language-python"># Get running containers
+containers = requests.get(f&quot;{BASE_URL}/containers?status=running&quot;, headers=headers).json()
+
+# Get stats for each container
+for container in containers[&quot;data&quot;]:
+    stats = requests.get(f&quot;{BASE_URL}/containers/{container[&#39;id&#39;]}/stats&quot;, headers=headers).json()
+    print(f&quot;{container[&#39;name&#39;]}: CPU {stats[&#39;data&#39;][&#39;cpuPercent&#39;]:.2f}%, Memory {stats[&#39;data&#39;][&#39;memoryPercent&#39;]:.2f}%&quot;)
+
+# Update container resources if needed
+update_data = {
+    &quot;cpuShares&quot;: 1024,
+    &quot;memory&quot;: 1073741824  # 1GB
+}
+requests.post(f&quot;{BASE_URL}/containers/{container_id}/update&quot;, headers=headers, json=update_data)
+</code></pre>
+<h3>3. Cleanup and Maintenance</h3>
+<pre><code class="language-python"># Prune unused resources
+requests.post(f&quot;{BASE_URL}/images/prune&quot;, headers=headers)
+requests.post(f&quot;{BASE_URL}/volumes/prune&quot;, headers=headers)
+requests.post(f&quot;{BASE_URL}/networks/prune&quot;, headers=headers)
+
+# Get disk usage before and after
+df_before = requests.get(f&quot;{BASE_URL}/system/df&quot;, headers=headers).json()
+# ... perform cleanup ...
+df_after = requests.get(f&quot;{BASE_URL}/system/df&quot;, headers=headers).json()
+</code></pre>
+<h2>Best Practices</h2>
+<ol>
+<li><p><strong>Authentication</strong>: Always use API keys for automated scripts and services. Use JWT tokens for interactive sessions.</p>
+</li>
+<li><p><strong>Error Handling</strong>: Check response status codes and handle errors appropriately:</p>
+<ul>
+<li>200: Success</li>
+<li>400: Bad request (validation error)</li>
+<li>401: Unauthorized</li>
+<li>403: Forbidden</li>
+<li>404: Not found</li>
+<li>500: Internal server error</li>
+</ul>
+</li>
+<li><p><strong>Resource Management</strong>: </p>
+<ul>
+<li>Always specify resource limits when creating containers</li>
+<li>Use labels to organize resources</li>
+<li>Regularly prune unused resources</li>
+</ul>
+</li>
+<li><p><strong>Security</strong>:</p>
+<ul>
+<li>Store API keys and tokens securely (use environment variables)</li>
+<li>Use HTTPS in production</li>
+<li>Implement proper access controls with user roles</li>
+<li>Rotate API keys regularly</li>
+</ul>
+</li>
+<li><p><strong>Monitoring</strong>:</p>
+<ul>
+<li>Monitor container stats regularly</li>
+<li>Set up alerts for resource usage</li>
+<li>Review system logs periodically</li>
+</ul>
+</li>
+<li><p><strong>Templates</strong>:</p>
+<ul>
+<li>Use variables for configurable values</li>
+<li>Document template variables clearly</li>
+<li>Version control your templates</li>
+<li>Use global variables for shared configuration</li>
+</ul>
+</li>
+</ol>
+<h2>Troubleshooting</h2>
+<h3>Common Issues</h3>
+<p><strong>Authentication Failed</strong></p>
+<ul>
+<li>Verify token is not expired (check <code>expiresAt</code>)</li>
+<li>Use refresh token to get new access token</li>
+<li>Verify API key is correct and not expired</li>
+</ul>
+<p><strong>Container Won&#39;t Start</strong></p>
+<ul>
+<li>Check container logs: <code>GET /containers/{id}/logs</code></li>
+<li>Inspect container: <code>GET /containers/{id}</code></li>
+<li>Verify port conflicts and resource availability</li>
+</ul>
+<p><strong>Stack Deployment Failed</strong></p>
+<ul>
+<li>Validate compose file syntax</li>
+<li>Check template variables are properly defined</li>
+<li>Review stack logs: <code>GET /stacks/{id}/logs</code></li>
+</ul>
+<p><strong>Resource Not Found</strong></p>
+<ul>
+<li>Verify resource ID is correct</li>
+<li>Check if resource was deleted</li>
+<li>Ensure proper permissions</li>
+</ul>
+<h2>Notes</h2>
+<ul>
+<li>All timestamps are in ISO 8601 format (UTC)</li>
+<li>Container IDs can be full or short (first 12 characters)</li>
+<li>Image names support full registry paths (registry.example.com/image:tag)</li>
+<li>Network and volume names must be unique</li>
+<li>Stack names must be unique per user/project</li>
+</ul>
+<h2>Reference Links</h2>
+<p>For complete API documentation and schema definitions, refer to the OpenAPI specification provided in the JSON schema.</p>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/cougz/arcane-docker-manager/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/cougz/arcane-docker-manager" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/cougz/arcane-docker-manager/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@cougz</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">DevOps & Cloud</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

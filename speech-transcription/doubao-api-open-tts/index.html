@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Text-to-Speech service using Doubao (Volcano Engine) API with 200+ voices, interactive voice selection">
+  <title>doubao-api-open-tts - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Speech & Transcription</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Speech & Transcription</a>
+                <span class="skill-page-author">by @xdrshjr</span>
+              </div>
+              <h1 class="skill-page-title">doubao-api-open-tts</h1>
+              <p class="skill-page-desc">Text-to-Speech service using Doubao (Volcano Engine) API with 200+ voices, interactive voice selection</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Doubao Open TTS</h1>
+<p>Text-to-Speech (TTS) service using Doubao (Volcano Engine) API V1 interface to convert text into natural-sounding speech.</p>
+<h2>Features</h2>
+<ul>
+<li>🎙️ <strong>200+ Voice Options</strong> - Default: Shiny (灿灿) for general scenarios</li>
+<li>🔊 <strong>Multiple Audio Formats</strong> - Supports mp3, pcm, wav</li>
+<li>⚡ <strong>Adjustable Parameters</strong> - Speed and volume control</li>
+<li>📦 <strong>Dual Interface</strong> - Command-line tool + Python API</li>
+<li>🎯 <strong>Voice Categorization</strong> - Browse voices by category</li>
+<li>🔐 <strong>Mandatory API Configuration</strong> - Requires API credentials; stops and prompts user if not configured (default voice only available with explicit user confirmation)</li>
+</ul>
+<h2>Quick Start for Agents</h2>
+<p><strong>重要提示</strong>: 当检测到没有API配置时，Agent必须<strong>立即停止</strong>并询问用户是否配置API，<strong>不允许</strong>直接使用默认音色生成音频，除非用户明确坚持使用默认音色。</p>
+<p>When using this SKILL, the Agent should follow this workflow:</p>
+<h3>Step 1: Check API Configuration</h3>
+<p>First, check if API credentials are configured:</p>
+<pre><code class="language-python">from scripts.tts import check_api_config, setup_api_config
+
+# Check if API is configured
+config = check_api_config()
+if not config:
+    # API not configured, MUST stop and ask user
+    # DO NOT proceed with default voice
+    print(&quot;⚠️ API credentials not found. Cannot proceed without API configuration.&quot;)
+    # ... ask user for credentials or if they want to use default
+</code></pre>
+<h3>Step 2: Handle Missing API Configuration</h3>
+<p><strong>如果API凭证缺失，Agent必须停止并询问用户</strong>: 用户可以选择配置API，或者明确坚持使用默认音色（仅当用户明确要求时才允许）。</p>
+<pre><code>Agent: I need API credentials to use the Doubao TTS service. 
+       Please provide the following information:
+
+1. App ID (APPID)
+2. Access Token
+3. Secret Key
+
+You can get these from: https://console.volcengine.com/
+
+Please enter your App ID:
+
+User: 4269953601
+
+Agent: Please enter your Access Token:
+
+User: uAGE3iP8nJf3ewu-d6U1P6Jthv7i1DH7
+
+Agent: Please enter your Secret Key:
+
+User: Dfta36aYgcdqY-ylHoh9FQyqiERS5iTv
+
+Agent: [Saves credentials to .env file]
+       ✅ API configuration saved successfully!
+</code></pre>
+<p><strong>用户选择</strong>: 如果用户不想配置API但坚持使用默认音色:</p>
+<pre><code>User: 我不想配置API，就用默认音色吧
+
+Agent: ⚠️ 确认使用默认音色吗？这将使用内置的默认音色生成音频。
+       输入 &#39;yes&#39; 确认使用默认音色，或提供API凭证以获得更好的体验。
+
+User: yes
+
+Agent: [继续执行，使用默认音色]
+</code></pre>
+<h3>Step 3: Use the Service</h3>
+<p>After API is configured OR user explicitly confirmed to use default voice:</p>
+<pre><code class="language-python">from scripts.tts import VolcanoTTS
+
+tts = VolcanoTTS()
+output = tts.synthesize(&quot;Hello world&quot;, output_file=&quot;output.mp3&quot;)
+</code></pre>
+<h2>API Configuration Detection</h2>
+<h3>Function: <code>check_api_config()</code></h3>
+<p>Checks if API credentials are available. Returns config dict or None.</p>
+<pre><code class="language-python">from scripts.tts import check_api_config
+
+config = check_api_config()
+if config:
+    print(f&quot;App ID: {config[&#39;app_id&#39;]}&quot;)
+    print(f&quot;Access Token: {config[&#39;access_token&#39;][:10]}...&quot;)
+    print(f&quot;Secret Key: {config[&#39;secret_key&#39;][:10]}...&quot;)
+else:
+    print(&quot;API not configured&quot;)
+</code></pre>
+<h3>Function: <code>setup_api_config(app_id, access_token, secret_key, voice_type=None)</code></h3>
+<p>Saves API credentials to the .env file in the SKILL directory.</p>
+<pre><code class="language-python">from scripts.tts import setup_api_config
+
+# Save credentials
+setup_api_config(
+    app_id=&quot;4269953601&quot;,
+    access_token=&quot;uAGE3iP8nJf3ewu-d6U1P6Jthv7i1DH7&quot;,
+    secret_key=&quot;Dfta36aYgcdqY-ylHoh9FQyqiERS5iTv&quot;,
+    voice_type=&quot;zh_female_cancan_mars_bigtts&quot;  # optional
+)
+
+print(&quot;✅ Configuration saved to .env file&quot;)
+</code></pre>
+<h3>Complete Agent Workflow Example</h3>
+<pre><code class="language-python">from scripts.tts import check_api_config, setup_api_config, VolcanoTTS
+
+def synthesize_with_auto_config(text, output_file=&quot;output.mp3&quot;, use_default_voice=False):
+    &quot;&quot;&quot;
+    Synthesize speech with automatic API configuration.
+    
+    IMPORTANT: If API is not configured, this function will STOP and ask user.
+    It will NOT automatically use default voice unless user explicitly confirms.
+    &quot;&quot;&quot;
+    # Step 1: Check if API is configured
+    config = check_api_config()
+    
+    if not config:
+        # Step 2: STOP and ask user - DO NOT proceed automatically
+        print(&quot;🔐 API Configuration Required&quot;)
+        print(&quot;=&quot; * 50)
+        print(&quot;\n⚠️ No API credentials found. You have two options:&quot;)
+        print(&quot;\nOption 1: Configure API (Recommended)&quot;)
+        print(&quot;  Please visit https://console.volcengine.com/ to get your credentials&quot;)
+        print(&quot;\nOption 2: Use Default Voice&quot;)
+        print(&quot;  ⚠️ Only available if you explicitly confirm&quot;)
+        
+        # Ask user what they want to do
+        choice = input(&quot;\nEnter &#39;1&#39; to configure API, or &#39;2&#39; to use default voice: &quot;).strip()
+        
+        if choice == &#39;1&#39;:
+            # Configure API
+            print(&quot;\nRequired information:&quot;)
+            app_id = input(&quot;1. Enter your App ID: &quot;).strip()
+            access_token = input(&quot;2. Enter your Access Token: &quot;).strip()
+            secret_key = input(&quot;3. Enter your Secret Key: &quot;).strip()
+            
+            # Optional: ask for preferred voice
+            print(&quot;\n🎙️ Optional: Select a default voice (press Enter to use Shiny)&quot;)
+            voice_type = input(&quot;Voice type (or voice name): &quot;).strip()
+            
+            # Save configuration
+            setup_api_config(app_id, access_token, secret_key, voice_type or None)
+            print(&quot;\n✅ Configuration saved!&quot;)
+            
+        elif choice == &#39;2&#39;:
+            # User explicitly chose to use default voice
+            confirm = input(&quot;\n⚠️ Are you sure you want to use the default voice? (yes/no): &quot;).strip().lower()
+            if confirm != &#39;yes&#39;:
+                print(&quot;❌ Cancelled. Please configure API to proceed.&quot;)
+                return None
+            use_default_voice = True
+            print(&quot;\n⚠️ Using default voice as requested...&quot;)
+        else:
+            print(&quot;❌ Invalid choice. Please configure API to proceed.&quot;)
+            return None
+    
+    # Step 3: Use the service
+    if use_default_voice:
+        # Use default voice (only when user explicitly confirmed)
+        tts = VolcanoTTS(use_default=True)
+    else:
+        tts = VolcanoTTS()
+    
+    output_path = tts.synthesize(text, output_file=output_file)
+    return output_path
+
+# Use it
+output = synthesize_with_auto_config(&quot;Hello, this is a test&quot;)
+if output:
+    print(f&quot;Audio saved to: {output}&quot;)
+else:
+    print(&quot;Operation cancelled - API configuration required&quot;)
+</code></pre>
+<h2>Configuration Methods</h2>
+<h2>Installation</h2>
+<pre><code class="language-bash">cd skills/volcano-tts
+pip install -r requirements.txt
+</code></pre>
+<h2>Configuration</h2>
+<h3>Method 1: Environment Variables</h3>
+<pre><code class="language-bash">export VOLCANO_TTS_APPID=&quot;your_app_id&quot;
+export VOLCANO_TTS_ACCESS_TOKEN=&quot;your_access_token&quot;
+export VOLCANO_TTS_SECRET_KEY=&quot;your_secret_key&quot;
+export VOLCANO_TTS_VOICE_TYPE=&quot;zh_female_cancan_mars_bigtts&quot;  # Optional: set default voice
+</code></pre>
+<h3>Method 2: .env File</h3>
+<p>Copy <code>.env.example</code> to <code>.env</code> and fill in your credentials:</p>
+<pre><code class="language-bash">cp .env.example .env
+# Edit the .env file with your credentials
+</code></pre>
+<h2>Usage</h2>
+<h3>Command Line</h3>
+<pre><code class="language-bash"># Basic usage (uses default voice: Shiny)
+python scripts/tts.py &quot;Hello, this is a test of Doubao text-to-speech service&quot;
+
+# Specify output file and format
+python scripts/tts.py &quot;Welcome to use TTS&quot; -o output.mp3 -e mp3
+
+# Read text from file
+python scripts/tts.py -f input.txt -o output.mp3
+
+# Adjust parameters
+python scripts/tts.py &quot;Custom voice&quot; --speed 1.2 --volume 0.8 -v zh_female_cancan_mars_bigtts
+
+# List all available voices
+python scripts/tts.py --list-voices
+
+# List voices by category
+python scripts/tts.py --list-voices --category &quot;General-Multilingual&quot;
+
+# Use different cluster
+python scripts/tts.py &quot;Hello&quot; --cluster volcano_tts
+
+# Enable debug mode
+python scripts/tts.py &quot;Test&quot; --debug
+</code></pre>
+<h3>Python API</h3>
+<pre><code class="language-python">from scripts.tts import VolcanoTTS, VOICE_TYPES, VOICE_CATEGORIES
+
+# Initialize client
+tts = VolcanoTTS(
+    app_id=&quot;your_app_id&quot;,
+    access_token=&quot;your_access_token&quot;,
+    secret_key=&quot;your_secret_key&quot;,
+    voice_type=&quot;zh_female_cancan_mars_bigtts&quot;  # Optional: set default voice
+)
+
+# List available voices
+print(&quot;All voices:&quot;, tts.list_voices())
+print(&quot;General voices:&quot;, tts.list_voices(&quot;General-Normal&quot;))
+
+# Change voice
+tts.set_voice(&quot;zh_male_xudong_conversation_wvae_bigtts&quot;)  # Set to &quot;Happy Xiaodong&quot;
+
+# Synthesize speech
+output_path = tts.synthesize(
+    text=&quot;Hello, this is Doubao text-to-speech&quot;,
+    voice_type=&quot;zh_female_cancan_mars_bigtts&quot;,  # Optional: override default
+    encoding=&quot;mp3&quot;,
+    cluster=&quot;volcano_tts&quot;,
+    speed=1.0,
+    volume=1.0,
+    output_file=&quot;output.mp3&quot;
+)
+
+print(f&quot;Audio saved to: {output_path}&quot;)
+</code></pre>
+<h2>Interactive Voice Selection</h2>
+<p>The SKILL supports interactive voice selection workflow for Agent-User collaboration:</p>
+<h3>Workflow</h3>
+<ol>
+<li><strong>Agent Prompts User</strong> - Agent asks user to select a voice</li>
+<li><strong>Display Voice Options</strong> - Show recommended voices by category</li>
+<li><strong>User Selection</strong> - User tells Agent their preferred voice</li>
+<li><strong>Agent Calls Skill</strong> - Agent uses the selected voice to generate audio</li>
+</ol>
+<h3>Python API for Interactive Selection</h3>
+<p><strong>重要</strong>: 在使用以下代码之前，必须先检查API配置。如果没有配置，必须停止并询问用户。</p>
+<pre><code class="language-python">from scripts.tts import (
+    get_voice_selection_prompt,
+    find_voice_by_name,
+    get_voice_info,
+    check_api_config,
+    VolcanoTTS
+)
+
+# Step 0: Check API configuration FIRST
+config = check_api_config()
+if not config:
+    print(&quot;⚠️ API credentials not found. Please configure API first.&quot;)
+    print(&quot;Visit: https://console.volcengine.com/&quot;)
+    # STOP here and ask user to configure API
+    # DO NOT proceed with voice selection until API is configured
+    # OR user explicitly confirms to use default voice
+    
+# Step 1: Get the selection prompt to show user
+prompt = get_voice_selection_prompt()
+print(prompt)
+# Agent displays this to user and waits for response
+
+# Step 2: User responds with their choice (e.g., &quot;Shiny&quot; or &quot;灿灿&quot;)
+user_input = &quot;Shiny&quot;  # This comes from user
+
+# Step 3: Find the voice_type from user input
+voice_type, voice_name = find_voice_by_name(user_input)
+if voice_type:
+    print(f&quot;Selected voice: {voice_name} ({voice_type})&quot;)
+    
+    # Get detailed info
+    info = get_voice_info(voice_type)
+    print(f&quot;Category: {info[&#39;category_display&#39;]}&quot;)
+    
+    # Step 4: Use the voice to synthesize (API already verified)
+    tts = VolcanoTTS(
+        app_id=&quot;your_app_id&quot;,
+        access_token=&quot;your_access_token&quot;,
+        secret_key=&quot;your_secret_key&quot;
+    )
+    
+    output_path = tts.synthesize(
+        text=&quot;Hello, this is the selected voice&quot;,
+        voice_type=voice_type,
+        output_file=&quot;output.mp3&quot;
+    )
+    print(f&quot;Audio saved to: {output_path}&quot;)
+else:
+    print(&quot;Voice not found. Please select a valid voice.&quot;)
+    # DO NOT automatically use default - ask user instead
+</code></pre>
+<h3>Example Agent-User Conversation</h3>
+<pre><code>Agent: 🎙️ Please select a voice for text-to-speech synthesis:
+
+Here are our recommended voices by category:
+
+[General - Normal]
+  • 灿灿/Shiny [DEFAULT] (Chinese) -&gt; voice_type: zh_female_cancan_mars_bigtts
+  • 快乐小东 (Chinese) -&gt; voice_type: zh_male_xudong_conversation_wvae_bigtts
+  • 亲切女声 (Chinese) -&gt; voice_type: zh_female_qinqienvsheng_moon_bigtts
+
+[Roleplay]
+  • 纯真少女 (Chinese) -&gt; voice_type: ICL_zh_female_chunzhenshaonv_e588402fb8ad_tob
+  • 霸道总裁 (Chinese) -&gt; voice_type: ICL_zh_male_badaozongcai_v1_tob
+  • 撒娇男友 (Chinese) -&gt; voice_type: ICL_zh_male_sajiaonanyou_tob
+
+[Video Dubbing]
+  • 猴哥 (Chinese) -&gt; voice_type: zh_male_sunwukong_mars_bigtts
+  • 熊二 (Chinese) -&gt; voice_type: zh_male_xionger_mars_bigtts
+  • 佩奇猪 (Chinese) -&gt; voice_type: zh_female_peiqi_mars_bigtts
+
+💡 Tips:
+  • You can say the voice name (e.g., &#39;Shiny&#39;, &#39;猴哥&#39;, &#39;霸道总裁&#39;)
+  • Or provide the voice_type directly
+  • Type &#39;list all&#39; to see all 200+ available voices
+  • Press Enter to use the default voice (Shiny) - **only if API is configured**
+
+⚠️ **Note**: Voice selection requires API credentials. If not configured, you must configure API first or explicitly confirm to use default voice.
+
+Which voice would you like to use?
+
+User: I want to use 猴哥
+
+Agent: [Calls skill with voice_type=&quot;zh_male_sunwukong_mars_bigtts&quot;]
+       ✅ Generated audio with voice: 猴哥
+</code></pre>
+<h3>Supported Input Formats</h3>
+<p>The <code>find_voice_by_name()</code> function supports:</p>
+<ul>
+<li><strong>Direct voice_type</strong>: <code>zh_female_cancan_mars_bigtts</code></li>
+<li><strong>Chinese name</strong>: <code>灿灿</code>, <code>猴哥</code>, <code>霸道总裁</code></li>
+<li><strong>English alias</strong>: <code>Shiny</code>, <code>Skye</code>, <code>Alvin</code></li>
+<li><strong>Partial match</strong>: <code>灿灿</code> matches <code>灿灿/Shiny</code></li>
+</ul>
+<h2>Parameters</h2>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Default</th>
+<th>Options</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>voice_type</td>
+<td>Voice type</td>
+<td>zh_female_cancan_mars_bigtts</td>
+<td>See voice list below</td>
+</tr>
+<tr>
+<td>encoding</td>
+<td>Audio format</td>
+<td>mp3</td>
+<td>mp3, pcm, wav</td>
+</tr>
+<tr>
+<td>sample_rate</td>
+<td>Sample rate</td>
+<td>24000</td>
+<td>8000, 16000, 24000</td>
+</tr>
+<tr>
+<td>speed</td>
+<td>Speech speed</td>
+<td>1.0</td>
+<td>0.5 - 2.0</td>
+</tr>
+<tr>
+<td>volume</td>
+<td>Volume level</td>
+<td>1.0</td>
+<td>0.5 - 2.0</td>
+</tr>
+<tr>
+<td>cluster</td>
+<td>Cluster name</td>
+<td>volcano_tts</td>
+<td>volcano_tts</td>
+</tr>
+</tbody></table>
+<h2>Voice Categories</h2>
+<h3>General - Multilingual (with emotion support)</h3>
+<p>Supported emotions: happy, sad, angry, surprised, fear, hate, excited, coldness, neutral, depressed, lovey-dovey, shy, comfort, tension, tender, storytelling, radio, magnetic, advertising, vocal-fry, ASMR, news, entertainment, dialect</p>
+<table>
+<thead>
+<tr>
+<th>voice_type</th>
+<th>Voice Name</th>
+<th>Language</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>zh_male_lengkugege_emo_v2_mars_bigtts</td>
+<td>Cold Brother (Emotion)</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_female_tianxinxiaomei_emo_v2_mars_bigtts</td>
+<td>Sweet Xiaomei (Emotion)</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_female_gaolengyujie_emo_v2_mars_bigtts</td>
+<td>Cold Lady (Emotion)</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_male_aojiaobazong_emo_v2_mars_bigtts</td>
+<td>Proud CEO (Emotion)</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_male_guangzhoudege_emo_mars_bigtts</td>
+<td>Guangzhou Brother (Emotion)</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_male_jingqiangkanye_emo_mars_bigtts</td>
+<td>Beijing Style (Emotion)</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_female_linjuayi_emo_v2_mars_bigtts</td>
+<td>Neighbor Aunt (Emotion)</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_male_yourougongzi_emo_v2_mars_bigtts</td>
+<td>Gentleman (Emotion)</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_male_ruyayichen_emo_v2_mars_bigtts</td>
+<td>Elegant Boyfriend (Emotion)</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_male_junlangnanyou_emo_v2_mars_bigtts</td>
+<td>Handsome Boyfriend (Emotion)</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_male_beijingxiaoye_emo_v2_mars_bigtts</td>
+<td>Beijing Guy (Emotion)</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_female_roumeinvyou_emo_v2_mars_bigtts</td>
+<td>Gentle Girlfriend (Emotion)</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_male_yangguangqingnian_emo_v2_mars_bigtts</td>
+<td>Sunshine Youth (Emotion)</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_female_meilinvyou_emo_v2_mars_bigtts</td>
+<td>Charming Girlfriend (Emotion)</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_female_shuangkuaisisi_emo_v2_mars_bigtts</td>
+<td>Cheerful Sisi (Emotion)</td>
+<td>Chinese/American English</td>
+</tr>
+<tr>
+<td>en_female_candice_emo_v2_mars_bigtts</td>
+<td>Candice (Emotion)</td>
+<td>American English</td>
+</tr>
+<tr>
+<td>en_female_skye_emo_v2_mars_bigtts</td>
+<td>Serena (Emotion)</td>
+<td>American English</td>
+</tr>
+<tr>
+<td>en_male_glen_emo_v2_mars_bigtts</td>
+<td>Glen (Emotion)</td>
+<td>American English</td>
+</tr>
+<tr>
+<td>en_male_sylus_emo_v2_mars_bigtts</td>
+<td>Sylus (Emotion)</td>
+<td>American English</td>
+</tr>
+<tr>
+<td>en_male_corey_emo_v2_mars_bigtts</td>
+<td>Corey (Emotion)</td>
+<td>British English</td>
+</tr>
+<tr>
+<td>en_female_nadia_tips_emo_v2_mars_bigtts</td>
+<td>Nadia (Emotion)</td>
+<td>British English</td>
+</tr>
+<tr>
+<td>zh_male_shenyeboke_emo_v2_mars_bigtts</td>
+<td>Late Night Podcast (Emotion)</td>
+<td>Chinese</td>
+</tr>
+</tbody></table>
+<h3>General - Normal</h3>
+<table>
+<thead>
+<tr>
+<th>voice_type</th>
+<th>Voice Name</th>
+<th>Language</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>zh_female_cancan_mars_bigtts</strong></td>
+<td><strong>Shiny (灿灿)</strong> ⭐Default</td>
+<td><strong>Chinese/American English</strong></td>
+</tr>
+<tr>
+<td>zh_female_qinqienvsheng_moon_bigtts</td>
+<td>Friendly Female</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_male_xudong_conversation_wvae_bigtts</td>
+<td>Happy Xiaodong</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_female_shuangkuaisisi_moon_bigtts</td>
+<td>Cheerful Sisi/Skye</td>
+<td>Chinese/American English</td>
+</tr>
+<tr>
+<td>zh_male_wennuanahu_moon_bigtts</td>
+<td>Warm Ahu/Alvin</td>
+<td>Chinese/American English</td>
+</tr>
+<tr>
+<td>zh_male_yangguangqingnian_moon_bigtts</td>
+<td>Sunshine Youth</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_female_linjianvhai_moon_bigtts</td>
+<td>Girl Next Door</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_male_yuanboxiaoshu_moon_bigtts</td>
+<td>Knowledgeable Uncle</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_female_gaolengyujie_moon_bigtts</td>
+<td>Cold Lady</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_male_aojiaobazong_moon_bigtts</td>
+<td>Proud CEO</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_female_meilinvyou_moon_bigtts</td>
+<td>Charming Girlfriend</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_male_shenyeboke_moon_bigtts</td>
+<td>Late Night Podcast</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_male_dongfanghaoran_moon_bigtts</td>
+<td>Oriental Haoran</td>
+<td>Chinese</td>
+</tr>
+</tbody></table>
+<h3>Roleplay</h3>
+<table>
+<thead>
+<tr>
+<th>voice_type</th>
+<th>Voice Name</th>
+<th>Language</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ICL_zh_female_chunzhenshaonv_e588402fb8ad_tob</td>
+<td>Innocent Girl</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_male_xiaonaigou_edf58cf28b8b_tob</td>
+<td>Cute Boy</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_female_jinglingxiangdao_1beb294a9e3e_tob</td>
+<td>Elf Guide</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_male_menyoupingxiaoge_ffed9fc2fee7_tob</td>
+<td>Silent Guy</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_male_anrenqinzhu_cd62e63dcdab_tob</td>
+<td>Dark Lord</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_male_badaozongcai_v1_tob</td>
+<td>Dominant CEO</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_male_bingruogongzi_tob</td>
+<td>Sickly Gentleman</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_female_bingjiao3_tob</td>
+<td>Evil Queen</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_male_shuanglangshaonian_tob</td>
+<td>Cheerful Youth</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_male_sajiaonanyou_tob</td>
+<td>Clingy Boyfriend</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_male_wenrounanyou_tob</td>
+<td>Gentle Boyfriend</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_male_tiancaitongzhuo_tob</td>
+<td>Genius Deskmate</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_male_bingjiaoshaonian_tob</td>
+<td>Yandere Youth</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_male_bingjiaonanyou_tob</td>
+<td>Yandere Boyfriend</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_male_bingruoshaonian_tob</td>
+<td>Sickly Youth</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_male_bingjiaogege_tob</td>
+<td>Yandere Brother</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_female_bingjiaojiejie_tob</td>
+<td>Yandere Sister</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_male_bingjiaodidi_tob</td>
+<td>Yandere Brother (Young)</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_female_bingruoshaonv_tob</td>
+<td>Sickly Girl</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_female_bingjiaomengmei_tob</td>
+<td>Yandere Cute Girl</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_male_bingjiaobailian_tob</td>
+<td>Yandere White Lotus</td>
+<td>Chinese</td>
+</tr>
+</tbody></table>
+<h3>Video Dubbing</h3>
+<table>
+<thead>
+<tr>
+<th>voice_type</th>
+<th>Voice Name</th>
+<th>Language</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>zh_male_M100_conversation_wvae_bigtts</td>
+<td>Gentleman</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_female_maomao_conversation_wvae_bigtts</td>
+<td>Quiet Maomao</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_male_tiancaitongsheng_mars_bigtts</td>
+<td>Child Prodigy</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_male_sunwukong_mars_bigtts</td>
+<td>Monkey King</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_male_xionger_mars_bigtts</td>
+<td>Bear Two</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_female_peiqi_mars_bigtts</td>
+<td>Peppa Pig</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_female_wuzetian_mars_bigtts</td>
+<td>Empress Wu</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_female_yingtaowanzi_mars_bigtts</td>
+<td>Cherry Maruko</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_male_silang_mars_bigtts</td>
+<td>Silang</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_male_jieshuonansheng_mars_bigtts</td>
+<td>Narrator/Morgan</td>
+<td>Chinese/American English</td>
+</tr>
+</tbody></table>
+<h3>Audiobook</h3>
+<table>
+<thead>
+<tr>
+<th>voice_type</th>
+<th>Voice Name</th>
+<th>Language</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>zh_male_changtianyi_mars_bigtts</td>
+<td>Mystery Narrator</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_male_ruyaqingnian_mars_bigtts</td>
+<td>Elegant Youth</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_male_baqiqingshu_mars_bigtts</td>
+<td>Dominant Uncle</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_male_qingcang_mars_bigtts</td>
+<td>Qingcang</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_female_gufengshaoyu_mars_bigtts</td>
+<td>Ancient Style Lady</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_female_wenroushunv_mars_bigtts</td>
+<td>Gentle Lady</td>
+<td>Chinese</td>
+</tr>
+</tbody></table>
+<h3>Multilingual</h3>
+<table>
+<thead>
+<tr>
+<th>voice_type</th>
+<th>Voice Name</th>
+<th>Language</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>en_female_lauren_moon_bigtts</td>
+<td>Lauren</td>
+<td>American English</td>
+</tr>
+<tr>
+<td>en_male_michael_moon_bigtts</td>
+<td>Michael</td>
+<td>American English</td>
+</tr>
+<tr>
+<td>en_male_bruce_moon_bigtts</td>
+<td>Bruce</td>
+<td>American English</td>
+</tr>
+<tr>
+<td>en_female_emily_mars_bigtts</td>
+<td>Emily</td>
+<td>British English</td>
+</tr>
+<tr>
+<td>en_male_smith_mars_bigtts</td>
+<td>Smith</td>
+<td>British English</td>
+</tr>
+<tr>
+<td>en_female_anna_mars_bigtts</td>
+<td>Anna</td>
+<td>British English</td>
+</tr>
+</tbody></table>
+<h3>IP Voices</h3>
+<table>
+<thead>
+<tr>
+<th>voice_type</th>
+<th>Voice Name</th>
+<th>Language</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>zh_male_hupunan_mars_bigtts</td>
+<td>Shanghai Male</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_male_lubanqihao_mars_bigtts</td>
+<td>Luban No.7</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_female_yangmi_mars_bigtts</td>
+<td>Lin Xiao</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_female_linzhiling_mars_bigtts</td>
+<td>Sister Lingling</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_female_jiyejizi2_mars_bigtts</td>
+<td>Kasukabe Sister</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_male_tangseng_mars_bigtts</td>
+<td>Tang Monk</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_male_zhuangzhou_mars_bigtts</td>
+<td>Zhuang Zhou</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_male_zhubajie_mars_bigtts</td>
+<td>Zhu Bajie</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_female_ganmaodianyin_mars_bigtts</td>
+<td>Sick Electronic Sister</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_female_naying_mars_bigtts</td>
+<td>Frank Ying</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_female_leidian_mars_bigtts</td>
+<td>Female Thor</td>
+<td>Chinese</td>
+</tr>
+</tbody></table>
+<h3>Fun Accents</h3>
+<table>
+<thead>
+<tr>
+<th>voice_type</th>
+<th>Voice Name</th>
+<th>Language</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>zh_female_yueyunv_mars_bigtts</td>
+<td>Cantonese Girl</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_male_yuzhouzixuan_moon_bigtts</td>
+<td>Henan Boy</td>
+<td>Chinese-Henan Accent</td>
+</tr>
+<tr>
+<td>zh_female_daimengchuanmei_moon_bigtts</td>
+<td>Sichuan Girl</td>
+<td>Chinese-Sichuan Accent</td>
+</tr>
+<tr>
+<td>zh_male_guangxiyuanzhou_moon_bigtts</td>
+<td>Guangxi Boy</td>
+<td>Chinese-Guangxi Accent</td>
+</tr>
+<tr>
+<td>zh_male_zhoujielun_emo_v2_mars_bigtts</td>
+<td>Nunchaku Guy</td>
+<td>Chinese-Taiwan Accent</td>
+</tr>
+<tr>
+<td>zh_female_wanwanxiaohe_moon_bigtts</td>
+<td>Taiwan Xiaohe</td>
+<td>Chinese-Taiwan Accent</td>
+</tr>
+<tr>
+<td>zh_female_wanqudashu_moon_bigtts</td>
+<td>Bay Area Uncle</td>
+<td>Chinese-Guangdong Accent</td>
+</tr>
+<tr>
+<td>zh_male_guozhoudege_moon_bigtts</td>
+<td>Guangzhou Brother</td>
+<td>Chinese-Guangdong Accent</td>
+</tr>
+<tr>
+<td>zh_male_haoyuxiaoge_moon_bigtts</td>
+<td>Qingdao Boy</td>
+<td>Chinese-Qingdao Accent</td>
+</tr>
+<tr>
+<td>zh_male_beijingxiaoye_moon_bigtts</td>
+<td>Beijing Guy</td>
+<td>Chinese-Beijing Accent</td>
+</tr>
+<tr>
+<td>zh_male_jingqiangkanye_moon_bigtts</td>
+<td>Beijing Style/Harmony</td>
+<td>Chinese-Beijing/American English</td>
+</tr>
+<tr>
+<td>zh_female_meituojieer_moon_bigtts</td>
+<td>Changsha Girl</td>
+<td>Chinese-Changsha Accent</td>
+</tr>
+</tbody></table>
+<h3>Customer Service</h3>
+<table>
+<thead>
+<tr>
+<th>voice_type</th>
+<th>Voice Name</th>
+<th>Language</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ICL_zh_female_lixingyuanzi_cs_tob</td>
+<td>Rational Yuanzi</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_female_qingtiantaotao_cs_tob</td>
+<td>Sweet Taotao</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_female_qingxixiaoxue_cs_tob</td>
+<td>Clear Xiaoxue</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_female_qingtianmeimei_cs_tob</td>
+<td>Sweet Meimei</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_female_kailangtingting_cs_tob</td>
+<td>Cheerful Tingting</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_male_qingxinmumu_cs_tob</td>
+<td>Fresh Mumu</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_male_shuanglangxiaoyang_cs_tob</td>
+<td>Cheerful Xiaoyang</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_male_qingxinbobo_cs_tob</td>
+<td>Fresh Bobo</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_female_wenwanshanshan_cs_tob</td>
+<td>Gentle Shanshan</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_female_tianmeixiaoyu_cs_tob</td>
+<td>Sweet Xiaoyu</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_female_reqingaina_cs_tob</td>
+<td>Enthusiastic Aina</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_female_tianmeixiaoju_cs_tob</td>
+<td>Sweet Xiaoju</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_male_chenwenmingzai_cs_tob</td>
+<td>Steady Mingzai</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_male_qinqiexiaozhuo_cs_tob</td>
+<td>Friendly Xiaozhuo</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_female_lingdongxinxin_cs_tob</td>
+<td>Lively Xinxin</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_female_guaiqiaokeer_cs_tob</td>
+<td>Good Keer</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_female_nuanxinqianqian_cs_tob</td>
+<td>Warm Qianqian</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_female_ruanmengtuanzi_cs_tob</td>
+<td>Soft Tuanzi</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_male_yangguangyangyang_cs_tob</td>
+<td>Sunny Yangyang</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_female_ruanmengtangtang_cs_tob</td>
+<td>Soft Tangtang</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_female_xiuliqianqian_cs_tob</td>
+<td>Beautiful Qianqian</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_female_kaixinxiaohong_cs_tob</td>
+<td>Happy Xiaohong</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>ICL_zh_female_qingyingduoduo_cs_tob</td>
+<td>Light Duoduo</td>
+<td>Chinese</td>
+</tr>
+<tr>
+<td>zh_female_kefunvsheng_mars_bigtts</td>
+<td>Warm Female</td>
+<td>Chinese</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>Tip</strong>: Use <code>python scripts/tts.py --list-voices</code> to see the complete voice list</p>
+</blockquote>
+<h2>Get API Credentials</h2>
+<ol>
+<li>Visit <a href="https://console.volcengine.com/">Volcano Engine Console</a></li>
+<li>Enable &quot;Doubao Voice&quot; service</li>
+<li>Create an application in the console to get AppID, Access Token, and Secret Key</li>
+<li><strong>Ensure your account has sufficient TTS quota</strong></li>
+</ol>
+<h2>Troubleshooting</h2>
+<h3>Error: &quot;requested resource not granted&quot;</h3>
+<p><strong>Cause</strong>: Account lacks TTS service permission</p>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li>Login to <a href="https://console.volcengine.com/">Volcano Engine Console</a></li>
+<li>Go to &quot;Doubao Voice&quot; product page</li>
+<li>Confirm service is enabled and has available quota</li>
+<li>Check if Token has TTS calling permission</li>
+</ol>
+<h3>Error: &quot;invalid auth token&quot;</h3>
+<p><strong>Cause</strong>: Authentication information error</p>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li>Check if AppID, Access Token, Secret Key are correct</li>
+<li>Ensure no extra spaces</li>
+</ol>
+<h3>Error: &quot;requested resource not found&quot;</h3>
+<p><strong>Cause</strong>: Voice type or cluster name error</p>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li>Try different voice_type, such as BV001_streaming, BV002_streaming</li>
+<li>Try different cluster, such as volcano_tts, volcano</li>
+</ol>
+<h3>Test Configuration</h3>
+<p>Run test script to try multiple configurations:</p>
+<pre><code class="language-bash">python scripts/test_tts.py
+</code></pre>
+<h2>Notes</h2>
+<ul>
+<li>Ensure your account has sufficient speech synthesis quota</li>
+<li>Text length limits refer to official documentation</li>
+<li>Network request timeout defaults to 30 seconds</li>
+</ul>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/xdrshjr/doubao-api-open-tts/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/xdrshjr/doubao-api-open-tts" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/xdrshjr/doubao-api-open-tts/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@xdrshjr</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Speech & Transcription</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

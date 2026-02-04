@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Essential curl commands for HTTP requests, API testing">
+  <title>curl-http - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to CLI Utilities</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">CLI Utilities</a>
+                <span class="skill-page-author">by @arnarsson</span>
+              </div>
+              <h1 class="skill-page-title">curl-http</h1>
+              <p class="skill-page-desc">Essential curl commands for HTTP requests, API testing</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>curl - HTTP Client</h1>
+<p>Command-line tool for making HTTP requests and transferring data.</p>
+<h2>Basic Requests</h2>
+<h3>GET requests</h3>
+<pre><code class="language-bash"># Simple GET request
+curl https://api.example.com
+
+# Save output to file
+curl https://example.com -o output.html
+curl https://example.com/file.zip -O  # Use remote filename
+
+# Follow redirects
+curl -L https://example.com
+
+# Show response headers
+curl -i https://example.com
+
+# Show only headers
+curl -I https://example.com
+
+# Verbose output (debugging)
+curl -v https://example.com
+</code></pre>
+<h3>POST requests</h3>
+<pre><code class="language-bash"># POST with data
+curl -X POST https://api.example.com/users \
+  -d &quot;name=John&amp;email=john@example.com&quot;
+
+# POST JSON data
+curl -X POST https://api.example.com/users \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;name&quot;:&quot;John&quot;,&quot;email&quot;:&quot;john@example.com&quot;}&#39;
+
+# POST from file
+curl -X POST https://api.example.com/users \
+  -H &quot;Content-Type: application/json&quot; \
+  -d @data.json
+
+# Form upload
+curl -X POST https://api.example.com/upload \
+  -F &quot;file=@document.pdf&quot; \
+  -F &quot;description=My document&quot;
+</code></pre>
+<h3>Other HTTP methods</h3>
+<pre><code class="language-bash"># PUT request
+curl -X PUT https://api.example.com/users/1 \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;name&quot;:&quot;Jane&quot;}&#39;
+
+# DELETE request
+curl -X DELETE https://api.example.com/users/1
+
+# PATCH request
+curl -X PATCH https://api.example.com/users/1 \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;email&quot;:&quot;newemail@example.com&quot;}&#39;
+</code></pre>
+<h2>Headers &amp; Authentication</h2>
+<h3>Custom headers</h3>
+<pre><code class="language-bash"># Add custom header
+curl -H &quot;User-Agent: MyApp/1.0&quot; https://example.com
+
+# Multiple headers
+curl -H &quot;Accept: application/json&quot; \
+     -H &quot;Authorization: Bearer token123&quot; \
+     https://api.example.com
+</code></pre>
+<h3>Authentication</h3>
+<pre><code class="language-bash"># Basic auth
+curl -u username:password https://api.example.com
+
+# Bearer token
+curl -H &quot;Authorization: Bearer YOUR_TOKEN&quot; \
+  https://api.example.com
+
+# API key in header
+curl -H &quot;X-API-Key: your_api_key&quot; \
+  https://api.example.com
+
+# API key in URL
+curl &quot;https://api.example.com?api_key=your_key&quot;
+</code></pre>
+<h2>Advanced Features</h2>
+<h3>Timeouts &amp; retries</h3>
+<pre><code class="language-bash"># Connection timeout (seconds)
+curl --connect-timeout 10 https://example.com
+
+# Max time for entire operation
+curl --max-time 30 https://example.com
+
+# Retry on failure
+curl --retry 3 https://example.com
+
+# Retry delay
+curl --retry 3 --retry-delay 5 https://example.com
+</code></pre>
+<h3>Cookies</h3>
+<pre><code class="language-bash"># Send cookies
+curl -b &quot;session=abc123&quot; https://example.com
+
+# Save cookies to file
+curl -c cookies.txt https://example.com
+
+# Load cookies from file
+curl -b cookies.txt https://example.com
+
+# Both save and load
+curl -b cookies.txt -c cookies.txt https://example.com
+</code></pre>
+<h3>Proxy</h3>
+<pre><code class="language-bash"># Use HTTP proxy
+curl -x http://proxy.example.com:8080 https://api.example.com
+
+# With proxy authentication
+curl -x http://proxy:8080 -U user:pass https://api.example.com
+
+# SOCKS proxy
+curl --socks5 127.0.0.1:1080 https://api.example.com
+</code></pre>
+<h3>SSL/TLS</h3>
+<pre><code class="language-bash"># Ignore SSL certificate errors (not recommended for production)
+curl -k https://self-signed.example.com
+
+# Use specific SSL version
+curl --tlsv1.2 https://example.com
+
+# Use client certificate
+curl --cert client.crt --key client.key https://example.com
+
+# Show SSL handshake details
+curl -v https://example.com 2&gt;&amp;1 | grep -i ssl
+</code></pre>
+<h2>Response Handling</h2>
+<h3>Output formatting</h3>
+<pre><code class="language-bash"># Silent mode (no progress bar)
+curl -s https://api.example.com
+
+# Show only HTTP status code
+curl -s -o /dev/null -w &quot;%{http_code}&quot; https://example.com
+
+# Custom output format
+curl -w &quot;\nTime: %{time_total}s\nStatus: %{http_code}\n&quot; \
+  https://example.com
+
+# Pretty print JSON (with jq)
+curl -s https://api.example.com | jq &#39;.&#39;
+</code></pre>
+<h3>Range requests</h3>
+<pre><code class="language-bash"># Download specific byte range
+curl -r 0-1000 https://example.com/large-file.zip
+
+# Resume download
+curl -C - -O https://example.com/large-file.zip
+</code></pre>
+<h2>File Operations</h2>
+<h3>Downloading files</h3>
+<pre><code class="language-bash"># Download file
+curl -O https://example.com/file.zip
+
+# Download with custom name
+curl -o myfile.zip https://example.com/file.zip
+
+# Download multiple files
+curl -O https://example.com/file1.zip \
+     -O https://example.com/file2.zip
+
+# Resume interrupted download
+curl -C - -O https://example.com/large-file.zip
+</code></pre>
+<h3>Uploading files</h3>
+<pre><code class="language-bash"># FTP upload
+curl -T file.txt ftp://ftp.example.com/upload/
+
+# HTTP PUT upload
+curl -T file.txt https://example.com/upload
+
+# Form file upload
+curl -F &quot;file=@document.pdf&quot; https://example.com/upload
+</code></pre>
+<h2>Testing &amp; Debugging</h2>
+<h3>API testing</h3>
+<pre><code class="language-bash"># Test REST API
+curl -X GET https://api.example.com/users
+curl -X GET https://api.example.com/users/1
+curl -X POST https://api.example.com/users -d @user.json
+curl -X PUT https://api.example.com/users/1 -d @updated.json
+curl -X DELETE https://api.example.com/users/1
+
+# Test with verbose output
+curl -v -X POST https://api.example.com/login \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;username&quot;:&quot;test&quot;,&quot;password&quot;:&quot;pass&quot;}&#39;
+</code></pre>
+<h3>Performance testing</h3>
+<pre><code class="language-bash"># Measure request time
+curl -w &quot;Total time: %{time_total}s\n&quot; https://example.com
+
+# Detailed timing
+curl -w &quot;\nDNS: %{time_namelookup}s\nConnect: %{time_connect}s\nTLS: %{time_appconnect}s\nTransfer: %{time_starttransfer}s\nTotal: %{time_total}s\n&quot; \
+  -o /dev/null -s https://example.com
+</code></pre>
+<h3>Common debugging</h3>
+<pre><code class="language-bash"># Show request and response headers
+curl -v https://api.example.com
+
+# Trace request
+curl --trace-ascii trace.txt https://api.example.com
+
+# Include response headers in output
+curl -i https://api.example.com
+</code></pre>
+<h2>Common Patterns</h2>
+<p><strong>Quick JSON API test:</strong></p>
+<pre><code class="language-bash">curl -s https://api.github.com/users/octocat | jq &#39;{name, bio, followers}&#39;
+</code></pre>
+<p><strong>Download with progress bar:</strong></p>
+<pre><code class="language-bash">curl -# -O https://example.com/large-file.zip
+</code></pre>
+<p><strong>POST JSON and extract field:</strong></p>
+<pre><code class="language-bash">curl -s -X POST https://api.example.com/login \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;user&quot;:&quot;test&quot;,&quot;pass&quot;:&quot;secret&quot;}&#39; | jq -r &#39;.token&#39;
+</code></pre>
+<p><strong>Check if URL is accessible:</strong></p>
+<pre><code class="language-bash">if curl -s --head --fail https://example.com &gt; /dev/null; then
+  echo &quot;Site is up&quot;
+else
+  echo &quot;Site is down&quot;
+fi
+</code></pre>
+<p><strong>Parallel downloads:</strong></p>
+<pre><code class="language-bash">for i in {1..10}; do
+  curl -O https://example.com/file$i.jpg &amp;
+done
+wait
+</code></pre>
+<h2>Useful Flags</h2>
+<ul>
+<li><code>-X</code>: HTTP method (GET, POST, PUT, DELETE, etc.)</li>
+<li><code>-d</code>: Data to send (POST/PUT)</li>
+<li><code>-H</code>: Custom header</li>
+<li><code>-o</code>: Output file</li>
+<li><code>-O</code>: Save with remote filename</li>
+<li><code>-L</code>: Follow redirects</li>
+<li><code>-i</code>: Include headers in output</li>
+<li><code>-I</code>: Headers only</li>
+<li><code>-v</code>: Verbose output</li>
+<li><code>-s</code>: Silent mode</li>
+<li><code>-S</code>: Show errors even in silent mode</li>
+<li><code>-f</code>: Fail silently on HTTP errors</li>
+<li><code>-k</code>: Insecure (ignore SSL)</li>
+<li><code>-u</code>: Basic authentication</li>
+<li><code>-F</code>: Multipart form data</li>
+<li><code>-b</code>: Send cookies</li>
+<li><code>-c</code>: Save cookies</li>
+<li><code>-w</code>: Custom output format</li>
+</ul>
+<h2>Tips</h2>
+<ul>
+<li>Use <code>-s</code> in scripts to suppress progress bar</li>
+<li>Combine <code>-sS</code> for silent but show errors</li>
+<li>Use <code>-L</code> for redirects (e.g., shortened URLs)</li>
+<li>Add <code>-v</code> for debugging</li>
+<li>Use <code>jq</code> to process JSON responses</li>
+<li>Save common requests as shell aliases or scripts</li>
+<li>Use <code>--config</code> for complex reusable requests</li>
+</ul>
+<h2>Documentation</h2>
+<p>Official docs: <a href="https://curl.se/docs/">https://curl.se/docs/</a>
+Manual: <code>man curl</code>
+HTTP methods: <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods">https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods</a></p>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/arnarsson/curl-http/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/arnarsson/curl-http" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/arnarsson/curl-http/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@arnarsson</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">CLI Utilities</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

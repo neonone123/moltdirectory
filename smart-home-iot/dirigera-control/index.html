@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Control IKEA Dirigera smart home devices (lights, outlets, scenes, controllers)">
+  <title>dirigera-control - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Smart Home & IoT</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Smart Home & IoT</a>
+                <span class="skill-page-author">by @falderebet</span>
+              </div>
+              <h1 class="skill-page-title">dirigera-control</h1>
+              <p class="skill-page-desc">Control IKEA Dirigera smart home devices (lights, outlets, scenes, controllers)</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>IKEA Dirigera Smart Home Control</h1>
+<p>Control lights, outlets, scenes, and other IKEA smart home devices through the Dirigera hub.</p>
+<h2>Prerequisites</h2>
+<pre><code class="language-python">pip install dirigera
+</code></pre>
+<h2>Hub Setup</h2>
+<h3>Find Hub IP</h3>
+<p>Check the router/DHCP client list for &quot;Dirigera&quot; and note its IP address.</p>
+<p>If the agent is on the same LAN, try the IP discovery script. It can:</p>
+<ol>
+<li>Scan the subnet for likely candidates (no token required).</li>
+<li>Verify the exact hub IP if a token is available.</li>
+<li>As a last resort, try <code>generate-token</code> against candidates (interactive).</li>
+</ol>
+<pre><code class="language-bash">python scripts/find_dirigera_ip.py
+# or
+python scripts/find_dirigera_ip.py --subnet 192.168.1.0/24
+# verify with token (if you have it)
+python scripts/find_dirigera_ip.py --token &lt;dirigera-token&gt;
+# last resort: try generate-token against candidates
+python scripts/find_dirigera_ip.py --try-generate-token
+</code></pre>
+<h3>Generate Token</h3>
+<p><strong>IMPORTANT</strong>: Token generation REQUIRES PHYSICAL USER ACTION. Follow this workflow:</p>
+<h4>Step 1: Start Token Generation Script</h4>
+<p>Run the wrapper script in the background. It will automatically wait for the button press:</p>
+<pre><code class="language-bash">python scripts/generate_token_wrapper.py &lt;dirigera-ip-address&gt; &amp;
+</code></pre>
+<p>The token will be saved to <code>dirigera_token.txt</code> by default. To specify a custom location:</p>
+<pre><code class="language-bash">python scripts/generate_token_wrapper.py &lt;dirigera-ip-address&gt; --output /path/to/token.txt &amp;
+</code></pre>
+<h4>Step 2: <strong>END YOUR TURN AND INFORM THE USER</strong></h4>
+<p><strong>CRITICAL</strong>: After starting the script, you MUST:</p>
+<ol>
+<li><strong>End your turn immediately</strong> - do not wait or continue processing</li>
+<li>Tell the user: &quot;I&#39;ve started the token generation process. Please press the ACTION BUTTON on the bottom of your Dirigera hub now. Let me know when you&#39;ve pressed it.&quot;</li>
+</ol>
+<h4>Step 3: Wait for User Confirmation</h4>
+<p>The user will:</p>
+<ol>
+<li>Physically press the button on their Dirigera hub</li>
+<li>Reply to you confirming they pressed it (e.g., &quot;Done&quot; or &quot;Pressed&quot;)</li>
+</ol>
+<p>The script will automatically detect the button press and save the token to the file.</p>
+<h4>Step 4: Retrieve the Saved Token</h4>
+<p>After the user confirms, read the token from the file:</p>
+<pre><code class="language-python">from pathlib import Path
+token = Path(&quot;dirigera_token.txt&quot;).read_text().strip()
+</code></pre>
+<p>Or from a custom location:</p>
+<pre><code class="language-bash">TOKEN=$(cat /path/to/token.txt)
+</code></pre>
+<p>Then use the token to connect:</p>
+<pre><code class="language-python">import dirigera
+hub = dirigera.Hub(token=token, ip_address=&quot;&lt;dirigera-ip&gt;&quot;)
+</code></pre>
+<h4>Alternative: Manual Command</h4>
+<p>For manual use (not recommended for agents):</p>
+<pre><code class="language-bash">generate-token &lt;dirigera-ip-address&gt;
+</code></pre>
+<p>This requires interactive terminal access and doesn&#39;t save output automatically.</p>
+<h3>Troubleshooting</h3>
+<p>If you cannot find the hub IP address:</p>
+<ol>
+<li>Check the router/DHCP list and look for &quot;Dirigera&quot;.</li>
+<li>If the name is missing, match the hub&#39;s MAC address label to a new device entry.</li>
+<li>Ensure the hub and client are on the same network.</li>
+<li>If you have candidate IPs, run <code>generate-token</code> against them until one succeeds.</li>
+<li>If you already have a token, run <code>python scripts/find_dirigera_ip.py --token &lt;dirigera-token&gt;</code>.</li>
+<li>If everything else fails, run <code>python scripts/find_dirigera_ip.py --try-generate-token</code> and follow the prompt.</li>
+</ol>
+<h2>Hub Connection</h2>
+<pre><code class="language-python">import dirigera
+
+hub = dirigera.Hub(
+    token=&quot;token&quot;,
+    ip_address=&quot;ip_address&quot;
+)
+</code></pre>
+<h2>CRITICAL: Attribute Access</h2>
+<p><strong>Device state is in <code>.attributes</code>, not top-level.</strong></p>
+<pre><code class="language-python"># CORRECT
+light.attributes.is_on
+light.attributes.light_level
+
+# WRONG - raises AttributeError
+light.is_on
+light.light_level
+</code></pre>
+<p>Top-level: <code>device.id</code>, <code>device.is_reachable</code>, <code>device.room</code>
+State: <code>device.attributes.is_on</code>, <code>device.attributes.light_level</code></p>
+<h2>Quick Commands</h2>
+<h3>Discovery</h3>
+<pre><code class="language-python">lights = hub.get_lights()
+outlets = hub.get_outlets()
+controllers = hub.get_controllers()
+scenes = hub.get_scenes()
+</code></pre>
+<h3>Light Control</h3>
+<pre><code class="language-python">light = hub.get_light_by_name(lamp_name=&quot;bedroom light&quot;)
+
+# Check reachability first
+if light.is_reachable:
+    light.set_light(lamp_on=True)
+    light.set_light_level(light_level=75)
+    light.set_color_temperature(color_temp=2700)  # Warm white
+
+# Reload after changes
+light.reload()
+</code></pre>
+<h3>Outlet Control</h3>
+<pre><code class="language-python">outlet = hub.get_outlet_by_name(outlet_name=&quot;living room&quot;)
+outlet.set_on(outlet_on=True)
+outlet.reload()
+</code></pre>
+<h3>Scene Triggering</h3>
+<pre><code class="language-python">scene = hub.get_scene_by_name(scene_name=&quot;Sove tid&quot;)
+scene.trigger()
+</code></pre>
+<h3>Check Capabilities</h3>
+<pre><code class="language-python"># Verify device supports feature before using
+if &#39;colorTemperature&#39; in light.capabilities.can_receive:
+    light.set_color_temperature(color_temp=3000)
+</code></pre>
+<h2>Common Patterns</h2>
+<p>See <a href="references/patterns.md">references/patterns.md</a> for room-based control, batch operations, status reports, and battery monitoring.</p>
+<h2>Helper Scripts</h2>
+<p>Use <code>scripts/helpers.py</code> for common operations: get lights by room, check battery levels, find unreachable devices.</p>
+<h2>Complete Reference</h2>
+<p>See <a href="references/api.md">references/api.md</a> for:</p>
+<ul>
+<li>Complete attribute reference</li>
+<li>All control methods</li>
+<li>Device capabilities</li>
+<li>Color temperature/hue values</li>
+<li>Troubleshooting</li>
+</ul>
+<h2>Best Practices</h2>
+<ol>
+<li>Always check <code>device.is_reachable</code> before control</li>
+<li>Call <code>device.reload()</code> after control commands</li>
+<li>Use <code>.attributes</code> for all state access</li>
+<li>Add 0.5s delays between rapid commands</li>
+<li>Check capabilities before using features</li>
+</ol>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/falderebet/dirigera-control/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/falderebet/dirigera-control" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/falderebet/dirigera-control/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@falderebet</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Smart Home & IoT</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

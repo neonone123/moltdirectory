@@ -65,36 +65,36 @@
                 </div>
                 <div class="markdown-content">
                   <h1>Web Search Plus</h1>
-<p>Multi-provider web search with <strong>Intelligent Auto-Routing</strong>: Serper (Google), Tavily (Research), Exa (Neural).</p>
-<p><strong>NEW in v2.1.0</strong>: Intelligent multi-signal analysis with confidence scoring!</p>
+<p>Multi-provider web search with <strong>Intelligent Auto-Routing</strong>: Serper (Google), Tavily (Research), Exa (Neural), You.com (RAG/Real-time), SearXNG (Privacy/Self-hosted).</p>
 <hr>
-<h2>🔑 API Keys Setup</h2>
-<p><strong>NEW in v2.2.0</strong>: The script <strong>auto-loads</strong> API keys from <code>.env</code> in the skill directory!</p>
-<h3>Quick Setup</h3>
+<h2>🚀 Quick Start</h2>
+<pre><code class="language-bash"># Interactive setup (recommended for first run)
+python3 scripts/setup.py
+
+# Or manual: copy config and add your keys
+cp config.example.json config.json
+</code></pre>
+<p>The wizard explains each provider, collects API keys, and configures defaults.</p>
+<hr>
+<h2>🔑 API Keys</h2>
 <p><strong>Option A: .env file</strong> (recommended)</p>
 <pre><code class="language-bash"># /path/to/skills/web-search-plus/.env
 export SERPER_API_KEY=&quot;your-key&quot;   # https://serper.dev
 export TAVILY_API_KEY=&quot;your-key&quot;   # https://tavily.com  
 export EXA_API_KEY=&quot;your-key&quot;      # https://exa.ai
+export YOU_API_KEY=&quot;your-key&quot;      # https://api.you.com
+export SEARXNG_INSTANCE_URL=&quot;https://your-instance.example.com&quot;
 </code></pre>
-<p><strong>Option B: config.json</strong> (NEW in v2.2.1)</p>
-<pre><code class="language-bash"># Copy the example config
-cp config.example.json config.json
-</code></pre>
-<p>Then add your keys:</p>
+<p><strong>Option B: config.json</strong></p>
 <pre><code class="language-json">{
   &quot;serper&quot;: { &quot;api_key&quot;: &quot;your-serper-key&quot; },
   &quot;tavily&quot;: { &quot;api_key&quot;: &quot;your-tavily-key&quot; },
-  &quot;exa&quot;: { &quot;api_key&quot;: &quot;your-exa-key&quot; }
+  &quot;exa&quot;: { &quot;api_key&quot;: &quot;your-exa-key&quot; },
+  &quot;you&quot;: { &quot;api_key&quot;: &quot;your-you-key&quot; },
+  &quot;searxng&quot;: { &quot;instance_url&quot;: &quot;https://your-instance.example.com&quot; }
 }
 </code></pre>
-<p>⚠️ <code>config.json</code> is gitignored — your keys stay safe!</p>
-<p>Just run — keys load automatically:</p>
-<pre><code class="language-bash">python3 scripts/search.py -q &quot;your query&quot;
-# No need for &#39;source .env&#39; anymore! ✨
-</code></pre>
 <p><strong>Priority:</strong> config.json &gt; .env &gt; environment variable</p>
-<h3>Get Free API Keys</h3>
 <table>
 <thead>
 <tr>
@@ -105,306 +105,87 @@ cp config.example.json config.json
 </thead>
 <tbody><tr>
 <td>Serper</td>
-<td>2,500 queries/mo</td>
+<td>2,500/mo</td>
 <td><a href="https://serper.dev">https://serper.dev</a></td>
 </tr>
 <tr>
 <td>Tavily</td>
-<td>1,000 queries/mo</td>
+<td>1,000/mo</td>
 <td><a href="https://tavily.com">https://tavily.com</a></td>
 </tr>
 <tr>
 <td>Exa</td>
-<td>1,000 queries/mo</td>
+<td>1,000/mo</td>
 <td><a href="https://exa.ai">https://exa.ai</a></td>
 </tr>
+<tr>
+<td>You.com</td>
+<td>Limited</td>
+<td><a href="https://api.you.com">https://api.you.com</a></td>
+</tr>
+<tr>
+<td>SearXNG</td>
+<td><strong>Unlimited</strong></td>
+<td>Self-hosted</td>
+</tr>
 </tbody></table>
-<hr>
-<h2>⚠️ Don&#39;t Modify Core OpenClaw Config</h2>
-<p><strong>Tavily, Serper, and Exa are NOT core OpenClaw providers.</strong></p>
-<p>❌ <strong>DON&#39;T</strong> add to <code>~/.openclaw/openclaw.json</code>:</p>
-<pre><code class="language-json">&quot;tools&quot;: { &quot;web&quot;: { &quot;search&quot;: { &quot;provider&quot;: &quot;tavily&quot; }}}  // WRONG!
-</code></pre>
-<p>✅ <strong>DO</strong> use this skill&#39;s scripts — keys auto-load from <code>.env</code></p>
-<p>Core OpenClaw only supports <code>brave</code> as the built-in web search provider. This skill adds Serper, Tavily, and Exa as <strong>additional</strong> options via its own scripts.</p>
 <hr>
 <h2>🧠 Intelligent Auto-Routing</h2>
-<p>No need to choose a provider — just search! The skill uses <strong>multi-signal analysis</strong> to understand your query intent:</p>
-<pre><code class="language-bash"># These queries are intelligently routed with confidence scoring:
-python3 scripts/search.py -q &quot;how much does iPhone 16 cost&quot;     # → Serper (68% MEDIUM)
-python3 scripts/search.py -q &quot;how does quantum entanglement work&quot;  # → Tavily (86% HIGH)
-python3 scripts/search.py -q &quot;startups similar to Notion&quot;       # → Exa (76% HIGH)
-python3 scripts/search.py -q &quot;MacBook Pro M3 specs review&quot;      # → Serper (70% HIGH)
-python3 scripts/search.py -q &quot;explain pros and cons of React&quot;   # → Tavily (85% HIGH)
-python3 scripts/search.py -q &quot;companies like stripe.com&quot;        # → Exa (100% HIGH)
-</code></pre>
-<h3>How It Works</h3>
-<p>The routing engine analyzes multiple signals:</p>
-<h4>🛒 Shopping Intent → Serper</h4>
-<table>
-<thead>
-<tr>
-<th>Signal Type</th>
-<th>Examples</th>
-<th>Weight</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Price patterns</td>
-<td>&quot;how much&quot;, &quot;price of&quot;, &quot;cost of&quot;</td>
-<td>HIGH</td>
-</tr>
-<tr>
-<td>Purchase intent</td>
-<td>&quot;buy&quot;, &quot;purchase&quot;, &quot;order&quot;, &quot;where to buy&quot;</td>
-<td>HIGH</td>
-</tr>
-<tr>
-<td>Deal signals</td>
-<td>&quot;deal&quot;, &quot;discount&quot;, &quot;cheap&quot;, &quot;best price&quot;</td>
-<td>MEDIUM</td>
-</tr>
-<tr>
-<td>Product + Brand</td>
-<td>&quot;iPhone 16&quot;, &quot;Sony headphones&quot; + specs/review</td>
-<td>HIGH</td>
-</tr>
-<tr>
-<td>Local business</td>
-<td>&quot;near me&quot;, &quot;restaurants&quot;, &quot;hotels&quot;</td>
-<td>HIGH</td>
-</tr>
-</tbody></table>
-<h4>📚 Research Intent → Tavily</h4>
-<table>
-<thead>
-<tr>
-<th>Signal Type</th>
-<th>Examples</th>
-<th>Weight</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Explanation</td>
-<td>&quot;how does&quot;, &quot;why does&quot;, &quot;explain&quot;, &quot;what is&quot;</td>
-<td>HIGH</td>
-</tr>
-<tr>
-<td>Analysis</td>
-<td>&quot;compare&quot;, &quot;pros and cons&quot;, &quot;difference between&quot;</td>
-<td>HIGH</td>
-</tr>
-<tr>
-<td>Learning</td>
-<td>&quot;tutorial&quot;, &quot;guide&quot;, &quot;understand&quot;, &quot;learn&quot;</td>
-<td>MEDIUM</td>
-</tr>
-<tr>
-<td>Depth</td>
-<td>&quot;in-depth&quot;, &quot;comprehensive&quot;, &quot;detailed&quot;</td>
-<td>MEDIUM</td>
-</tr>
-<tr>
-<td>Complex queries</td>
-<td>Long, multi-clause questions</td>
-<td>BONUS</td>
-</tr>
-</tbody></table>
-<h4>🔍 Discovery Intent → Exa</h4>
-<table>
-<thead>
-<tr>
-<th>Signal Type</th>
-<th>Examples</th>
-<th>Weight</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Similarity</td>
-<td>&quot;similar to&quot;, &quot;alternatives to&quot;, &quot;competitors&quot;</td>
-<td>VERY HIGH</td>
-</tr>
-<tr>
-<td>Company discovery</td>
-<td>&quot;companies like&quot;, &quot;startups doing&quot;, &quot;who else&quot;</td>
-<td>HIGH</td>
-</tr>
-<tr>
-<td>URL detection</td>
-<td>Any URL or domain (stripe.com)</td>
-<td>VERY HIGH</td>
-</tr>
-<tr>
-<td>Academic</td>
-<td>&quot;arxiv&quot;, &quot;research papers&quot;, &quot;github projects&quot;</td>
-<td>HIGH</td>
-</tr>
-<tr>
-<td>Funding</td>
-<td>&quot;Series A&quot;, &quot;YC&quot;, &quot;funded startup&quot;</td>
-<td>HIGH</td>
-</tr>
-</tbody></table>
-<h3>Confidence Scoring</h3>
-<p>Every routing decision includes a confidence level:</p>
-<table>
-<thead>
-<tr>
-<th>Confidence</th>
-<th>Level</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>70-100%</td>
-<td><strong>HIGH</strong></td>
-<td>Strong signal match, very reliable</td>
-</tr>
-<tr>
-<td>40-69%</td>
-<td><strong>MEDIUM</strong></td>
-<td>Good match, should work well</td>
-</tr>
-<tr>
-<td>0-39%</td>
-<td><strong>LOW</strong></td>
-<td>Ambiguous query, using fallback</td>
-</tr>
-</tbody></table>
-<h3>Debug Routing Decisions</h3>
-<p>See the full analysis:</p>
-<pre><code class="language-bash">python3 scripts/search.py --explain-routing -q &quot;how much does iPhone 16 Pro cost&quot;
-</code></pre>
-<p>Output:</p>
-<pre><code class="language-json">{
-  &quot;query&quot;: &quot;how much does iPhone 16 Pro cost&quot;,
-  &quot;routing_decision&quot;: {
-    &quot;provider&quot;: &quot;serper&quot;,
-    &quot;confidence&quot;: 0.68,
-    &quot;confidence_level&quot;: &quot;medium&quot;,
-    &quot;reason&quot;: &quot;moderate_confidence_match&quot;
-  },
-  &quot;scores&quot;: {&quot;serper&quot;: 7.0, &quot;tavily&quot;: 0.0, &quot;exa&quot;: 0.0},
-  &quot;top_signals&quot;: [
-    {&quot;matched&quot;: &quot;how much&quot;, &quot;weight&quot;: 4.0},
-    {&quot;matched&quot;: &quot;brand + product detected&quot;, &quot;weight&quot;: 3.0}
-  ],
-  &quot;query_analysis&quot;: {
-    &quot;word_count&quot;: 7,
-    &quot;is_complex&quot;: false,
-    &quot;has_url&quot;: null,
-    &quot;recency_focused&quot;: false
-  }
-}
-</code></pre>
-<hr>
-<h2>🔍 When to Use This Skill vs Built-in Brave Search</h2>
-<h3>Use <strong>Built-in Brave Search</strong> when:</h3>
-<ul>
-<li>✅ General web searches (news, info, questions)</li>
-<li>✅ Privacy is important</li>
-<li>✅ Quick lookups without specific requirements</li>
-</ul>
-<h3>Use <strong>web-search-plus</strong> when:</h3>
-<h4>→ <strong>Serper</strong> (Google results):</h4>
-<ul>
-<li>🛍️ <strong>Product specs, prices, shopping</strong> - &quot;Compare iPhone 16 vs Samsung S24&quot;</li>
-<li>📍 <strong>Local businesses, places</strong> - &quot;Best pizza in Vienna&quot;</li>
-<li>🎯 <strong>&quot;Google it&quot;</strong> - Explicitly wants Google results</li>
-<li>📰 <strong>Shopping/images/news</strong> - <code>--type shopping/images/news</code></li>
-<li>🏆 <strong>Knowledge Graph</strong> - Structured info (prices, ratings, etc.)</li>
-</ul>
-<h4>→ <strong>Tavily</strong> (AI-optimized research):</h4>
-<ul>
-<li>📚 <strong>Research questions</strong> - &quot;How does quantum computing work?&quot;</li>
-<li>🔬 <strong>Deep dives</strong> - Complex multi-part questions</li>
-<li>📄 <strong>Full page content</strong> - Not just snippets (<code>--raw-content</code>)</li>
-<li>🎓 <strong>Academic research</strong> - Synthesized answers</li>
-<li>🔒 <strong>Domain filtering</strong> - <code>--include-domains</code> for trusted sources</li>
-</ul>
-<h4>→ <strong>Exa</strong> (Neural semantic search):</h4>
-<ul>
-<li>🔗 <strong>Similar pages</strong> - &quot;Sites like OpenAI.com&quot; (<code>--similar-url</code>)</li>
-<li>🏢 <strong>Company discovery</strong> - &quot;AI companies like Anthropic&quot;</li>
-<li>📝 <strong>Research papers</strong> - <code>--category &quot;research paper&quot;</code></li>
-<li>💻 <strong>GitHub projects</strong> - <code>--category github</code></li>
-<li>📅 <strong>Date-specific</strong> - <code>--start-date</code> / <code>--end-date</code></li>
-</ul>
-<hr>
-<h2>Provider Comparison</h2>
-<table>
-<thead>
-<tr>
-<th>Feature</th>
-<th align="center">Serper</th>
-<th align="center">Tavily</th>
-<th align="center">Exa</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Speed</td>
-<td align="center">⚡⚡⚡</td>
-<td align="center">⚡⚡</td>
-<td align="center">⚡⚡</td>
-</tr>
-<tr>
-<td>Factual Accuracy</td>
-<td align="center">⭐⭐⭐</td>
-<td align="center">⭐⭐⭐</td>
-<td align="center">⭐⭐</td>
-</tr>
-<tr>
-<td>Semantic Understanding</td>
-<td align="center">⭐</td>
-<td align="center">⭐⭐</td>
-<td align="center">⭐⭐⭐</td>
-</tr>
-<tr>
-<td>Research Quality</td>
-<td align="center">⭐⭐</td>
-<td align="center">⭐⭐⭐</td>
-<td align="center">⭐⭐</td>
-</tr>
-<tr>
-<td>Full Page Content</td>
-<td align="center">✗</td>
-<td align="center">✓</td>
-<td align="center">✓</td>
-</tr>
-<tr>
-<td>Shopping/Local</td>
-<td align="center">✓</td>
-<td align="center">✗</td>
-<td align="center">✗</td>
-</tr>
-<tr>
-<td>Similar Pages</td>
-<td align="center">✗</td>
-<td align="center">✗</td>
-<td align="center">✓</td>
-</tr>
-<tr>
-<td>Knowledge Graph</td>
-<td align="center">✓</td>
-<td align="center">✗</td>
-<td align="center">✗</td>
-</tr>
-</tbody></table>
-<hr>
-<h2>Usage Examples</h2>
-<h3>Auto-Routed (Recommended)</h3>
+<p>Just search — the skill picks the best provider:</p>
 <pre><code class="language-bash">python3 scripts/search.py -q &quot;iPhone 16 Pro Max price&quot;          # → Serper
 python3 scripts/search.py -q &quot;how does HTTPS encryption work&quot;   # → Tavily
 python3 scripts/search.py -q &quot;startups similar to Notion&quot;       # → Exa
+python3 scripts/search.py -q &quot;latest updates on AI regulation&quot;  # → You.com
+python3 scripts/search.py -q &quot;search privately without tracking&quot; # → SearXNG
 </code></pre>
-<h3>Explicit Provider</h3>
-<pre><code class="language-bash">python3 scripts/search.py -p serper -q &quot;weather Vienna&quot; --type weather
-python3 scripts/search.py -p tavily -q &quot;quantum computing&quot; --depth advanced
-python3 scripts/search.py -p exa --similar-url &quot;https://stripe.com&quot; --category company
+<h3>Provider Strengths</h3>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Serper</strong></td>
+<td>Google results, shopping, prices, local businesses, news</td>
+</tr>
+<tr>
+<td><strong>Tavily</strong></td>
+<td>Research questions, explanations, academic, full-page content</td>
+</tr>
+<tr>
+<td><strong>Exa</strong></td>
+<td>Semantic search, &quot;similar to X&quot;, startup discovery, papers</td>
+</tr>
+<tr>
+<td><strong>You.com</strong></td>
+<td>RAG/AI context, real-time info, combined web+news</td>
+</tr>
+<tr>
+<td><strong>SearXNG</strong></td>
+<td>Privacy-preserving, multi-source aggregation, $0 cost</td>
+</tr>
+</tbody></table>
+<h3>Debug Routing</h3>
+<pre><code class="language-bash">python3 scripts/search.py --explain-routing -q &quot;your query&quot;
 </code></pre>
 <hr>
-<h2>Configuration</h2>
-<h3>config.json</h3>
+<h2>📖 Usage Examples</h2>
+<h3>Auto-Routed (Recommended)</h3>
+<pre><code class="language-bash">python3 scripts/search.py -q &quot;iPhone 16 Pro Max price&quot;
+python3 scripts/search.py -q &quot;how does quantum computing work&quot;
+python3 scripts/search.py -q &quot;companies like stripe.com&quot;
+</code></pre>
+<h3>Explicit Provider</h3>
+<pre><code class="language-bash">python3 scripts/search.py -p serper -q &quot;weather Berlin&quot; --type weather
+python3 scripts/search.py -p tavily -q &quot;quantum computing&quot; --depth advanced
+python3 scripts/search.py -p exa --similar-url &quot;https://stripe.com&quot; --category company
+python3 scripts/search.py -p you -q &quot;current tech news&quot; --include-news
+python3 scripts/search.py -p searxng -q &quot;linux distros&quot; --engines &quot;google,bing&quot;
+</code></pre>
+<hr>
+<h2>⚙️ Configuration</h2>
 <pre><code class="language-json">{
   &quot;auto_routing&quot;: {
     &quot;enabled&quot;: true,
@@ -414,115 +195,125 @@ python3 scripts/search.py -p exa --similar-url &quot;https://stripe.com&quot; --
   },
   &quot;serper&quot;: {&quot;country&quot;: &quot;us&quot;, &quot;language&quot;: &quot;en&quot;},
   &quot;tavily&quot;: {&quot;depth&quot;: &quot;advanced&quot;},
-  &quot;exa&quot;: {&quot;type&quot;: &quot;neural&quot;}
+  &quot;exa&quot;: {&quot;type&quot;: &quot;neural&quot;},
+  &quot;you&quot;: {&quot;country&quot;: &quot;US&quot;, &quot;safesearch&quot;: &quot;moderate&quot;, &quot;include_news&quot;: true},
+  &quot;searxng&quot;: {&quot;instance_url&quot;: &quot;https://your-instance.example.com&quot;, &quot;safesearch&quot;: 0}
 }
 </code></pre>
 <hr>
-<h2>Output Format</h2>
+<h2>📊 Provider Comparison</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th align="center">Serper</th>
+<th align="center">Tavily</th>
+<th align="center">Exa</th>
+<th align="center">You.com</th>
+<th align="center">SearXNG</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Speed</td>
+<td align="center">⚡⚡⚡</td>
+<td align="center">⚡⚡</td>
+<td align="center">⚡⚡</td>
+<td align="center">⚡⚡⚡</td>
+<td align="center">⚡⚡</td>
+</tr>
+<tr>
+<td>Factual Accuracy</td>
+<td align="center">⭐⭐⭐</td>
+<td align="center">⭐⭐⭐</td>
+<td align="center">⭐⭐</td>
+<td align="center">⭐⭐⭐</td>
+<td align="center">⭐⭐⭐</td>
+</tr>
+<tr>
+<td>Semantic Understanding</td>
+<td align="center">⭐</td>
+<td align="center">⭐⭐</td>
+<td align="center">⭐⭐⭐</td>
+<td align="center">⭐⭐</td>
+<td align="center">⭐</td>
+</tr>
+<tr>
+<td>Full Page Content</td>
+<td align="center">✗</td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+<td align="center">✗</td>
+</tr>
+<tr>
+<td>Shopping/Local</td>
+<td align="center">✓</td>
+<td align="center">✗</td>
+<td align="center">✗</td>
+<td align="center">✗</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Similar Pages</td>
+<td align="center">✗</td>
+<td align="center">✗</td>
+<td align="center">✓</td>
+<td align="center">✗</td>
+<td align="center">✗</td>
+</tr>
+<tr>
+<td>RAG-Optimized</td>
+<td align="center">✗</td>
+<td align="center">✓</td>
+<td align="center">✗</td>
+<td align="center">✓✓</td>
+<td align="center">✗</td>
+</tr>
+<tr>
+<td>Privacy-First</td>
+<td align="center">✗</td>
+<td align="center">✗</td>
+<td align="center">✗</td>
+<td align="center">✗</td>
+<td align="center">✓✓</td>
+</tr>
+<tr>
+<td>API Cost</td>
+<td align="center">$$</td>
+<td align="center">$$</td>
+<td align="center">$$</td>
+<td align="center">$</td>
+<td align="center"><strong>FREE</strong></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>📤 Output Format</h2>
 <pre><code class="language-json">{
   &quot;provider&quot;: &quot;serper&quot;,
   &quot;query&quot;: &quot;iPhone 16 price&quot;,
   &quot;results&quot;: [{&quot;title&quot;: &quot;...&quot;, &quot;url&quot;: &quot;...&quot;, &quot;snippet&quot;: &quot;...&quot;, &quot;score&quot;: 0.95}],
-  &quot;answer&quot;: &quot;Synthesized answer...&quot;,
   &quot;routing&quot;: {
     &quot;auto_routed&quot;: true,
     &quot;provider&quot;: &quot;serper&quot;,
     &quot;confidence&quot;: 0.78,
-    &quot;confidence_level&quot;: &quot;high&quot;,
-    &quot;reason&quot;: &quot;high_confidence_match&quot;,
-    &quot;top_signals&quot;: [{&quot;matched&quot;: &quot;price&quot;, &quot;weight&quot;: 3.0}]
+    &quot;confidence_level&quot;: &quot;high&quot;
   }
 }
 </code></pre>
 <hr>
-<h2>FAQ</h2>
-<h3>General</h3>
-<p><strong>Q: How does auto-routing decide which provider to use?</strong></p>
-<blockquote>
-<p>Multi-signal analysis scores each provider based on: price patterns, explanation phrases, similarity keywords, URLs, product+brand combos, and query complexity. Highest score wins. Use <code>--explain-routing</code> to see the decision breakdown.</p>
-</blockquote>
-<p><strong>Q: What if it picks the wrong provider?</strong></p>
-<blockquote>
-<p>Override with <code>-p serper/tavily/exa</code>. Check <code>--explain-routing</code> to understand why it chose differently.</p>
-</blockquote>
-<p><strong>Q: What does &quot;low confidence&quot; mean?</strong></p>
-<blockquote>
-<p>Query is ambiguous (e.g., &quot;Tesla&quot; could be cars, stock, or company). Falls back to Serper. Results may vary.</p>
-</blockquote>
-<p><strong>Q: Can I disable a provider?</strong></p>
-<blockquote>
-<p>Yes! In config.json: <code>&quot;disabled_providers&quot;: [&quot;exa&quot;]</code></p>
-</blockquote>
-<h3>API Keys</h3>
-<p><strong>Q: Which API keys do I need?</strong></p>
-<blockquote>
-<p>At minimum ONE key. You can use just Serper, just Tavily, or all three. Missing keys = that provider is skipped.</p>
-</blockquote>
-<p><strong>Q: Where do I get API keys?</strong></p>
-<blockquote>
+<h2>⚠️ Important Notes</h2>
+<p><strong>Tavily, Serper, and Exa are NOT core OpenClaw providers.</strong></p>
+<p>❌ Don&#39;t modify <code>~/.openclaw/openclaw.json</code> for these providers<br>✅ Use this skill&#39;s scripts — keys auto-load from <code>.env</code></p>
+<hr>
+<h2>📚 Additional Documentation</h2>
 <ul>
-<li>Serper: <a href="https://serper.dev">https://serper.dev</a> (2,500 free queries, no credit card)</li>
-<li>Tavily: <a href="https://tavily.com">https://tavily.com</a> (1,000 free searches/month)</li>
-<li>Exa: <a href="https://exa.ai">https://exa.ai</a> (1,000 free searches/month)</li>
+<li><strong><a href="FAQ.md">FAQ.md</a></strong> — Frequently asked questions about providers, routing, costs</li>
+<li><strong><a href="TROUBLESHOOTING.md">TROUBLESHOOTING.md</a></strong> — Solutions for common errors and issues</li>
+<li><strong><a href="README.md">README.md</a></strong> — Full technical documentation</li>
 </ul>
-</blockquote>
-<p><strong>Q: How do I set API keys?</strong></p>
-<blockquote>
-<p>Two options (both auto-load):</p>
-<p><strong>Option A: .env file</strong></p>
-<pre><code class="language-bash">export SERPER_API_KEY=&quot;your-key&quot;
-</code></pre>
-<p><strong>Option B: config.json</strong> (v2.2.1+)</p>
-<pre><code class="language-json">{ &quot;serper&quot;: { &quot;api_key&quot;: &quot;your-key&quot; } }
-</code></pre>
-</blockquote>
-<h3>Routing Details</h3>
-<p><strong>Q: How do I know which provider handled my search?</strong></p>
-<blockquote>
-<p>Check <code>routing.provider</code> in JSON output, or <code>[🔍 Searched with: Provider]</code> in chat responses.</p>
-</blockquote>
-<p><strong>Q: Why does it sometimes choose Serper for research questions?</strong></p>
-<blockquote>
-<p>If the query has brand/product signals (e.g., &quot;how does Tesla FSD work&quot;), shopping intent may outweigh research intent. Override with <code>-p tavily</code>.</p>
-</blockquote>
-<p><strong>Q: What&#39;s the confidence threshold?</strong></p>
-<blockquote>
-<p>Default: 0.3 (30%). Below this = low confidence, uses fallback. Adjustable in config.json.</p>
-</blockquote>
-<h3>Troubleshooting</h3>
-<p><strong>Q: &quot;No API key found&quot; error?</strong></p>
-<blockquote>
-<ol>
-<li>Check <code>.env</code> exists in skill folder with <code>export VAR=value</code> format</li>
-<li>Keys auto-load from skill&#39;s <code>.env</code> since v2.2.0</li>
-<li>Or set in system environment: <code>export SERPER_API_KEY=&quot;...&quot;</code></li>
-</ol>
-</blockquote>
-<p><strong>Q: Getting empty results?</strong></p>
-<blockquote>
-<ol>
-<li>Check API key is valid</li>
-<li>Try a different provider with <code>-p</code></li>
-<li>Some queries have no results (very niche topics)</li>
-</ol>
-</blockquote>
-<p><strong>Q: Rate limited?</strong></p>
-<blockquote>
-<p>Each provider has limits. Spread queries across providers or wait. Serper: 2,500 free total, Tavily: 1,000/month free.</p>
-</blockquote>
-<h3>For OpenClaw Users</h3>
-<p><strong>Q: How do I use this in chat?</strong></p>
-<blockquote>
-<p>Just ask! OpenClaw auto-detects search intent. Or explicitly: &quot;search with web-search-plus for...&quot;</p>
-</blockquote>
-<p><strong>Q: Does it replace built-in Brave Search?</strong></p>
-<blockquote>
-<p>No, it&#39;s complementary. Use Brave for quick lookups, web-search-plus for research/shopping/discovery.</p>
-</blockquote>
-<p><strong>Q: Can I see which provider was used?</strong></p>
-<blockquote>
-<p>Yes! SOUL.md can include attribution: <code>[🔍 Searched with: Serper/Tavily/Exa]</code></p>
-</blockquote>
+<hr>
+<h2>🔄 Automatic Fallback (v2.2.5+)</h2>
+<p>If one provider fails (rate limit, timeout, etc.), automatically tries the next provider in priority order. Response includes <code>routing.fallback_used: true</code> when fallback was used.</p>
 
                 </div>
               </div>

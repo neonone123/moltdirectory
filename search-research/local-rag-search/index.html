@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Efficiently perform web searches using the mcp-local-rag server with semantic similarity ranking">
+  <title>local-rag-search - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Search & Research</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Search & Research</a>
+                <span class="skill-page-author">by @nkapila6</span>
+              </div>
+              <h1 class="skill-page-title">local-rag-search</h1>
+              <p class="skill-page-desc">Efficiently perform web searches using the mcp-local-rag server with semantic similarity ranking</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Local RAG Search Skill</h1>
+<p>This skill enables you to effectively use the mcp-local-rag MCP server for intelligent web searches with semantic ranking. The server performs RAG-like similarity scoring to prioritize the most relevant results without requiring any external APIs.</p>
+<h2>Available Tools</h2>
+<h3>1. <code>rag_search_ddgs</code> - DuckDuckGo Search</h3>
+<p>Use this for privacy-focused, general web searches.</p>
+<p><strong>When to use:</strong></p>
+<ul>
+<li>User prefers privacy-focused searches</li>
+<li>General information lookup</li>
+<li>Default choice for most queries</li>
+</ul>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>query</code>: Natural language search query</li>
+<li><code>num_results</code>: Initial results to fetch (default: 10)</li>
+<li><code>top_k</code>: Most relevant results to return (default: 5)</li>
+<li><code>include_urls</code>: Include source URLs (default: true)</li>
+</ul>
+<h3>2. <code>rag_search_google</code> - Google Search</h3>
+<p>Use this for comprehensive, technical, or detailed searches.</p>
+<p><strong>When to use:</strong></p>
+<ul>
+<li>Technical or scientific queries</li>
+<li>Need comprehensive coverage</li>
+<li>Searching for specific documentation</li>
+</ul>
+<h3>3. <code>deep_research</code> - Multi-Engine Deep Research</h3>
+<p>Use this for comprehensive research across multiple search engines.</p>
+<p><strong>When to use:</strong></p>
+<ul>
+<li>Researching complex topics requiring broad coverage</li>
+<li>Need diverse perspectives from multiple sources</li>
+<li>Gathering comprehensive information on a subject</li>
+</ul>
+<p><strong>Available backends:</strong></p>
+<ul>
+<li><code>duckduckgo</code>: Privacy-focused general search</li>
+<li><code>google</code>: Comprehensive technical results</li>
+<li><code>bing</code>: Microsoft&#39;s search engine</li>
+<li><code>brave</code>: Privacy-first search</li>
+<li><code>wikipedia</code>: Encyclopedia/factual content</li>
+<li><code>yahoo</code>, <code>yandex</code>, <code>mojeek</code>, <code>grokipedia</code>: Alternative engines</li>
+</ul>
+<p><strong>Default:</strong> <code>[&quot;duckduckgo&quot;, &quot;google&quot;]</code></p>
+<h3>4. <code>deep_research_google</code> - Google-Only Deep Research</h3>
+<p>Shortcut for deep research using only Google.</p>
+<h3>5. <code>deep_research_ddgs</code> - DuckDuckGo-Only Deep Research</h3>
+<p>Shortcut for deep research using only DuckDuckGo.</p>
+<h2>Best Practices</h2>
+<h3>Query Formulation</h3>
+<ol>
+<li><p><strong>Use natural language</strong>: Write queries as questions or descriptive phrases</p>
+<ul>
+<li>Good: &quot;latest developments in quantum computing&quot;</li>
+<li>Good: &quot;how to implement binary search in Python&quot;</li>
+<li>Avoid: Single keywords like &quot;quantum&quot; or &quot;Python&quot;</li>
+</ul>
+</li>
+<li><p><strong>Be specific</strong>: Include context and details</p>
+<ul>
+<li>Good: &quot;React hooks best practices for 2024&quot;</li>
+<li>Better: &quot;React useEffect cleanup function best practices&quot;</li>
+</ul>
+</li>
+</ol>
+<h3>Tool Selection Strategy</h3>
+<ol>
+<li><p><strong>Single Topic, Quick Answer</strong> → Use <code>rag_search_ddgs</code> or <code>rag_search_google</code></p>
+<pre><code>rag_search_ddgs(
+    query=&quot;What is the capital of France?&quot;,
+    top_k=3
+)
+</code></pre>
+</li>
+<li><p><strong>Technical/Scientific Query</strong> → Use <code>rag_search_google</code></p>
+<pre><code>rag_search_google(
+    query=&quot;Docker multi-stage build optimization techniques&quot;,
+    num_results=15,
+    top_k=7
+)
+</code></pre>
+</li>
+<li><p><strong>Comprehensive Research</strong> → Use <code>deep_research</code> with multiple search terms</p>
+<pre><code>deep_research(
+    search_terms=[
+        &quot;machine learning fundamentals&quot;,
+        &quot;neural networks architecture&quot;,
+        &quot;deep learning best practices 2024&quot;
+    ],
+    backends=[&quot;google&quot;, &quot;duckduckgo&quot;],
+    top_k_per_term=5
+)
+</code></pre>
+</li>
+<li><p><strong>Factual/Encyclopedia Content</strong> → Use <code>deep_research</code> with Wikipedia</p>
+<pre><code>deep_research(
+    search_terms=[&quot;World War II timeline&quot;, &quot;WWII key battles&quot;],
+    backends=[&quot;wikipedia&quot;],
+    num_results_per_term=5
+)
+</code></pre>
+</li>
+</ol>
+<h3>Parameter Tuning</h3>
+<p><strong>For quick answers:</strong></p>
+<ul>
+<li><code>num_results=5-10</code>, <code>top_k=3-5</code></li>
+</ul>
+<p><strong>For comprehensive research:</strong></p>
+<ul>
+<li><code>num_results=15-20</code>, <code>top_k=7-10</code></li>
+</ul>
+<p><strong>For deep research:</strong></p>
+<ul>
+<li><code>num_results_per_term=10-15</code>, <code>top_k_per_term=3-5</code></li>
+<li>Use 2-5 related search terms</li>
+<li>Use 1-3 backends (more = more comprehensive but slower)</li>
+</ul>
+<h2>Workflow Examples</h2>
+<h3>Example 1: Current Events</h3>
+<pre><code>Task: &quot;What happened at the UN climate summit last week?&quot;
+
+1. Use rag_search_google for recent news coverage
+2. Set top_k=7 for comprehensive view
+3. Present findings with source URLs
+</code></pre>
+<h3>Example 2: Technical Deep Dive</h3>
+<pre><code>Task: &quot;How do I optimize PostgreSQL queries?&quot;
+
+1. Use deep_research with multiple specific terms:
+   - &quot;PostgreSQL query optimization techniques&quot;
+   - &quot;PostgreSQL index best practices&quot;
+   - &quot;PostgreSQL EXPLAIN ANALYZE tutorial&quot;
+2. Use backends=[&quot;google&quot;, &quot;stackoverflow&quot;] if available
+3. Synthesize findings into actionable guide
+</code></pre>
+<h3>Example 3: Multi-Perspective Research</h3>
+<pre><code>Task: &quot;Research the impact of remote work on productivity&quot;
+
+1. Use deep_research with diverse search terms:
+   - &quot;remote work productivity statistics 2024&quot;
+   - &quot;hybrid work model effectiveness studies&quot;
+   - &quot;work from home challenges research&quot;
+2. Use backends=[&quot;google&quot;, &quot;duckduckgo&quot;] for broad coverage
+3. Synthesize different perspectives and studies
+</code></pre>
+<h2>Guidelines</h2>
+<ol>
+<li><strong>Always cite sources</strong>: When <code>include_urls=True</code>, reference the source URLs in your response</li>
+<li><strong>Verify recency</strong>: Check if the content appears current and relevant</li>
+<li><strong>Cross-reference</strong>: For important facts, use multiple search terms or engines</li>
+<li><strong>Respect privacy</strong>: Use DuckDuckGo for general queries unless specific needs require Google</li>
+<li><strong>Batch related queries</strong>: When researching a topic, create multiple related search terms for deep_research</li>
+<li><strong>Semantic relevance</strong>: Trust the RAG scoring - top results are semantically closest to the query</li>
+<li><strong>Explain your choice</strong>: Briefly mention which tool you&#39;re using and why</li>
+</ol>
+<h2>Error Handling</h2>
+<p>If a search returns insufficient results:</p>
+<ol>
+<li>Try rephrasing the query with different keywords</li>
+<li>Switch to a different backend</li>
+<li>Increase <code>num_results</code> parameter</li>
+<li>Use <code>deep_research</code> with multiple related search terms</li>
+</ol>
+<h2>Privacy Considerations</h2>
+<ul>
+<li>DuckDuckGo: Privacy-focused, doesn&#39;t track users</li>
+<li>Google: Most comprehensive but tracks searches</li>
+<li>Recommend DuckDuckGo as default unless user specifically needs Google&#39;s coverage</li>
+</ul>
+<h2>Performance Notes</h2>
+<ul>
+<li>First search may be slower (model loading)</li>
+<li>Subsequent searches are faster (cached models)</li>
+<li>More backends = more comprehensive but slower</li>
+<li>Adjust <code>num_results</code> and <code>top_k</code> based on use case</li>
+</ul>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/nkapila6/local-rag-search/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/nkapila6/local-rag-search" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/nkapila6/local-rag-search/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@nkapila6</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Search & Research</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

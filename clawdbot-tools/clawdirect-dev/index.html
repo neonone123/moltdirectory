@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Build agent-facing web experiences with ATXP-based authentication, following the ClawDirect pattern">
+  <title>clawdirect-dev - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Clawdbot Tools</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Clawdbot Tools</a>
+                <span class="skill-page-author">by @napoleond</span>
+              </div>
+              <h1 class="skill-page-title">clawdirect-dev</h1>
+              <p class="skill-page-desc">Build agent-facing web experiences with ATXP-based authentication, following the ClawDirect pattern</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>ClawDirect-Dev</h1>
+<p>Build agent-facing web experiences with ATXP-based authentication.</p>
+<p><strong>Reference implementation</strong>: <a href="https://github.com/napoleond/clawdirect">https://github.com/napoleond/clawdirect</a></p>
+<h2>What is ATXP?</h2>
+<p>ATXP (Agent Transaction Protocol) enables AI agents to authenticate and pay for services. When building agent-facing websites, ATXP provides:</p>
+<ul>
+<li><strong>Agent identity</strong>: Know which agent is making requests</li>
+<li><strong>Payments</strong>: Charge for premium actions (optional)</li>
+<li><strong>MCP integration</strong>: Expose tools that agents can call programmatically</li>
+</ul>
+<p>For full ATXP details: <a href="https://skills.sh/atxp-dev/cli/atxp">https://skills.sh/atxp-dev/cli/atxp</a></p>
+<h2>How Agents Interact</h2>
+<p>Agents interact with your site in two ways:</p>
+<ol>
+<li><strong>Browser</strong>: Agents use browser automation tools to visit your website, click buttons, fill forms, and navigate—just like humans do</li>
+<li><strong>MCP tools</strong>: Agents call your MCP endpoints directly for programmatic actions (authentication, payments, etc.)</li>
+</ol>
+<p>The cookie-based auth pattern bridges these: agents get an auth cookie via MCP, then use it while browsing.</p>
+<p><strong>Important</strong>: Agent browsers often cannot set HTTP-only cookies directly. The recommended pattern is for agents to pass the cookie value in the query string (e.g., <code>?myapp_cookie=XYZ</code>), and have the server set the cookie and redirect to a clean URL.</p>
+<h2>Architecture Overview</h2>
+<pre><code>┌──────────────────────────────────────────────────────────────────┐
+│                         AI Agent                                 │
+│  ┌─────────────────────┐         ┌─────────────────────────┐    │
+│  │   Browser Tool      │         │   MCP Client            │    │
+│  │   (visits website)  │         │   (calls tools)         │    │
+│  └─────────┬───────────┘         └───────────┬─────────────┘    │
+└────────────┼─────────────────────────────────┼──────────────────┘
+             │                                 │
+             ▼                                 ▼
+┌────────────────────────────────────────────────────────────────┐
+│                    Your Application                             │
+│  ┌─────────────────────┐    ┌─────────────────────────┐        │
+│  │   Web Server        │    │   MCP Server            │        │
+│  │   (Express)         │    │   (@longrun/turtle)     │        │
+│  │                     │    │                         │        │
+│  │   - Serves UI       │    │   - yourapp_cookie      │        │
+│  │   - Cookie auth     │    │   - yourapp_action      │        │
+│  └─────────┬───────────┘    └───────────┬─────────────┘        │
+│            │                            │                       │
+│            └──────────┬─────────────────┘                       │
+│                       ▼                                         │
+│              ┌─────────────────┐                                │
+│              │     SQLite      │                                │
+│              │   auth_cookies  │                                │
+│              └─────────────────┘                                │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre>
+<h2>Build Steps</h2>
+<ol>
+<li><strong>Create MCP server</strong> alongside your website</li>
+<li><strong>Implement cookie tool</strong> in the MCP server</li>
+<li><strong>Use cookie for auth</strong> in your web API</li>
+<li><strong>Publish an agent skill</strong> for your site</li>
+</ol>
+<h2>Step 1: Project Setup</h2>
+<p>Initialize a Node.js project with the required stack:</p>
+<pre><code class="language-bash">mkdir my-agent-app &amp;&amp; cd my-agent-app
+npm init -y
+npm install @longrun/turtle @atxp/server @atxp/express better-sqlite3 express cors dotenv zod
+npm install -D typescript @types/node @types/express @types/cors @types/better-sqlite3 tsx
+</code></pre>
+<p>Create <code>tsconfig.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;compilerOptions&quot;: {
+    &quot;target&quot;: &quot;ES2022&quot;,
+    &quot;module&quot;: &quot;NodeNext&quot;,
+    &quot;moduleResolution&quot;: &quot;NodeNext&quot;,
+    &quot;outDir&quot;: &quot;dist&quot;,
+    &quot;rootDir&quot;: &quot;src&quot;,
+    &quot;strict&quot;: true,
+    &quot;esModuleInterop&quot;: true,
+    &quot;skipLibCheck&quot;: true
+  },
+  &quot;include&quot;: [&quot;src/**/*&quot;]
+}
+</code></pre>
+<p>Create <code>.env</code>:</p>
+<pre><code>FUNDING_DESTINATION_ATXP=&lt;your_atxp_account&gt;
+PORT=3001
+</code></pre>
+<h2>Step 2: Database with Cookie Auth</h2>
+<p>Create <code>src/db.ts</code>:</p>
+<pre><code class="language-typescript">import Database from &#39;better-sqlite3&#39;;
+import crypto from &#39;crypto&#39;;
+
+const DB_PATH = process.env.DB_PATH || &#39;./data.db&#39;;
+let db: Database.Database;
+
+export function getDb(): Database.Database {
+  if (!db) {
+    db = new Database(DB_PATH);
+    db.pragma(&#39;journal_mode = WAL&#39;);
+
+    // Auth cookies table - maps cookies to ATXP accounts
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS auth_cookies (
+        cookie_value TEXT PRIMARY KEY,
+        atxp_account TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    // Add your app&#39;s tables here
+  }
+  return db;
+}
+
+export function createAuthCookie(atxpAccount: string): string {
+  const cookieValue = crypto.randomBytes(32).toString(&#39;hex&#39;);
+  getDb().prepare(`
+    INSERT INTO auth_cookies (cookie_value, atxp_account)
+    VALUES (?, ?)
+  `).run(cookieValue, atxpAccount);
+  return cookieValue;
+}
+
+export function getAtxpAccountFromCookie(cookieValue: string): string | null {
+  const result = getDb().prepare(`
+    SELECT atxp_account FROM auth_cookies WHERE cookie_value = ?
+  `).get(cookieValue) as { atxp_account: string } | undefined;
+  return result?.atxp_account || null;
+}
+</code></pre>
+<h2>Step 3: MCP Tools with Cookie Tool</h2>
+<p>Create <code>src/tools.ts</code>:</p>
+<pre><code class="language-typescript">import { defineTool } from &#39;@longrun/turtle&#39;;
+import { z } from &#39;zod&#39;;
+import { requirePayment, atxpAccountId } from &#39;@atxp/server&#39;;
+import BigNumber from &#39;bignumber.js&#39;;
+import { createAuthCookie } from &#39;./db.js&#39;;
+
+// Cookie tool - agents call this to get browser auth
+export const cookieTool = defineTool(
+  &#39;myapp_cookie&#39;,  // Replace &#39;myapp&#39; with your app name
+  &#39;Get an authentication cookie for browser use. Set this cookie to authenticate when using the web interface.&#39;,
+  z.object({}),
+  async () =&gt; {
+    // Free but requires ATXP auth
+    const accountId = atxpAccountId();
+    if (!accountId) {
+      throw new Error(&#39;Authentication required&#39;);
+    }
+
+    const cookie = createAuthCookie(accountId);
+
+    return JSON.stringify({
+      cookie,
+      instructions: &#39;To authenticate in a browser, navigate to https://your-domain.com?myapp_cookie=&lt;cookie_value&gt; - the server will set the HTTP-only cookie and redirect. Alternatively, set the cookie directly if your browser tool supports it.&#39;
+    });
+  }
+);
+
+// Example paid tool
+export const paidActionTool = defineTool(
+  &#39;myapp_action&#39;,
+  &#39;Perform some action. Cost: $0.10&#39;,
+  z.object({
+    input: z.string().describe(&#39;Input for the action&#39;)
+  }),
+  async ({ input }) =&gt; {
+    await requirePayment({ price: new BigNumber(0.10) });
+
+    const accountId = atxpAccountId();
+    if (!accountId) {
+      throw new Error(&#39;Authentication required&#39;);
+    }
+
+    // Your action logic here
+    return JSON.stringify({ success: true, input });
+  }
+);
+
+export const allTools = [cookieTool, paidActionTool];
+</code></pre>
+<h2>Step 4: Express API with Cookie Validation</h2>
+<p>Create <code>src/api.ts</code>:</p>
+<pre><code class="language-typescript">import { Router, Request, Response } from &#39;express&#39;;
+import { getAtxpAccountFromCookie } from &#39;./db.js&#39;;
+
+export const apiRouter = Router();
+
+// Helper to extract cookie
+function getCookieValue(req: Request, cookieName: string): string | null {
+  const cookieHeader = req.headers.cookie;
+  if (!cookieHeader) return null;
+
+  const cookies = cookieHeader.split(&#39;;&#39;).map(c =&gt; c.trim());
+  for (const cookie of cookies) {
+    if (cookie.startsWith(`${cookieName}=`)) {
+      return cookie.substring(cookieName.length + 1);
+    }
+  }
+  return null;
+}
+
+// Middleware to require cookie auth
+function requireCookieAuth(req: Request, res: Response, next: Function) {
+  const cookieValue = getCookieValue(req, &#39;myapp_cookie&#39;);
+
+  if (!cookieValue) {
+    res.status(401).json({
+      error: &#39;Authentication required&#39;,
+      message: &#39;Use the myapp_cookie MCP tool to get an authentication cookie&#39;
+    });
+    return;
+  }
+
+  const atxpAccount = getAtxpAccountFromCookie(cookieValue);
+  if (!atxpAccount) {
+    res.status(401).json({
+      error: &#39;Invalid cookie&#39;,
+      message: &#39;Your cookie is invalid or expired. Get a new one via the MCP tool.&#39;
+    });
+    return;
+  }
+
+  // Attach account to request for use in handlers
+  (req as any).atxpAccount = atxpAccount;
+  next();
+}
+
+// Public endpoint (no auth)
+apiRouter.get(&#39;/api/public&#39;, (_req: Request, res: Response) =&gt; {
+  res.json({ message: &#39;Public data&#39; });
+});
+
+// Protected endpoint (requires cookie auth)
+apiRouter.post(&#39;/api/protected&#39;, requireCookieAuth, (req: Request, res: Response) =&gt; {
+  const account = (req as any).atxpAccount;
+  res.json({ message: &#39;Authenticated action&#39;, account });
+});
+</code></pre>
+<h2>Step 5: Server Entry Point</h2>
+<p>Create <code>src/index.ts</code>:</p>
+<pre><code class="language-typescript">import &#39;dotenv/config&#39;;
+import express from &#39;express&#39;;
+import cors from &#39;cors&#39;;
+import { fileURLToPath } from &#39;url&#39;;
+import { dirname, join } from &#39;path&#39;;
+import { createServer } from &#39;@longrun/turtle&#39;;
+import { atxpExpress } from &#39;@atxp/express&#39;;
+import { getDb } from &#39;./db.js&#39;;
+import { allTools } from &#39;./tools.js&#39;;
+import { apiRouter } from &#39;./api.js&#39;;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const FUNDING_DESTINATION = process.env.FUNDING_DESTINATION_ATXP;
+if (!FUNDING_DESTINATION) {
+  throw new Error(&#39;FUNDING_DESTINATION_ATXP is required&#39;);
+}
+
+const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3001;
+
+async function main() {
+  // Initialize database
+  getDb();
+
+  // Create MCP server
+  const mcpServer = createServer({
+    name: &#39;myapp&#39;,
+    version: &#39;1.0.0&#39;,
+    tools: allTools
+  });
+
+  // Create Express app
+  const app = express();
+  app.use(cors());
+  app.use(express.json());
+
+  // Cookie bootstrap middleware - handles ?myapp_cookie=XYZ for agent browsers
+  // Agent browsers often can&#39;t set HTTP-only cookies directly, so they pass the cookie
+  // value in the query string and the server sets it, then redirects to clean URL
+  app.use((req, res, next) =&gt; {
+    const cookieValue = req.query.myapp_cookie;
+    if (typeof cookieValue === &#39;string&#39; &amp;&amp; cookieValue.length &gt; 0) {
+      res.cookie(&#39;myapp_cookie&#39;, cookieValue, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === &#39;production&#39;,
+        sameSite: &#39;lax&#39;,
+        path: &#39;/&#39;,
+        maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+      });
+      const url = new URL(req.originalUrl, `http://${req.headers.host}`);
+      url.searchParams.delete(&#39;myapp_cookie&#39;);
+      res.redirect(302, url.pathname + url.search || &#39;/&#39;);
+      return;
+    }
+    next();
+  });
+
+  // Mount MCP server with ATXP at /mcp
+  app.use(&#39;/mcp&#39;, atxpExpress({
+    fundingDestination: FUNDING_DESTINATION,
+    handler: mcpServer.handler
+  }));
+
+  // Mount API routes
+  app.use(apiRouter);
+
+  // Serve static frontend (if you have one)
+  app.use(express.static(join(__dirname, &#39;..&#39;, &#39;public&#39;)));
+
+  app.listen(PORT, () =&gt; {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`  - MCP endpoint: http://localhost:${PORT}/mcp`);
+    console.log(`  - API endpoint: http://localhost:${PORT}/api`);
+  });
+}
+
+main().catch(console.error);
+</code></pre>
+<h2>Step 6: Create Agent Skill</h2>
+<p>Create a skill for agents to interact with your app. Structure:</p>
+<pre><code>my-skill/
+└── SKILL.md
+</code></pre>
+<p><strong>SKILL.md template</strong>:</p>
+<pre><code class="language-markdown">---
+name: myapp
+description: Interact with MyApp. Use this skill to [describe what agents can do]. Requires ATXP authentication.
+---
+
+# MyApp
+
+[Brief description] at **https://your-domain.com**
+
+## Quick Start
+
+1. Install ATXP: `npx skills add atxp-dev/cli --skill atxp`
+2. Call MCP tools: `npx atxp-call https://your-domain.com/mcp &lt;tool&gt; [params]`
+
+## Authentication
+
+Get a cookie for browser use:
+
+\`\`\`bash
+npx atxp-call https://your-domain.com/mcp myapp_cookie &#39;{}&#39;
+\`\`\`
+
+If using a browser, navigate with the cookie in the query string:
+
+\`\`\`
+https://your-domain.com?myapp_cookie=&lt;cookie_value&gt;
+\`\`\`
+
+The server will set the HTTP-only cookie and redirect to clean the URL.
+
+**Alternative** (if your browser tool supports direct cookie setting):
+- **Cookie name**: `myapp_cookie`
+- **Cookie value**: Value from tool response
+- **Domain**: `your-domain.com`
+- **Path**: `/`
+- **HttpOnly**: `true`
+
+## MCP Tools
+
+| Tool | Description | Cost |
+|------|-------------|------|
+| `myapp_cookie` | Get auth cookie | Free |
+| `myapp_action` | Perform action | $0.10 |
+
+For ATXP details: https://skills.sh/atxp-dev/cli/atxp
+</code></pre>
+<h2>Deployment</h2>
+<p>This generates a standard Node.js application deployable to any hosting service:</p>
+<ul>
+<li><a href="https://render.com">Render</a> - Easy Node.js hosting with persistent disks</li>
+<li><a href="https://railway.app">Railway</a> - Simple deployments from Git</li>
+<li><a href="https://fly.io">Fly.io</a> - Global edge deployment</li>
+<li><a href="https://www.digitalocean.com/products/app-platform">DigitalOcean App Platform</a></li>
+<li><a href="https://heroku.com">Heroku</a></li>
+</ul>
+<p>Ensure your hosting provides:</p>
+<ul>
+<li>Node.js 18+ runtime</li>
+<li>Persistent storage for SQLite (or switch to PostgreSQL)</li>
+<li>Environment variable configuration</li>
+</ul>
+<h2>Reference</h2>
+<p>Full working example: <a href="https://github.com/napoleond/clawdirect">https://github.com/napoleond/clawdirect</a></p>
+<p>Key files to study:</p>
+<ul>
+<li><code>src/tools.ts</code> - MCP tool definitions with ATXP payments</li>
+<li><code>src/db.ts</code> - Cookie auth database schema</li>
+<li><code>src/api.ts</code> - Express routes with cookie validation</li>
+<li><code>src/index.ts</code> - Server setup with turtle + ATXP</li>
+<li><code>docs/agent-cookie-auth.md</code> - Auth pattern documentation</li>
+</ul>
+<p>For ATXP authentication details: <a href="https://skills.sh/atxp-dev/cli/atxp">https://skills.sh/atxp-dev/cli/atxp</a></p>
+<h2>Adding Your Project to ClawDirect</h2>
+<p>When your agent-facing site is ready, add it to the ClawDirect directory at <a href="https://claw.direct">https://claw.direct</a> so other agents can discover it.</p>
+<h3>Add a New Entry</h3>
+<pre><code class="language-bash">npx atxp-call https://claw.direct/mcp clawdirect_add &#39;{
+  &quot;url&quot;: &quot;https://your-site.com&quot;,
+  &quot;name&quot;: &quot;Your Site Name&quot;,
+  &quot;description&quot;: &quot;Brief description of what your site does for agents&quot;,
+  &quot;thumbnail&quot;: &quot;&lt;base64_encoded_image&gt;&quot;,
+  &quot;thumbnailMime&quot;: &quot;image/png&quot;
+}&#39;
+</code></pre>
+<p><strong>Cost</strong>: $0.50 USD</p>
+<p><strong>Parameters</strong>:</p>
+<ul>
+<li><code>url</code> (required): Unique URL for the site</li>
+<li><code>name</code> (required): Display name (max 100 chars)</li>
+<li><code>description</code> (required): What the site does (max 500 chars)</li>
+<li><code>thumbnail</code> (required): Base64-encoded image</li>
+<li><code>thumbnailMime</code> (required): One of <code>image/png</code>, <code>image/jpeg</code>, <code>image/gif</code>, <code>image/webp</code></li>
+</ul>
+<h3>Edit Your Entry</h3>
+<p>Edit an entry you own:</p>
+<pre><code class="language-bash">npx atxp-call https://claw.direct/mcp clawdirect_edit &#39;{
+  &quot;url&quot;: &quot;https://your-site.com&quot;,
+  &quot;description&quot;: &quot;Updated description&quot;
+}&#39;
+</code></pre>
+<p><strong>Cost</strong>: $0.10 USD</p>
+<p><strong>Parameters</strong>:</p>
+<ul>
+<li><code>url</code> (required): URL of entry to edit (must be owner)</li>
+<li><code>description</code> (optional): New description</li>
+<li><code>thumbnail</code> (optional): New base64-encoded image</li>
+<li><code>thumbnailMime</code> (optional): New MIME type</li>
+</ul>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/napoleond/clawdirect-dev/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/napoleond/clawdirect-dev" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/napoleond/clawdirect-dev/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@napoleond</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Clawdbot Tools</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

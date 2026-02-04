@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Export the entire conversation context into Open-Token format (including tools and optional internal traces)">
+  <title>stream-of-consciousness - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to CLI Utilities</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">CLI Utilities</a>
+                <span class="skill-page-author">by @247arjun</span>
+              </div>
+              <h1 class="skill-page-title">stream-of-consciousness</h1>
+              <p class="skill-page-desc">Export the entire conversation context into Open-Token format (including tools and optional internal traces)</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Open-Token Export (SKILL)</h1>
+<h2>Objective</h2>
+<p>When invoked, output the <strong>entirety of the currently available conversation</strong> in <strong>Open-Token</strong> format as a single export artifact, suitable for:</p>
+<ul>
+<li>agent handoff / continuation across runtimes and providers</li>
+<li>audit &amp; incident review</li>
+<li>reproducibility and debugging</li>
+<li>provenance and diffing</li>
+</ul>
+<p>The output MUST be machine-parseable and complete per the chosen mode.</p>
+<h2>Invocation</h2>
+<p>Parse <code>$ARGUMENTS</code> as space-separated <code>key=value</code> pairs.</p>
+<p>Supported options:</p>
+<ul>
+<li><p><code>mode=json|ndjson</code><br>Default: <code>json</code></p>
+</li>
+<li><p><code>pretty=true|false</code><br>Default: <code>true</code> for <code>json</code>; <code>false</code> for <code>ndjson</code></p>
+</li>
+<li><p><code>include=visible-only|include-internal</code><br>Default: <code>visible-only</code></p>
+</li>
+<li><p><code>internal=redacted|summary|full</code><br>Default: <code>redacted</code><br>Meaning:</p>
+<ul>
+<li><code>redacted</code>: include internal events only as placeholders (no content)</li>
+<li><code>summary</code>: include brief summaries of internal traces (if available)</li>
+<li><code>full</code>: include internal traces verbatim (ONLY if available and permitted)</li>
+</ul>
+</li>
+<li><p><code>redact=none|secrets|pii|strict</code><br>Default: <code>secrets</code></p>
+</li>
+<li><p><code>max_bytes=&lt;int&gt;</code> (optional)<br>If present, apply truncation rules defined below.</p>
+</li>
+</ul>
+<h3>Availability rule for internal traces</h3>
+<p>If <code>include=include-internal</code> is requested but internal traces (hidden reasoning, hidden system routing, hidden intermediate tokens) are not available in the current runtime context, DO NOT fabricate them.</p>
+<p>In that case:</p>
+<ul>
+<li>set <code>conversation.internal_availability=&quot;unavailable&quot;</code></li>
+<li>omit internal-trace content events or export them as redacted placeholders, consistent with <code>internal=redacted</code></li>
+<li>still export tool calls/results if they are available</li>
+</ul>
+<h2>Non-negotiable rules</h2>
+<ol>
+<li>Export only what is available in the current conversation context; NEVER invent missing turns.</li>
+<li>Preserve causal order; DO NOT reorder events.</li>
+<li>Preserve attribution: correct actor, role, and event type.</li>
+<li>Tool outputs MUST be isolated in <code>tool_result</code> events.</li>
+<li>Apply redaction according to the <code>redact</code> option (unless <code>redact=none</code>).</li>
+<li>If output is truncated, annotate truncation deterministically (see Truncation section).</li>
+<li>Ensure the final output is valid JSON (or valid NDJSON per line) with no surrounding commentary.</li>
+</ol>
+<h2>Open-Token schema v0.1</h2>
+<h3>Top-level object (mode=json)</h3>
+<p>Emit exactly one JSON object:</p>
+<pre><code class="language-json">{
+  &quot;open_token_version&quot;: &quot;0.1&quot;,
+  &quot;exported_at&quot;: &quot;RFC3339 timestamp in UTC if available, else omit&quot;,
+  &quot;conversation&quot;: {},
+  &quot;participants&quot;: [],
+  &quot;events&quot;: [],
+  &quot;integrity&quot;: {}
+}
+</code></pre>
+<p>Constraints:</p>
+<ul>
+<li>No extra top-level keys besides those listed (omit keys you cannot populate).</li>
+<li><code>events</code> MUST be in strictly increasing sequence order.</li>
+</ul>
+<h3>Streaming export (mode=ndjson)</h3>
+<p>Emit newline-delimited JSON records:</p>
+<ol>
+<li><p>Header line:
+{ &quot;type&quot;: &quot;header&quot;, &quot;open_token_version&quot;: &quot;0.1&quot;, &quot;exported_at&quot;: &quot;...&quot; }</p>
+</li>
+<li><p>Then one line per event:
+{ &quot;type&quot;: &quot;event&quot;, ...event object... }</p>
+</li>
+<li><p>Optional footer line:
+{ &quot;type&quot;: &quot;footer&quot;, &quot;integrity&quot;: { ... } }</p>
+</li>
+</ol>
+<p>Constraints:</p>
+<ul>
+<li>Every line MUST be valid JSON.</li>
+<li>Do not wrap NDJSON in an array.</li>
+</ul>
+<h2>conversation object</h2>
+<p><code>conversation</code> fields:</p>
+<ul>
+<li><code>id</code> (required): stable identifier if provided by runtime; else generate <code>conv_&lt;YYYYMMDD&gt;_&lt;hash8&gt;</code></li>
+<li><code>title</code> (optional)</li>
+<li><code>started_at</code> (optional; RFC3339; do not guess)</li>
+<li><code>timezone</code> (optional)</li>
+<li><code>source_runtime</code> (optional): &quot;cli&quot;|&quot;web&quot;|&quot;api&quot;|&quot;ide&quot;|&quot;other&quot;</li>
+<li><code>provider</code> (optional): &quot;openai&quot;|&quot;anthropic&quot;|&quot;google&quot;|&quot;meta&quot;|&quot;other&quot;</li>
+<li><code>internal_availability</code> (optional): &quot;available&quot;|&quot;unavailable&quot;|&quot;unknown&quot;</li>
+<li><code>redaction</code> (required if redact != none):<ul>
+<li><code>mode</code>: none|secrets|pii|strict</li>
+<li><code>strategy</code>: mask|drop|hash</li>
+<li><code>notes</code>: array of high-level notes (no secrets)</li>
+</ul>
+</li>
+</ul>
+<h2>participants array</h2>
+<p>Each participant:</p>
+<p>{
+  &quot;actor_id&quot;: &quot;act_###&quot;,
+  &quot;kind&quot;: &quot;human|model|tool|system&quot;,
+  &quot;name&quot;: &quot;string&quot;,
+  &quot;provider&quot;: &quot;string (optional)&quot;,
+  &quot;model&quot;: &quot;string (optional)&quot;,
+  &quot;instance_id&quot;: &quot;string (optional)&quot;
+}</p>
+<p>Rules:</p>
+<ul>
+<li>Create one <code>participants</code> entry per distinct speaker/agent/tool/system originator.</li>
+<li>Use <code>kind=&quot;system&quot;</code> for system/developer prompt originators.</li>
+<li>Use <code>kind=&quot;tool&quot;</code> for external tools/functions.</li>
+<li>Use <code>kind=&quot;model&quot;</code> for model/agent outputs (including subagents).</li>
+</ul>
+<h2>events array</h2>
+<h3>Event shape</h3>
+<p>Each <code>events[]</code> entry MUST follow:</p>
+<p>{
+  &quot;id&quot;: &quot;evt_000001&quot;,
+  &quot;seq&quot;: 1,
+  &quot;ts&quot;: &quot;RFC3339 UTC timestamp (optional if unknown)&quot;,
+  &quot;type&quot;: &quot;message|tool_use|tool_result|span_start|span_end|annotation&quot;,
+  &quot;actor_id&quot;: &quot;act_###&quot;,
+  &quot;visibility&quot;: &quot;public|internal|metadata&quot;,
+  &quot;role&quot;: &quot;system|developer|user|assistant|assistant_thought|tool&quot;,
+  &quot;content&quot;: {
+    &quot;mime&quot;: &quot;text/plain|application/json&quot;,
+    &quot;text&quot;: &quot;string (optional)&quot;,
+    &quot;data&quot;: {}
+  },
+  &quot;links&quot;: {
+    &quot;parent_id&quot;: &quot;evt_###### (optional)&quot;,
+    &quot;replies_to&quot;: &quot;evt_###### (optional)&quot;,
+    &quot;call_id&quot;: &quot;call_###### (optional)&quot;,
+    &quot;span_id&quot;: &quot;span_###### (optional)&quot;
+  },
+  &quot;usage&quot;: {
+    &quot;input_tokens&quot;: 0,
+    &quot;output_tokens&quot;: 0,
+    &quot;reasoning_tokens&quot;: 0
+  }
+}</p>
+<p>Rules:</p>
+<ul>
+<li><code>id</code> REQUIRED; <code>seq</code> REQUIRED and must be contiguous (1..N).</li>
+<li><code>ts</code> OPTIONAL; do not guess timestamps.</li>
+<li><code>usage</code> OPTIONAL; include only if available.</li>
+<li>If <code>content.text</code> is used, <code>content.mime</code> should be <code>text/plain</code>.</li>
+<li>If <code>content.data</code> is used, <code>content.mime</code> should be <code>application/json</code>.</li>
+</ul>
+<h3>Role mapping guidance</h3>
+<p>Map provider concepts to <code>role</code> + <code>visibility</code>:</p>
+<ul>
+<li>System prompt → <code>role=&quot;system&quot;</code>, <code>visibility=&quot;internal&quot;</code> (or <code>public</code> if explicitly shown)</li>
+<li>Developer instruction → <code>role=&quot;developer&quot;</code>, <code>visibility=&quot;internal&quot;</code></li>
+<li>User message → <code>role=&quot;user&quot;</code>, <code>visibility=&quot;public&quot;</code></li>
+<li>Assistant final answer → <code>role=&quot;assistant&quot;</code>, <code>visibility=&quot;public&quot;</code></li>
+<li>Hidden reasoning trace:<ul>
+<li>if available AND <code>include=include-internal</code>:<ul>
+<li><code>role=&quot;assistant_thought&quot;</code>, <code>visibility=&quot;internal&quot;</code></li>
+<li>content depends on <code>internal</code>:<ul>
+<li><code>full</code>: include verbatim thought content</li>
+<li><code>summary</code>: include a brief summary string</li>
+<li><code>redacted</code>: include placeholder with no thought content</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>else:<ul>
+<li>omit thought content; set <code>conversation.internal_availability=&quot;unavailable&quot;</code> when applicable</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Tool invocation request → <code>type=&quot;tool_use&quot;</code>, <code>role=&quot;assistant&quot;</code>, <code>visibility=&quot;internal&quot;</code></li>
+<li>Tool output → <code>type=&quot;tool_result&quot;</code>, <code>role=&quot;tool&quot;</code>, <code>visibility=&quot;internal&quot;</code></li>
+</ul>
+<h3>Tool event requirements</h3>
+<p>For every tool call:</p>
+<ul>
+<li>Emit one <code>tool_use</code> event and one <code>tool_result</code> event.</li>
+<li>Both MUST share the same <code>links.call_id</code>.</li>
+<li><code>tool_use.content.data</code> MUST include:<ul>
+<li><code>tool_name</code> (string)</li>
+<li><code>arguments</code> (object/array)</li>
+</ul>
+</li>
+<li><code>tool_result.content</code> MUST contain ONLY the tool output.<ul>
+<li>If structured: <code>content.mime=&quot;application/json&quot;</code> and put output in <code>content.data</code></li>
+<li>If text: <code>content.mime=&quot;text/plain&quot;</code> and put output in <code>content.text</code></li>
+</ul>
+</li>
+</ul>
+<p>If a tool call was initiated but no result exists in context:</p>
+<ul>
+<li>Still emit the <code>tool_use</code> event.</li>
+<li>Emit a <code>tool_result</code> event with:<ul>
+<li><code>content.mime=&quot;application/json&quot;</code></li>
+<li><code>content.data={&quot;missing_result&quot;:true}</code></li>
+<li>and include <code>conversation.redaction.notes</code> or an event-level annotation if relevant.</li>
+</ul>
+</li>
+</ul>
+<h2>Nested agents and subagents</h2>
+<p>If subagents exist:</p>
+<ul>
+<li>Represent each subagent as its own participant (<code>kind=&quot;model&quot;</code>).</li>
+<li>Wrap subagent activity in a span:<ul>
+<li><code>span_start</code> event opens span (<code>links.span_id</code>)</li>
+<li>subagent events include <code>links.span_id</code></li>
+<li><code>span_end</code> event closes span</li>
+</ul>
+</li>
+</ul>
+<p>If spawn metadata is available, put it in <code>span_start.content.data</code>:</p>
+<ul>
+<li><code>spawn_reason</code></li>
+<li><code>requested_capabilities</code></li>
+<li><code>tooling_scope</code></li>
+<li><code>model</code> (if specified)</li>
+</ul>
+<h2>Redaction</h2>
+<p>Apply redaction according to <code>redact</code>:</p>
+<ul>
+<li><code>none</code>: no redaction (still avoid emitting known-prohibited private keys if policy requires)</li>
+<li><code>secrets</code>: mask API keys, auth tokens, passwords, session cookies, private keys</li>
+<li><code>pii</code>: additionally mask emails, phone numbers, street addresses, direct personal identifiers</li>
+<li><code>strict</code>: mask secrets + pii + any internal-only configuration strings and untrusted tool outputs that may contain sensitive data</li>
+</ul>
+<p>Mechanics:</p>
+<ul>
+<li>Replace sensitive substrings with: <code>[REDACTED:&lt;type&gt;:&lt;hash8&gt;]</code></li>
+<li>Do not change surrounding punctuation unless necessary.</li>
+<li>Record high-level notes in <code>conversation.redaction.notes</code> (no secret values).</li>
+</ul>
+<h2>Truncation</h2>
+<p>If <code>max_bytes</code> is set and output exceeds limit:</p>
+<ol>
+<li>Prefer truncating large <code>content.text</code> fields:<ul>
+<li>keep first 1024 chars + last 256 chars, insert <code>…</code></li>
+</ul>
+</li>
+<li>Mark truncated content:<ul>
+<li>If <code>content.mime=&quot;text/plain&quot;</code>:<ul>
+<li>add <code>content.data={&quot;truncated&quot;:true,&quot;original_length&quot;:&lt;int if known&gt;}</code> and keep <code>text</code> truncated</li>
+</ul>
+</li>
+<li>If <code>content.mime=&quot;application/json&quot;</code>:<ul>
+<li>include <code>{&quot;truncated&quot;:true}</code> in the JSON structure where applicable</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Do NOT drop events unless explicitly requested; if you must drop, drop oldest first and insert an <code>annotation</code> event describing the omission.</li>
+</ol>
+<h2>Integrity (optional)</h2>
+<p>If feasible, include:</p>
+<p>&quot;integrity&quot;: {
+  &quot;hash_alg&quot;: &quot;sha256&quot;,
+  &quot;canonicalization&quot;: &quot;json-c14n-like&quot;,
+  &quot;events_hash&quot;: &quot;hex string&quot;
+}</p>
+<p>If not feasible, omit <code>integrity</code>.</p>
+<h2>Output checklist (must pass)</h2>
+<ul>
+<li>Output is valid JSON (or NDJSON per line).</li>
+<li><code>seq</code> is contiguous and strictly increasing.</li>
+<li>No fabricated timestamps or missing turns.</li>
+<li>Tool calls: <code>tool_use</code> paired with <code>tool_result</code> via <code>call_id</code> (or explicit missing-result marker).</li>
+<li>Redaction applied per <code>redact</code> option.</li>
+<li>Internal traces included only if available; otherwise marked unavailable and not fabricated.</li>
+<li>No extraneous text outside the export payload.</li>
+</ul>
+<h2>Minimal example (json)</h2>
+<pre><code class="language-json">{
+  &quot;open_token_version&quot;: &quot;0.1&quot;,
+  &quot;exported_at&quot;: &quot;2026-01-31T00:00:00Z&quot;,
+  &quot;conversation&quot;: {
+    &quot;id&quot;: &quot;conv_20260131_ab12cd34&quot;,
+    &quot;provider&quot;: &quot;unknown&quot;,
+    &quot;source_runtime&quot;: &quot;unknown&quot;,
+    &quot;internal_availability&quot;: &quot;unavailable&quot;,
+    &quot;redaction&quot;: {
+      &quot;mode&quot;: &quot;secrets&quot;,
+      &quot;strategy&quot;: &quot;mask&quot;,
+      &quot;notes&quot;: [&quot;masked api keys&quot;]
+    }
+  },
+  &quot;participants&quot;: [
+    { &quot;actor_id&quot;: &quot;act_001&quot;, &quot;kind&quot;: &quot;system&quot;, &quot;name&quot;: &quot;system&quot; },
+    { &quot;actor_id&quot;: &quot;act_002&quot;, &quot;kind&quot;: &quot;human&quot;, &quot;name&quot;: &quot;user&quot; },
+    { &quot;actor_id&quot;: &quot;act_003&quot;, &quot;kind&quot;: &quot;model&quot;, &quot;name&quot;: &quot;assistant&quot;, &quot;provider&quot;: &quot;unknown&quot;, &quot;model&quot;: &quot;unknown&quot; },
+    { &quot;actor_id&quot;: &quot;act_004&quot;, &quot;kind&quot;: &quot;tool&quot;, &quot;name&quot;: &quot;CalculatorAPI&quot; }
+  ],
+  &quot;events&quot;: [
+    {
+      &quot;id&quot;: &quot;evt_000001&quot;,
+      &quot;seq&quot;: 1,
+      &quot;type&quot;: &quot;message&quot;,
+      &quot;actor_id&quot;: &quot;act_001&quot;,
+      &quot;visibility&quot;: &quot;internal&quot;,
+      &quot;role&quot;: &quot;system&quot;,
+      &quot;content&quot;: { &quot;mime&quot;: &quot;text/plain&quot;, &quot;text&quot;: &quot;You are a math tutor.&quot; }
+    },
+    {
+      &quot;id&quot;: &quot;evt_000002&quot;,
+      &quot;seq&quot;: 2,
+      &quot;type&quot;: &quot;message&quot;,
+      &quot;actor_id&quot;: &quot;act_002&quot;,
+      &quot;visibility&quot;: &quot;public&quot;,
+      &quot;role&quot;: &quot;user&quot;,
+      &quot;content&quot;: { &quot;mime&quot;: &quot;text/plain&quot;, &quot;text&quot;: &quot;What is 5 factorial?&quot; }
+    },
+    {
+      &quot;id&quot;: &quot;evt_000003&quot;,
+      &quot;seq&quot;: 3,
+      &quot;type&quot;: &quot;tool_use&quot;,
+      &quot;actor_id&quot;: &quot;act_003&quot;,
+      &quot;visibility&quot;: &quot;internal&quot;,
+      &quot;role&quot;: &quot;assistant&quot;,
+      &quot;content&quot;: {
+        &quot;mime&quot;: &quot;application/json&quot;,
+        &quot;data&quot;: { &quot;tool_name&quot;: &quot;CalculatorAPI&quot;, &quot;arguments&quot;: { &quot;op&quot;: &quot;factorial&quot;, &quot;n&quot;: 5 } }
+      },
+      &quot;links&quot;: { &quot;call_id&quot;: &quot;call_000001&quot; }
+    },
+    {
+      &quot;id&quot;: &quot;evt_000004&quot;,
+      &quot;seq&quot;: 4,
+      &quot;type&quot;: &quot;tool_result&quot;,
+      &quot;actor_id&quot;: &quot;act_004&quot;,
+      &quot;visibility&quot;: &quot;internal&quot;,
+      &quot;role&quot;: &quot;tool&quot;,
+      &quot;content&quot;: { &quot;mime&quot;: &quot;text/plain&quot;, &quot;text&quot;: &quot;120&quot; },
+      &quot;links&quot;: { &quot;call_id&quot;: &quot;call_000001&quot; }
+    },
+    {
+      &quot;id&quot;: &quot;evt_000005&quot;,
+      &quot;seq&quot;: 5,
+      &quot;type&quot;: &quot;message&quot;,
+      &quot;actor_id&quot;: &quot;act_003&quot;,
+      &quot;visibility&quot;: &quot;public&quot;,
+      &quot;role&quot;: &quot;assistant&quot;,
+      &quot;content&quot;: { &quot;mime&quot;: &quot;text/plain&quot;, &quot;text&quot;: &quot;5! equals 120.&quot; }
+    }
+  ]
+}
+</code></pre>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/247arjun/stream-of-consciousness/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/247arjun/stream-of-consciousness" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/247arjun/stream-of-consciousness/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@247arjun</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">CLI Utilities</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

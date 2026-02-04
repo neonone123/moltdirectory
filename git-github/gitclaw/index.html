@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Back up the OpenClaw agent workspace to a GitHub repo and keep it synced via a cron-driven commit/push script">
+  <title>gitclaw - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Git & GitHub</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Git & GitHub</a>
+                <span class="skill-page-author">by @marian2js</span>
+              </div>
+              <h1 class="skill-page-title">gitclaw</h1>
+              <p class="skill-page-desc">Back up the OpenClaw agent workspace to a GitHub repo and keep it synced via a cron-driven commit/push script</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>GitClaw: Agent self-backup to GitHub</h1>
+<h2>When to use</h2>
+<p>Use this skill automatically when it&#39;s installed or reference, and also when the user asks to:</p>
+<ul>
+<li>back up / sync / mirror the OpenClaw workspace</li>
+<li>set up periodic commits and pushes</li>
+<li>install/configure GitHub backup automation for the agent</li>
+</ul>
+<h2>Behavioral rule (important)</h2>
+<ul>
+<li>Do everything automatically and quietly.</li>
+<li>Only message the user when:<ul>
+<li>you need inputs (repo name, visibility, optional frequency), or</li>
+<li>Git/GH/Cron install fails, or</li>
+<li>GitHub auth requires the user to complete the browser/device step, or</li>
+<li>Git operations fail (conflicts, permissions, etc).</li>
+</ul>
+</li>
+</ul>
+<h2>Inputs to ask the user for</h2>
+<p>Ask the user for:</p>
+<ol>
+<li><strong>Repository name</strong> (e.g., <code>openclaw-backup</code>)</li>
+<li><strong>Visibility</strong>: <code>public</code> or <code>private</code></li>
+<li>(Optional) <strong>Backup frequency</strong> in minutes (default: <strong>60</strong>)</li>
+</ol>
+<p>Do NOT ask for a Personal Access Token. We use <code>gh</code> auth.</p>
+<hr>
+<h2>Step 1: Ensure prerequisites (auto-install)</h2>
+<h3>1A) Ensure git is installed (auto-install; do not stop)</h3>
+<p>Check:</p>
+<ul>
+<li><code>git --version</code></li>
+</ul>
+<p>If missing, install using the best available method:</p>
+<ul>
+<li>If <code>brew</code> exists:<ul>
+<li><code>brew install git</code></li>
+</ul>
+</li>
+<li>Else if <code>apt-get</code> exists:<ul>
+<li><code>sudo apt-get update &amp;&amp; sudo apt-get install -y git</code></li>
+</ul>
+</li>
+<li>Else if <code>dnf</code> exists:<ul>
+<li><code>sudo dnf install -y git</code></li>
+</ul>
+</li>
+<li>Else if <code>yum</code> exists:<ul>
+<li><code>sudo yum install -y git</code></li>
+</ul>
+</li>
+<li>Else if <code>pacman</code> exists:<ul>
+<li><code>sudo pacman -S --noconfirm git</code></li>
+</ul>
+</li>
+<li>Else if <code>zypper</code> exists:<ul>
+<li><code>sudo zypper install -y git</code></li>
+</ul>
+</li>
+<li>Else if <code>apk</code> exists:<ul>
+<li><code>sudo apk add git</code></li>
+</ul>
+</li>
+<li>Else if macOS and <code>xcode-select</code> exists:<ul>
+<li><code>xcode-select --install</code> (this may prompt the user)</li>
+</ul>
+</li>
+<li>Else:<ul>
+<li>Tell the user you couldn’t auto-install git on this OS and show the failing detection output.</li>
+</ul>
+</li>
+</ul>
+<p>Re-check:</p>
+<ul>
+<li><code>git --version</code></li>
+</ul>
+<p>Only notify the user if install failed.</p>
+<h3>1B) Ensure cron/crontab is available (best-effort auto-install)</h3>
+<p>Check:</p>
+<ul>
+<li><code>command -v crontab</code></li>
+</ul>
+<p>If missing, attempt install:</p>
+<ul>
+<li>If <code>apt-get</code> exists:<ul>
+<li><code>sudo apt-get update &amp;&amp; sudo apt-get install -y cron</code></li>
+<li><code>sudo systemctl enable --now cron || sudo service cron start || true</code></li>
+</ul>
+</li>
+<li>Else if <code>dnf</code> exists:<ul>
+<li><code>sudo dnf install -y cronie</code></li>
+<li><code>sudo systemctl enable --now crond || true</code></li>
+</ul>
+</li>
+<li>Else if <code>yum</code> exists:<ul>
+<li><code>sudo yum install -y cronie</code></li>
+<li><code>sudo systemctl enable --now crond || true</code></li>
+</ul>
+</li>
+<li>Else if <code>pacman</code> exists:<ul>
+<li><code>sudo pacman -S --noconfirm cronie</code></li>
+<li><code>sudo systemctl enable --now cronie || true</code></li>
+</ul>
+</li>
+<li>Else if <code>apk</code> exists:<ul>
+<li><code>sudo apk add dcron</code></li>
+<li><code>sudo rc-update add dcron default || true</code></li>
+<li><code>sudo rc-service dcron start || true</code></li>
+</ul>
+</li>
+<li>Else:<ul>
+<li>If you can’t install, tell the user cron is required for scheduling.</li>
+</ul>
+</li>
+</ul>
+<p>Re-check:</p>
+<ul>
+<li><code>command -v crontab</code></li>
+</ul>
+<hr>
+<h2>Step 2: Ensure GitHub CLI (<code>gh</code>) is installed (auto-install)</h2>
+<p>Check:</p>
+<ul>
+<li><code>gh --version</code></li>
+</ul>
+<p>If missing, install:</p>
+<ul>
+<li><p>If <code>brew</code> exists:</p>
+<ul>
+<li><code>brew install gh</code></li>
+</ul>
+</li>
+<li><p>Else if <code>apt-get</code> exists (official GitHub CLI packages; preferred):</p>
+<ul>
+<li>Install using the official apt repo steps:<ul>
+<li><code>(type -p wget &gt;/dev/null || (sudo apt-get update &amp;&amp; sudo apt-get install -y wget))</code></li>
+<li><code>sudo mkdir -p -m 755 /etc/apt/keyrings</code></li>
+<li><code>out=$(mktemp) &amp;&amp; wget -nv -O&quot;$out&quot; https://cli.github.com/packages/githubcli-archive-keyring.gpg</code></li>
+<li><code>cat &quot;$out&quot; | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg &gt; /dev/null</code></li>
+<li><code>sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg</code></li>
+<li><code>sudo mkdir -p -m 755 /etc/apt/sources.list.d</code></li>
+<li><code>echo &quot;deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main&quot; | sudo tee /etc/apt/sources.list.d/github-cli.list &gt; /dev/null</code></li>
+<li><code>sudo apt-get update &amp;&amp; sudo apt-get install -y gh</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Else if <code>dnf</code> exists:</p>
+<ul>
+<li><code>sudo dnf install -y &#39;dnf-command(config-manager)&#39; || sudo dnf install -y dnf5-plugins || true</code></li>
+<li><code>sudo dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo || sudo dnf config-manager addrepo --from-repofile=https://cli.github.com/packages/rpm/gh-cli.repo || true</code></li>
+<li><code>sudo dnf install -y gh --repo gh-cli || sudo dnf install -y gh || true</code></li>
+</ul>
+</li>
+<li><p>Else if <code>yum</code> exists:</p>
+<ul>
+<li><code>type -p yum-config-manager &gt;/dev/null || sudo yum install -y yum-utils</code></li>
+<li><code>sudo yum-config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo</code></li>
+<li><code>sudo yum install -y gh</code></li>
+</ul>
+</li>
+<li><p>Else if <code>zypper</code> exists:</p>
+<ul>
+<li><code>sudo zypper addrepo https://cli.github.com/packages/rpm/gh-cli.repo || true</code></li>
+<li><code>sudo zypper ref</code></li>
+<li><code>sudo zypper install -y gh</code></li>
+</ul>
+</li>
+<li><p>Else if <code>pacman</code> exists:</p>
+<ul>
+<li><code>sudo pacman -S --noconfirm github-cli</code></li>
+</ul>
+</li>
+<li><p>Else if <code>apk</code> exists:</p>
+<ul>
+<li><code>sudo apk add github-cli</code></li>
+</ul>
+</li>
+<li><p>Else:</p>
+<ul>
+<li>Tell the user you can’t auto-install <code>gh</code> on this OS.</li>
+</ul>
+</li>
+</ul>
+<p>Re-check:</p>
+<ul>
+<li><code>gh --version</code></li>
+</ul>
+<p>Only notify the user if install failed.</p>
+<hr>
+<h2>Step 3: Ensure the user is authenticated in <code>gh</code> (agent runs the flow)</h2>
+<p>Check:</p>
+<ul>
+<li><code>gh auth status --hostname github.com</code></li>
+</ul>
+<p>If NOT authenticated:</p>
+<ol>
+<li><p>Run:</p>
+<ul>
+<li><code>gh auth login --hostname github.com --git-protocol https</code></li>
+</ul>
+</li>
+<li><p>The terminal flow will show a one-time code and ask the user to authorize.</p>
+<ul>
+<li>Tell the user to open <strong><a href="https://github.com/login/device">https://github.com/login/device</a></strong> in their browser and enter the code shown in the terminal, then authorize.</li>
+</ul>
+</li>
+<li><p>After login:</p>
+<ul>
+<li><code>gh auth setup-git</code></li>
+</ul>
+</li>
+<li><p>Verify again:</p>
+<ul>
+<li><code>gh auth status --hostname github.com</code></li>
+</ul>
+</li>
+</ol>
+<p>If auth fails, stop and report the exact terminal output.</p>
+<hr>
+<h2>Step 4: Initialize git in the OpenClaw workspace and connect/create the repo</h2>
+<p>Workspace dir (where you store SOUL.md, AGENTS.md, etc.):</p>
+<ul>
+<li>Example (path might be different on your environment): <code>WORKSPACE_DIR=&quot;$HOME/.openclaw/workspace&quot;</code></li>
+</ul>
+<ol>
+<li><p>Ensure the workspace exists:</p>
+<ul>
+<li><code>mkdir -p &quot;$WORKSPACE_DIR&quot;</code></li>
+<li><code>cd &quot;$WORKSPACE_DIR&quot;</code></li>
+</ul>
+</li>
+<li><p>Initialize repo if needed:</p>
+<ul>
+<li>If <code>.git</code> does not exist: <code>git init</code></li>
+<li><code>git branch -M main</code></li>
+</ul>
+</li>
+<li><p>Configure a deterministic commit identity (local-only):</p>
+<ul>
+<li><code>git config user.name &quot;gitclaw.ai&quot;</code></li>
+<li><code>git config user.email &quot;gitclaw-bot@users.noreply.github.com&quot;</code></li>
+</ul>
+</li>
+<li><p>Determine the authenticated GitHub username (owner):</p>
+<ul>
+<li><code>OWNER=&quot;$(gh api user --jq .login)&quot;</code></li>
+<li>(Do not print unless debugging is needed)</li>
+</ul>
+</li>
+<li><p>Repo name and visibility:</p>
+<ul>
+<li><code>REPO=&quot;&lt;repo name from user&gt;&quot;</code></li>
+<li>Visibility:<ul>
+<li><code>public</code> =&gt; <code>--public</code></li>
+<li><code>private</code> =&gt; <code>--private</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Ensure there is at least one commit (required for first push/cron):</p>
+<ul>
+<li>Create a tiny marker file if needed:<ul>
+<li><code>test -f .gitclaw.keep || printf &quot;gitclaw initialized: %s\n&quot; &quot;$(date -u &#39;+%Y-%m-%dT%H:%M:%SZ&#39;)&quot; &gt; .gitclaw.keep</code></li>
+</ul>
+</li>
+<li><code>git add -A</code></li>
+<li><code>git commit -m &quot;gitclaw: initial backup&quot; || true</code></li>
+</ul>
+</li>
+<li><p>Create or reuse the target repo:</p>
+<ul>
+<li>If it exists:<ul>
+<li><code>gh repo view &quot;$OWNER/$REPO&quot; &gt;/dev/null 2&gt;&amp;1</code></li>
+<li>Set remote:<ul>
+<li><code>REMOTE_URL=&quot;https://github.com/$OWNER/$REPO.git&quot;</code></li>
+<li>If origin exists: <code>git remote set-url origin &quot;$REMOTE_URL&quot;</code></li>
+<li>Else: <code>git remote add origin &quot;$REMOTE_URL&quot;</code></li>
+</ul>
+</li>
+<li>Try to fast-forward sync (avoid overwriting remote history):<ul>
+<li><code>git fetch origin main || true</code></li>
+<li><code>git merge --ff-only origin/main || true</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>If it does NOT exist:<ul>
+<li>Create it non-interactively and connect it:<ul>
+<li>Public:<ul>
+<li><code>gh repo create &quot;$REPO&quot; --public  --confirm</code></li>
+</ul>
+</li>
+<li>Private:<ul>
+<li><code>gh repo create &quot;$REPO&quot; --private --confirm</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Set remote:<ul>
+<li><code>REMOTE_URL=&quot;https://github.com/$OWNER/$REPO.git&quot;</code></li>
+<li><code>git remote add origin &quot;$REMOTE_URL&quot; || git remote set-url origin &quot;$REMOTE_URL&quot;</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Initial push:</p>
+<ul>
+<li><code>git push -u origin main</code></li>
+</ul>
+</li>
+</ol>
+<p>If push fails due to conflicts or non-fast-forward:</p>
+<ul>
+<li>Do NOT force-push automatically.</li>
+<li>Report the exact error and stop (user decision required).</li>
+</ul>
+<hr>
+<h2>Step 5: Install deterministic backup script (NO AI / NO heartbeat)</h2>
+<p>Create a folder outside the workspace:</p>
+<ul>
+<li><code>mkdir -p &quot;$HOME/.openclaw/gitclaw&quot;</code></li>
+</ul>
+<p>Create this script EXACTLY:</p>
+<p>Path:</p>
+<ul>
+<li><code>$HOME/.openclaw/gitclaw/auto_backup.sh</code></li>
+</ul>
+<p>Contents:</p>
+<pre><code class="language-bash">#!/usr/bin/env bash
+set -euo pipefail
+
+# GitClaw deterministic backup (no AI)
+export PATH=&quot;/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:$PATH&quot;
+
+WORKSPACE_DIR=&quot;${HOME}/.openclaw/workspace&quot;
+STATE_DIR=&quot;${HOME}/.openclaw/gitclaw&quot;
+LOG_FILE=&quot;${STATE_DIR}/backup.log&quot;
+LOCK_DIR=&quot;${STATE_DIR}/lock&quot;
+
+mkdir -p &quot;${STATE_DIR}&quot;
+
+timestamp() { date -u &#39;+%Y-%m-%dT%H:%M:%SZ&#39;; }
+
+# Simple lock to prevent overlapping runs
+if ! mkdir &quot;${LOCK_DIR}&quot; 2&gt;/dev/null; then
+  echo &quot;$(timestamp) Skip: already running.&quot; &gt;&gt; &quot;${LOG_FILE}&quot;
+  exit 0
+fi
+trap &#39;rmdir &quot;${LOCK_DIR}&quot; &gt;/dev/null 2&gt;&amp;1 || true&#39; EXIT
+
+if ! command -v git &gt;/dev/null 2&gt;&amp;1; then
+  echo &quot;$(timestamp) ERROR: git not found on PATH. Install git first.&quot; &gt;&gt; &quot;${LOG_FILE}&quot;
+  exit 2
+fi
+
+if [ ! -d &quot;${WORKSPACE_DIR}/.git&quot; ]; then
+  echo &quot;$(timestamp) ERROR: ${WORKSPACE_DIR} is not a git repo. Run GitClaw setup first.&quot; &gt;&gt; &quot;${LOG_FILE}&quot;
+  exit 3
+fi
+
+cd &quot;${WORKSPACE_DIR}&quot;
+
+# Stage everything
+git add -A
+
+# If nothing staged, exit quietly
+if git diff --cached --quiet; then
+  echo &quot;$(timestamp) No changes.&quot; &gt;&gt; &quot;${LOG_FILE}&quot;
+  exit 0
+fi
+
+# Commit + push
+git commit -m &quot;gitclaw backup: $(timestamp)&quot; &gt;&gt; &quot;${LOG_FILE}&quot; 2&gt;&amp;1
+git push origin main &gt;&gt; &quot;${LOG_FILE}&quot; 2&gt;&amp;1
+
+echo &quot;$(timestamp) Backup OK.&quot; &gt;&gt; &quot;${LOG_FILE}&quot;
+</code></pre>
+<p>Write the script to:</p>
+<ul>
+<li><code>$HOME/.openclaw/gitclaw/auto_backup.sh</code></li>
+</ul>
+<p>Then:</p>
+<ul>
+<li><code>chmod +x &quot;$HOME/.openclaw/gitclaw/auto_backup.sh&quot;</code></li>
+</ul>
+<hr>
+<h2>Step 6: Configure crontab (idempotent)</h2>
+<p>Default schedule: hourly (<code>0 * * * *</code>). If user provided a different frequency, convert it to a cron expression.</p>
+<ol>
+<li>Define:</li>
+</ol>
+<ul>
+<li><code>CRON_CMD=&quot;$HOME/.openclaw/gitclaw/auto_backup.sh&quot;</code></li>
+<li><code>CRON_LINE=&quot;0 * * * * $CRON_CMD&quot;</code></li>
+</ul>
+<ol start="2">
+<li>Install without duplicates:</li>
+</ol>
+<ul>
+<li><code>crontab -l 2&gt;/dev/null | grep -F &quot;$CRON_CMD&quot; &gt;/dev/null</code></li>
+<li>If not found, append:<ul>
+<li><code>(crontab -l 2&gt;/dev/null; echo &quot;$CRON_LINE&quot;) | crontab -</code></li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li>Confirm:</li>
+</ol>
+<ul>
+<li><code>crontab -l | grep -F &quot;$CRON_CMD&quot;</code></li>
+</ul>
+<hr>
+<h2>Step 7: Final validation</h2>
+<ol>
+<li>Run once:</li>
+</ol>
+<ul>
+<li><code>$HOME/.openclaw/gitclaw/auto_backup.sh</code></li>
+</ul>
+<ol start="2">
+<li>Show the log:</li>
+</ol>
+<ul>
+<li><code>tail -n 50 &quot;$HOME/.openclaw/gitclaw/backup.log&quot; || true</code></li>
+</ul>
+<ol start="3">
+<li>Tell the user:</li>
+</ol>
+<ul>
+<li>Repo: <code>https://github.com/$OWNER/$REPO</code></li>
+<li>Schedule: hourly (or the chosen cadence)</li>
+<li>Script path: <code>~/.openclaw/gitclaw/auto_backup.sh</code></li>
+</ul>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/marian2js/gitclaw/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/marian2js/gitclaw" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/marian2js/gitclaw/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@marian2js</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Git & GitHub</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Integrate OpenAI Agents SDK with You.com MCP server - Hosted and Streamable HTTP support for Python and TypeScript">
+  <title>ydc-openai-agent-sdk-integration - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Clawdbot Tools</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Clawdbot Tools</a>
+                <span class="skill-page-author">by @edwardirby</span>
+              </div>
+              <h1 class="skill-page-title">ydc-openai-agent-sdk-integration</h1>
+              <p class="skill-page-desc">Integrate OpenAI Agents SDK with You.com MCP server - Hosted and Streamable HTTP support for Python and TypeScript</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Integrate OpenAI Agents SDK with You.com MCP</h1>
+<p>Interactive workflow to set up OpenAI Agents SDK with You.com&#39;s MCP server.</p>
+<h2>Workflow</h2>
+<ol>
+<li><p><strong>Ask: Language Choice</strong></p>
+<ul>
+<li>Python or TypeScript?</li>
+</ul>
+</li>
+<li><p><strong>Ask: MCP Configuration Type</strong></p>
+<ul>
+<li><strong>Hosted MCP</strong> (OpenAI-managed with server URL): Recommended for simplicity</li>
+<li><strong>Streamable HTTP</strong> (Self-managed connection): For custom infrastructure</li>
+</ul>
+</li>
+<li><p><strong>Install Package</strong></p>
+<ul>
+<li>Python: <code>pip install openai-agents</code></li>
+<li>TypeScript: <code>npm install @openai/agents</code></li>
+</ul>
+</li>
+<li><p><strong>Ask: Environment Variables</strong></p>
+<p><strong>For Both Modes:</strong></p>
+<ul>
+<li><code>YDC_API_KEY</code> (You.com API key for Bearer token)</li>
+<li><code>OPENAI_API_KEY</code> (OpenAI API key)</li>
+</ul>
+<p>Have they set them?</p>
+<ul>
+<li>If NO: Guide to get keys:<ul>
+<li>YDC_API_KEY: <a href="https://you.com/platform/api-keys">https://you.com/platform/api-keys</a></li>
+<li>OPENAI_API_KEY: <a href="https://platform.openai.com/api-keys">https://platform.openai.com/api-keys</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>Ask: File Location</strong></p>
+<ul>
+<li>NEW file: Ask where to create and what to name</li>
+<li>EXISTING file: Ask which file to integrate into (add MCP config)</li>
+</ul>
+</li>
+<li><p><strong>Create/Update File</strong></p>
+<p><strong>For NEW files:</strong></p>
+<ul>
+<li>Use the complete template code from the &quot;Complete Templates&quot; section below</li>
+<li>User can run immediately with their API keys set</li>
+</ul>
+<p><strong>For EXISTING files:</strong></p>
+<ul>
+<li>Add MCP server configuration to their existing code</li>
+</ul>
+<p><strong>Hosted MCP configuration block (Python)</strong>:</p>
+<pre><code class="language-python">from agents import Agent, Runner
+from agents.mcp import HostedMCPTool
+
+# Validate: ydc_api_key = os.getenv(&quot;YDC_API_KEY&quot;)
+agent = Agent(
+    name=&quot;Assistant&quot;,
+    instructions=&quot;Use You.com tools to answer questions.&quot;,
+    tools=[
+        HostedMCPTool(
+            tool_config={
+                &quot;type&quot;: &quot;mcp&quot;,
+                &quot;server_label&quot;: &quot;ydc&quot;,
+                &quot;server_url&quot;: &quot;https://api.you.com/mcp&quot;,
+                &quot;headers&quot;: {
+                    &quot;Authorization&quot;: f&quot;Bearer {ydc_api_key}&quot;
+                },
+                &quot;require_approval&quot;: &quot;never&quot;,
+            }
+        )
+    ],
+)
+</code></pre>
+<p><strong>Hosted MCP configuration block (TypeScript)</strong>:</p>
+<pre><code class="language-typescript">import { Agent, hostedMcpTool } from &#39;@openai/agents&#39;;
+
+// Validate: const ydcApiKey = process.env.YDC_API_KEY;
+const agent = new Agent({
+  name: &#39;Assistant&#39;,
+  instructions: &#39;Use You.com tools to answer questions.&#39;,
+  tools: [
+    hostedMcpTool({
+     serverLabel: &#39;ydc&#39;,
+      serverUrl: &#39;https://api.you.com/mcp&#39;,
+      headers: {
+        Authorization: `Bearer ${ydcApiKey}`,
+      },
+    }),
+  ],
+});
+</code></pre>
+<p><strong>Streamable HTTP configuration block (Python)</strong>:</p>
+<pre><code class="language-python">from agents import Agent, Runner
+from agents.mcp import MCPServerStreamableHttp
+
+# Validate: ydc_api_key = os.getenv(&quot;YDC_API_KEY&quot;)
+async with MCPServerStreamableHttp(
+    name=&quot;You.com MCP Server&quot;,
+    params={
+        &quot;url&quot;: &quot;https://api.you.com/mcp&quot;,
+        &quot;headers&quot;: {&quot;Authorization&quot;: f&quot;Bearer {ydc_api_key}&quot;},
+        &quot;timeout&quot;: 10,
+    },
+    cache_tools_list=True,
+    max_retry_attempts=3,
+) as server:
+    agent = Agent(
+        name=&quot;Assistant&quot;,
+        instructions=&quot;Use You.com tools to answer questions.&quot;,
+        mcp_servers=[server],
+    )
+</code></pre>
+<p><strong>Streamable HTTP configuration block (TypeScript)</strong>:</p>
+<pre><code class="language-typescript">import { Agent, MCPServerStreamableHttp } from &#39;@openai/agents&#39;;
+
+// Validate: const ydcApiKey = process.env.YDC_API_KEY;
+const mcpServer = new MCPServerStreamableHttp({
+  url: &#39;https://api.you.com/mcp&#39;,
+  name: &#39;You.com MCP Server&#39;,
+  requestInit: {
+    headers: {
+      Authorization: `Bearer ${ydcApiKey}`,
+    },
+  },
+});
+
+const agent = new Agent({
+  name: &#39;Assistant&#39;,
+  instructions: &#39;Use You.com tools to answer questions.&#39;,
+  mcpServers: [mcpServer],
+});
+</code></pre>
+</li>
+</ol>
+<h2>Complete Templates</h2>
+<p>Use these complete templates for new files. Each template is ready to run with your API keys set.</p>
+<h3>Python Hosted MCP Template (Complete Example)</h3>
+<pre><code class="language-python">&quot;&quot;&quot;
+OpenAI Agents SDK with You.com Hosted MCP
+Python implementation with OpenAI-managed infrastructure
+&quot;&quot;&quot;
+
+import os
+import asyncio
+from agents import Agent, Runner
+from agents.mcp import HostedMCPTool
+
+# Validate environment variables
+ydc_api_key = os.getenv(&quot;YDC_API_KEY&quot;)
+openai_api_key = os.getenv(&quot;OPENAI_API_KEY&quot;)
+
+if not ydc_api_key:
+    raise ValueError(
+        &quot;YDC_API_KEY environment variable is required. &quot;
+        &quot;Get your key at: https://you.com/platform/api-keys&quot;
+    )
+
+if not openai_api_key:
+    raise ValueError(
+        &quot;OPENAI_API_KEY environment variable is required. &quot;
+        &quot;Get your key at: https://platform.openai.com/api-keys&quot;
+    )
+
+
+async def main():
+    &quot;&quot;&quot;
+    Example: Search for AI news using You.com hosted MCP tools
+    &quot;&quot;&quot;
+    # Configure agent with hosted MCP tools
+    agent = Agent(
+        name=&quot;AI News Assistant&quot;,
+        instructions=&quot;Use You.com tools to search for and answer questions about AI news.&quot;,
+        tools=[
+            HostedMCPTool(
+                tool_config={
+                    &quot;type&quot;: &quot;mcp&quot;,
+                    &quot;server_label&quot;: &quot;ydc&quot;,
+                    &quot;server_url&quot;: &quot;https://api.you.com/mcp&quot;,
+                    &quot;headers&quot;: {
+                        &quot;Authorization&quot;: f&quot;Bearer {ydc_api_key}&quot;
+                    },
+                    &quot;require_approval&quot;: &quot;never&quot;,
+                }
+            )
+        ],
+    )
+
+    # Run agent with user query
+    result = await Runner.run(
+        agent,
+        &quot;Search for the latest AI news from this week&quot;
+    )
+
+    print(result.final_output)
+
+
+if __name__ == &quot;__main__&quot;:
+    asyncio.run(main())
+</code></pre>
+<h3>Python Streamable HTTP Template (Complete Example)</h3>
+<pre><code class="language-python">&quot;&quot;&quot;
+OpenAI Agents SDK with You.com Streamable HTTP MCP
+Python implementation with self-managed connection
+&quot;&quot;&quot;
+
+import os
+import asyncio
+from agents import Agent, Runner
+from agents.mcp import MCPServerStreamableHttp
+
+# Validate environment variables
+ydc_api_key = os.getenv(&quot;YDC_API_KEY&quot;)
+openai_api_key = os.getenv(&quot;OPENAI_API_KEY&quot;)
+
+if not ydc_api_key:
+    raise ValueError(
+        &quot;YDC_API_KEY environment variable is required. &quot;
+        &quot;Get your key at: https://you.com/platform/api-keys&quot;
+    )
+
+if not openai_api_key:
+    raise ValueError(
+        &quot;OPENAI_API_KEY environment variable is required. &quot;
+        &quot;Get your key at: https://platform.openai.com/api-keys&quot;
+    )
+
+
+async def main():
+    &quot;&quot;&quot;
+    Example: Search for AI news using You.com streamable HTTP MCP server
+    &quot;&quot;&quot;
+    # Configure streamable HTTP MCP server
+    async with MCPServerStreamableHttp(
+        name=&quot;You.com MCP Server&quot;,
+        params={
+            &quot;url&quot;: &quot;https://api.you.com/mcp&quot;,
+            &quot;headers&quot;: {&quot;Authorization&quot;: f&quot;Bearer {ydc_api_key}&quot;},
+            &quot;timeout&quot;: 10,
+        },
+        cache_tools_list=True,
+        max_retry_attempts=3,
+    ) as server:
+        # Configure agent with MCP server
+        agent = Agent(
+            name=&quot;AI News Assistant&quot;,
+            instructions=&quot;Use You.com tools to search for and answer questions about AI news.&quot;,
+            mcp_servers=[server],
+        )
+
+        # Run agent with user query
+        result = await Runner.run(
+            agent,
+            &quot;Search for the latest AI news from this week&quot;
+        )
+
+        print(result.final_output)
+
+
+if __name__ == &quot;__main__&quot;:
+    asyncio.run(main())
+</code></pre>
+<h3>TypeScript Hosted MCP Template (Complete Example)</h3>
+<pre><code class="language-typescript">/**
+ * OpenAI Agents SDK with You.com Hosted MCP
+ * TypeScript implementation with OpenAI-managed infrastructure
+ */
+
+import { Agent, run, hostedMcpTool } from &#39;@openai/agents&#39;;
+
+// Validate environment variables
+const ydcApiKey = process.env.YDC_API_KEY;
+const openaiApiKey = process.env.OPENAI_API_KEY;
+
+if (!ydcApiKey) {
+  throw new Error(
+    &#39;YDC_API_KEY environment variable is required. &#39; +
+      &#39;Get your key at: https://you.com/platform/api-keys&#39;
+  );
+}
+
+if (!openaiApiKey) {
+  throw new Error(
+    &#39;OPENAI_API_KEY environment variable is required. &#39; +
+      &#39;Get your key at: https://platform.openai.com/api-keys&#39;
+  );
+}
+
+/**
+ * Example: Search for AI news using You.com hosted MCP tools
+ */
+async function main() {
+  // Configure agent with hosted MCP tools
+  const agent = new Agent({
+    name: &#39;AI News Assistant&#39;,
+    instructions:
+      &#39;Use You.com tools to search for and answer questions about AI news.&#39;,
+    tools: [
+      hostedMcpTool({
+        serverLabel: &#39;ydc&#39;,
+        serverUrl: &#39;https://api.you.com/mcp&#39;,
+        headers: {
+          Authorization: `Bearer ${ydcApiKey}`,
+        },
+      }),
+    ],
+  });
+
+  // Run agent with user query
+  const result = await run(
+    agent,
+    &#39;Search for the latest AI news from this week&#39;
+  );
+
+  console.log(result.finalOutput);
+}
+
+main().catch(console.error);
+</code></pre>
+<h3>TypeScript Streamable HTTP Template (Complete Example)</h3>
+<pre><code class="language-typescript">/**
+ * OpenAI Agents SDK with You.com Streamable HTTP MCP
+ * TypeScript implementation with self-managed connection
+ */
+
+import { Agent, run, MCPServerStreamableHttp } from &#39;@openai/agents&#39;;
+
+// Validate environment variables
+const ydcApiKey = process.env.YDC_API_KEY;
+const openaiApiKey = process.env.OPENAI_API_KEY;
+
+if (!ydcApiKey) {
+  throw new Error(
+    &#39;YDC_API_KEY environment variable is required. &#39; +
+      &#39;Get your key at: https://you.com/platform/api-keys&#39;
+  );
+}
+
+if (!openaiApiKey) {
+  throw new Error(
+    &#39;OPENAI_API_KEY environment variable is required. &#39; +
+      &#39;Get your key at: https://platform.openai.com/api-keys&#39;
+  );
+}
+
+/**
+ * Example: Search for AI news using You.com streamable HTTP MCP server
+ */
+async function main() {
+  // Configure streamable HTTP MCP server
+  const mcpServer = new MCPServerStreamableHttp({
+    url: &#39;https://api.you.com/mcp&#39;,
+    name: &#39;You.com MCP Server&#39;,
+    requestInit: {
+      headers: {
+        Authorization: `Bearer ${ydcApiKey}`,
+      },
+    },
+  });
+
+  try {
+    // Connect to MCP server
+    await mcpServer.connect();
+
+    // Configure agent with MCP server
+    const agent = new Agent({
+      name: &#39;AI News Assistant&#39;,
+      instructions:
+        &#39;Use You.com tools to search for and answer questions about AI news.&#39;,
+      mcpServers: [mcpServer],
+    });
+
+    // Run agent with user query
+    const result = await run(
+      agent,
+      &#39;Search for the latest AI news from this week&#39;
+    );
+
+    console.log(result.finalOutput);
+  } finally {
+    // Clean up connection
+    await mcpServer.close();
+  }
+}
+
+main().catch(console.error);
+</code></pre>
+<h2>MCP Configuration Types</h2>
+<h3>Hosted MCP (Recommended)</h3>
+<p><strong>What it is:</strong> OpenAI manages the MCP connection and tool routing through their Responses API.</p>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li>✅ Simpler configuration (no connection management)</li>
+<li>✅ OpenAI handles authentication and retries</li>
+<li>✅ Lower latency (tools run in OpenAI infrastructure)</li>
+<li>✅ Automatic tool discovery and listing</li>
+<li>✅ No need to manage async context or cleanup</li>
+</ul>
+<p><strong>Use when:</strong></p>
+<ul>
+<li>Building production applications</li>
+<li>Want minimal boilerplate code</li>
+<li>Need reliable tool execution</li>
+<li>Don&#39;t require custom transport layer</li>
+</ul>
+<p><strong>Configuration:</strong></p>
+<p><strong>Python:</strong></p>
+<pre><code class="language-python">from agents.mcp import HostedMCPTool
+
+tools=[
+    HostedMCPTool(
+        tool_config={
+            &quot;type&quot;: &quot;mcp&quot;,
+            &quot;server_label&quot;: &quot;ydc&quot;,
+            &quot;server_url&quot;: &quot;https://api.you.com/mcp&quot;,
+            &quot;headers&quot;: {
+                &quot;Authorization&quot;: f&quot;Bearer {os.environ[&#39;YDC_API_KEY&#39;]}&quot;
+            },
+            &quot;require_approval&quot;: &quot;never&quot;,
+        }
+    )
+]
+</code></pre>
+<p><strong>TypeScript:</strong></p>
+<pre><code class="language-typescript">import { hostedMcpTool } from &#39;@openai/agents&#39;;
+
+tools: [
+  hostedMcpTool({
+    serverLabel: &#39;ydc&#39;,
+    serverUrl: &#39;https://api.you.com/mcp&#39;,
+    headers: {
+      Authorization: `Bearer ${process.env.YDC_API_KEY}`,
+    },
+  }),
+]
+</code></pre>
+<h3>Streamable HTTP MCP</h3>
+<p><strong>What it is:</strong> You manage the MCP connection and transport layer yourself.</p>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li>✅ Full control over network connection</li>
+<li>✅ Custom infrastructure integration</li>
+<li>✅ Can add custom headers, timeouts, retry logic</li>
+<li>✅ Run MCP server in your own environment</li>
+<li>✅ Better for testing and development</li>
+</ul>
+<p><strong>Use when:</strong></p>
+<ul>
+<li>Need custom transport configuration</li>
+<li>Running MCP server in your infrastructure</li>
+<li>Require specific networking setup</li>
+<li>Development and testing scenarios</li>
+</ul>
+<p><strong>Configuration:</strong></p>
+<p><strong>Python:</strong></p>
+<pre><code class="language-python">from agents.mcp import MCPServerStreamableHttp
+
+async with MCPServerStreamableHttp(
+    name=&quot;You.com MCP Server&quot;,
+    params={
+        &quot;url&quot;: &quot;https://api.you.com/mcp&quot;,
+        &quot;headers&quot;: {&quot;Authorization&quot;: f&quot;Bearer {os.environ[&#39;YDC_API_KEY&#39;]}&quot;},
+        &quot;timeout&quot;: 10,
+    },
+    cache_tools_list=True,
+    max_retry_attempts=3,
+) as server:
+    agent = Agent(mcp_servers=[server])
+</code></pre>
+<p><strong>TypeScript:</strong></p>
+<pre><code class="language-typescript">import { MCPServerStreamableHttp } from &#39;@openai/agents&#39;;
+
+const mcpServer = new MCPServerStreamableHttp({
+  url: &#39;https://api.you.com/mcp&#39;,
+  name: &#39;You.com MCP Server&#39;,
+  requestInit: {
+    headers: {
+      Authorization: `Bearer ${process.env.YDC_API_KEY}`,
+    },
+  },
+});
+
+await mcpServer.connect();
+try {
+  const agent = new Agent({ mcpServers: [mcpServer] });
+  // Use agent
+} finally {
+  await mcpServer.close();
+}
+</code></pre>
+<h2>Available You.com Tools</h2>
+<p>After configuration, agents can discover and use:</p>
+<ul>
+<li><code>mcp__ydc__you_search</code> - Web and news search</li>
+<li><code>mcp__ydc__you_express</code> - AI-powered answers with web context  </li>
+<li><code>mcp__ydc__you_contents</code> - Web page content extraction</li>
+</ul>
+<h2>Environment Variables</h2>
+<p>Both API keys are required for both configuration modes:</p>
+<pre><code class="language-bash"># Add to your .env file or shell profile
+export YDC_API_KEY=&quot;your-you-api-key-here&quot;
+export OPENAI_API_KEY=&quot;your-openai-api-key-here&quot;
+</code></pre>
+<p><strong>Get your API keys:</strong></p>
+<ul>
+<li>You.com: <a href="https://you.com/platform/api-keys">https://you.com/platform/api-keys</a></li>
+<li>OpenAI: <a href="https://platform.openai.com/api-keys">https://platform.openai.com/api-keys</a></li>
+</ul>
+<h2>Validation Checklist</h2>
+<p>Before completing:</p>
+<ul>
+<li><input disabled="" type="checkbox"> Package installed: <code>openai-agents</code> (Python) or <code>@openai/agents</code> (TypeScript)</li>
+<li><input disabled="" type="checkbox"> Environment variables set: <code>YDC_API_KEY</code> and <code>OPENAI_API_KEY</code></li>
+<li><input disabled="" type="checkbox"> Template copied or configuration added to existing file</li>
+<li><input disabled="" type="checkbox"> MCP configuration type chosen (Hosted or Streamable HTTP)</li>
+<li><input disabled="" type="checkbox"> Authorization headers configured with Bearer token</li>
+<li><input disabled="" type="checkbox"> File is executable (Python) or can be compiled (TypeScript)</li>
+<li><input disabled="" type="checkbox"> Ready to test with example query</li>
+</ul>
+<h2>Testing Your Integration</h2>
+<p><strong>Python:</strong></p>
+<pre><code class="language-bash">python your-file.py
+</code></pre>
+<p><strong>TypeScript:</strong></p>
+<pre><code class="language-bash"># With tsx (recommended for quick testing)
+npx tsx your-file.ts
+
+# Or compile and run
+tsc your-file.ts &amp;&amp; node your-file.js
+</code></pre>
+<h2>Common Issues</h2>
+<details>
+<summary><strong>Cannot find module @openai/agents</strong></summary>
+
+<p>Install the package:</p>
+<pre><code class="language-bash"># NPM
+npm install @openai/agents
+
+# Bun
+bun add @openai/agents
+
+# Yarn
+yarn add @openai/agents
+
+# pnpm
+pnpm add @openai/agents
+</code></pre>
+</details>
+
+<details>
+<summary><strong>YDC_API_KEY environment variable is required</strong></summary>
+
+<p>Set your You.com API key:</p>
+<pre><code class="language-bash">export YDC_API_KEY=&quot;your-api-key-here&quot;
+</code></pre>
+<p>Get your key at: <a href="https://you.com/platform/api-keys">https://you.com/platform/api-keys</a></p>
+</details>
+
+<details>
+<summary><strong>OPENAI_API_KEY environment variable is required</strong></summary>
+
+<p>Set your OpenAI API key:</p>
+<pre><code class="language-bash">export OPENAI_API_KEY=&quot;your-api-key-here&quot;
+</code></pre>
+<p>Get your key at: <a href="https://platform.openai.com/api-keys">https://platform.openai.com/api-keys</a></p>
+</details>
+
+<details>
+<summary><strong>MCP connection fails with 401 Unauthorized</strong></summary>
+
+<p>Verify your YDC_API_KEY is valid:</p>
+<ol>
+<li>Check the key at <a href="https://you.com/platform/api-keys">https://you.com/platform/api-keys</a></li>
+<li>Ensure no extra spaces or quotes in the environment variable</li>
+<li>Verify the Authorization header format: <code>Bearer ${YDC_API_KEY}</code></li>
+</ol>
+</details>
+
+<details>
+<summary><strong>Tools not available or not being called</strong></summary>
+
+<p><strong>For Both Modes:</strong></p>
+<ul>
+<li>Ensure <code>server_url: &quot;https://api.you.com/mcp&quot;</code> is correct</li>
+<li>Verify Authorization header includes <code>Bearer</code> prefix</li>
+<li>Check <code>YDC_API_KEY</code> environment variable is set</li>
+<li>Confirm <code>require_approval</code> is set to <code>&quot;never&quot;</code> for automatic execution</li>
+</ul>
+<p><strong>For Streamable HTTP specifically:</strong></p>
+<ul>
+<li>Ensure MCP server is connected before creating agent</li>
+<li>Verify connection was successful before running agent</li>
+</ul>
+</details>
+
+<details>
+<summary><strong>Connection timeout or network errors</strong></summary>
+
+<p><strong>For Streamable HTTP only:</strong></p>
+<p>Increase timeout or retry attempts:</p>
+<p><strong>Python:</strong></p>
+<pre><code class="language-python">async with MCPServerStreamableHttp(
+    params={
+        &quot;url&quot;: &quot;https://api.you.com/mcp&quot;,
+        &quot;headers&quot;: {&quot;Authorization&quot;: f&quot;Bearer {os.environ[&#39;YDC_API_KEY&#39;]}&quot;},
+        &quot;timeout&quot;: 30,  # Increased timeout
+    },
+    max_retry_attempts=5,  # More retries
+) as server:
+    # ...
+</code></pre>
+<p><strong>TypeScript:</strong></p>
+<pre><code class="language-typescript">const mcpServer = new MCPServerStreamableHttp({
+  url: &#39;https://api.you.com/mcp&#39;,
+  requestInit: {
+    headers: { Authorization: `Bearer ${process.env.YDC_API_KEY}` },
+    // Add custom timeout via fetch options
+  },
+});
+</code></pre>
+</details>
+
+
+
+<h2>Additional Resources</h2>
+<ul>
+<li><strong>OpenAI Agents SDK (Python)</strong>: <a href="https://openai.github.io/openai-agents-python/">https://openai.github.io/openai-agents-python/</a></li>
+<li><strong>OpenAI Agents SDK (TypeScript)</strong>: <a href="https://openai.github.io/openai-agents-js/">https://openai.github.io/openai-agents-js/</a></li>
+<li><strong>MCP Configuration (Python)</strong>: <a href="https://openai.github.io/openai-agents-python/mcp/">https://openai.github.io/openai-agents-python/mcp/</a></li>
+<li><strong>MCP Configuration (TypeScript)</strong>: <a href="https://openai.github.io/openai-agents-js/guides/mcp/">https://openai.github.io/openai-agents-js/guides/mcp/</a></li>
+<li><strong>You.com MCP Server</strong>: <a href="https://documentation.you.com/developer-resources/mcp-server">https://documentation.you.com/developer-resources/mcp-server</a></li>
+<li><strong>API Keys</strong>:<ul>
+<li>You.com: <a href="https://you.com/platform/api-keys">https://you.com/platform/api-keys</a></li>
+<li>OpenAI: <a href="https://platform.openai.com/api-keys">https://platform.openai.com/api-keys</a></li>
+</ul>
+</li>
+</ul>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/edwardirby/ydc-openai-agent-sdk-integration/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/edwardirby/ydc-openai-agent-sdk-integration" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/edwardirby/ydc-openai-agent-sdk-integration/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@edwardirby</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Clawdbot Tools</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -108,19 +108,95 @@
 </tr>
 <tr>
 <td>Workflow improvements</td>
-<td>Promote to <code>AGENTS.md</code> (clawdbot workspace)</td>
+<td>Promote to <code>AGENTS.md</code> (OpenClaw workspace)</td>
 </tr>
 <tr>
 <td>Tool gotchas</td>
-<td>Promote to <code>TOOLS.md</code> (clawdbot workspace)</td>
+<td>Promote to <code>TOOLS.md</code> (OpenClaw workspace)</td>
 </tr>
 <tr>
 <td>Behavioral patterns</td>
-<td>Promote to <code>SOUL.md</code> (clawdbot workspace)</td>
+<td>Promote to <code>SOUL.md</code> (OpenClaw workspace)</td>
 </tr>
 </tbody></table>
-<h2>Setup</h2>
-<p>Create <code>.learnings/</code> directory in project root if it doesn&#39;t exist:</p>
+<h2>OpenClaw Setup (Recommended)</h2>
+<p>OpenClaw is the primary platform for this skill. It uses workspace-based prompt injection with automatic skill loading.</p>
+<h3>Installation</h3>
+<p><strong>Via ClawdHub (recommended):</strong></p>
+<pre><code class="language-bash">clawdhub install self-improving-agent
+</code></pre>
+<p><strong>Manual:</strong></p>
+<pre><code class="language-bash">git clone https://github.com/peterskoett/self-improving-agent.git ~/.openclaw/skills/self-improving-agent
+</code></pre>
+<h3>Workspace Structure</h3>
+<p>OpenClaw injects these files into every session:</p>
+<pre><code>~/.openclaw/workspace/
+├── AGENTS.md          # Multi-agent workflows, delegation patterns
+├── SOUL.md            # Behavioral guidelines, personality, principles
+├── TOOLS.md           # Tool capabilities, integration gotchas
+├── MEMORY.md          # Long-term memory (main session only)
+├── memory/            # Daily memory files
+│   └── YYYY-MM-DD.md
+└── .learnings/        # This skill&#39;s log files
+    ├── LEARNINGS.md
+    ├── ERRORS.md
+    └── FEATURE_REQUESTS.md
+</code></pre>
+<h3>Create Learning Files</h3>
+<pre><code class="language-bash">mkdir -p ~/.openclaw/workspace/.learnings
+</code></pre>
+<p>Then create the log files (or copy from <code>assets/</code>):</p>
+<ul>
+<li><code>LEARNINGS.md</code> — corrections, knowledge gaps, best practices</li>
+<li><code>ERRORS.md</code> — command failures, exceptions</li>
+<li><code>FEATURE_REQUESTS.md</code> — user-requested capabilities</li>
+</ul>
+<h3>Promotion Targets</h3>
+<p>When learnings prove broadly applicable, promote them to workspace files:</p>
+<table>
+<thead>
+<tr>
+<th>Learning Type</th>
+<th>Promote To</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Behavioral patterns</td>
+<td><code>SOUL.md</code></td>
+<td>&quot;Be concise, avoid disclaimers&quot;</td>
+</tr>
+<tr>
+<td>Workflow improvements</td>
+<td><code>AGENTS.md</code></td>
+<td>&quot;Spawn sub-agents for long tasks&quot;</td>
+</tr>
+<tr>
+<td>Tool gotchas</td>
+<td><code>TOOLS.md</code></td>
+<td>&quot;Git push needs auth configured first&quot;</td>
+</tr>
+</tbody></table>
+<h3>Inter-Session Communication</h3>
+<p>OpenClaw provides tools to share learnings across sessions:</p>
+<ul>
+<li><strong>sessions_list</strong> — View active/recent sessions</li>
+<li><strong>sessions_history</strong> — Read another session&#39;s transcript  </li>
+<li><strong>sessions_send</strong> — Send a learning to another session</li>
+<li><strong>sessions_spawn</strong> — Spawn a sub-agent for background work</li>
+</ul>
+<h3>Optional: Enable Hook</h3>
+<p>For automatic reminders at session start:</p>
+<pre><code class="language-bash"># Copy hook to OpenClaw hooks directory
+cp -r hooks/openclaw ~/.openclaw/hooks/self-improvement
+
+# Enable it
+openclaw hooks enable self-improvement
+</code></pre>
+<p>See <code>references/openclaw-integration.md</code> for complete details.</p>
+<hr>
+<h2>Generic Setup (Other Agents)</h2>
+<p>For Claude Code, Codex, Copilot, or other agents, create <code>.learnings/</code> in your project:</p>
 <pre><code class="language-bash">mkdir -p .learnings
 </code></pre>
 <p>Copy templates from <code>assets/</code> or create files with headers.</p>
@@ -265,11 +341,11 @@ How this could be built, what it might extend
 </tr>
 <tr>
 <td><code>SOUL.md</code></td>
-<td>Behavioral guidelines, communication style, principles (clawdbot)</td>
+<td>Behavioral guidelines, communication style, principles (OpenClaw workspace)</td>
 </tr>
 <tr>
 <td><code>TOOLS.md</code></td>
-<td>Tool capabilities, usage patterns, integration gotchas (clawdbot)</td>
+<td>Tool capabilities, usage patterns, integration gotchas (OpenClaw workspace)</td>
 </tr>
 </tbody></table>
 <h3>How to Promote</h3>
@@ -611,11 +687,10 @@ After solving non-obvious issues, consider logging to `.learnings/`:
 Ask in chat: &quot;Should I log this as a learning?&quot;
 </code></pre>
 <p><strong>Detection</strong>: Manual review at session end</p>
-<h3>Clawdbot</h3>
+<h3>OpenClaw</h3>
 <p><strong>Activation</strong>: Workspace injection + inter-agent messaging
-<strong>Setup</strong>: Configure workspace path in <code>~/.clawdbot/clawdbot.json</code>
-<strong>Detection</strong>: Via session tools and workspace files (<code>AGENTS.md</code>, <code>SOUL.md</code>, <code>TOOLS.md</code>)</p>
-<p>Clawdbot uses a workspace-based model with injected prompt files. See <code>references/clawdbot-integration.md</code> for detailed setup.</p>
+<strong>Setup</strong>: See &quot;OpenClaw Setup&quot; section above
+<strong>Detection</strong>: Via session tools and workspace files</p>
 <h3>Agent-Agnostic Guidance</h3>
 <p>Regardless of agent, apply self-improvement when you:</p>
 <ol>
@@ -636,60 +711,6 @@ Ask in chat: &quot;Should I log this as a learning?&quot;
 <li>&quot;Create a skill from this solution&quot;</li>
 <li>&quot;Check .learnings/ for related issues&quot;</li>
 </ul>
-<h2>Clawdbot Integration</h2>
-<p>Clawdbot uses workspace-based prompt injection with specialized files for different concerns.</p>
-<h3>Workspace Structure</h3>
-<pre><code>~/clawd/                    # Default workspace (configurable)
-├── AGENTS.md              # Multi-agent workflows, delegation patterns
-├── SOUL.md                # Behavioral guidelines, communication style
-├── TOOLS.md               # Tool capabilities, MCP integrations
-└── sessions/              # Session transcripts (auto-managed)
-</code></pre>
-<h3>Clawdbot Promotion Targets</h3>
-<table>
-<thead>
-<tr>
-<th>Learning Type</th>
-<th>Promote To</th>
-<th>Example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Agent coordination</td>
-<td><code>AGENTS.md</code></td>
-<td>&quot;Delegate file searches to explore agent&quot;</td>
-</tr>
-<tr>
-<td>Communication style</td>
-<td><code>SOUL.md</code></td>
-<td>&quot;Be concise, avoid disclaimers&quot;</td>
-</tr>
-<tr>
-<td>Tool gotchas</td>
-<td><code>TOOLS.md</code></td>
-<td>&quot;MCP server X requires auth refresh&quot;</td>
-</tr>
-<tr>
-<td>Project facts</td>
-<td><code>CLAUDE.md</code></td>
-<td>Standard project conventions</td>
-</tr>
-</tbody></table>
-<h3>Inter-Agent Learning</h3>
-<p>Clawdbot supports session-based communication:</p>
-<ul>
-<li><strong>sessions_list</strong> - See active/recent sessions</li>
-<li><strong>sessions_history</strong> - Read transcript from another session</li>
-<li><strong>sessions_send</strong> - Send message to another session</li>
-</ul>
-<h3>Hybrid Setup (Claude Code + Clawdbot)</h3>
-<p>When using both:</p>
-<ol>
-<li>Keep <code>.learnings/</code> for project-specific learnings</li>
-<li>Use clawdbot workspace files for cross-project patterns</li>
-<li>Sync high-value learnings to both systems</li>
-</ol>
-<p>See <code>references/clawdbot-integration.md</code> for complete setup, promotion formats, and troubleshooting.</p>
 
                 </div>
               </div>

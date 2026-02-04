@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Implements Manus-style file-based planning for complex tasks">
+  <title>planning-with-files - MoltDirectory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo">
+
+        <span class="logo-text">MoltDirectory</span>
+      </a>
+      <nav class="header-links">
+        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="../index.html" class="back-link">← Back to Productivity & Tasks</a>
+              <div class="skill-page-meta">
+                <a href="../index.html" class="skill-page-category">Productivity & Tasks</a>
+                <span class="skill-page-author">by @othmanadi</span>
+              </div>
+              <h1 class="skill-page-title">planning-with-files</h1>
+              <p class="skill-page-desc">Implements Manus-style file-based planning for complex tasks</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Planning with Files</h1>
+<p>Work like Manus: Use persistent markdown files as your &quot;working memory on disk.&quot;</p>
+<h2>FIRST: Check for Previous Session (v2.2.0)</h2>
+<p><strong>Before starting work</strong>, check for unsynced context from a previous session:</p>
+<pre><code class="language-bash"># Linux/macOS
+$(command -v python3 || command -v python) ${CLAUDE_PLUGIN_ROOT}/scripts/session-catchup.py &quot;$(pwd)&quot;
+</code></pre>
+<pre><code class="language-powershell"># Windows PowerShell
+&amp; (Get-Command python -ErrorAction SilentlyContinue).Source &quot;$env:USERPROFILE\.claude\skills\planning-with-files\scripts\session-catchup.py&quot; (Get-Location)
+</code></pre>
+<p>If catchup report shows unsynced context:</p>
+<ol>
+<li>Run <code>git diff --stat</code> to see actual code changes</li>
+<li>Read current planning files</li>
+<li>Update planning files based on catchup + git diff</li>
+<li>Then proceed with task</li>
+</ol>
+<h2>Important: Where Files Go</h2>
+<ul>
+<li><strong>Templates</strong> are in <code>${CLAUDE_PLUGIN_ROOT}/templates/</code></li>
+<li><strong>Your planning files</strong> go in <strong>your project directory</strong></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>What Goes There</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Skill directory (<code>${CLAUDE_PLUGIN_ROOT}/</code>)</td>
+<td>Templates, scripts, reference docs</td>
+</tr>
+<tr>
+<td>Your project directory</td>
+<td><code>task_plan.md</code>, <code>findings.md</code>, <code>progress.md</code></td>
+</tr>
+</tbody></table>
+<h2>Quick Start</h2>
+<p>Before ANY complex task:</p>
+<ol>
+<li><strong>Create <code>task_plan.md</code></strong> — Use <a href="templates/task_plan.md">templates/task_plan.md</a> as reference</li>
+<li><strong>Create <code>findings.md</code></strong> — Use <a href="templates/findings.md">templates/findings.md</a> as reference</li>
+<li><strong>Create <code>progress.md</code></strong> — Use <a href="templates/progress.md">templates/progress.md</a> as reference</li>
+<li><strong>Re-read plan before decisions</strong> — Refreshes goals in attention window</li>
+<li><strong>Update after each phase</strong> — Mark complete, log errors</li>
+</ol>
+<blockquote>
+<p><strong>Note:</strong> Planning files go in your project root, not the skill installation folder.</p>
+</blockquote>
+<h2>The Core Pattern</h2>
+<pre><code>Context Window = RAM (volatile, limited)
+Filesystem = Disk (persistent, unlimited)
+
+→ Anything important gets written to disk.
+</code></pre>
+<h2>File Purposes</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Purpose</th>
+<th>When to Update</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>task_plan.md</code></td>
+<td>Phases, progress, decisions</td>
+<td>After each phase</td>
+</tr>
+<tr>
+<td><code>findings.md</code></td>
+<td>Research, discoveries</td>
+<td>After ANY discovery</td>
+</tr>
+<tr>
+<td><code>progress.md</code></td>
+<td>Session log, test results</td>
+<td>Throughout session</td>
+</tr>
+</tbody></table>
+<h2>Critical Rules</h2>
+<h3>1. Create Plan First</h3>
+<p>Never start a complex task without <code>task_plan.md</code>. Non-negotiable.</p>
+<h3>2. The 2-Action Rule</h3>
+<blockquote>
+<p>&quot;After every 2 view/browser/search operations, IMMEDIATELY save key findings to text files.&quot;</p>
+</blockquote>
+<p>This prevents visual/multimodal information from being lost.</p>
+<h3>3. Read Before Decide</h3>
+<p>Before major decisions, read the plan file. This keeps goals in your attention window.</p>
+<h3>4. Update After Act</h3>
+<p>After completing any phase:</p>
+<ul>
+<li>Mark phase status: <code>in_progress</code> → <code>complete</code></li>
+<li>Log any errors encountered</li>
+<li>Note files created/modified</li>
+</ul>
+<h3>5. Log ALL Errors</h3>
+<p>Every error goes in the plan file. This builds knowledge and prevents repetition.</p>
+<pre><code class="language-markdown">## Errors Encountered
+| Error | Attempt | Resolution |
+|-------|---------|------------|
+| FileNotFoundError | 1 | Created default config |
+| API timeout | 2 | Added retry logic |
+</code></pre>
+<h3>6. Never Repeat Failures</h3>
+<pre><code>if action_failed:
+    next_action != same_action
+</code></pre>
+<p>Track what you tried. Mutate the approach.</p>
+<h2>The 3-Strike Error Protocol</h2>
+<pre><code>ATTEMPT 1: Diagnose &amp; Fix
+  → Read error carefully
+  → Identify root cause
+  → Apply targeted fix
+
+ATTEMPT 2: Alternative Approach
+  → Same error? Try different method
+  → Different tool? Different library?
+  → NEVER repeat exact same failing action
+
+ATTEMPT 3: Broader Rethink
+  → Question assumptions
+  → Search for solutions
+  → Consider updating the plan
+
+AFTER 3 FAILURES: Escalate to User
+  → Explain what you tried
+  → Share the specific error
+  → Ask for guidance
+</code></pre>
+<h2>Read vs Write Decision Matrix</h2>
+<table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>Action</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Just wrote a file</td>
+<td>DON&#39;T read</td>
+<td>Content still in context</td>
+</tr>
+<tr>
+<td>Viewed image/PDF</td>
+<td>Write findings NOW</td>
+<td>Multimodal → text before lost</td>
+</tr>
+<tr>
+<td>Browser returned data</td>
+<td>Write to file</td>
+<td>Screenshots don&#39;t persist</td>
+</tr>
+<tr>
+<td>Starting new phase</td>
+<td>Read plan/findings</td>
+<td>Re-orient if context stale</td>
+</tr>
+<tr>
+<td>Error occurred</td>
+<td>Read relevant file</td>
+<td>Need current state to fix</td>
+</tr>
+<tr>
+<td>Resuming after gap</td>
+<td>Read all planning files</td>
+<td>Recover state</td>
+</tr>
+</tbody></table>
+<h2>The 5-Question Reboot Test</h2>
+<p>If you can answer these, your context management is solid:</p>
+<table>
+<thead>
+<tr>
+<th>Question</th>
+<th>Answer Source</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Where am I?</td>
+<td>Current phase in task_plan.md</td>
+</tr>
+<tr>
+<td>Where am I going?</td>
+<td>Remaining phases</td>
+</tr>
+<tr>
+<td>What&#39;s the goal?</td>
+<td>Goal statement in plan</td>
+</tr>
+<tr>
+<td>What have I learned?</td>
+<td>findings.md</td>
+</tr>
+<tr>
+<td>What have I done?</td>
+<td>progress.md</td>
+</tr>
+</tbody></table>
+<h2>When to Use This Pattern</h2>
+<p><strong>Use for:</strong></p>
+<ul>
+<li>Multi-step tasks (3+ steps)</li>
+<li>Research tasks</li>
+<li>Building/creating projects</li>
+<li>Tasks spanning many tool calls</li>
+<li>Anything requiring organization</li>
+</ul>
+<p><strong>Skip for:</strong></p>
+<ul>
+<li>Simple questions</li>
+<li>Single-file edits</li>
+<li>Quick lookups</li>
+</ul>
+<h2>Templates</h2>
+<p>Copy these templates to start:</p>
+<ul>
+<li><a href="templates/task_plan.md">templates/task_plan.md</a> — Phase tracking</li>
+<li><a href="templates/findings.md">templates/findings.md</a> — Research storage</li>
+<li><a href="templates/progress.md">templates/progress.md</a> — Session logging</li>
+</ul>
+<h2>Scripts</h2>
+<p>Helper scripts for automation:</p>
+<ul>
+<li><code>scripts/init-session.sh</code> — Initialize all planning files</li>
+<li><code>scripts/check-complete.sh</code> — Verify all phases complete</li>
+<li><code>scripts/session-catchup.py</code> — Recover context from previous session (v2.2.0)</li>
+</ul>
+<h2>Advanced Topics</h2>
+<ul>
+<li><strong>Manus Principles:</strong> See <a href="reference.md">reference.md</a></li>
+<li><strong>Real Examples:</strong> See <a href="examples.md">examples.md</a></li>
+</ul>
+<h2>Anti-Patterns</h2>
+<table>
+<thead>
+<tr>
+<th>Don&#39;t</th>
+<th>Do Instead</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Use TodoWrite for persistence</td>
+<td>Create task_plan.md file</td>
+</tr>
+<tr>
+<td>State goals once and forget</td>
+<td>Re-read plan before decisions</td>
+</tr>
+<tr>
+<td>Hide errors and retry silently</td>
+<td>Log errors to plan file</td>
+</tr>
+<tr>
+<td>Stuff everything in context</td>
+<td>Store large content in files</td>
+</tr>
+<tr>
+<td>Start executing immediately</td>
+<td>Create plan file FIRST</td>
+</tr>
+<tr>
+<td>Repeat failed actions</td>
+<td>Track attempts, mutate approach</td>
+</tr>
+<tr>
+<td>Create files in skill directory</td>
+<td>Create files in your project</td>
+</tr>
+</tbody></table>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/othmanadi/planning-with-files/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/othmanadi/planning-with-files" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/othmanadi/planning-with-files/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@othmanadi</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Productivity & Tasks</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">MoltDirectory.com is a community-run project and is not affiliated with the official MoltBot team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>
