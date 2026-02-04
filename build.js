@@ -160,8 +160,13 @@ const PAGE_TEMPLATE = (content, title, desc, depth = 0) => {
 // --- Build Logic ---
 async function build() {
   console.log('Fetching registry from GitHub...');
-  const response = await axios.get(REGISTRY_URL);
-  const markdown = response.data;
+  const res = await axios.get(REGISTRY_URL);
+  let rawContent = res.data;
+
+  // GLOBAL REBRAND: Replace all instances of MoltBot with OpenClaw in the raw registry data
+  rawContent = rawContent.replace(/MoltBot/g, 'OpenClaw').replace(/MoltDirectory/g, 'OpenClaw Directory');
+
+  const lines = rawContent.split('\n');
 
   const categories = [];
   const skills = [];
@@ -169,7 +174,6 @@ async function build() {
   // Parse categories and skills from README
   // Support both ## and ### for headers depending on README structure
   // We'll normalize by splitting on newlines and processing line by line statefully
-  const lines = markdown.split('\n');
   let currentCat = null;
   let currentCatSkills = [];
 
@@ -422,6 +426,9 @@ async function build() {
         const rawUrl = s.url.replace('github.com', 'raw.githubusercontent.com').replace('/tree/', '/').replace('/blob/', '/');
         const skillRes = await axios.get(rawUrl);
         let skillMd = skillRes.data;
+
+        // GLOBAL REBRAND: Replace all instances of MoltBot with OpenClaw in the skill content
+        skillMd = skillMd.replace(/MoltBot/g, 'OpenClaw').replace(/MoltDirectory/g, 'OpenClaw Directory').replace(/Molt /g, 'OpenClaw ');
 
         // Remove YAML frontmatter (---...---) from the start of the markdown
         skillMd = skillMd.replace(/^---[\s\S]*?---\n*/m, '');
