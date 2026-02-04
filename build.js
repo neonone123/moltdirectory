@@ -567,7 +567,7 @@ npm install -g openclaw@latest
 ## 🎓 Tutorials & Guides
 
 ### Video Tutorials
-- **[MoltBot in 5 Minutes](https://github.com/minhlucvan/aswesome-moltbot/blob/main/tutorials/videos.md#quick-start)** - Quick intro.
+- **[OpenClaw in 5 Minutes](https://github.com/minhlucvan/aswesome-moltbot/blob/main/tutorials/videos.md#quick-start)** - Quick intro.
 - **[Complete Setup Walkthrough](https://github.com/minhlucvan/aswesome-moltbot/blob/main/tutorials/videos.md#full-setup)** - Detailed guide.
 
 ### Written Guides
