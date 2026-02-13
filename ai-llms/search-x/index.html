@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Search X/Twitter in real-time using Grok">
   <title>search-x - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/ai-llms/search-x/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,9 +45,9 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to AI & LLMs</a>
+              <a href="/ai-llms/" class="back-link">← Back to AI & LLMs</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">AI & LLMs</a>
+                <a href="/ai-llms/" class="skill-page-category">AI & LLMs</a>
                 <span class="skill-page-author">by @mvanhorn</span>
               </div>
               <h1 class="skill-page-title">search-x</h1>
@@ -65,22 +66,33 @@
                 </div>
                 <div class="markdown-content">
                   <h1>Search X</h1>
-<p>Real-time X/Twitter search powered by Grok&#39;s x_search tool. Get actual tweets with citations.</p>
+<p>Real-time X/Twitter search with two modes:</p>
+<ol>
+<li><strong>xAI Grok</strong> (default) — AI-powered search with x_search tool, up to 30 days</li>
+<li><strong>X API</strong> (<code>--x-api</code>) — Native X search, up to 7 days, pay-per-use</li>
+</ol>
 <h2>Setup</h2>
-<p>Set your xAI API key:</p>
-<pre><code class="language-bash">clawdbot config set skills.entries.search-x.apiKey &quot;xai-YOUR-KEY&quot;
-</code></pre>
-<p>Or use environment variable:</p>
+<h3>Option 1: xAI API (default)</h3>
 <pre><code class="language-bash">export XAI_API_KEY=&quot;xai-YOUR-KEY&quot;
 </code></pre>
-<p>Get your API key at: <a href="https://console.x.ai">https://console.x.ai</a></p>
+<p>Get your key at: <a href="https://console.x.ai">https://console.x.ai</a></p>
+<h3>Option 2: X API (native)</h3>
+<pre><code class="language-bash">export X_BEARER_TOKEN=&quot;YOUR-BEARER-TOKEN&quot;
+</code></pre>
+<p>Get your token at: <a href="https://console.x.com">https://console.x.com</a></p>
+<p><strong>Note:</strong> X API uses pay-per-usage pricing. No subscription needed.</p>
 <h2>Commands</h2>
-<h3>Basic Search</h3>
+<h3>Basic Search (xAI Grok)</h3>
 <pre><code class="language-bash">node {baseDir}/scripts/search.js &quot;AI video editing&quot;
+</code></pre>
+<h3>Native X API Search</h3>
+<pre><code class="language-bash">node {baseDir}/scripts/search.js --x-api &quot;AI video editing&quot;
+node {baseDir}/scripts/search.js --x-api --max 50 &quot;trending topic&quot;  # More results
 </code></pre>
 <h3>Filter by Time</h3>
 <pre><code class="language-bash">node {baseDir}/scripts/search.js --days 7 &quot;breaking news&quot;
 node {baseDir}/scripts/search.js --days 1 &quot;trending today&quot;
+node {baseDir}/scripts/search.js --x-api --days 7 &quot;news&quot;  # X API max is 7 days
 </code></pre>
 <h3>Filter by Handles</h3>
 <pre><code class="language-bash">node {baseDir}/scripts/search.js --handles @elonmusk,@OpenAI &quot;AI announcements&quot;
@@ -101,12 +113,21 @@ node {baseDir}/scripts/search.js --links-only &quot;topic&quot;  # Just X links
 <p><strong>User:</strong> &quot;Search X for Remotion best practices, last 30 days&quot;
 <strong>Action:</strong> Run search with --days 30 &quot;Remotion best practices&quot;</p>
 <h2>How It Works</h2>
+<h3>xAI Grok Mode (default)</h3>
 <p>Uses xAI&#39;s Responses API (<code>/v1/responses</code>) with the <code>x_search</code> tool:</p>
 <ul>
 <li>Model: <code>grok-4-1-fast</code> (optimized for agentic search)</li>
+<li>Up to 30 days of history</li>
+<li>AI-powered result formatting with citations</li>
 <li>Returns real tweets with URLs</li>
-<li>Includes citations for verification</li>
-<li>Supports date and handle filtering</li>
+</ul>
+<h3>X API Mode (--x-api)</h3>
+<p>Uses X&#39;s native search API (<code>/2/tweets/search/recent</code>):</p>
+<ul>
+<li>Up to 7 days of history</li>
+<li>Pay-per-usage pricing (no subscription)</li>
+<li>Raw tweet data with metrics</li>
+<li>Up to 100 results per query</li>
 </ul>
 <h2>Response Format</h2>
 <p>Each result includes:</p>
@@ -114,14 +135,37 @@ node {baseDir}/scripts/search.js --links-only &quot;topic&quot;  # Just X links
 <li><strong>@username</strong> (display name)</li>
 <li>Tweet content</li>
 <li>Date/time</li>
+<li>Engagement metrics (X API mode)</li>
 <li>Direct link to tweet</li>
 </ul>
 <h2>Environment Variables</h2>
+<p><strong>xAI Mode:</strong></p>
 <ul>
-<li><code>XAI_API_KEY</code> - Your xAI API key (required)</li>
+<li><code>XAI_API_KEY</code> - Your xAI API key (required for default mode)</li>
 <li><code>SEARCH_X_MODEL</code> - Model override (default: grok-4-1-fast)</li>
 <li><code>SEARCH_X_DAYS</code> - Default days to search (default: 30)</li>
 </ul>
+<p><strong>X API Mode:</strong></p>
+<ul>
+<li><code>X_BEARER_TOKEN</code> - Your X API Bearer Token</li>
+<li><code>TWITTER_BEARER_TOKEN</code> - Alternative env var name</li>
+</ul>
+<h2>Security &amp; Permissions</h2>
+<p><strong>What this skill does:</strong></p>
+<ul>
+<li>Calls xAI&#39;s <code>/v1/responses</code> endpoint (Grok mode) or X&#39;s <code>/2/tweets/search/recent</code> endpoint (X API mode)</li>
+<li>Returns public tweet data with URLs and citations</li>
+<li>All requests go only to <code>api.x.ai</code> or <code>api.x.com</code></li>
+</ul>
+<p><strong>What this skill does NOT do:</strong></p>
+<ul>
+<li>Does not post, like, retweet, or modify any X/Twitter content</li>
+<li>Does not access your X/Twitter account or DMs</li>
+<li>Does not read config files or access the local filesystem</li>
+<li>Does not send credentials to any third-party endpoint</li>
+<li>Cannot be invoked autonomously by the agent (<code>disable-model-invocation: true</code>)</li>
+</ul>
+<p>Review <code>scripts/search.js</code> before first use to verify behavior.</p>
 
                 </div>
               </div>

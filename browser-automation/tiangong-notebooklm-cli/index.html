@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="NotebookLM CLI automation for this workspace: authenticate/login, list/create/use/rename/delete notebooks">
+  <meta name="description" content="NotebookLM CLI wrapper via `node">
   <title>tiangong-notebooklm-cli - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/browser-automation/tiangong-notebooklm-cli/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,13 +45,13 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Browser & Automation</a>
+              <a href="/browser-automation/" class="back-link">← Back to Browser & Automation</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Browser & Automation</a>
+                <a href="/browser-automation/" class="skill-page-category">Browser & Automation</a>
                 <span class="skill-page-author">by @fadeloo</span>
               </div>
               <h1 class="skill-page-title">tiangong-notebooklm-cli</h1>
-              <p class="skill-page-desc">NotebookLM CLI automation for this workspace: authenticate/login, list/create/use/rename/delete notebooks</p>
+              <p class="skill-page-desc">NotebookLM CLI wrapper via `node</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -64,93 +65,36 @@
                   </button>
                 </div>
                 <div class="markdown-content">
-                  <h1>NotebookLM</h1>
-<p>Use the workspace CLI wrapper around NotebookLM. Prefer the script in <code>scripts/</code> to avoid manual repo path setup.</p>
+                  <h1>NotebookLM CLI Wrapper</h1>
+<h2>Required parameters</h2>
+<ul>
+<li><code>node</code> and <code>notebooklm</code> available on PATH.</li>
+<li>NotebookLM CLI authenticated (run <code>login</code> if needed).</li>
+</ul>
 <h2>Quick start</h2>
+<ul>
+<li>Wrapper script: <code>scripts/notebooklm.mjs</code> (invokes <code>notebooklm</code> CLI).</li>
+<li>Run from the skill directory or use an absolute <code>{baseDir}</code> path.</li>
+</ul>
 <pre><code class="language-bash">node {baseDir}/scripts/notebooklm.mjs status
 node {baseDir}/scripts/notebooklm.mjs login
 node {baseDir}/scripts/notebooklm.mjs list
 node {baseDir}/scripts/notebooklm.mjs use &lt;notebook_id&gt;
 node {baseDir}/scripts/notebooklm.mjs ask &quot;Summarize the key takeaways&quot; --notebook &lt;notebook_id&gt;
 </code></pre>
-<h2>Session and auth</h2>
-<pre><code class="language-bash">node {baseDir}/scripts/notebooklm.mjs status
-node {baseDir}/scripts/notebooklm.mjs login
-node {baseDir}/scripts/notebooklm.mjs clear
-node {baseDir}/scripts/notebooklm.mjs auth check --test --json
-</code></pre>
-<h2>Notebooks</h2>
-<pre><code class="language-bash">node {baseDir}/scripts/notebooklm.mjs list
-node {baseDir}/scripts/notebooklm.mjs create &quot;Research Notebook&quot;
-node {baseDir}/scripts/notebooklm.mjs use &lt;notebook_id&gt;
-node {baseDir}/scripts/notebooklm.mjs rename &quot;New Title&quot; --notebook &lt;notebook_id&gt;
-node {baseDir}/scripts/notebooklm.mjs delete --notebook &lt;notebook_id&gt; --yes
-node {baseDir}/scripts/notebooklm.mjs summary --notebook &lt;notebook_id&gt; --topics
-</code></pre>
-<h2>Chat</h2>
-<pre><code class="language-bash">node {baseDir}/scripts/notebooklm.mjs ask &quot;What are the top risks?&quot; --notebook &lt;notebook_id&gt;
-node {baseDir}/scripts/notebooklm.mjs configure --mode concise --notebook &lt;notebook_id&gt;
-node {baseDir}/scripts/notebooklm.mjs history --notebook &lt;notebook_id&gt; --limit 20
-</code></pre>
-<h2>Sources</h2>
-<pre><code class="language-bash">node {baseDir}/scripts/notebooklm.mjs source add https://example.com --notebook &lt;notebook_id&gt;
-node {baseDir}/scripts/notebooklm.mjs source add &quot;Inline notes&quot; --title &quot;Meeting&quot; --notebook &lt;notebook_id&gt;
-node {baseDir}/scripts/notebooklm.mjs source add-drive &lt;file_id&gt; &quot;Drive Doc&quot; --notebook &lt;notebook_id&gt;
-node {baseDir}/scripts/notebooklm.mjs source add-research &quot;market analysis&quot; --mode deep --import-all
-node {baseDir}/scripts/notebooklm.mjs source get &lt;source_id&gt;
-node {baseDir}/scripts/notebooklm.mjs source guide &lt;source_id&gt; --json
-node {baseDir}/scripts/notebooklm.mjs source fulltext &lt;source_id&gt; -o ./source.txt
-node {baseDir}/scripts/notebooklm.mjs source rename &lt;source_id&gt; &quot;New Title&quot;
-node {baseDir}/scripts/notebooklm.mjs source delete &lt;source_id&gt; --yes
-node {baseDir}/scripts/notebooklm.mjs source refresh &lt;source_id&gt;
-node {baseDir}/scripts/notebooklm.mjs source stale &lt;source_id&gt;
-node {baseDir}/scripts/notebooklm.mjs source wait &lt;source_id&gt; --timeout 300 --exec-timeout 600
-</code></pre>
-<h2>Artifacts</h2>
-<pre><code class="language-bash">node {baseDir}/scripts/notebooklm.mjs generate slide-deck &quot;Create a 10-slide executive summary&quot; --notebook &lt;notebook_id&gt; --wait
-node {baseDir}/scripts/notebooklm.mjs artifact list --notebook &lt;notebook_id&gt; --json
-node {baseDir}/scripts/notebooklm.mjs artifact get &lt;artifact_id&gt;
-node {baseDir}/scripts/notebooklm.mjs artifact rename &lt;artifact_id&gt; &quot;New Title&quot;
-node {baseDir}/scripts/notebooklm.mjs artifact delete &lt;artifact_id&gt; --yes
-node {baseDir}/scripts/notebooklm.mjs artifact export &lt;artifact_id&gt; --title &quot;Exec Summary&quot; --type docs
-node {baseDir}/scripts/notebooklm.mjs artifact suggestions --json
-node {baseDir}/scripts/notebooklm.mjs download slide-deck ./slides.pdf --notebook &lt;notebook_id&gt; --latest
-node {baseDir}/scripts/notebooklm.mjs artifact wait &lt;artifact_id&gt; --timeout 600 --exec-timeout 900
-</code></pre>
-<h2>Notes</h2>
-<pre><code class="language-bash">node {baseDir}/scripts/notebooklm.mjs note create &quot;Key points&quot; --title &quot;Highlights&quot;
-node {baseDir}/scripts/notebooklm.mjs note list --notebook &lt;notebook_id&gt;
-node {baseDir}/scripts/notebooklm.mjs note get &lt;note_id&gt;
-node {baseDir}/scripts/notebooklm.mjs note save &lt;note_id&gt; --content &quot;Updated notes&quot;
-node {baseDir}/scripts/notebooklm.mjs note rename &lt;note_id&gt; &quot;New Title&quot;
-node {baseDir}/scripts/notebooklm.mjs note delete &lt;note_id&gt; --yes
-</code></pre>
-<h2>Sharing</h2>
-<pre><code class="language-bash">node {baseDir}/scripts/notebooklm.mjs share add user@example.com --permission editor
-node {baseDir}/scripts/notebooklm.mjs share update user@example.com --permission viewer
-node {baseDir}/scripts/notebooklm.mjs share remove user@example.com --yes
-node {baseDir}/scripts/notebooklm.mjs share public --enable
-node {baseDir}/scripts/notebooklm.mjs share view-level full
-node {baseDir}/scripts/notebooklm.mjs share status --json
-</code></pre>
-<h2>Research</h2>
-<pre><code class="language-bash">node {baseDir}/scripts/notebooklm.mjs research status --notebook &lt;notebook_id&gt;
-node {baseDir}/scripts/notebooklm.mjs research wait --timeout 600 --interval 5 --exec-timeout 900
-</code></pre>
-<h2>Language and skill</h2>
-<pre><code class="language-bash">node {baseDir}/scripts/notebooklm.mjs language list --json
-node {baseDir}/scripts/notebooklm.mjs language get --json
-node {baseDir}/scripts/notebooklm.mjs language set zh_Hans
-node {baseDir}/scripts/notebooklm.mjs skill status
-node {baseDir}/scripts/notebooklm.mjs skill install
-</code></pre>
-<h2>Notes</h2>
+<h2>Request &amp; output</h2>
 <ul>
-<li>Use <code>--json</code> for machine-readable output.</li>
-<li>Use <code>--exec-timeout &lt;seconds&gt;</code> when a NotebookLM command might hang; <code>--timeout</code> is reserved for NotebookLM wait/poll durations.</li>
-<li>The wrapper script searches upward for <code>pyproject.toml</code> containing <code>[tool.tiangong.workspace]</code>.</li>
-<li>Override repo detection with <code>TIANGONG_WORKSPACE_ROOT=/path/to/repo</code>.</li>
-<li>If the NotebookLM CLI is not authenticated, run <code>notebooklm login</code> or <code>notebooklm status</code> and follow its login instructions.</li>
+<li>Command form: <code>node {baseDir}/scripts/notebooklm.mjs &lt;command&gt; [args...]</code>.</li>
+<li>Prefer <code>--json</code> for machine-readable output.</li>
+<li>For long-running tasks, use <code>--exec-timeout &lt;seconds&gt;</code>; <code>--timeout</code> is reserved for wait/poll commands.</li>
+</ul>
+<h2>References</h2>
+<ul>
+<li><code>references/cli-commands.md</code></li>
+</ul>
+<h2>Assets</h2>
+<ul>
+<li>None.</li>
 </ul>
 
                 </div>

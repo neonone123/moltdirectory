@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Search and send contextual GIFs from Giphy in Discord conversations">
   <title>giphy - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/web-frontend-development/giphy/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,9 +45,9 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Web & Frontend Development</a>
+              <a href="/web-frontend-development/" class="back-link">← Back to Web & Frontend Development</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Web & Frontend Development</a>
+                <a href="/web-frontend-development/" class="skill-page-category">Web & Frontend Development</a>
                 <span class="skill-page-author">by @minbang930</span>
               </div>
               <h1 class="skill-page-title">giphy</h1>
@@ -65,145 +66,55 @@
                 </div>
                 <div class="markdown-content">
                   <h1>Giphy GIF Search</h1>
-<p>This skill enables searching for and sending contextually appropriate GIFs from Giphy&#39;s library in Discord conversations.</p>
-<h2>Setup</h2>
-<p>Before using this skill, you need a Giphy API key:</p>
+<p>Find a relevant GIF from Giphy and send it naturally in Discord.</p>
+<h2>Behavior Rules</h2>
+<ul>
+<li>Send GIFs when explicitly requested.</li>
+<li>Also allow proactive GIFs (without explicit request) when the moment clearly fits: celebration, shared humor, or strong emotional beats.</li>
+<li>Keep proactive usage occasional (at most one GIF for a moment, avoid back-to-back GIF-only replies).</li>
+<li>Prefer text-only in serious or information-dense conversation.</li>
+<li>Keep results safe-for-work (<code>rating=g</code>).</li>
+</ul>
+<h2>API Key (Easy Setup)</h2>
+<p>This skill reads only one variable: <code>GIPHY_API_KEY</code>.</p>
+<h3>Option A: Temporary (current shell session)</h3>
+<pre><code class="language-bash">export GIPHY_API_KEY=&quot;your-api-key&quot;
+</code></pre>
+<h3>Option B: Persistent for OpenClaw (recommended)</h3>
+<p>Add to <code>~/.openclaw/.env</code>:</p>
+<pre><code class="language-bash">GIPHY_API_KEY=your-api-key
+</code></pre>
+<p>Then restart OpenClaw so the environment is reloaded.</p>
+<h3>Validation</h3>
+<ul>
+<li>If <code>GIPHY_API_KEY</code> is present, the skill works.</li>
+<li>If missing, ask the user to set it and retry.</li>
+</ul>
+<h2>Workflow</h2>
 <ol>
-<li>Go to <a href="https://developers.giphy.com/dashboard/">Giphy Developers Dashboard</a></li>
-<li>Sign up or log in</li>
-<li>Create a new app (select &quot;API&quot; not &quot;SDK&quot;)</li>
-<li>Copy your API key</li>
-<li>Add to OpenClaw config or set environment variable: <code>export GIPHY_API_KEY=&quot;your-api-key-here&quot;</code></li>
+<li>Build a Giphy Search API URL with user intent as query.</li>
+<li>URL-encode the query text.</li>
+<li>Request one result from Giphy.</li>
+<li>Extract the first GIF page URL from <code>data[0].url</code>.</li>
+<li>Send that URL to Discord.</li>
 </ol>
-<h3>OpenClaw Config (Recommended)</h3>
-<p>Add to <code>~/.openclaw/openclaw.json</code>:</p>
-<pre><code class="language-json">{
-  &quot;skills&quot;: {
-    &quot;entries&quot;: {
-      &quot;giphy-gif&quot;: {
-        &quot;apiKey&quot;: &quot;your-api-key-here&quot;
-      }
-    }
-  }
-}
-</code></pre>
-<h2>Usage</h2>
-<h3>Search and Send a GIF</h3>
-<p>Use this one-liner to search and get a Giphy URL:</p>
-<pre><code class="language-bash"># Basic search
-exec(&quot;QUERY=&#39;excited&#39;; API_KEY=$(jq -r &#39;.skills.entries.\&quot;giphy-gif\&quot;.apiKey // env.GIPHY_API_KEY&#39; ~/.openclaw/openclaw.json 2&gt;/dev/null || echo \&quot;$GIPHY_API_KEY\&quot;); curl -s \&quot;https://api.giphy.com/v1/gifs/search?api_key=${API_KEY}&amp;q=$(printf &#39;%s&#39; \&quot;$QUERY\&quot; | jq -sRr @uri)&amp;limit=1&amp;rating=g\&quot; | jq -r &#39;.data[0].url // empty&#39;&quot;)
-</code></pre>
-<h3>Practical Example</h3>
-<pre><code class="language-bash"># 1. Define your search query
-query=&quot;happy dance&quot;
-
-# 2. Get GIF URL using the helper function below
-gif_url=$(exec(&quot;QUERY=&#39;$query&#39;; API_KEY=$(jq -r &#39;.skills.entries.\&quot;giphy-gif\&quot;.apiKey // env.GIPHY_API_KEY&#39; ~/.openclaw/openclaw.json 2&gt;/dev/null || echo \&quot;$GIPHY_API_KEY\&quot;); curl -s \&quot;https://api.giphy.com/v1/gifs/search?api_key=${API_KEY}&amp;q=$(printf &#39;%s&#39; \&quot;$QUERY\&quot; | jq -sRr @uri)&amp;limit=1&amp;rating=g\&quot; | jq -r &#39;.data[0].url // empty&#39;&quot;))
-
-# 3. Send to Discord
-message(action=&quot;send&quot;, message=gif_url)
-</code></pre>
-<h3>Simplified Helper Command</h3>
-<p>For easier use, create this helper in your commands:</p>
-<pre><code class="language-bash"># Function to search GIF (copy this pattern)
-search_gif() {
-  local query=&quot;$1&quot;
-  local api_key
-  
-  # Try OpenClaw config first, then env var
-  api_key=$(jq -r &#39;.skills.entries.&quot;giphy-gif&quot;.apiKey // empty&#39; ~/.openclaw/openclaw.json 2&gt;/dev/null)
-  [[ -z &quot;$api_key&quot; ]] &amp;&amp; api_key=&quot;$GIPHY_API_KEY&quot;
-  
-  if [[ -z &quot;$api_key&quot; ]]; then
-    echo &quot;Error: GIPHY_API_KEY not configured&quot; &gt;&amp;2
-    return 1
-  fi
-  
-  # URL encode and search
-  local encoded_query=$(printf &#39;%s&#39; &quot;$query&quot; | jq -sRr @uri)
-  curl -s &quot;https://api.giphy.com/v1/gifs/search?api_key=${api_key}&amp;q=${encoded_query}&amp;limit=1&amp;rating=g&amp;lang=en&quot; | jq -r &#39;.data[0].url // empty&#39;
-}
-
-# Usage:
-# gif_url=$(search_gif &quot;excited&quot;)
-# message(action=&quot;send&quot;, message=&quot;$gif_url&quot;)
-</code></pre>
-<h3>Discord Auto-Embed</h3>
-<p>When you send a Giphy URL to Discord, it will automatically embed as an animated GIF. No additional steps needed.</p>
-<h2>When to Use</h2>
-<p>Send GIFs in these situations:</p>
+<h2>API Request Template</h2>
+<p>Use this endpoint shape:</p>
+<p><code>https://api.giphy.com/v1/gifs/search?api_key=&lt;KEY&gt;&amp;q=&lt;ENCODED_QUERY&gt;&amp;limit=1&amp;rating=g&amp;lang=en</code></p>
+<h2>Output Rule</h2>
 <ul>
-<li><strong>User requests</strong>: &quot;send me a GIF&quot;, &quot;show me something funny&quot;</li>
-<li><strong>Celebrations</strong>: achievements, good news, milestones</li>
-<li><strong>Reactions</strong>: surprise, shock, agreement, disagreement</li>
-<li><strong>Emotions</strong>: happy, sad, excited, confused, thinking</li>
-<li><strong>Humor</strong>: to lighten the mood or add comedic timing</li>
-<li><strong>Emphasis</strong>: to reinforce a point with visual impact</li>
+<li>If a GIF URL is found: send only the URL (Discord auto-embeds).</li>
+<li>If no result is found: send a short fallback text and ask for a better keyword.</li>
 </ul>
-<h2>Context-Aware Sending</h2>
-<p>Be thoughtful about when to send GIFs to maintain natural conversation flow:</p>
+<h2>Good Query Examples</h2>
 <ul>
-<li><strong>Direct requests</strong>: Always send when explicitly asked</li>
-<li><strong>GIF exchange initiated by user</strong>: If the user sends a GIF, match naturally 1-2 times, then resume normal chat</li>
-<li><strong>Standalone reactions</strong>: Only for significant moments (big celebrations, major news, strong emotional beats)</li>
-<li><strong>Normal conversation</strong>: Default to text responses; GIFs should be occasional spice, not the main dish</li>
-<li><strong>Topic shift</strong>: If conversation moves to serious/informational topics, return to text-only mode</li>
+<li><code>happy dance</code></li>
+<li><code>facepalm reaction</code></li>
+<li><code>mind blown</code></li>
+<li><code>awkward silence</code></li>
 </ul>
-<p><strong>Goal</strong>: Make GIF usage feel natural and contextual, not automatic or overwhelming.</p>
-<h2>Best Practices</h2>
-<ol>
-<li><strong>Match the context</strong>: Choose search terms that match the conversation tone</li>
-<li><strong>Keep it appropriate</strong>: The script uses &#39;g&#39; rating (safe for work) by default</li>
-<li><strong>Don&#39;t overuse</strong>: GIFs are most effective when used sparingly</li>
-<li><strong>Search terms matter</strong>: Use specific, descriptive terms for better results<ul>
-<li>Good: &quot;celebration dance&quot;, &quot;facepalm reaction&quot;, &quot;mind blown&quot;</li>
-<li>Poor: &quot;thing&quot;, &quot;stuff&quot;, &quot;it&quot;</li>
-</ul>
-</li>
-<li><strong>Read the room</strong>: If the conversation becomes more serious or informational, stick to text</li>
-</ol>
-<h2>Common Search Terms</h2>
-<ul>
-<li>Reactions: <code>thumbs up</code>, <code>facepalm</code>, <code>eye roll</code>, <code>shocked</code>, <code>confused</code></li>
-<li>Emotions: <code>excited</code>, <code>happy</code>, <code>sad</code>, <code>angry</code>, <code>love</code>, <code>crying</code></li>
-<li>Actions: <code>dance</code>, <code>clap</code>, <code>wave</code>, <code>thinking</code>, <code>working</code></li>
-<li>Celebrations: <code>party</code>, <code>celebrate</code>, <code>success</code>, <code>winner</code></li>
-<li>Humor: <code>funny</code>, <code>lol</code>, <code>wtf</code>, <code>awkward</code>, <code>fail</code></li>
-</ul>
-<h2>Technical Details</h2>
-<ul>
-<li>API: Giphy v1</li>
-<li>Rate limits: <ul>
-<li>Beta keys: 100 requests per hour</li>
-<li>Production keys: Higher limits available</li>
-</ul>
-</li>
-<li>Response format: Giphy page URLs (Discord auto-embeds)</li>
-<li>Dependencies: <code>bash</code>, <code>curl</code>, <code>jq</code> (standard on Linux/macOS/WSL)</li>
-<li>Default rating: &#39;g&#39; (safe for work)</li>
-<li>API key priority: OpenClaw config → Environment variable</li>
-</ul>
-<h2>API Key Tiers</h2>
-<ul>
-<li><strong>Beta Key</strong> (Free): 100 requests/hour, good for personal use</li>
-<li><strong>Production Key</strong>: Higher limits, requires approval for specific use cases</li>
-</ul>
-<p>Get started with a free beta key at <a href="https://developers.giphy.com/">developers.giphy.com</a>.</p>
-<h2>Troubleshooting</h2>
-<p><strong>&quot;Unauthorized&quot; error:</strong></p>
-<ul>
-<li>Check API key is set correctly in <code>~/.openclaw/openclaw.json</code> or <code>$GIPHY_API_KEY</code></li>
-<li>Verify key is valid at Giphy dashboard</li>
-</ul>
-<p><strong>No GIF returned:</strong></p>
-<ul>
-<li>Try a different search term</li>
-<li>Check API rate limits (100/hour for beta keys)</li>
-</ul>
-<p><strong>jq not found:</strong></p>
-<ul>
-<li>Install jq: <code>sudo apt install jq</code> (Linux) or <code>brew install jq</code> (macOS)</li>
-</ul>
+<h2>Fallback Message</h2>
+<p>&quot;I couldn’t find a GIF with the vibe you’re looking for. Could you give me a bit more specific keywords?&quot;</p>
 
                 </div>
               </div>

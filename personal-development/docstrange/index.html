@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Document extraction API by Nanonets">
   <title>docstrange - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/personal-development/docstrange/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,9 +45,9 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Personal Development</a>
+              <a href="/personal-development/" class="back-link">← Back to Personal Development</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Personal Development</a>
+                <a href="/personal-development/" class="skill-page-category">Personal Development</a>
                 <span class="skill-page-author">by @shhdwi</span>
               </div>
               <h1 class="skill-page-title">docstrange</h1>
@@ -96,13 +97,24 @@ https://docstrange.nanonets.com/app
 <pre><code class="language-bash">export DOCSTRANGE_API_KEY=&quot;your_api_key_here&quot;
 </code></pre>
 <h3>2. OpenClaw Configuration (Optional)</h3>
-<p>Add to your <code>~/.openclaw/openclaw.json</code>:</p>
+<p><strong>Recommended: Use environment variables</strong> (most secure):</p>
 <pre><code class="language-json5">{
   skills: {
     entries: {
       &quot;docstrange&quot;: {
         enabled: true,
-        apiKey: &quot;your_api_key_here&quot;,
+        // API key loaded from environment variable DOCSTRANGE_API_KEY
+      },
+    },
+  },
+}
+</code></pre>
+<p><strong>Alternative: Store in config file</strong> (use with caution):</p>
+<pre><code class="language-json5">{
+  skills: {
+    entries: {
+      &quot;docstrange&quot;: {
+        enabled: true,
         env: {
           DOCSTRANGE_API_KEY: &quot;your_api_key_here&quot;,
         },
@@ -111,6 +123,13 @@ https://docstrange.nanonets.com/app
   },
 }
 </code></pre>
+<p><strong>Security Note:</strong> If storing API keys in <code>~/.openclaw/openclaw.json</code>:</p>
+<ul>
+<li>Set file permissions: <code>chmod 600 ~/.openclaw/openclaw.json</code></li>
+<li>Never commit this file to version control</li>
+<li>Prefer environment variables or your agent&#39;s secret store when possible</li>
+<li>Rotate keys regularly and limit API key permissions if supported</li>
+</ul>
 <h2>Common Tasks</h2>
 <h3>Extract to Markdown</h3>
 <pre><code class="language-bash">curl -X POST &quot;https://extraction-api.nanonets.com/api/v1/extract/sync&quot; \
@@ -281,6 +300,38 @@ https://docstrange.nanonets.com/app
   }
 }
 </code></pre>
+<h2>Security &amp; Privacy</h2>
+<h3>Data Handling</h3>
+<p><strong>Important:</strong> Documents uploaded to DocStrange are transmitted to <code>https://extraction-api.nanonets.com</code> and processed on external servers.</p>
+<p><strong>Before uploading sensitive documents:</strong></p>
+<ul>
+<li>Review Nanonets&#39; privacy policy and data retention policies: <a href="https://docstrange.nanonets.com/docs">https://docstrange.nanonets.com/docs</a></li>
+<li>Verify encryption in transit (HTTPS) and at rest</li>
+<li>Confirm data deletion/retention timelines</li>
+<li>Test with non-sensitive sample documents first</li>
+</ul>
+<p><strong>Best practices:</strong></p>
+<ul>
+<li>Do not upload highly sensitive PII (SSNs, medical records, financial account numbers) until you&#39;ve confirmed the service&#39;s security and compliance posture</li>
+<li>Use API keys with limited permissions/scopes if available</li>
+<li>Rotate API keys regularly (every 90 days recommended)</li>
+<li>Monitor API usage logs for unauthorized access</li>
+<li>Never log or commit API keys to repositories or examples</li>
+</ul>
+<h3>File Size Limits</h3>
+<ul>
+<li><strong>Sync endpoint:</strong> Recommended for documents ≤5 pages</li>
+<li><strong>Async endpoint:</strong> Use for documents &gt;5 pages to avoid timeouts</li>
+<li><strong>Large files:</strong> Consider using <code>file_url</code> with publicly accessible URLs instead of uploading large files directly</li>
+</ul>
+<h3>Operational Safeguards</h3>
+<ul>
+<li>Always use environment variables or secure secret stores for API keys</li>
+<li>Never include real API keys in code examples or documentation</li>
+<li>Use placeholder values like <code>&quot;your_api_key_here&quot;</code> in examples</li>
+<li>Set appropriate file permissions on configuration files (600 for JSON configs)</li>
+<li>Enable API key rotation and monitor usage through the dashboard</li>
+</ul>
 <h2>Troubleshooting</h2>
 <p><strong>400 Bad Request:</strong></p>
 <ul>
@@ -297,10 +348,28 @@ https://docstrange.nanonets.com/app
 <li>Requires <code>json_options</code> (field list or schema)</li>
 <li>Add <code>include_metadata=confidence_score</code></li>
 </ul>
+<p><strong>Authentication Errors:</strong></p>
+<ul>
+<li>Verify <code>DOCSTRANGE_API_KEY</code> environment variable is set</li>
+<li>Check API key hasn&#39;t expired or been revoked</li>
+<li>Ensure no extra whitespace in API key value</li>
+</ul>
+<h2>Pre-Publish Security Checklist</h2>
+<p>Before publishing or updating this skill, verify:</p>
+<ul>
+<li><input disabled="" type="checkbox"> <code>package.json</code> declares <code>requiredEnv</code> and <code>primaryEnv</code> for <code>DOCSTRANGE_API_KEY</code></li>
+<li><input disabled="" type="checkbox"> <code>package.json</code> lists API endpoints in <code>endpoints</code> array</li>
+<li><input disabled="" type="checkbox"> All code examples use placeholder values (<code>&quot;your_api_key_here&quot;</code>) not real keys</li>
+<li><input disabled="" type="checkbox"> No API keys or secrets are embedded in <code>SKILL.md</code> or <code>package.json</code></li>
+<li><input disabled="" type="checkbox"> Security &amp; Privacy section documents data handling and risks</li>
+<li><input disabled="" type="checkbox"> Configuration examples include security warnings for plaintext storage</li>
+<li><input disabled="" type="checkbox"> File permission guidance is included for config files</li>
+</ul>
 <h2>References</h2>
 <ul>
 <li><strong>API Docs:</strong> <a href="https://docstrange.nanonets.com/docs">https://docstrange.nanonets.com/docs</a></li>
 <li><strong>Get API Key:</strong> <a href="https://docstrange.nanonets.com/app">https://docstrange.nanonets.com/app</a></li>
+<li><strong>Privacy Policy:</strong> <a href="https://docstrange.nanonets.com/docs">https://docstrange.nanonets.com/docs</a> (check for privacy/data policy links)</li>
 </ul>
 
                 </div>

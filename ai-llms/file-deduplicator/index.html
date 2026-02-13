@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Find and remove duplicate files intelligently">
+  <title>file-deduplicator - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/ai-llms/file-deduplicator/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+
+        <span class="logo-text">OpenClaw Directory</span>
+      </a>
+      <nav class="header-links">
+        <a href="/start-here/" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="/ai-llms/" class="back-link">← Back to AI & LLMs</a>
+              <div class="skill-page-meta">
+                <a href="/ai-llms/" class="skill-page-category">AI & LLMs</a>
+                <span class="skill-page-author">by @michael-laffin</span>
+              </div>
+              <h1 class="skill-page-title">file-deduplicator</h1>
+              <p class="skill-page-desc">Find and remove duplicate files intelligently</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>File-Deduplicator - Find and Remove Duplicates</h1>
+<p><strong>Vernox Utility Skill - Clean up your digital hoard.</strong></p>
+<h2>Overview</h2>
+<p>File-Deduplicator is an intelligent file duplicate finder and remover. Uses content hashing to identify identical files across directories, then provides options to remove duplicates safely.</p>
+<h2>Features</h2>
+<h3>✅ Duplicate Detection</h3>
+<ul>
+<li>Content-based hashing (MD5) for fast comparison</li>
+<li>Size-based detection (exact match, near match)</li>
+<li>Name-based detection (similar filenames)</li>
+<li>Directory scanning (recursive)</li>
+<li>Exclude patterns (.git, node_modules, etc.)</li>
+</ul>
+<h3>✅ Removal Options</h3>
+<ul>
+<li>Auto-delete duplicates (keep newest/oldest)</li>
+<li>Interactive review before deletion</li>
+<li>Move to archive instead of delete</li>
+<li>Preserve permissions and metadata</li>
+<li>Dry-run mode (preview changes)</li>
+</ul>
+<h3>✅ Analysis Tools</h3>
+<ul>
+<li>Duplicate count summary</li>
+<li>Space savings estimation</li>
+<li>Largest duplicate files</li>
+<li>Most common duplicate patterns</li>
+<li>Detailed report generation</li>
+</ul>
+<h3>✅ Safety Features</h3>
+<ul>
+<li>Confirmation prompts before deletion</li>
+<li>Backup to archive folder</li>
+<li>Size threshold (don&#39;t remove huge files by mistake)</li>
+<li>Whitelist important directories</li>
+<li>Undo functionality (log for recovery)</li>
+</ul>
+<h2>Installation</h2>
+<pre><code class="language-bash">clawhub install file-deduplicator
+</code></pre>
+<h2>Quick Start</h2>
+<h3>Find Duplicates in Directory</h3>
+<pre><code class="language-javascript">const result = await findDuplicates({
+  directories: [&#39;./documents&#39;, &#39;./downloads&#39;, &#39;./projects&#39;],
+  options: {
+    method: &#39;content&#39;,  // content-based comparison
+    includeSubdirs: true
+  }
+});
+
+console.log(`Found ${result.duplicateCount} duplicate groups`);
+console.log(`Potential space savings: ${result.spaceSaved}`);
+</code></pre>
+<h3>Remove Duplicates Automatically</h3>
+<pre><code class="language-javascript">const result = await removeDuplicates({
+  directories: [&#39;./documents&#39;, &#39;./downloads&#39;],
+  options: {
+    method: &#39;content&#39;,
+    keep: &#39;newest&#39;,  // keep newest, delete oldest
+    action: &#39;delete&#39;,  // or &#39;move&#39; to archive
+    autoConfirm: false  // show confirmation for each
+  }
+});
+
+console.log(`Removed ${result.filesRemoved} duplicates`);
+console.log(`Space saved: ${result.spaceSaved}`);
+</code></pre>
+<h3>Dry-Run Preview</h3>
+<pre><code class="language-javascript">const result = await removeDuplicates({
+  directories: [&#39;./documents&#39;, &#39;./downloads&#39;],
+  options: {
+    method: &#39;content&#39;,
+    keep: &#39;newest&#39;,
+    action: &#39;delete&#39;,
+    dryRun: true  // Preview without actual deletion
+  }
+});
+
+console.log(&#39;Would remove:&#39;);
+result.duplicates.forEach((dup, i) =&gt; {
+  console.log(`${i+1}. ${dup.file}`);
+});
+</code></pre>
+<h2>Tool Functions</h2>
+<h3><code>findDuplicates</code></h3>
+<p>Find duplicate files across directories.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>directories</code> (array|string, required): Directory paths to scan</li>
+<li><code>options</code> (object, optional):<ul>
+<li><code>method</code> (string): &#39;content&#39; | &#39;size&#39; | &#39;name&#39; - comparison method</li>
+<li><code>includeSubdirs</code> (boolean): Scan recursively (default: true)</li>
+<li><code>minSize</code> (number): Minimum size in bytes (default: 0)</li>
+<li><code>maxSize</code> (number): Maximum size in bytes (default: 0)</li>
+<li><code>excludePatterns</code> (array): Glob patterns to exclude (default: [&#39;.git&#39;, &#39;node_modules&#39;])</li>
+<li><code>whitelist</code> (array): Directories to never scan (default: [])</li>
+</ul>
+</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul>
+<li><code>duplicates</code> (array): Array of duplicate groups<ul>
+<li><code>duplicateCount</code> (number): Number of duplicate groups found</li>
+<li><code>totalFiles</code> (number): Total files scanned</li>
+<li><code>scanDuration</code> (number): Time taken to scan (ms)</li>
+<li><code>spaceWasted</code> (number): Total bytes wasted by duplicates</li>
+<li><code>spaceSaved</code> (number): Potential savings if duplicates removed</li>
+</ul>
+</li>
+</ul>
+<h3><code>removeDuplicates</code></h3>
+<p>Remove duplicate files based on findings.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>directories</code> (array|string, required): Same as findDuplicates</li>
+<li><code>options</code> (object, optional):<ul>
+<li><code>keep</code> (string): &#39;newest&#39; | &#39;oldest&#39; | &#39;smallest&#39; | &#39;largest&#39; - which to keep</li>
+<li><code>action</code> (string): &#39;delete&#39; | &#39;move&#39; | &#39;archive&#39;</li>
+<li><code>archivePath</code> (string): Where to move files when action=&#39;move&#39;</li>
+<li><code>dryRun</code> (boolean): Preview without actual action</li>
+<li><code>autoConfirm</code> (boolean): Auto-confirm deletions</li>
+<li><code>sizeThreshold</code> (number): Don&#39;t remove files larger than this</li>
+</ul>
+</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul>
+<li><code>filesRemoved</code> (number): Number of files removed/moved</li>
+<li><code>spaceSaved</code> (number): Bytes saved</li>
+<li><code>groupsProcessed</code> (number): Number of duplicate groups handled</li>
+<li><code>logPath</code> (string): Path to action log</li>
+<li><code>errors</code> (array): Any errors encountered</li>
+</ul>
+<h3><code>analyzeDirectory</code></h3>
+<p>Analyze a single directory for duplicates.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>directory</code> (string, required): Path to directory</li>
+<li><code>options</code> (object, optional): Same as findDuplicates options</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul>
+<li><code>fileCount</code> (number): Total files in directory</li>
+<li><code>totalSize</code> (number): Total bytes in directory</li>
+<li><code>duplicateSize</code> (number): Bytes in duplicate files</li>
+<li><code>duplicateRatio</code> (number): Percentage of files that are duplicates</li>
+</ul>
+<h2>Use Cases</h2>
+<h3>Digital Hoarder Cleanup</h3>
+<ul>
+<li>Find duplicate photos/videos</li>
+<li>Identify wasted storage space</li>
+<li>Remove old duplicates, keep newest</li>
+<li>Clean up download folders</li>
+</ul>
+<h3>Document Management</h3>
+<ul>
+<li>Find duplicate PDFs, docs, reports</li>
+<li>Keep latest version, archive old versions</li>
+<li>Prevent version confusion</li>
+<li>Reduce backup bloat</li>
+</ul>
+<h3>Project Cleanup</h3>
+<ul>
+<li>Find duplicate source files</li>
+<li>Remove duplicate build artifacts</li>
+<li>Clean up node_modules duplicates</li>
+<li>Save storage on SSD/HDD</li>
+</ul>
+<h3>Backup Optimization</h3>
+<ul>
+<li>Find duplicate backup files</li>
+<li>Remove redundant backups</li>
+<li>Identify what&#39;s actually duplicated</li>
+<li>Save space on backup drives</li>
+</ul>
+<h2>Configuration</h2>
+<h3>Edit <code>config.json</code>:</h3>
+<pre><code class="language-json">{
+  &quot;detection&quot;: {
+    &quot;defaultMethod&quot;: &quot;content&quot;,
+    &quot;sizeTolerancePercent&quot;: 0,  // exact match only
+    &quot;nameSimilarity&quot;: 0.7,  // 0-1, lower = more similar
+    &quot;includeSubdirs&quot;: true
+  },
+  &quot;removal&quot;: {
+    &quot;defaultAction&quot;: &quot;delete&quot;,
+    &quot;defaultKeep&quot;: &quot;newest&quot;,
+    &quot;archivePath&quot;: &quot;./archive&quot;,
+    &quot;sizeThreshold&quot;: 10485760,  // 10MB threshold
+    &quot;autoConfirm&quot;: false,
+    &quot;dryRunDefault&quot;: false
+  },
+  &quot;exclude&quot;: {
+    &quot;patterns&quot;: [&quot;.git&quot;, &quot;node_modules&quot;, &quot;.vscode&quot;, &quot;.idea&quot;],
+    &quot;whitelist&quot;: [&quot;important&quot;, &quot;work&quot;, &quot;projects&quot;]
+  }
+}
+</code></pre>
+<h2>Methods</h2>
+<h3>Content-Based (Recommended)</h3>
+<ul>
+<li>Fast MD5 hashing</li>
+<li>Detects exact duplicates regardless of filename</li>
+<li>Works across renamed files</li>
+<li>Perfect for documents, code, archives</li>
+</ul>
+<h3>Size-Based</h3>
+<ul>
+<li>Compares file sizes</li>
+<li>Faster than content hashing</li>
+<li>Good for media files where content hashing is slow</li>
+<li>Finds near-duplicates (similar but not exact)</li>
+</ul>
+<h3>Name-Based</h3>
+<ul>
+<li>Compares filenames</li>
+<li>Detects similar named files</li>
+<li>Good for finding version duplicates (file_v1, file_v2)</li>
+</ul>
+<h2>Examples</h2>
+<h3>Find Duplicates in Documents</h3>
+<pre><code class="language-javascript">const result = await findDuplicates({
+  directories: &#39;~/Documents&#39;,
+  options: {
+    method: &#39;content&#39;,
+    includeSubdirs: true
+  }
+});
+
+console.log(`Found ${result.duplicateCount} duplicate sets`);
+result.duplicates.slice(0, 5).forEach((set, i) =&gt; {
+  console.log(`Set ${i+1}: ${set.files.length} files`);
+  console.log(`  Total size: ${set.totalSize} bytes`);
+});
+</code></pre>
+<h3>Remove Duplicates, Keep Newest</h3>
+<pre><code class="language-javascript">const result = await removeDuplicates({
+  directories: &#39;~/Documents&#39;,
+  options: {
+    keep: &#39;newest&#39;,
+    action: &#39;delete&#39;
+  }
+});
+
+console.log(`Removed ${result.filesRemoved} files`);
+console.log(`Saved ${result.spaceSaved} bytes`);
+</code></pre>
+<h3>Move to Archive Instead of Delete</h3>
+<pre><code class="language-javascript">const result = await removeDuplicates({
+  directories: &#39;~/Downloads&#39;,
+  options: {
+    keep: &#39;newest&#39;,
+    action: &#39;move&#39;,
+    archivePath: &#39;~/Documents/Archive&#39;
+  }
+});
+
+console.log(`Archived ${result.filesRemoved} files`);
+console.log(`Safe in: ~/Documents/Archive`);
+</code></pre>
+<h3>Dry-Run Preview Changes</h3>
+<pre><code class="language-javascript">const result = await removeDuplicates({
+  directories: &#39;~/Documents&#39;,
+  options: {
+    dryRun: true  // Just show what would happen
+  }
+});
+
+console.log(&#39;=== Dry Run Preview ===&#39;);
+result.duplicates.forEach((set, i) =&gt; {
+  console.log(`Would delete: ${set.toDelete.join(&#39;, &#39;)}`);
+});
+</code></pre>
+<h2>Performance</h2>
+<h3>Scanning Speed</h3>
+<ul>
+<li><strong>Small directories</strong> (&lt;1000 files): &lt;1s</li>
+<li><strong>Medium directories</strong> (1000-10000 files): 1-5s</li>
+<li><strong>Large directories</strong> (10000+ files): 5-20s</li>
+</ul>
+<h3>Detection Accuracy</h3>
+<ul>
+<li><strong>Content-based:</strong> 100% (exact duplicates)</li>
+<li><strong>Size-based:</strong> Fast but may miss renamed files</li>
+<li><strong>Name-based:</strong> Detects naming patterns only</li>
+</ul>
+<h3>Memory Usage</h3>
+<ul>
+<li><strong>Hash cache:</strong> ~1MB per 100,000 files</li>
+<li><strong>Batch processing:</strong> Processes 1000 files at a time</li>
+<li><strong>Peak memory:</strong> ~200MB for 1M files</li>
+</ul>
+<h2>Safety Features</h2>
+<h3>Size Thresholding</h3>
+<p>Won&#39;t remove files larger than configurable threshold (default: 10MB). Prevents accidental deletion of important large files.</p>
+<h3>Archive Mode</h3>
+<p>Move files to archive directory instead of deleting. No data loss, full recoverability.</p>
+<h3>Action Logging</h3>
+<p>All deletions/moves are logged to file for recovery and audit.</p>
+<h3>Undo Functionality</h3>
+<p>Log file can be used to restore accidentally deleted files (limited undo window).</p>
+<h2>Error Handling</h2>
+<h3>Permission Errors</h3>
+<ul>
+<li>Clear error message</li>
+<li>Suggest running with sudo</li>
+<li>Skip files that can&#39;t be accessed</li>
+</ul>
+<h3>File Lock Errors</h3>
+<ul>
+<li>Detect locked files</li>
+<li>Skip and report</li>
+<li>Suggest closing applications using files</li>
+</ul>
+<h3>Space Errors</h3>
+<ul>
+<li>Check available disk space before deletion</li>
+<li>Warn if space is critically low</li>
+<li>Prevent disk-full scenarios</li>
+</ul>
+<h2>Troubleshooting</h2>
+<h3>Not Finding Expected Duplicates</h3>
+<ul>
+<li>Check detection method (content vs size vs name)</li>
+<li>Verify exclude patterns aren&#39;t too broad</li>
+<li>Check if files are in whitelisted directories</li>
+<li>Try with includeSubdirs: false</li>
+</ul>
+<h3>Deletion Not Working</h3>
+<ul>
+<li>Check write permissions on directories</li>
+<li>Verify action isn&#39;t &#39;delete&#39; with autoConfirm: true</li>
+<li>Check size threshold isn&#39;t blocking all deletions</li>
+<li>Check file locks (is another program using files?)</li>
+</ul>
+<h3>Slow Scanning</h3>
+<ul>
+<li>Reduce includeSubdirs scope</li>
+<li>Use size-based detection (faster)</li>
+<li>Exclude large directories (node_modules, .git)</li>
+<li>Process directories individually instead of batch</li>
+</ul>
+<h2>Tips</h2>
+<h3>Best Results</h3>
+<ul>
+<li>Use content-based detection for documents (100% accurate)</li>
+<li>Run dry-run first to preview changes</li>
+<li>Archive instead of delete for important files</li>
+<li>Check logs if anything unexpected deleted</li>
+</ul>
+<h3>Performance Optimization</h3>
+<ul>
+<li>Process frequently used directories first</li>
+<li>Use size threshold to skip large media files</li>
+<li>Exclude hidden directories from scan</li>
+<li>Process directories in parallel when possible</li>
+</ul>
+<h3>Space Management</h3>
+<ul>
+<li>Regular duplicate cleanup prevents storage bloat</li>
+<li>Delete temp directories regularly</li>
+<li>Clear download folders of installers</li>
+<li>Empty trash before large scans</li>
+</ul>
+<h2>Roadmap</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Duplicate detection by image similarity</li>
+<li><input disabled="" type="checkbox"> Near-duplicate detection (similar but not exact)</li>
+<li><input disabled="" type="checkbox"> Duplicate detection across network drives</li>
+<li><input disabled="" type="checkbox"> Cloud storage integration (S3, Google Drive)</li>
+<li><input disabled="" type="checkbox"> Automatic scheduling of scans</li>
+<li><input disabled="" type="checkbox"> Heuristic duplicate detection (ML-based)</li>
+<li><input disabled="" type="checkbox"> Recover deleted files from backup</li>
+<li><input disabled="" type="checkbox"> Duplicate detection by file content similarity (not just hash)</li>
+</ul>
+<h2>License</h2>
+<p>MIT</p>
+<hr>
+<p><strong>Find duplicates. Save space. Keep your system clean.</strong> 🔮</p>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/michael-laffin/file-deduplicator/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/michael-laffin/file-deduplicator" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/michael-laffin/file-deduplicator/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@michael-laffin</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">AI & LLMs</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">OpenClawDirectory.com is a community-run project and is not affiliated with the official OpenClaw team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

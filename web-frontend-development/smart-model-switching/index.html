@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Auto-route tasks to the cheapest Claude model">
+  <title>smart-model-switching - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/web-frontend-development/smart-model-switching/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+
+        <span class="logo-text">OpenClaw Directory</span>
+      </a>
+      <nav class="header-links">
+        <a href="/start-here/" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="/web-frontend-development/" class="back-link">← Back to Web & Frontend Development</a>
+              <div class="skill-page-meta">
+                <a href="/web-frontend-development/" class="skill-page-category">Web & Frontend Development</a>
+                <span class="skill-page-author">by @millibus</span>
+              </div>
+              <h1 class="skill-page-title">smart-model-switching</h1>
+              <p class="skill-page-desc">Auto-route tasks to the cheapest Claude model</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Smart Model Switching</h1>
+<p><strong>Three-tier Claude routing: Haiku → Sonnet → Opus</strong></p>
+<p>Start with the cheapest model. Escalate only when needed. Save 50-90% on API costs.</p>
+<h2>The Golden Rule</h2>
+<blockquote>
+<p>If a human would need more than 30 seconds of focused thinking, escalate from Haiku to Sonnet.
+If the task involves architecture, complex tradeoffs, or deep reasoning, escalate to Opus.</p>
+</blockquote>
+<h2>Cost Reality</h2>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Input</th>
+<th>Output</th>
+<th>Relative Cost</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Haiku</td>
+<td>$0.25/M</td>
+<td>$1.25/M</td>
+<td>1x (baseline)</td>
+</tr>
+<tr>
+<td>Sonnet</td>
+<td>$3.00/M</td>
+<td>$15.00/M</td>
+<td>12x</td>
+</tr>
+<tr>
+<td>Opus</td>
+<td>$15.00/M</td>
+<td>$75.00/M</td>
+<td>60x</td>
+</tr>
+</tbody></table>
+<p><strong>Bottom line:</strong> Wrong model selection wastes money OR time. Haiku for simple, Sonnet for standard, Opus for complex.</p>
+<hr>
+<h2>💚 HAIKU — Default for Simple Tasks</h2>
+<p><strong>Stay on Haiku for:</strong></p>
+<ul>
+<li>Factual Q&amp;A — &quot;what is X&quot;, &quot;who is Y&quot;, &quot;when did Z&quot;</li>
+<li>Quick lookups — definitions, unit conversions, short translations</li>
+<li>Status checks — calendar, file reads, session monitoring</li>
+<li>Heartbeats — periodic checks, HEARTBEAT_OK responses</li>
+<li>Memory &amp; reminders — &quot;remember this&quot;, &quot;remind me to...&quot;</li>
+<li>Casual conversation — greetings, small talk, acknowledgments</li>
+<li>Simple file ops — read, list, basic writes</li>
+<li>One-liner tasks — anything answerable in 1-2 sentences</li>
+</ul>
+<h3>NEVER do these on Haiku</h3>
+<ul>
+<li>❌ Write code longer than 10 lines</li>
+<li>❌ Create comparison tables</li>
+<li>❌ Write more than 3 paragraphs</li>
+<li>❌ Do multi-step analysis</li>
+<li>❌ Write reports or proposals</li>
+</ul>
+<hr>
+<h2>💛 SONNET — Standard Work (The Workhorse)</h2>
+<p><strong>Escalate to Sonnet for:</strong></p>
+<h3>Code &amp; Technical</h3>
+<ul>
+<li>Code generation — write functions, build features, scripts</li>
+<li>Code review — PR reviews, quality checks</li>
+<li>Debugging — standard bug investigation</li>
+<li>Documentation — README, comments, user guides</li>
+</ul>
+<h3>Analysis &amp; Planning</h3>
+<ul>
+<li>Analysis &amp; evaluation — compare options, assess trade-offs</li>
+<li>Planning — project plans, roadmaps, task breakdowns</li>
+<li>Research synthesis — combining multiple sources</li>
+<li>Multi-step reasoning — &quot;first... then... finally&quot;</li>
+</ul>
+<h3>Writing &amp; Content</h3>
+<ul>
+<li>Long-form writing — reports, proposals, articles (&gt;3 paragraphs)</li>
+<li>Creative writing — blog posts, descriptions, copy</li>
+<li>Summarization — long documents, transcripts</li>
+<li>Structured output — tables, outlines, formatted docs</li>
+</ul>
+<hr>
+<h2>❤️ OPUS — Complex Reasoning Only</h2>
+<p><strong>Escalate to Opus for:</strong></p>
+<h3>Architecture &amp; Design</h3>
+<ul>
+<li>System architecture decisions</li>
+<li>Major codebase refactoring</li>
+<li>Design pattern selection with tradeoffs</li>
+<li>Database schema design</li>
+</ul>
+<h3>Deep Analysis</h3>
+<ul>
+<li>Complex debugging (multi-file, race conditions)</li>
+<li>Security reviews</li>
+<li>Performance optimization strategy</li>
+<li>Root cause analysis of subtle bugs</li>
+</ul>
+<h3>Strategic &amp; Creative</h3>
+<ul>
+<li>Strategic planning — business decisions, roadmaps</li>
+<li>Nuanced judgment — ethics, ambiguity, competing values</li>
+<li>Deep research — comprehensive multi-source analysis</li>
+</ul>
+<hr>
+<h2>🔄 Implementation</h2>
+<h3>For Subagents</h3>
+<p>```javascript
+// Routine monitoring
+sessions_spawn(task=&quot;Check backup status&quot;, model=&quot;haiku&quot;)</p>
+<p>// Standard code work<br>sessions_spawn(task=&quot;Build the REST API endpoint&quot;, model=&quot;sonnet&quot;)</p>
+<p>// Architecture decisions
+sessions_spawn(task=&quot;Design the database schema for multi-tenancy&quot;, model=&quot;opus&quot;)
+```</p>
+<h3>For Cron Jobs</h3>
+<p>```json
+{
+  &quot;payload&quot;: {
+    &quot;kind&quot;: &quot;agentTurn&quot;,
+    &quot;model&quot;: &quot;haiku&quot;
+  }
+}
+```
+Always use Haiku for cron unless the task genuinely needs reasoning.</p>
+<hr>
+<h2>📊 Quick Decision Tree</h2>
+<p>```
+Is it a greeting, lookup, status check, or 1-2 sentence answer?
+  YES → HAIKU
+  NO ↓</p>
+<p>Is it code, analysis, planning, writing, or multi-step?
+  YES → SONNET<br>  NO ↓</p>
+<p>Is it architecture, deep reasoning, or critical decision?
+  YES → OPUS
+  NO → Default to SONNET, escalate if struggling
+```</p>
+<hr>
+<h2>📋 Quick Reference Card</h2>
+<p>```
+┌─────────────────────────────────────────────────────────────┐
+│                  SMART MODEL SWITCHING                      │
+│                  Haiku → Sonnet → Opus                      │
+├─────────────────────────────────────────────────────────────┤
+│  💚 HAIKU (cheapest)                                        │
+│  • Greetings, status checks, quick lookups                  │
+│  • Factual Q&amp;A, definitions, reminders                      │
+│  • Simple file ops, 1-2 sentence answers                    │
+├─────────────────────────────────────────────────────────────┤
+│  💛 SONNET (standard)                                       │
+│  • Code &gt; 10 lines, debugging                               │
+│  • Analysis, comparisons, planning                          │
+│  • Reports, proposals, long writing                         │
+├─────────────────────────────────────────────────────────────┤
+│  ❤️ OPUS (complex)                                          │
+│  • Architecture decisions                                   │
+│  • Complex debugging, multi-file refactoring                │
+│  • Strategic planning, deep research                        │
+├─────────────────────────────────────────────────────────────┤
+│  💡 RULE: If a human needs &gt; 30 sec thinking → escalate     │
+│  💰 COST: Haiku 1x → Sonnet 12x → Opus 60x                  │
+└─────────────────────────────────────────────────────────────┘
+```</p>
+<hr>
+<p><em>Built for Claude-only setups with Haiku, Sonnet, and Opus.</em>
+<em>Inspired by save-money skill, extended with three-tier progression.</em></p>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/millibus/smart-model-switching/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/millibus/smart-model-switching" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/millibus/smart-model-switching/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@millibus</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Web & Frontend Development</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">OpenClawDirectory.com is a community-run project and is not affiliated with the official OpenClaw team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

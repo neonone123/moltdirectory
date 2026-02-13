@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Automatically recover working context after session compaction or when continuation is implied but context is missing">
+  <meta name="description" content="Automatically recover working context after session">
   <title>context-recovery - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/browser-automation/context-recovery/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,13 +45,13 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Browser & Automation</a>
+              <a href="/browser-automation/" class="back-link">← Back to Browser & Automation</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Browser & Automation</a>
+                <a href="/browser-automation/" class="skill-page-category">Browser & Automation</a>
                 <span class="skill-page-author">by @jdrhyne</span>
               </div>
               <h1 class="skill-page-title">context-recovery</h1>
-              <p class="skill-page-desc">Automatically recover working context after session compaction or when continuation is implied but context is missing</p>
+              <p class="skill-page-desc">Automatically recover working context after session</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -64,8 +65,10 @@
                   </button>
                 </div>
                 <div class="markdown-content">
-                  <h1>Context Recovery Skill</h1>
+                  <h1>Context Recovery</h1>
 <p>Automatically recover working context after session compaction or when continuation is implied but context is missing. Works across Discord, Slack, Telegram, Signal, and other supported channels.</p>
+<p><strong>Use when</strong>: Session starts with truncated context, user references prior work without specifying details, or compaction indicators appear.</p>
+<hr>
 <h2>Triggers</h2>
 <h3>Automatic Triggers</h3>
 <ul>
@@ -79,6 +82,7 @@
 <li>User implies prior work exists but context is unclear</li>
 <li>User asks &quot;do you remember...?&quot; or &quot;we were working on...&quot;</li>
 </ul>
+<hr>
 <h2>Execution Protocol</h2>
 <h3>Step 1: Detect Active Channel</h3>
 <p>Extract from runtime context:</p>
@@ -213,6 +217,7 @@ EOF
 <blockquote>
 <p>&quot;Context recovered. Your last request was [X]. This action [completed/did not complete]. Shall I [continue/retry/clarify]?&quot;</p>
 </blockquote>
+<hr>
 <h2>Channel-Specific Notes</h2>
 <h3>Discord</h3>
 <ul>
@@ -234,6 +239,7 @@ EOF
 <li>History depth may vary by platform</li>
 <li>Group vs. DM context may differ</li>
 </ul>
+<hr>
 <h2>Constraints</h2>
 <ul>
 <li><strong>MANDATORY:</strong> Execute this protocol before responding &quot;insufficient data&quot; or asking clarifying questions when context appears missing</li>
@@ -243,6 +249,7 @@ EOF
 <li>Memory cache: append to daily file, do not overwrite</li>
 <li>If recovery fails, state what was attempted and what data sources were unavailable</li>
 </ul>
+<hr>
 <h2>Auto-Trigger Detection</h2>
 <p>At session start, scan for compaction indicators:</p>
 <pre><code class="language-python"># Pseudocode for trigger detection
@@ -255,7 +262,8 @@ elif message matches continuation_patterns:
     trigger_context_recovery()
 </code></pre>
 <p><strong>Do not wait for user to ask</strong> — if compaction is detected, proactively recover and present context.</p>
-<h2>Example Invocation</h2>
+<hr>
+<h2>Example</h2>
 <p><strong>Scenario:</strong> Session starts with compaction summary</p>
 <pre><code>User message: &quot;&lt;summary&gt;Summary unavailable due to context limits...&lt;/summary&gt;&quot;
 User message: &quot;did this happen?&quot;
@@ -266,8 +274,8 @@ User message: &quot;did this happen?&quot;
 <li><code>message:read channel=discord channelId=1460342116516364533 limit=50</code></li>
 <li>Calculates time span: 2.5 hours — sufficient, no expansion needed</li>
 <li>Parses messages, finds last action: &quot;Now let me extract the key orchestration decisions...&quot;</li>
-<li>Checks session logs — unavailable for current session</li>
-<li>Writes context summary to <code>memory/2026-01-25.md</code></li>
+<li>Checks session logs — extracts recent user requests</li>
+<li>Writes context summary to <code>memory/YYYY-MM-DD.md</code></li>
 <li>Responds:</li>
 </ol>
 <blockquote>

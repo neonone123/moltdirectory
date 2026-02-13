@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Search video dialogue and create reaction GIFs with subtitles">
+  <meta name="description" content="Search video dialogue and create reaction GIFs with timed subtitles">
   <title>gifhorse - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/image-video-generation/gifhorse/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,13 +45,13 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Image & Video Generation</a>
+              <a href="/image-video-generation/" class="back-link">← Back to Image & Video Generation</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Image & Video Generation</a>
+                <a href="/image-video-generation/" class="skill-page-category">Image & Video Generation</a>
                 <span class="skill-page-author">by @coyote-git</span>
               </div>
               <h1 class="skill-page-title">gifhorse</h1>
-              <p class="skill-page-desc">Search video dialogue and create reaction GIFs with subtitles</p>
+              <p class="skill-page-desc">Search video dialogue and create reaction GIFs with timed subtitles</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -100,6 +101,9 @@ gifhorse transcribe /path/to/videos --use-subtitles
 
 # Use Whisper AI (slow but works for any video)
 gifhorse transcribe /path/to/video.mp4 --use-whisper
+
+# Re-transcribe videos already in database
+gifhorse transcribe /path/to/videos --force
 </code></pre>
 <h3>Download Subtitles Only</h3>
 <p>Download .srt files without storing in the database:</p>
@@ -113,6 +117,12 @@ gifhorse search &quot;memorable quote&quot;
 
 # Search with surrounding context
 gifhorse search &quot;memorable quote&quot; --context 2
+
+# Show all results (no limit)
+gifhorse search &quot;memorable quote&quot; --all
+
+# Custom result limit (default: 100)
+gifhorse search &quot;memorable quote&quot; --limit 50
 </code></pre>
 <h3>Preview Before Creating</h3>
 <p>See exactly what will be captured:</p>
@@ -121,14 +131,38 @@ gifhorse preview &quot;quote&quot; 1 --include-before 1 --include-after 1
 </code></pre>
 <h3>Create GIF</h3>
 <p>Generate the GIF with subtitles:</p>
-<pre><code class="language-bash"># Basic GIF
-gifhorse create &quot;memorable quote&quot; 1 --output reaction.gif
+<pre><code class="language-bash"># Basic GIF (auto-named from dialogue, saved to exports/)
+gifhorse create &quot;memorable quote&quot; 1
+
+# Explicit output path
+gifhorse create &quot;memorable quote&quot; 1 -o reaction.gif
 
 # High quality for social media
 gifhorse create &quot;quote&quot; 1 --width 720 --fps 24 --quality high
 
 # Include conversation context
 gifhorse create &quot;quote&quot; 1 --include-before 2 --include-after 1
+
+# Substitute words in subtitles (repeatable, target segments by number from preview)
+gifhorse create &quot;the age of men&quot; 1 --include-after 1 \
+  -s 1 &quot;men&quot; &quot;standardized software&quot; \
+  -s 2 &quot;orc&quot; &quot;custom applications&quot;
+
+# Clean replace (no strikethrough)
+gifhorse create &quot;quote&quot; 1 -r 1 &quot;old word&quot; &quot;new word&quot;
+
+# Create and send via iMessage
+gifhorse create &quot;quote&quot; 1 --send
+gifhorse create &quot;quote&quot; 1 --send-to &quot;+15551234567&quot;
+</code></pre>
+<h3>Manage Database</h3>
+<pre><code class="language-bash"># Remove videos by path pattern (SQL LIKE wildcards)
+gifhorse remove &quot;%Adventure Time%&quot;
+gifhorse remove &quot;%S01%&quot; --yes
+
+# Check subtitle status for a directory
+gifhorse subtitle-status ~/Videos
+gifhorse subtitle-status ~/Videos --missing-only
 </code></pre>
 <h3>Check Status</h3>
 <pre><code class="language-bash"># See transcription stats
@@ -136,6 +170,13 @@ gifhorse stats
 
 # List all transcribed videos
 gifhorse list
+</code></pre>
+<h3>Configuration</h3>
+<pre><code class="language-bash"># Set phone number for iMessage sending
+gifhorse config --set-phone &quot;+15551234567&quot;
+
+# Show current configuration
+gifhorse config --show
 </code></pre>
 <h2>Timing Options</h2>
 <p>Control exactly what gets captured:</p>
@@ -153,24 +194,49 @@ gifhorse list
 <li><code>--quality low|medium|high</code> - Color palette quality (affects file size)</li>
 <li><code>--fps N</code> - Frames per second (default: 15, use 24 for smooth)</li>
 <li><code>--width N</code> - Width in pixels (default: 480, use 720 for HD)</li>
+</ul>
+<h2>Subtitle Options</h2>
+<ul>
+<li><code>-s, --sub NUM OLD NEW</code> - Substitute words in a segment (repeatable). Replaced words render struck through in red, replacements in red. Segment numbers shown by <code>preview</code>.</li>
+<li><code>-r, --replace NUM OLD NEW</code> - Replace words cleanly (no strikethrough). Repeatable.</li>
 <li><code>--no-subtitles</code> - Create GIF without subtitle overlay</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li>Default output filename is auto-derived from dialogue text (e.g., <code>i_dont_think_so.gif</code>) and saved to <code>exports/</code></li>
+<li>Use <code>-o PATH</code> to override. Collision handling appends <code>_2</code>, <code>_3</code>, etc.</li>
+</ul>
+<h2>iMessage</h2>
+<ul>
+<li><code>--send</code> - Send created GIF to configured phone number via iMessage (macOS only)</li>
+<li><code>--send-to NUMBER</code> - Send to a specific phone number (overrides config)</li>
 </ul>
 <p><strong>Note:</strong> All GIFs automatically include a subtle &quot;gifhorse&quot; watermark in the bottom-right corner.</p>
 <h2>Common Workflows</h2>
 <h3>Quick Reaction GIF</h3>
 <pre><code class="language-bash">gifhorse search &quot;perfect&quot;
-gifhorse create &quot;perfect&quot; 1 --padding-after 2.0 --output perfect.gif
+gifhorse create &quot;perfect&quot; 1 --padding-after 2.0
 </code></pre>
 <h3>Full Conversation Exchange</h3>
 <pre><code class="language-bash">gifhorse search &quot;key phrase&quot;
 gifhorse preview &quot;key phrase&quot; 1 --include-before 2 --include-after 1
 gifhorse create &quot;key phrase&quot; 1 --include-before 2 --include-after 1
 </code></pre>
+<h3>Meme with Word Substitution</h3>
+<pre><code class="language-bash">gifhorse preview &quot;the age of men&quot; 1 --include-after 1
+gifhorse create &quot;the age of men&quot; 1 --include-after 1 \
+  -s 1 &quot;men&quot; &quot;standardized software&quot; \
+  -s 2 &quot;orc&quot; &quot;custom applications&quot;
+</code></pre>
 <h3>High Quality for Twitter/X</h3>
-<pre><code class="language-bash">gifhorse create &quot;quote&quot; 1 --width 720 --fps 24 --quality high --output tweet.gif
+<pre><code class="language-bash">gifhorse create &quot;quote&quot; 1 --width 720 --fps 24 --quality high -o tweet.gif
 </code></pre>
 <h3>Scene with Reaction After Dialogue</h3>
 <pre><code class="language-bash">gifhorse create &quot;memorable line&quot; 1 --padding-after 3.0
+</code></pre>
+<h3>Create and Send via iMessage</h3>
+<pre><code class="language-bash">gifhorse config --set-phone &quot;+15551234567&quot;
+gifhorse create &quot;quote&quot; 1 --send
 </code></pre>
 <h2>Tips &amp; Tricks</h2>
 <ol>
@@ -179,6 +245,8 @@ gifhorse create &quot;key phrase&quot; 1 --include-before 2 --include-after 1
 <li><strong>Watch file sizes</strong> - High quality + long duration = large files (20s can be 20+ MB)</li>
 <li><strong>Padding vs Include</strong> - For reactions, use <code>--padding-after</code> not <code>--include-after</code></li>
 <li><strong>Search with context</strong> - Add <code>--context 2</code> to see surrounding dialogue</li>
+<li><strong>Re-transcribe with --force</strong> - Use <code>--force</code> to update transcriptions after getting better subtitles</li>
+<li><strong>Check subtitle coverage</strong> - Use <code>subtitle-status</code> to see which videos need subtitles</li>
 </ol>
 <h2>File Size Guide</h2>
 <ul>
@@ -210,10 +278,13 @@ gifhorse transcribe &quot;/Volumes/server-ip/Movies&quot;
 <ul>
 <li>Search for dialogue or quotes in their video library</li>
 <li>Create a reaction GIF from a movie or TV show</li>
+<li>Make a meme GIF with substituted words</li>
 <li>Add subtitles to a video clip</li>
 <li>Transcribe videos for searchable dialogue</li>
 <li>Preview what a GIF will look like before creating it</li>
-<li>Add watermarks to GIFs for social media</li>
+<li>Send a GIF via iMessage</li>
+<li>Remove videos from the database</li>
+<li>Check subtitle status for their video collection</li>
 </ul>
 <h2>Learn More</h2>
 <ul>

@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="AI-native OCR platform that turns documents into high-accuracy data in minutes">
+  <meta name="description" content="AI-native OCR platform that turns documents into high-accuracy data">
   <title>deepread-ocr - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/ai-llms/deepread-ocr/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,13 +45,13 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to AI & LLMs</a>
+              <a href="/ai-llms/" class="back-link">← Back to AI & LLMs</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">AI & LLMs</a>
+                <a href="/ai-llms/" class="skill-page-category">AI & LLMs</a>
                 <span class="skill-page-author">by @uday390</span>
               </div>
               <h1 class="skill-page-title">deepread-ocr</h1>
-              <p class="skill-page-desc">AI-native OCR platform that turns documents into high-accuracy data in minutes</p>
+              <p class="skill-page-desc">AI-native OCR platform that turns documents into high-accuracy data</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -65,14 +66,14 @@
                 </div>
                 <div class="markdown-content">
                   <h1>DeepRead - Production OCR API</h1>
-<p>DeepRead is an AI-native OCR platform that turns documents into high-accuracy data in minutes. Using multi-model consensus, DeepRead achieves 95%+ accuracy and flags only uncertain fields for review—reducing manual work from 100% to 5-10%. Zero prompt engineering required.</p>
+<p>DeepRead is an AI-native OCR platform that turns documents into high-accuracy data in minutes. Using multi-model consensus, DeepRead achieves 97%+ accuracy and flags only uncertain fields for Human-in-the-Loop (HIL) review—reducing manual work from 100% to 5-10%. Zero prompt engineering required.</p>
 <h2>What This Skill Does</h2>
 <p>DeepRead is a production-grade document processing API that gives you high-accuracy structured data output in minutes with human review flagging so manual review is limited to the flagged exceptions</p>
 <p><strong>Core Features:</strong></p>
 <ul>
 <li><strong>Text Extraction</strong>: Convert PDFs and images to clean markdown</li>
 <li><strong>Structured Data</strong>: Extract JSON fields with confidence scores</li>
-<li><strong>Quality Flags</strong>: Human Review tagging for uncertain fields (<code>hil_flag</code>)</li>
+<li><strong>HIL Interface</strong>: Built-in Human-in-the-Loop review — uncertain fields are flagged (<code>hil_flag</code>) so only exceptions need manual review</li>
 <li><strong>Multi-Pass Processing</strong>: Multiple validation passes for maximum accuracy</li>
 <li><strong>Multi-Model Consensus</strong>: Cross-validation between models for reliability</li>
 <li><strong>Free Tier</strong>: 2,000 pages/month (no credit card required)</li>
@@ -95,8 +96,9 @@ https://www.deepread.tech/dashboard/?utm_source=clawdhub
   skills: {
     entries: {
       &quot;deepread&quot;: {
-        enabled: true,
-        apiKey: &quot;sk_live_your_key_here&quot;
+        enabled: true
+        // API key is read from DEEPREAD_API_KEY environment variable
+        // Do NOT hardcode your API key here
       }
     }
   }
@@ -296,12 +298,20 @@ curl https://api.deepread.tech/v1/jobs/JOB_ID \
 <li>Cross-model consensus for reliability</li>
 <li>Field-level confidence scoring</li>
 </ul>
-<h3>Quality Review (hil_flag)</h3>
-<p>AI compares extracted text to the original image and sets <code>hil_flag</code>:</p>
+<h3>Human-in-the-Loop (HIL) Interface</h3>
+<p>DeepRead includes a built-in Human-in-the-Loop (HIL) review system. The AI compares extracted text to the original image and sets <code>hil_flag</code> on each field:</p>
 <ul>
 <li><strong><code>hil_flag: false</code></strong> = Clear, confident extraction → Auto-process</li>
-<li><strong><code>hil_flag: true</code></strong> = Uncertain extraction → Human review required</li>
+<li><strong><code>hil_flag: true</code></strong> = Uncertain extraction → Routed to human review</li>
 </ul>
+<p><strong>How HIL works:</strong></p>
+<ol>
+<li>Fields extracted with high confidence are auto-approved</li>
+<li>Uncertain fields are flagged with <code>hil_flag: true</code> and a <code>reason</code></li>
+<li>Only flagged fields need human review (typically 5-10% of total fields)</li>
+<li>Review flagged fields in <strong>DeepRead Preview</strong> (<code>preview.deepread.tech</code>) — a dedicated HIL review interface where reviewers can see the original document side-by-side with extracted data, correct flagged fields, and approve results</li>
+<li>Or integrate with your own review queue using the <code>hil_flag</code> data in the API response</li>
+</ol>
 <p><strong>AI flags extractions when:</strong></p>
 <ul>
 <li>Text is handwritten, blurry, or low quality</li>
@@ -393,8 +403,8 @@ curl -X POST https://api.deepread.tech/v1/process \
 <li>Lower latency</li>
 <li>Better for production workflows</li>
 </ul>
-<h3>3. Public Preview URLs</h3>
-<p>Share OCR results without authentication:</p>
+<h3>3. Preview (HIL Review Interface)</h3>
+<p>DeepRead Preview (<code>preview.deepread.tech</code>) is the built-in Human-in-the-Loop review interface. Reviewers can view the original document alongside extracted data, correct flagged fields, and approve results. Preview URLs can also be shared without authentication:</p>
 <pre><code class="language-bash"># Request preview URL
 curl -X POST https://api.deepread.tech/v1/process \
   -H &quot;X-API-Key: $DEEPREAD_API_KEY&quot; \

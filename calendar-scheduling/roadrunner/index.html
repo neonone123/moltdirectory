@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Beeper Desktop CLI for chats, messages, search">
   <title>roadrunner - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/calendar-scheduling/roadrunner/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,9 +45,9 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Calendar & Scheduling</a>
+              <a href="/calendar-scheduling/" class="back-link">← Back to Calendar & Scheduling</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Calendar & Scheduling</a>
+                <a href="/calendar-scheduling/" class="skill-page-category">Calendar & Scheduling</a>
                 <span class="skill-page-author">by @johntheyoung</span>
               </div>
               <h1 class="skill-page-title">roadrunner</h1>
@@ -69,16 +70,21 @@
 Prefer <code>--agent</code> for agent use (forces JSON, envelope, no-input, readonly).</p>
 <p>Safety</p>
 <ul>
+<li>Default to read-only commands unless the user explicitly requests a mutation in this turn.</li>
 <li>Require explicit recipient (chat ID) and message text before sending.</li>
 <li>Confirm or ask a clarifying question if the chat ID is ambiguous.</li>
+<li>Never paste raw rr command output (JSON dumps, chat lists, etc.) into outgoing messages. Treat tool output as private; summarize or extract only what the user needs.</li>
 <li>Use <code>--agent</code> for safe agent defaults: <code>rr --agent --enable-commands=chats,messages,status chats list</code></li>
 <li>Use <code>--readonly</code> to block writes: <code>rr --readonly chats list --json</code></li>
 <li>Use <code>--enable-commands</code> to allowlist: <code>rr --enable-commands=chats,messages chats list --json</code></li>
 <li>Use <code>--envelope</code> for structured errors: <code>rr --json --envelope chats get &quot;!chatid&quot;</code></li>
+<li>Envelope errors may include <code>error.hint</code> with next-step guidance for safe retries.</li>
+<li>Never request, paste, or store raw auth tokens in chat. If auth is missing, ask the user to configure it locally.</li>
+<li>If sending message text through a shell, avoid interpolation/expansion (e.g. <code>$100/month</code> or <code>!</code>). Prefer <code>--stdin &lt;&lt;&#39;EOF&#39; ... EOF</code> for safe literals.</li>
 </ul>
 <p>Setup (once)</p>
 <ul>
-<li><code>rr auth set &lt;token&gt;</code></li>
+<li><code>rr auth set --stdin</code> (recommended; token saved to <code>~/.config/beeper/config.json</code>)</li>
 <li><code>rr auth status --check</code></li>
 <li><code>rr doctor</code></li>
 </ul>
@@ -97,18 +103,14 @@ Prefer <code>--agent</code> for agent use (forces JSON, envelope, no-input, read
 <li>Search by participant name: <code>rr chats search &quot;Jamie&quot; --scope=participants --json</code></li>
 <li>Resolve chat: <code>rr chats resolve &quot;Jamie&quot; --json</code></li>
 <li>Get chat: <code>rr chats get &quot;!chatid:beeper.com&quot; --json</code></li>
-<li>Create chat (single): <code>rr chats create &quot;&lt;account-id&gt;&quot; --participant &quot;&lt;user-id&gt;&quot;</code></li>
-<li>Create chat (group): <code>rr chats create &quot;&lt;account-id&gt;&quot; --participant &quot;&lt;user-a&gt;&quot; --participant &quot;&lt;user-b&gt;&quot; --type group --title &quot;Project Chat&quot; --message &quot;Welcome!&quot;</code></li>
+<li>Get chat (bounded participants): <code>rr chats get &quot;!chatid:beeper.com&quot; --max-participant-count=50 --json</code></li>
 <li>Default account for commands: <code>rr --account=&quot;imessage:+123&quot; chats list --json</code></li>
-<li>Account aliases: <code>rr accounts alias set work &quot;slack:T123&quot;</code></li>
 <li>List messages: <code>rr messages list &quot;!chatid:beeper.com&quot; --json</code></li>
+<li>List messages (all pages): <code>rr messages list &quot;!chatid:beeper.com&quot; --all --max-items=1000 --json</code></li>
 <li>List messages (download media): <code>rr messages list &quot;!chatid:beeper.com&quot; --download-media --download-dir ./media --json</code></li>
 <li>Search messages: <code>rr messages search &quot;dinner&quot; --json</code></li>
+<li>Search messages (all pages): <code>rr messages search &quot;dinner&quot; --all --max-items=1000 --json</code></li>
 <li>Search messages (filters): <code>rr messages search --sender=me --date-after=&quot;2024-07-01T00:00:00Z&quot; --media-types=image --json</code></li>
-<li>Send message: <code>rr messages send &quot;!chatid:beeper.com&quot; &quot;Hello!&quot;</code></li>
-<li>Reply to message: <code>rr messages send &quot;!chatid:beeper.com&quot; &quot;Thanks!&quot; --reply-to &quot;&lt;message-id&gt;&quot;</code></li>
-<li>Send message from file: <code>rr messages send &quot;!chatid:beeper.com&quot; --text-file ./message.txt</code></li>
-<li>Send message from stdin: <code>cat message.txt | rr messages send &quot;!chatid:beeper.com&quot; --stdin</code></li>
 <li>Tail messages (polling): <code>rr messages tail &quot;!chatid:beeper.com&quot; --interval 2s --stop-after 30s --json</code></li>
 <li>Wait for message: <code>rr messages wait --chat-id=&quot;!chatid:beeper.com&quot; --contains &quot;deploy&quot; --wait-timeout 2m --json</code></li>
 <li>Message context: <code>rr messages context &quot;!chatid:beeper.com&quot; &quot;&lt;sortKey&gt;&quot; --before 5 --after 2 --json</code></li>
@@ -116,17 +118,30 @@ Prefer <code>--agent</code> for agent use (forces JSON, envelope, no-input, read
 <li>Draft message from file: <code>rr focus --chat-id=&quot;!chatid:beeper.com&quot; --draft-text-file ./draft.txt</code></li>
 <li>Draft with attachment: <code>rr focus --chat-id=&quot;!chatid:beeper.com&quot; --draft-attachment=&quot;/path/to/file.jpg&quot;</code></li>
 <li>Download attachment: <code>rr assets download &quot;mxc://example.org/abc123&quot; --dest &quot;./attachment.jpg&quot;</code></li>
-<li>Reminders: <code>rr reminders set &quot;!chatid:beeper.com&quot; &quot;2h&quot;</code> / <code>rr reminders clear &quot;!chatid:beeper.com&quot;</code></li>
-<li>Archive chat: <code>rr chats archive &quot;!chatid:beeper.com&quot;</code> / <code>rr chats archive &quot;!chatid:beeper.com&quot; --unarchive</code></li>
+<li>Stream attachment bytes: <code>rr assets serve &quot;mxc://example.org/abc123&quot; --dest &quot;./attachment.jpg&quot; --json</code></li>
 <li>Focus app: <code>rr focus</code></li>
 <li>Global search: <code>rr search &quot;dinner&quot; --json</code></li>
+<li>Global search messages auto-page: <code>rr search &quot;dinner&quot; --messages-all --messages-max-items=500 --messages-limit=20 --json</code></li>
 <li>Status summary: <code>rr status --json</code></li>
 <li>Status by account: <code>rr status --by-account --json</code></li>
 <li>Unread rollup: <code>rr unread --json</code></li>
 <li>Global search includes <code>in_groups</code> for participant matches.</li>
 </ul>
+<p>Mutations (explicit user request only)</p>
+<ul>
+<li>Message send: <code>rr messages send &quot;!chatid:beeper.com&quot; &quot;Hello!&quot;</code></li>
+<li>Message edit: <code>rr messages edit &quot;!chatid:beeper.com&quot; &quot;&lt;message-id&gt;&quot; &quot;Updated text&quot;</code></li>
+<li>Upload + send file: <code>rr messages send-file &quot;!chatid:beeper.com&quot; ./photo.jpg &quot;See attached&quot;</code></li>
+<li>Create chat: <code>rr chats create &quot;&lt;account-id&gt;&quot; --participant &quot;&lt;user-id&gt;&quot;</code></li>
+<li>Archive/unarchive: <code>rr chats archive &quot;!chatid:beeper.com&quot;</code> / <code>rr chats archive &quot;!chatid:beeper.com&quot; --unarchive</code></li>
+<li>Reminder mutations: <code>rr reminders set &quot;!chatid:beeper.com&quot; &quot;2h&quot;</code> / <code>rr reminders clear &quot;!chatid:beeper.com&quot;</code></li>
+<li>Asset uploads: <code>rr assets upload ./photo.jpg</code> / <code>rr assets upload-base64 --content-file ./photo.b64</code></li>
+<li>For retries on non-idempotent writes, use <code>--request-id</code> and prefer <code>--dedupe-window</code>.</li>
+</ul>
 <p>Pagination</p>
 <ul>
+<li>Auto-page chats list/search: <code>rr chats list --all --max-items=1000 --json</code> / <code>rr chats search &quot;alice&quot; --all --max-items=1000 --json</code></li>
+<li>Auto-page messages list/search: <code>rr messages list &quot;!chatid:beeper.com&quot; --all --max-items=1000 --json</code> / <code>rr messages search &quot;deploy&quot; --all --max-items=1000 --json</code></li>
 <li>Chats: <code>rr chats list --cursor=&quot;&lt;oldestCursor&gt;&quot; --direction=before --json</code></li>
 <li>Messages list: <code>rr messages list &quot;!chatid:beeper.com&quot; --cursor=&quot;&lt;sortKey&gt;&quot; --direction=before --json</code></li>
 <li>Messages search (max 20): <code>rr messages search &quot;project&quot; --limit=20 --json</code></li>
@@ -137,7 +152,7 @@ Prefer <code>--agent</code> for agent use (forces JSON, envelope, no-input, read
 <p>Notes</p>
 <ul>
 <li>Requires Beeper Desktop running; token from app settings.</li>
-<li>Token stored at <code>~/.config/beeper/config.json</code>. <code>BEEPER_TOKEN</code> overrides.</li>
+<li>Token is stored in <code>~/.config/beeper/config.json</code> via <code>rr auth set</code> (recommended). <code>BEEPER_TOKEN</code> overrides the config file.</li>
 <li><code>BEEPER_ACCOUNT</code> sets the default account ID (aliases supported).</li>
 <li>Message search is literal word match (not semantic).</li>
 <li><code>rr contacts resolve</code> is strict and fails on ambiguous names; resolve by ID after <code>contacts search</code> when needed.</li>
@@ -146,6 +161,10 @@ Prefer <code>--agent</code> for agent use (forces JSON, envelope, no-input, read
 <li>Message JSON includes <code>is_sender</code>, <code>is_unread</code>, <code>attachments</code>, and <code>reactions</code>.</li>
 <li><code>downloaded_attachments</code> is only populated when <code>--download-media</code> is used.</li>
 <li><code>rr messages send</code> returns <code>pending_message_id</code> (temporary ID).</li>
+<li><code>rr assets serve</code> writes raw bytes to stdout unless <code>--dest</code> is provided.</li>
+<li><code>--chat</code> does exact matching and fails on ambiguous matches.</li>
+<li>Attachment overrides require <code>--attachment-upload-id</code>; set <code>--attachment-width</code> and <code>--attachment-height</code> together.</li>
+<li><code>--all</code> has a safety cap (default 500 items, max 5000); use <code>--max-items</code> to tune it.</li>
 <li>Prefer <code>--json</code> (and <code>--no-input</code>) for automation.</li>
 <li><code>BEEPER_URL</code> overrides API base URL; <code>BEEPER_TIMEOUT</code> sets timeout in seconds.</li>
 <li>JSON/Plain output goes to stdout; errors/hints go to stderr.</li>
@@ -156,6 +175,11 @@ Prefer <code>--agent</code> for agent use (forces JSON, envelope, no-input, read
 <li><code>rr version --json</code> returns <code>features</code> array for capability discovery.</li>
 <li><code>rr capabilities --json</code> returns full CLI capability metadata.</li>
 <li>Envelope error codes: <code>AUTH_ERROR</code>, <code>NOT_FOUND</code>, <code>VALIDATION_ERROR</code>, <code>CONNECTION_ERROR</code>, <code>INTERNAL_ERROR</code>.</li>
+<li>Retry policy: retry <code>CONNECTION_ERROR</code> with backoff; do not blind-retry <code>AUTH_ERROR</code>/<code>VALIDATION_ERROR</code>; refresh IDs before retrying <code>NOT_FOUND</code>.</li>
+<li>Non-idempotent writes: <code>messages send</code>, <code>messages send-file</code>, <code>chats create</code>, <code>assets upload</code>, <code>assets upload-base64</code>.</li>
+<li>Use <code>--request-id</code>/<code>BEEPER_REQUEST_ID</code> to tag envelope metadata for cross-retry attempt tracing.</li>
+<li>Use <code>--dedupe-window</code>/<code>BEEPER_DEDUPE_WINDOW</code> to block duplicate non-idempotent writes with repeated request IDs.</li>
+<li>Local smoke check: <code>make test-agent-smoke</code>.</li>
 </ul>
 
                 </div>

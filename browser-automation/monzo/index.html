@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Access Monzo bank account - check balance, view transactions, manage pots, send">
+  <title>monzo - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/browser-automation/monzo/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+
+        <span class="logo-text">OpenClaw Directory</span>
+      </a>
+      <nav class="header-links">
+        <a href="/start-here/" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="/browser-automation/" class="back-link">← Back to Browser & Automation</a>
+              <div class="skill-page-meta">
+                <a href="/browser-automation/" class="skill-page-category">Browser & Automation</a>
+                <span class="skill-page-author">by @rhesketh</span>
+              </div>
+              <h1 class="skill-page-title">monzo</h1>
+              <p class="skill-page-desc">Access Monzo bank account - check balance, view transactions, manage pots, send</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Monzo Banking Skill</h1>
+<p>Access your Monzo bank account to check balances, view transactions, manage savings pots, and send notifications to your Monzo app.</p>
+<h2>Prerequisites</h2>
+<p>Before setting up this skill, you need:</p>
+<ul>
+<li><strong>A Monzo account</strong> (UK personal, joint, or business account)</li>
+<li><strong>The Monzo app</strong> installed on your phone (for SCA approval)</li>
+<li><strong>OpenClaw</strong> running with workspace access</li>
+<li><strong>Standard tools</strong>: <code>curl</code>, <code>jq</code>, <code>openssl</code>, <code>bc</code> (pre-installed on most Linux systems)</li>
+</ul>
+<h2>Quick Start (TL;DR)</h2>
+<pre><code class="language-bash"># 1. Set the MONZO_KEYRING_PASSWORD env var (see &quot;Setting the Password&quot; below)
+
+# 2. Create OAuth client at https://developers.monzo.com/
+#    - Set Confidentiality: Confidential
+#    - Set Redirect URL: http://localhost
+
+# 3. Run setup
+scripts/setup.sh
+
+# 4. Approve in Monzo app when prompted, then:
+scripts/setup.sh --continue
+
+# 5. Test it
+scripts/balance.sh
+</code></pre>
+<hr>
+<h2>Detailed Setup Guide</h2>
+<h3>Step 1: Set the Encryption Password</h3>
+<p>The <code>MONZO_KEYRING_PASSWORD</code> environment variable is used to encrypt your Monzo credentials at rest. Choose a strong, unique password and don&#39;t lose it — you&#39;ll need it if you ever move or restore the skill.</p>
+<p>There are several ways to provide this variable. Choose whichever fits your setup:</p>
+<p><strong>Option A: OpenClaw skill config</strong> (simplest)</p>
+<p>Add to your OpenClaw config (e.g. <code>openclaw.json</code>):</p>
+<pre><code class="language-json5">{
+  skills: {
+    entries: {
+      &quot;monzo&quot;: {
+        enabled: true,
+        env: {
+          &quot;MONZO_KEYRING_PASSWORD&quot;: &quot;choose-a-secure-password-here&quot;
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<p>Then restart: <code>openclaw gateway restart</code></p>
+<blockquote>
+<p><strong>Note:</strong> This stores the password in plaintext in the config file. Ensure the file has restrictive permissions (<code>chmod 600</code>) and is not checked into version control.</p>
+</blockquote>
+<p><strong>Option B: Shell environment</strong> (keeps password out of config files)</p>
+<p>Add to your shell profile (<code>~/.bashrc</code>, <code>~/.zshrc</code>, etc.):</p>
+<pre><code class="language-bash">export MONZO_KEYRING_PASSWORD=&quot;choose-a-secure-password-here&quot;
+</code></pre>
+<p>Then restart your shell and OpenClaw.</p>
+<p><strong>Option C: systemd EnvironmentFile</strong> (for server deployments)</p>
+<p>Create a secrets file (e.g. <code>/etc/openclaw/monzo.env</code>):</p>
+<pre><code>MONZO_KEYRING_PASSWORD=choose-a-secure-password-here
+</code></pre>
+<p>Set permissions: <code>chmod 600 /etc/openclaw/monzo.env</code></p>
+<p>Reference it from your systemd unit with <code>EnvironmentFile=/etc/openclaw/monzo.env</code>.</p>
+<p><strong>Option D: Password manager / secrets manager</strong></p>
+<p>Use your preferred secrets tool to inject the env var at runtime. Any method that sets <code>MONZO_KEYRING_PASSWORD</code> in the process environment will work.</p>
+<h3>Step 2: Create Monzo OAuth Client</h3>
+<ol>
+<li>Go to <strong><a href="https://developers.monzo.com/">https://developers.monzo.com/</a></strong> and sign in with your Monzo account</li>
+<li>Click <strong>&quot;Clients&quot;</strong> → <strong>&quot;New OAuth Client&quot;</strong></li>
+<li>Fill in:<ul>
+<li><strong>Name</strong>: <code>OpenClaw</code> (or your preferred name)</li>
+<li><strong>Logo URL</strong>: <em>(leave blank)</em></li>
+<li><strong>Redirect URLs</strong>: <code>http://localhost</code> ← exactly this, no trailing slash</li>
+<li><strong>Description</strong>: <em>(leave blank)</em></li>
+<li><strong>Confidentiality</strong>: <strong>Confidential</strong> ← ⚠️ Important! Enables refresh tokens</li>
+</ul>
+</li>
+<li>Click <strong>Submit</strong></li>
+<li>Note your <strong>Client ID</strong> (<code>oauth2client_...</code>) and <strong>Client Secret</strong> (<code>mnzconf....</code>)</li>
+</ol>
+<h3>Step 3: Run the Setup Wizard</h3>
+<pre><code class="language-bash">scripts/setup.sh
+</code></pre>
+<p>The wizard will:</p>
+<ol>
+<li>Ask for your Client ID and Client Secret</li>
+<li>Give you an authorization URL to open in your browser</li>
+<li>Ask you to paste the redirect URL back</li>
+<li>Exchange the code for access tokens</li>
+<li>Save encrypted credentials</li>
+</ol>
+<p><strong>Alternative: Non-interactive mode</strong> (useful for automation or agents):</p>
+<pre><code class="language-bash">scripts/setup.sh --non-interactive \
+  --client-id oauth2client_xxx \
+  --client-secret mnzconf.xxx \
+  --auth-code eyJ...
+</code></pre>
+<h3>Step 4: Approve in Monzo App (SCA)</h3>
+<p>⚠️ <strong>This step is required!</strong> Monzo requires Strong Customer Authentication.</p>
+<ol>
+<li>Open the <strong>Monzo app</strong> on your phone</li>
+<li>Look for a notification about &quot;API access&quot; or a new connection</li>
+<li><strong>Tap to approve</strong></li>
+</ol>
+<p>If you don&#39;t see a notification:</p>
+<ul>
+<li>Go to <strong>Account → Settings → Privacy &amp; Security → Manage connected apps</strong></li>
+<li>Find and approve your client</li>
+</ul>
+<p>After approving, complete setup:</p>
+<pre><code class="language-bash">scripts/setup.sh --continue
+</code></pre>
+<h3>Step 5: Verify It Works</h3>
+<pre><code class="language-bash"># Check authentication
+scripts/whoami.sh
+
+# Check your balance
+scripts/balance.sh
+</code></pre>
+<p>You should see your account info and current balance. You&#39;re done! 🎉</p>
+<hr>
+<h2>For the Agent</h2>
+<p>This section tells the agent how to use this skill effectively.</p>
+<h3>When to Use This Skill</h3>
+<p>Use this skill when the user asks about:</p>
+<ul>
+<li><strong>Balance</strong>: &quot;How much money do I have?&quot;, &quot;What&#39;s my balance?&quot;</li>
+<li><strong>Transactions</strong>: &quot;What did I spend on X?&quot;, &quot;Show recent transactions&quot;</li>
+<li><strong>Spending analysis</strong>: &quot;How much did I spend on coffee this month?&quot;</li>
+<li><strong>Savings</strong>: &quot;How much is in my savings?&quot;, &quot;Move £X to my holiday pot&quot;</li>
+<li><strong>Notifications</strong>: &quot;Send a reminder to my Monzo app&quot;</li>
+</ul>
+<h3>Common Patterns</h3>
+<pre><code class="language-bash"># &quot;How much money do I have?&quot;
+scripts/balance.sh
+
+# &quot;Show me recent transactions&quot; / &quot;What did I spend?&quot;
+scripts/transactions.sh              # All available, newest first
+
+# &quot;Show me my last 5 transactions&quot;
+scripts/transactions.sh --limit 5    # 5 most recent
+
+# &quot;What did I spend this week?&quot;
+scripts/transactions.sh --since 7d
+
+# &quot;How much did I spend on coffee this month?&quot;
+scripts/transactions.sh --search coffee --since 30d
+
+# &quot;What are my savings pots?&quot;
+scripts/pots.sh
+
+# &quot;Put £50 in my holiday fund&quot;
+scripts/pots.sh deposit pot_XXXXX 5000  # Amount in pence!
+
+# &quot;Send a reminder to my phone&quot;
+scripts/feed.sh --title &quot;Don&#39;t forget!&quot; --body &quot;Check the gas meter&quot;
+</code></pre>
+<h3>Important Notes for Agents</h3>
+<ol>
+<li><strong>Money is in pence</strong>: £50 = 5000, £1.50 = 150</li>
+<li><strong>Dates can be relative</strong>: <code>--since 7d</code> means last 7 days</li>
+<li><strong>Use human-readable output</strong> by default (no <code>--json</code> flag)</li>
+<li><strong>Pot IDs</strong>: Use <code>scripts/pots.sh</code> first to get pot IDs before depositing/withdrawing</li>
+<li><strong>Multiple accounts</strong>: User may have personal, joint, and business accounts. Default is personal. Use <code>scripts/whoami.sh</code> to see all accounts.</li>
+</ol>
+<h3>Error Handling</h3>
+<p>If you see <code>forbidden.insufficient_permissions</code>:</p>
+<ul>
+<li>Tell the user to check their Monzo app and approve API access</li>
+<li>Then run <code>scripts/setup.sh --continue</code></li>
+</ul>
+<p>If you see <code>MONZO_KEYRING_PASSWORD not set</code>:</p>
+<ul>
+<li>The env var isn&#39;t available in the process environment</li>
+<li>Guide user to set it using one of the methods in Step 1 of the setup guide</li>
+</ul>
+<hr>
+<h2>Script Reference</h2>
+<h3>balance - Check Account Balance</h3>
+<pre><code class="language-bash">scripts/balance.sh                 # Default account
+scripts/balance.sh acc_...         # Specific account
+scripts/balance.sh --json          # JSON output
+</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>Current Balance: £1,234.56
+Total (with pots): £2,500.00
+Spent today: £12.34
+</code></pre>
+<h3>transactions - Transaction History</h3>
+<p>Fetches <strong>all available transactions</strong> (paginated), displayed <strong>newest first</strong>.</p>
+<pre><code class="language-bash">scripts/transactions.sh                         # All transactions, newest first
+scripts/transactions.sh --limit 10              # 10 most recent
+scripts/transactions.sh --since 7d              # Last 7 days only
+scripts/transactions.sh --since 2026-01-01      # Since specific date
+scripts/transactions.sh --search coffee         # Search by merchant/description/notes
+scripts/transactions.sh --search &quot;Pret&quot; --since 30d  # Combined filters
+scripts/transactions.sh --id tx_...             # Get specific transaction
+scripts/transactions.sh --json                  # JSON output
+</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>DATE         AMOUNT     DESCRIPTION                          CATEGORY
+============ ========== =================================== ===============
+2026-01-29  -£3.50     Pret A Manger                       eating_out
+2026-01-29  -£12.00    TfL                                 transport
+2026-01-28  -£45.23    Tesco                               groceries
+
+Total: 3 transaction(s)
+</code></pre>
+<h3>pots - Savings Management</h3>
+<pre><code class="language-bash">scripts/pots.sh                              # List all pots
+scripts/pots.sh list --json                  # JSON output
+scripts/pots.sh deposit pot_... 5000         # Deposit £50 (5000 pence)
+scripts/pots.sh withdraw pot_... 2000        # Withdraw £20 (2000 pence)
+</code></pre>
+<p><strong>Output (list):</strong></p>
+<pre><code>NAME                      BALANCE      GOAL         ID
+========================= ============ ============ ====================
+Holiday Fund              £450.00      £1,000.00    pot_0000...
+Emergency                 £2,000.00    £3,000.00    pot_0001...
+</code></pre>
+<h3>feed - Send App Notifications</h3>
+<pre><code class="language-bash">scripts/feed.sh --title &quot;Reminder&quot;                        # Simple notification
+scripts/feed.sh --title &quot;Alert&quot; --body &quot;Details here&quot;    # With body
+scripts/feed.sh --title &quot;Link&quot; --url &quot;https://...&quot;       # With tap action
+</code></pre>
+<h3>whoami - Check Authentication</h3>
+<pre><code class="language-bash">scripts/whoami.sh                  # Show auth status and accounts
+scripts/whoami.sh --account-id     # Just the default account ID
+scripts/whoami.sh --json           # JSON output
+</code></pre>
+<h3>receipt - Attach Receipts to Transactions</h3>
+<pre><code class="language-bash">scripts/receipt.sh create tx_... --merchant &quot;Shop&quot; --total 1234 --item &quot;Thing:1234&quot;
+scripts/receipt.sh get ext_...
+scripts/receipt.sh delete ext_...
+</code></pre>
+<h3>webhooks - Manage Webhooks (Advanced)</h3>
+<pre><code class="language-bash">scripts/webhooks.sh list
+scripts/webhooks.sh create https://your-server.com/webhook
+scripts/webhooks.sh delete webhook_...
+</code></pre>
+<hr>
+<h2>Troubleshooting</h2>
+<h3>&quot;forbidden.insufficient_permissions&quot;</h3>
+<p><strong>Most common issue!</strong> Monzo requires app approval (SCA).</p>
+<p><strong>Fix:</strong></p>
+<ol>
+<li>Open Monzo app → check for notification → approve</li>
+<li>Or: Account → Settings → Privacy &amp; Security → Manage connected apps → approve</li>
+<li>Run: <code>scripts/setup.sh --continue</code></li>
+</ol>
+<h3>&quot;MONZO_KEYRING_PASSWORD not set&quot;</h3>
+<p>The env var isn&#39;t available in the process environment.</p>
+<p><strong>Fix:</strong> Set <code>MONZO_KEYRING_PASSWORD</code> using any of the methods described in Step 1 of the setup guide, then restart OpenClaw.</p>
+<h3>&quot;Authorization code has been used&quot;</h3>
+<p>Each auth code is single-use. Start fresh:</p>
+<pre><code class="language-bash">scripts/setup.sh --reset
+</code></pre>
+<h3>&quot;No refresh token received&quot;</h3>
+<p>Your OAuth client isn&#39;t set to &quot;Confidential&quot;. Create a new client with Confidentiality = Confidential, then:</p>
+<pre><code class="language-bash">scripts/setup.sh --reset
+</code></pre>
+<h3>&quot;Credentials file not found&quot;</h3>
+<p>Run setup first:</p>
+<pre><code class="language-bash">scripts/setup.sh
+</code></pre>
+<h3>&quot;Failed to decrypt credentials&quot;</h3>
+<p>Wrong <code>MONZO_KEYRING_PASSWORD</code>. Check your config matches what you used during setup.</p>
+<hr>
+<h2>Security Notes</h2>
+<ul>
+<li>Credentials are <strong>encrypted at rest</strong> (AES-256-CBC)</li>
+<li>Encryption key is your <code>MONZO_KEYRING_PASSWORD</code></li>
+<li>Access tokens auto-refresh (no manual intervention needed)</li>
+<li>File permissions are set to 600 (owner only)</li>
+<li>All API calls use HTTPS</li>
+<li>No sensitive data is logged</li>
+</ul>
+<hr>
+<h2>Files</h2>
+<pre><code>skills/monzo/
+├── SKILL.md              # This documentation
+└── scripts/
+    ├── lib/monzo.sh      # Shared library
+    ├── setup             # OAuth setup wizard
+    ├── whoami            # Validate authentication
+    ├── balance           # Check balance
+    ├── transactions      # Transaction history
+    ├── pots              # Savings pots
+    ├── feed              # App notifications
+    ├── receipt           # Receipt management
+    └── webhooks          # Webhook management
+</code></pre>
+<p><strong>Credentials:</strong> <code>~/.openclaw/credentials/monzo.json</code> (encrypted, or <code>~/.clawdbot/credentials/monzo.json</code> on older installs)</p>
+<hr>
+<h2>API Coverage</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Scripts</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Authentication</td>
+<td>setup, whoami</td>
+</tr>
+<tr>
+<td>Balance</td>
+<td>balance</td>
+</tr>
+<tr>
+<td>Transactions</td>
+<td>transactions</td>
+</tr>
+<tr>
+<td>Pots (Savings)</td>
+<td>pots</td>
+</tr>
+<tr>
+<td>Feed (Notifications)</td>
+<td>feed</td>
+</tr>
+<tr>
+<td>Receipts</td>
+<td>receipt</td>
+</tr>
+<tr>
+<td>Webhooks</td>
+<td>webhooks</td>
+</tr>
+</tbody></table>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/rhesketh/monzo/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/rhesketh/monzo" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/rhesketh/monzo/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@rhesketh</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Browser & Automation</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">OpenClawDirectory.com is a community-run project and is not affiliated with the official OpenClaw team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

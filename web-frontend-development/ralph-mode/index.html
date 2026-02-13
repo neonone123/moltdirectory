@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Autonomous development loops with iteration, backpressure gates">
+  <title>ralph-mode - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/web-frontend-development/ralph-mode/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+
+        <span class="logo-text">OpenClaw Directory</span>
+      </a>
+      <nav class="header-links">
+        <a href="/start-here/" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="/web-frontend-development/" class="back-link">← Back to Web & Frontend Development</a>
+              <div class="skill-page-meta">
+                <a href="/web-frontend-development/" class="skill-page-category">Web & Frontend Development</a>
+                <span class="skill-page-author">by @richginsberg</span>
+              </div>
+              <h1 class="skill-page-title">ralph-mode</h1>
+              <p class="skill-page-desc">Autonomous development loops with iteration, backpressure gates</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Ralph Mode - Autonomous Development Loops</h1>
+<p>Ralph Mode implements the Ralph Wiggum technique adapted for OpenClaw: autonomous task completion through continuous iteration with backpressure gates, completion criteria, and structured planning.</p>
+<h2>When to Use</h2>
+<p>Use Ralph Mode when:</p>
+<ul>
+<li>Building features that require multiple iterations and refinement</li>
+<li>Working on complex projects with acceptance criteria to validate</li>
+<li>Need automated testing, linting, or typecheck gates</li>
+<li>Want to track progress across many iterations systematically</li>
+<li>Prefer autonomous loops over manual turn-by-turn guidance</li>
+</ul>
+<h2>Core Principles</h2>
+<h3>Three-Phase Workflow</h3>
+<p><strong>Phase 1: Requirements Definition</strong></p>
+<ul>
+<li>Document specs in <code>specs/</code> (one file per topic of concern)</li>
+<li>Define acceptance criteria (observable, verifiable outcomes)</li>
+<li>Create implementation plan with prioritized tasks</li>
+</ul>
+<p><strong>Phase 2: Planning</strong></p>
+<ul>
+<li>Gap analysis: compare specs against existing code</li>
+<li>Generate <code>IMPLEMENTATION_PLAN.md</code> with prioritized tasks</li>
+<li>No implementation during this phase</li>
+</ul>
+<p><strong>Phase 3: Building (Iterative)</strong></p>
+<ul>
+<li>Pick one task from plan per iteration</li>
+<li>Implement, validate, update plan, commit</li>
+<li>Continue until all tasks complete or criteria met</li>
+</ul>
+<h3>Backpressure Gates</h3>
+<p>Reject incomplete work automatically through validation:</p>
+<p><strong>Programmatic Gates (Always use these):</strong></p>
+<ul>
+<li>Tests: <code>[test command]</code> - Must pass before committing</li>
+<li>Typecheck: <code>[typecheck command]</code> - Catch type errors early</li>
+<li>Lint: <code>[lint command]</code> - Enforce code quality</li>
+<li>Build: <code>[build command]</code> - Verify integration</li>
+</ul>
+<p><strong>Subjective Gates (Use for UX, design, quality):</strong></p>
+<ul>
+<li>LLM-as-judge reviews for tone, aesthetics, usability</li>
+<li>Binary pass/fail - converges through iteration</li>
+<li>Only add after programmatic gates work reliably</li>
+</ul>
+<h3>Context Efficiency</h3>
+<ul>
+<li>One task per iteration = fresh context each time</li>
+<li>Spawn sub-agents for exploration, not main context</li>
+<li>Lean prompts = smart zone (~40-60% utilization)</li>
+<li>Plans are disposable - regenerate cheap vs. salvage</li>
+</ul>
+<h2>File Structure</h2>
+<p>Create this structure for each Ralph Mode project:</p>
+<pre><code>project-root/
+├── IMPLEMENTATION_PLAN.md     # Shared state, updated each iteration
+├── AGENTS.md                  # Build/test/lint commands (~60 lines)
+├── specs/                     # Requirements (one file per topic)
+│   ├── topic-a.md
+│   └── topic-b.md
+├── src/                        # Application code
+└── src/lib/                    # Shared utilities
+</code></pre>
+<h3>IMPLEMENTATION_PLAN.md</h3>
+<p>Priority task list - single source of truth. Format:</p>
+<pre><code class="language-markdown"># Implementation Plan
+
+## In Progress
+- [ ] Task name (iteration N)
+  - Notes: discoveries, bugs, blockers
+
+## Completed
+- [x] Task name (iteration N)
+
+## Backlog
+- [ ] Future task
+</code></pre>
+<h3>Topic Scope Test</h3>
+<p>Can you describe the topic in one sentence without &quot;and&quot;?</p>
+<ul>
+<li>✅ &quot;User authentication with JWT and session management&quot;</li>
+<li>❌ &quot;Auth, profiles, and billing&quot; → 3 topics</li>
+</ul>
+<h3>AGENTS.md - Operational Guide</h3>
+<p>Succinct guide for running the project. Keep under 60 lines:</p>
+<pre><code class="language-markdown"># Project Operations
+
+## Build Commands
+npm run dev      # Development server
+npm run build     # Production build
+
+## Validation
+npm run test      # All tests
+npm run lint      # ESLint
+npm run typecheck  # TypeScript
+npm run e2e       # E2E tests
+
+## Operational Notes
+- Tests must pass before committing
+- Typecheck failures block commits
+- Use existing utilities from src/lib over ad-hoc copies
+</code></pre>
+<h2>Hats (Personas)</h2>
+<p>Specialized roles for different tasks:</p>
+<p><strong>Hat: Architect</strong> (<code>@architect</code>)</p>
+<ul>
+<li>High-level design, data modeling, API contracts</li>
+<li>Focus: patterns, scalability, maintainability</li>
+</ul>
+<p><strong>Hat: Implementer</strong> (<code>@implementer</code>)</p>
+<ul>
+<li>Write code, implement features, fix bugs</li>
+<li>Focus: correctness, performance, test coverage</li>
+</ul>
+<p><strong>Hat: Tester</strong> (<code>@tester</code>)</p>
+<ul>
+<li>Test authoring, validation, edge cases</li>
+<li>Focus: coverage, reliability, reproducibility</li>
+</ul>
+<p><strong>Hat: Reviewer</strong> (<code>@reviewer</code>)</p>
+<ul>
+<li>Code reviews, PR feedback, quality assessment</li>
+<li>Focus: style, readability, adherence to specs</li>
+</ul>
+<p><strong>Usage:</strong></p>
+<pre><code>&quot;Spawn a sub-agent with @architect hat to design the data model&quot;
+</code></pre>
+<h2>Loop Mechanics</h2>
+<h3>Outer Loop (You coordinate)</h3>
+<p>Your job as main agent: engineer setup, observe, course-correct.</p>
+<ol>
+<li><strong>Don&#39;t allocate work to main context</strong> - Spawn sub-agents</li>
+<li><strong>Let Ralph Ralph</strong> - LLM will self-identify, self-correct</li>
+<li><strong>Use protection</strong> - Sandbox is your security boundary</li>
+<li><strong>Plan is disposable</strong> - Regenerate when wrong/stale</li>
+<li><strong>Move outside the loop</strong> - Sit and watch, don&#39;t micromanage</li>
+</ol>
+<h3>Inner Loop (Sub-agent executes)</h3>
+<p>Each sub-agent iteration:</p>
+<ol>
+<li><strong>Study</strong> - Read plan, specs, relevant code</li>
+<li><strong>Select</strong> - Pick most important uncompleted task</li>
+<li><strong>Implement</strong> - Write code, one task only</li>
+<li><strong>Validate</strong> - Run tests, lint, typecheck (backpressure)</li>
+<li><strong>Update</strong> - Mark task done, note discoveries, commit</li>
+<li><strong>Exit</strong> - Next iteration starts fresh</li>
+</ol>
+<h3>Stopping Conditions</h3>
+<p>Loop ends when:</p>
+<ul>
+<li>✅ All IMPLEMENTATION_PLAN.md tasks completed</li>
+<li>✅ All acceptance criteria met</li>
+<li>✅ Tests passing, no blocking issues</li>
+<li>⚠️ Max iterations reached (configure limit)</li>
+<li>🛑 Manual stop (Ctrl+C)</li>
+</ul>
+<h2>Completion Criteria</h2>
+<p>Define success upfront - avoid &quot;seems done&quot; ambiguity.</p>
+<h3>Programmatic (Measurable)</h3>
+<ul>
+<li>All tests pass: <code>[test_command]</code> returns 0</li>
+<li>Typecheck passes: No TypeScript errors</li>
+<li>Build succeeds: Production bundle created</li>
+<li>Coverage threshold: e.g., 80%+</li>
+</ul>
+<h3>Subjective (LLM-as-Judge)</h3>
+<p>For quality criteria that resist automation:</p>
+<pre><code class="language-markdown">## Completion Check - UX Quality
+Criteria: Navigation is intuitive, primary actions are discoverable
+Test: User can complete core flow without confusion
+
+## Completion Check - Design Quality
+Criteria: Visual hierarchy is clear, brand consistency maintained
+Test: Layout follows established patterns
+</code></pre>
+<p>Run LLM-as-judge sub-agent for binary pass/fail.</p>
+<h2>Technology-Specific Patterns</h2>
+<h3>Next.js Full Stack</h3>
+<pre><code>specs/
+├── authentication.md
+├── database.md
+└── api-routes.md
+
+src/
+├── app/                    # App Router
+├── components/              # React components
+├── lib/                    # Utilities (db, auth, helpers)
+└── types/                   # TypeScript types
+
+AGENTS.md:
+  Build: npm run dev
+  Test: npm run test
+  Typecheck: npx tsc --noEmit
+  Lint: npm run lint
+</code></pre>
+<h3>Python (Scripts/Notebooks/FastAPI)</h3>
+<pre><code>specs/
+├── data-pipeline.md
+├── model-training.md
+└── api-endpoints.md
+
+src/
+├── pipeline.py
+├── models/
+├── api/
+└── tests/
+
+AGENTS.md:
+  Build: python -m src.main
+  Test: pytest
+  Typecheck: mypy src/
+  Lint: ruff check src/
+</code></pre>
+<h3>GPU Workloads</h3>
+<pre><code>specs/
+├── model-architecture.md
+├── training-data.md
+└── inference-pipeline.md
+
+src/
+├── models/
+├── training/
+├── inference/
+└── utils/
+
+AGENTS.md:
+  Train: python train.py
+  Test: pytest tests/
+  Lint: ruff check src/
+  GPU Check: nvidia-smi
+</code></pre>
+<h2>Quick Start Command</h2>
+<p>Start a Ralph Mode session:</p>
+<pre><code>&quot;Start Ralph Mode for my project at ~/projects/my-app. I want to implement user authentication with JWT.
+</code></pre>
+<p>I will:</p>
+<ol>
+<li>Create IMPLEMENTATION_PLAN.md with prioritized tasks</li>
+<li>Spawn sub-agents for iterative implementation</li>
+<li>Apply backpressure gates (test, lint, typecheck)</li>
+<li>Track progress and announce completion</li>
+</ol>
+<h2>Operational Learnings</h2>
+<p>When Ralph patterns emerge, update AGENTS.md:</p>
+<pre><code class="language-markdown">## Discovered Patterns
+
+- When adding API routes, also add to OpenAPI spec
+- Use existing db utilities from src/lib/db over direct calls
+- Test files must be co-located with implementation
+</code></pre>
+<h2>Escape Hatches</h2>
+<p>When trajectory goes wrong:</p>
+<ul>
+<li><strong>Ctrl+C</strong> - Stop loop immediately</li>
+<li><strong>Regenerate plan</strong> - &quot;Discard IMPLEMENTATION_PLAN.md and re-plan&quot;</li>
+<li><strong>Reset</strong> - &quot;Git reset to last known good state&quot;</li>
+<li><strong>Scope down</strong> - Create smaller scoped plan for specific work</li>
+</ul>
+<h2>Advanced: LLM-as-Judge Fixture</h2>
+<p>For subjective criteria (tone, aesthetics, UX):</p>
+<p>Create <code>src/lib/llm-review.ts</code>:</p>
+<pre><code class="language-typescript">interface ReviewResult {
+  pass: boolean;
+  feedback?: string;
+}
+
+async function createReview(config: {
+  criteria: string;
+  artifact: string; // text or screenshot path
+}): Promise&lt;ReviewResult&gt;;
+</code></pre>
+<p>Sub-agents discover and use this pattern for binary pass/fail checks.</p>
+<h2>Critical Operational Requirements</h2>
+<p>Based on empirical usage, enforce these practices to avoid silent failures:</p>
+<h3>1. Mandatory Progress Logging</h3>
+<p><strong>Ralph MUST write to PROGRESS.md after EVERY iteration.</strong> This is non-negotiable.</p>
+<p>Create <code>PROGRESS.md</code> in project root at start:</p>
+<pre><code class="language-markdown"># Ralph: [Task Name]
+
+## Iteration [N] - [Timestamp]
+
+### Status
+- [ ] In Progress | [ ] Blocked | [ ] Complete
+
+### What Was Done
+- [Item 1]
+- [Item 2]
+
+### Blockers
+- None | [Description]
+
+### Next Step
+[Specific next task from IMPLEMENTATION_PLAN.md]
+
+### Files Changed
+- `path/to/file.ts` - [brief description]
+</code></pre>
+<p><strong>Why:</strong> External observers (parent agents, crons, humans) can tail one file instead of scanning directories or inferring state from session logs.</p>
+<h3>2. Session Isolation &amp; Cleanup</h3>
+<p>Before spawning a new Ralph session:</p>
+<ul>
+<li>Check for existing Ralph sub-agents via <code>sessions_list</code></li>
+<li>Kill or verify completion of previous sessions</li>
+<li>Do NOT spawn overlapping Ralph sessions on same codebase</li>
+</ul>
+<p><strong>Anti-pattern:</strong> Spawning Ralph v2 while v1 is still running = file conflicts, race conditions, lost work.</p>
+<h3>3. Explicit Path Verification</h3>
+<p>Never assume directory structure. At start of each iteration:</p>
+<pre><code class="language-typescript">// Verify current working directory
+const cwd = process.cwd();
+console.log(`Working in: ${cwd}`);
+
+// Verify expected paths exist
+if (!fs.existsSync(&#39;./src/app&#39;)) {
+  console.error(&#39;Expected ./src/app, found:&#39;, fs.readdirSync(&#39;.&#39;));
+  // Adapt or fail explicitly
+}
+</code></pre>
+<p><strong>Why:</strong> Ralph may be spawned from different contexts with different working directories.</p>
+<h3>4. Completion Signal Protocol</h3>
+<p>When done, Ralph MUST:</p>
+<ol>
+<li>Write final <code>PROGRESS.md</code> with &quot;## Status: COMPLETE&quot;</li>
+<li>List all created/modified files</li>
+<li>Exit cleanly (no hanging processes)</li>
+</ol>
+<p>Example completion PROGRESS.md:</p>
+<pre><code class="language-markdown"># Ralph: Influencer Detail Page
+
+## Status: COMPLETE ✅
+
+**Finished:** [ISO timestamp]
+
+### Final Verification
+- [x] TypeScript: Pass
+- [x] Tests: Pass  
+- [x] Build: Pass
+
+### Files Created
+- `src/app/feature/page.tsx`
+- `src/app/api/feature/route.ts`
+
+### Testing Instructions
+1. Run: `npm run dev`
+2. Visit: `http://localhost:3000/feature`
+3. Verify: [specific checks]
+</code></pre>
+<h3>5. Error Handling Requirements</h3>
+<p>If Ralph encounters unrecoverable errors:</p>
+<ol>
+<li>Log to PROGRESS.md with &quot;## Status: BLOCKED&quot;</li>
+<li>Describe blocker in detail</li>
+<li>List attempted solutions</li>
+<li>Exit cleanly (don&#39;t hang)</li>
+</ol>
+<p><strong>Do not silently fail.</strong> A Ralph that stops iterating with no progress log is indistinguishable from one still working.</p>
+<h3>6. Iteration Time Limits</h3>
+<p>Set explicit iteration timeouts:</p>
+<pre><code class="language-markdown">## Operational Parameters
+- Max iteration time: 10 minutes
+- Total session timeout: 60 minutes
+- If iteration exceeds limit: Log blocker, exit
+</code></pre>
+<p><strong>Why:</strong> Prevents infinite loops on stuck tasks, allows parent agent to intervene.</p>
+<h2>Memory Updates</h2>
+<p>After each Ralph Mode session, document:</p>
+<pre><code class="language-markdown">## [Date] Ralph Mode Session
+
+**Project:** [project-name]
+**Duration:** [iterations]
+**Outcome:** success / partial / blocked
+**Learnings:**
+- What worked well
+- What needs adjustment
+- Patterns to add to AGENTS.md
+</code></pre>
+<h2>Appendix: Hall of Failures</h2>
+<p>Common anti-patterns observed:</p>
+<table>
+<thead>
+<tr>
+<th>Anti-Pattern</th>
+<th>Consequence</th>
+<th>Prevention</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>No progress logging</td>
+<td>Parent agent cannot determine status</td>
+<td>Mandatory PROGRESS.md</td>
+</tr>
+<tr>
+<td>Silent failure</td>
+<td>Work lost, time wasted</td>
+<td>Explicit error logging</td>
+</tr>
+<tr>
+<td>Overlapping sessions</td>
+<td>File conflicts, corrupt state</td>
+<td>Check/cleanup before spawn</td>
+</tr>
+<tr>
+<td>Path assumptions</td>
+<td>Wrong directory, wrong files</td>
+<td>Explicit verification</td>
+</tr>
+<tr>
+<td>No completion signal</td>
+<td>Parent waits indefinitely</td>
+<td>Clear COMPLETE status</td>
+</tr>
+<tr>
+<td>Infinite iteration</td>
+<td>Resource waste, no progress</td>
+<td>Time limits + blockers</td>
+</tr>
+<tr>
+<td>Complex initial prompts</td>
+<td>Sub-agent never starts (empty session logs)</td>
+<td>SIMPLIFY instructions</td>
+</tr>
+</tbody></table>
+<h2>NEW: Session Initialization Best Practices (2025-02-07)</h2>
+<h3>Problem: Sub-agents spawn but don&#39;t execute</h3>
+<p><strong>Evidence:</strong> Empty session logs (2 bytes), no tool calls, 0 tokens used</p>
+<h3>Root Causes</h3>
+<ol>
+<li><strong>Instructions too complex</strong> - Overwhelms isolated session initialization</li>
+<li><strong>No clear execution trigger</strong> - Agent doesn&#39;t know to start</li>
+<li><strong>Branching logic</strong> - &quot;If X do Y, if Z do W&quot; confuses task selection</li>
+<li><strong>Multiple files mentioned</strong> - Can&#39;t decide which to start with</li>
+</ol>
+<h3>Fix: SIMPLIFIED Ralph Task Template</h3>
+<pre><code class="language-markdown">## Task: [ONE specific thing]
+
+**File:** exact/path/to/file.ts
+**What:** Exact description of change
+**Validate:** Exact command to run
+**Then:** Update PROGRESS.md and exit
+
+## Rules
+1. Do NOT look at other files
+2. Do NOT &quot;check first&quot;
+3. Make the change, validate, exit
+</code></pre>
+<h3>BEFORE (Bad - causes stalls):</h3>
+<pre><code>Fix all TypeScript errors across these files:
+- lib/db.ts has 2 errors
+- lib/proposal-service.ts has 5 errors
+- route.ts has errors
+Check which ones to fix first, then...
+</code></pre>
+<h3>AFTER (Good - executes):</h3>
+<pre><code>Fix lib/db.ts line 27:
+Change: PoolClient to pg.PoolClient
+Validate: npm run typecheck
+Exit immediately after
+</code></pre>
+<h3>CRITICAL: Single File Rule</h3>
+<p>Each Ralph iteration gets ONE file. Not &quot;all errors&quot;, not &quot;check then decide&quot;. ONE file, ONE change, validate, exit.</p>
+<h3>CRITICAL: Update PROGRESS.md</h3>
+<p><strong>MANDATORY:</strong> After EVERY iteration, update PROGRESS.md with:</p>
+<pre><code class="language-markdown">## Iteration [N] - [Timestamp]
+
+### Status: Complete ✅ | Blocked ⛔ | Failed ❌
+
+### What Was Done
+- [Specific changes made]
+
+### Validation
+- [Test/lint/typecheck results]
+
+### Next Step
+- [What should happen next]
+</code></pre>
+<p><strong>Why this matters:</strong> Cron job reads PROGRESS.md for status updates. If not updated, status appears stale/repetitive.</p>
+<h3>Debugging Ralph Stalls</h3>
+<p>If Ralph stalls:</p>
+<ol>
+<li>Check session logs (should show tool calls within 60s)</li>
+<li>If empty after spawn → instructions too complex</li>
+<li>Reduce: ONE file, ONE line number, ONE change</li>
+<li>Shorter timeout forces smaller tasks (300s not 600s)</li>
+</ol>
+<h3>Fixing Stale Status Reports</h3>
+<p>If cron reports same status repeatedly:</p>
+<ol>
+<li>Check PROGRESS.md was updated by sub-agent</li>
+<li>If not updated → sub-agent skipped documentation step</li>
+<li>Update skill: Add &quot;MANDATORY PROGRESS.md update&quot; to prompt</li>
+<li>Manual fix: Update PROGRESS.md to reflect actual state</li>
+</ol>
+<h2>Summary</h2>
+<p>Ralph works when: Single file focus + explicit change + validate + exit
+Ralph stalls when: Complex decisions + multiple files + conditional logic</p>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/richginsberg/ralph-mode/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/richginsberg/ralph-mode" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/richginsberg/ralph-mode/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@richginsberg</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Web & Frontend Development</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">OpenClawDirectory.com is a community-run project and is not affiliated with the official OpenClaw team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

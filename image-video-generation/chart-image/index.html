@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Generate publication-quality chart images from data">
   <title>chart-image - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/image-video-generation/chart-image/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,9 +45,9 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Image & Video Generation</a>
+              <a href="/image-video-generation/" class="back-link">← Back to Image & Video Generation</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Image & Video Generation</a>
+                <a href="/image-video-generation/" class="skill-page-category">Image & Video Generation</a>
                 <span class="skill-page-author">by @dannyshmueli</span>
               </div>
               <h1 class="skill-page-title">chart-image</h1>
@@ -393,6 +394,31 @@ node chart.mjs --type donut --data &#39;[{&quot;category&quot;:&quot;A&quot;,&qu
 <td>#4a5568</td>
 </tr>
 </tbody></table>
+<h3>Formatting Options</h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>--y-format</code></td>
+<td>Y axis format: percent, dollar, compact, decimal4, integer, scientific, or d3-format string</td>
+<td>auto</td>
+</tr>
+<tr>
+<td><code>--subtitle</code></td>
+<td>Subtitle text below chart title</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>--hline</code></td>
+<td>Horizontal reference line: &quot;value&quot; or &quot;value,color&quot; or &quot;value,color,label&quot; (repeatable)</td>
+<td>-</td>
+</tr>
+</tbody></table>
 <h3>Annotation Options</h3>
 <table>
 <thead>
@@ -437,6 +463,32 @@ node chart.mjs --type donut --data &#39;[{&quot;category&quot;:&quot;A&quot;,&qu
   --output temporal.png
 </code></pre>
 <p>Use <code>--x-type temporal</code> when X values are ISO dates and you want spacing to reflect actual time gaps (not evenly spaced).</p>
+<h2>Y-Axis Formatting</h2>
+<p>Format axis values for readability:</p>
+<pre><code class="language-bash"># Dollar amounts
+node chart.mjs --data &#39;[...]&#39; --y-format dollar --output revenue.png
+# → $1,234.56
+
+# Percentages (values as decimals 0-1)
+node chart.mjs --data &#39;[...]&#39; --y-format percent --output rates.png
+# → 45.2%
+
+# Compact large numbers
+node chart.mjs --data &#39;[...]&#39; --y-format compact --output users.png
+# → 1.2K, 3.4M
+
+# Crypto prices (4 decimal places)
+node chart.mjs --data &#39;[...]&#39; --y-format decimal4 --output molt.png
+# → 0.0004
+
+# Custom d3-format string
+node chart.mjs --data &#39;[...]&#39; --y-format &#39;,.3f&#39; --output custom.png
+</code></pre>
+<p>Available shortcuts: <code>percent</code>, <code>dollar</code>/<code>usd</code>, <code>compact</code>, <code>integer</code>, <code>decimal2</code>, <code>decimal4</code>, <code>scientific</code></p>
+<h2>Chart Subtitle</h2>
+<p>Add context below the title:</p>
+<pre><code class="language-bash">node chart.mjs --title &quot;MOLT Price&quot; --subtitle &quot;20,668 MOLT held&quot; --data &#39;[...]&#39; --output molt.png
+</code></pre>
 <h2>Theme Selection</h2>
 <p>Use <code>--dark</code> for dark mode. Auto-select based on time:</p>
 <ul>
@@ -450,8 +502,24 @@ node chart.mjs --type donut --data &#39;[{&quot;category&quot;:&quot;A&quot;,&qu
 <p>For advanced charts:</p>
 <pre><code class="language-bash">node chart.mjs --spec my-spec.json --output custom.png
 </code></pre>
+<h2>⚠️ IMPORTANT: Always Send the Image!</h2>
+<p>After generating a chart, <strong>always send it back to the user&#39;s channel</strong>.
+Don&#39;t just save to a file and describe it — the whole point is the visual.</p>
+<pre><code class="language-bash"># 1. Generate the chart
+node chart.mjs --type line --data &#39;...&#39; --output /data/clawd/tmp/my-chart.png
+
+# 2. Send it! Use message tool with filePath:
+#    action=send, target=&lt;channel_id&gt;, filePath=/data/clawd/tmp/my-chart.png
+</code></pre>
+<p><strong>Tips:</strong></p>
+<ul>
+<li>Save to <code>/data/clawd/tmp/</code> (persistent) not <code>/tmp/</code> (may get cleaned)</li>
+<li>Use <code>action=send</code> with <code>filePath</code> — <code>thread-reply</code> does NOT support file attachments</li>
+<li>Include a brief caption in the message text</li>
+<li>Auto-use <code>--dark</code> between 20:00-07:00 Israel time</li>
+</ul>
 <hr>
-<p><em>Updated: 2026-02-02 - Added x-type temporal, documented all chart types</em></p>
+<p><em>Updated: 2026-02-04 - Added --y-format (percent/dollar/compact/decimal4) and --subtitle</em></p>
 
                 </div>
               </div>

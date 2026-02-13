@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Generate content for TRMNL e-ink display devices using the TRMNL CSS framework">
   <title>trmnl - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/web-frontend-development/trmnl/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,9 +45,9 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Web & Frontend Development</a>
+              <a href="/web-frontend-development/" class="back-link">← Back to Web & Frontend Development</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Web & Frontend Development</a>
+                <a href="/web-frontend-development/" class="skill-page-category">Web & Frontend Development</a>
                 <span class="skill-page-author">by @peetzweg</span>
               </div>
               <h1 class="skill-page-title">trmnl</h1>
@@ -66,30 +67,55 @@
                 <div class="markdown-content">
                   <h1>TRMNL Content Generator</h1>
 <p>Generate HTML content for TRMNL e-ink display devices.</p>
+<h2>Prerequisites</h2>
+<p><strong>Install the <code>trmnl</code> CLI to the latest version:</strong></p>
+<pre><code class="language-bash">npm install -g trmnl-cli@latest
+</code></pre>
+<p><strong>Configure a webhook plugin (one-time setup):</strong></p>
+<pre><code class="language-bash"># Add a plugin
+trmnl plugin add home &quot;https://trmnl.com/api/custom_plugins/{uuid}&quot;
+
+# Verify it&#39;s configured
+trmnl plugin
+</code></pre>
 <h2>Quick Start Workflow</h2>
 <ol>
-<li>Check for <code>$TRMNL_WEBHOOK</code> environment variable</li>
-<li>If missing, prompt user for webhook URL</li>
-<li><strong>Ask user to verify TRMNL display markup is set to:</strong> <code>&lt;div&gt;{{content}}&lt;/div&gt;</code></li>
+<li><strong>Install/update CLI:</strong> Run <code>npm install -g trmnl-cli@latest</code></li>
+<li><strong>Check plugins:</strong> Run <code>trmnl plugin</code> - if none, prompt user to add one</li>
 <li>Confirm device type (default: TRMNL OG, 2-bit, 800x480)</li>
 <li>Read relevant reference docs based on content needs</li>
 <li>Generate HTML using TRMNL framework classes</li>
-<li>Send via POST to webhook (use temp file method)</li>
-<li><strong>Send minimal confirmation only</strong> - Do NOT echo content back to chat</li>
+<li>Write HTML to a temp file and send:<pre><code class="language-bash">trmnl send --file /tmp/trmnl-content.html
+# Or to a specific plugin:
+trmnl send --file /tmp/trmnl-content.html --plugin office
+</code></pre>
+</li>
+<li><strong>Minimal confirmation only</strong> - Do NOT echo content back to chat</li>
 </ol>
-<h2>Device &amp; Setup</h2>
-<p><strong>Default target:</strong> TRMNL OG (7.5&quot; e-ink, 800x480px, 2-bit)</p>
-<p><strong>Display markup required:</strong></p>
-<pre><code class="language-html">&lt;div&gt;{{content}}&lt;/div&gt;
-</code></pre>
-<p><strong>Webhook:</strong></p>
-<pre><code class="language-bash">export TRMNL_WEBHOOK=&quot;https://trmnl.com/api/custom_plugins/{uuid}&quot;
-</code></pre>
-<p><strong>Sending content (temp file method):</strong></p>
-<pre><code class="language-bash">cat &gt; /tmp/trmnl.json &lt;&lt; &#39;EOF&#39;
-{&quot;merge_variables&quot;:{&quot;content&quot;:&quot;&lt;div class=\&quot;layout\&quot;&gt;HTML&lt;/div&gt;&quot;}}
+<h2>Sending Content</h2>
+<p><strong>From file (recommended):</strong></p>
+<pre><code class="language-bash"># Write HTML content to file first
+cat &gt; /tmp/trmnl-content.html &lt;&lt; &#39;EOF&#39;
+&lt;div class=&quot;layout layout--col gap--space-between&quot;&gt;
+  &lt;div class=&quot;item&quot;&gt;
+    &lt;span class=&quot;value value--xlarge value--tnums&quot;&gt;Hello TRMNL!&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;title_bar&quot;&gt;
+  &lt;span class=&quot;title&quot;&gt;My Plugin&lt;/span&gt;
+&lt;/div&gt;
 EOF
-curl &quot;$TRMNL_WEBHOOK&quot; -H &quot;Content-Type: application/json&quot; -d @/tmp/trmnl.json -X POST
+
+# Send to display
+trmnl send --file /tmp/trmnl-content.html
+</code></pre>
+<p><strong>Validate before sending:</strong></p>
+<pre><code class="language-bash">trmnl validate --file /tmp/trmnl-content.html
+</code></pre>
+<p><strong>View send history:</strong></p>
+<pre><code class="language-bash">trmnl history
+trmnl history --today
+trmnl history --failed
 </code></pre>
 <h2>Webhook Limits</h2>
 <table>
@@ -111,17 +137,9 @@ curl &quot;$TRMNL_WEBHOOK&quot; -H &quot;Content-Type: application/json&quot; -d
 <td>30 requests/hour</td>
 </tr>
 </tbody></table>
-<p><strong>Check payload size before sending:</strong></p>
-<pre><code class="language-bash">python3 scripts/check_payload.py /tmp/trmnl.json
+<p>Set tier globally for accurate validation:</p>
+<pre><code class="language-bash">trmnl tier plus  # or &quot;free&quot;
 </code></pre>
-<p><strong>Tips to reduce payload size:</strong></p>
-<ul>
-<li>Minify HTML (remove unnecessary whitespace)</li>
-<li>Use framework classes instead of inline styles</li>
-<li>Use short class names the framework provides</li>
-<li>Remove comments from HTML</li>
-<li>Use <code>deep_merge</code> strategy for incremental updates</li>
-</ul>
 <h2>Reference Documentation</h2>
 <p>Read these files as needed:</p>
 <table>
@@ -133,48 +151,31 @@ curl &quot;$TRMNL_WEBHOOK&quot; -H &quot;Content-Type: application/json&quot; -d
 </thead>
 <tbody><tr>
 <td><code>references/patterns.md</code></td>
-<td><strong>Start here</strong> - Common plugin patterns from official examples</td>
+<td><strong>Start here</strong> - Common plugin patterns</td>
 </tr>
 <tr>
 <td><code>references/framework-overview.md</code></td>
-<td>Device specs, e-ink constraints, responsive prefixes</td>
+<td>Device specs, e-ink constraints</td>
 </tr>
 <tr>
 <td><code>references/css-utilities.md</code></td>
-<td>Colors, typography, sizing, spacing utilities</td>
+<td>Colors, typography, sizing, spacing</td>
 </tr>
 <tr>
 <td><code>references/layout-systems.md</code></td>
-<td>Flexbox, grid, overflow/clamp engines</td>
+<td>Flexbox, grid, overflow engines</td>
 </tr>
 <tr>
 <td><code>references/components.md</code></td>
-<td>Title bar, dividers, items, tables, charts</td>
+<td>Title bar, dividers, items, tables</td>
 </tr>
 <tr>
 <td><code>references/webhook-api.md</code></td>
-<td>Payload format, rate limits, troubleshooting</td>
+<td>Payload format, troubleshooting</td>
 </tr>
 <tr>
 <td><code>assets/anti-patterns.md</code></td>
 <td>Common mistakes to avoid</td>
-</tr>
-<tr>
-<td><code>assets/good-examples/</code></td>
-<td>HTML reference implementations</td>
-</tr>
-</tbody></table>
-<p><strong>Scripts:</strong></p>
-<table>
-<thead>
-<tr>
-<th>Script</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>scripts/check_payload.py</code></td>
-<td>Verify payload size before sending (run on /tmp/trmnl.json)</td>
 </tr>
 </tbody></table>
 <h2>Standard Plugin Structure</h2>
@@ -193,27 +194,24 @@ curl &quot;$TRMNL_WEBHOOK&quot; -H &quot;Content-Type: application/json&quot; -d
 <li><code>gap--space-between</code> = push sections to edges</li>
 <li><code>title_bar</code> = always at bottom, outside layout</li>
 <li><code>divider</code> = separate major sections</li>
-<li><strong>CRITICAL:</strong> Only ONE <code>.layout</code> element per view (no nesting)</li>
+<li><strong>CRITICAL:</strong> Only ONE <code>.layout</code> element per view</li>
 </ul>
-<h2>Grid System (10-Column)</h2>
-<p>Column spans should sum to 10:</p>
+<h2>Quick Reference</h2>
+<h3>Grid System (10-Column)</h3>
 <pre><code class="language-html">&lt;div class=&quot;grid&quot;&gt;
   &lt;div class=&quot;col--span-3&quot;&gt;30%&lt;/div&gt;
   &lt;div class=&quot;col--span-7&quot;&gt;70%&lt;/div&gt;
 &lt;/div&gt;
 </code></pre>
-<p>Simple equal columns: <code>grid--cols-2</code>, <code>grid--cols-3</code>, etc.</p>
-<h2>Item Component</h2>
-<p>Standard data display pattern:</p>
+<h3>Item Component</h3>
 <pre><code class="language-html">&lt;div class=&quot;item&quot;&gt;
-  &lt;div class=&quot;meta&quot;&gt;&lt;span class=&quot;index&quot;&gt;1&lt;/span&gt;&lt;/div&gt;
   &lt;div class=&quot;content&quot;&gt;
     &lt;span class=&quot;value value--xlarge value--tnums&quot;&gt;$159,022&lt;/span&gt;
     &lt;span class=&quot;label&quot;&gt;Total Sales&lt;/span&gt;
   &lt;/div&gt;
 &lt;/div&gt;
 </code></pre>
-<h2>Value Typography</h2>
+<h3>Value Typography</h3>
 <p><strong>Always use <code>value--tnums</code> for numbers.</strong></p>
 <table>
 <thead>
@@ -235,30 +233,17 @@ curl &quot;$TRMNL_WEBHOOK&quot; -H &quot;Content-Type: application/json&quot; -d
 <td>Secondary metrics</td>
 </tr>
 <tr>
-<td><code>value--small</code></td>
-<td>Tertiary data</td>
-</tr>
-<tr>
 <td><code>value--tnums</code></td>
-<td><strong>Always for numbers</strong></td>
+<td><strong>Required for numbers</strong></td>
 </tr>
 </tbody></table>
-<p>Auto-fit: <code>&lt;span class=&quot;value&quot; data-fit-value=&quot;true&quot;&gt;...&lt;/span&gt;</code></p>
-<h2>Columns (for Lists)</h2>
-<pre><code class="language-html">&lt;div class=&quot;columns&quot;&gt;
-  &lt;div class=&quot;column&quot; data-overflow=&quot;true&quot; data-overflow-counter=&quot;true&quot;&gt;
-    &lt;span class=&quot;label label--medium group-header&quot;&gt;Section&lt;/span&gt;
-    &lt;div class=&quot;item&quot;&gt;...&lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
-</code></pre>
-<h2>Grayscale Dithering</h2>
-<p>Use dithered classes, not inline gray colors:</p>
+<h3>Grayscale Classes</h3>
+<p>Use dithered classes, not inline colors:</p>
 <ul>
 <li><code>bg--black</code>, <code>bg--gray-60</code>, <code>bg--gray-30</code>, <code>bg--gray-10</code>, <code>bg--white</code></li>
 <li><code>text--black</code>, <code>text--gray-50</code></li>
 </ul>
-<h2>Data Attributes</h2>
+<h3>Data Attributes</h3>
 <table>
 <thead>
 <tr>
@@ -271,10 +256,6 @@ curl &quot;$TRMNL_WEBHOOK&quot; -H &quot;Content-Type: application/json&quot; -d
 <td>Auto-resize text to fit</td>
 </tr>
 <tr>
-<td><code>data-value-format=&quot;true&quot;</code></td>
-<td>Auto-format numbers (locale-aware)</td>
-</tr>
-<tr>
 <td><code>data-clamp=&quot;N&quot;</code></td>
 <td>Limit to N lines</td>
 </tr>
@@ -282,96 +263,16 @@ curl &quot;$TRMNL_WEBHOOK&quot; -H &quot;Content-Type: application/json&quot; -d
 <td><code>data-overflow=&quot;true&quot;</code></td>
 <td>Enable overflow management</td>
 </tr>
-<tr>
-<td><code>data-overflow-counter=&quot;true&quot;</code></td>
-<td>Show &quot;and X more&quot;</td>
-</tr>
-<tr>
-<td><code>data-overflow-max-cols=&quot;N&quot;</code></td>
-<td>Max columns for overflow</td>
-</tr>
-<tr>
-<td><code>data-content-limiter=&quot;true&quot;</code></td>
-<td>Auto-adjust text size</td>
-</tr>
-<tr>
-<td><code>data-pixel-perfect=&quot;true&quot;</code></td>
-<td>Crisp text rendering</td>
-</tr>
-<tr>
-<td><code>data-table-limit=&quot;true&quot;</code></td>
-<td>Table overflow with &quot;and X more&quot;</td>
-</tr>
 </tbody></table>
-<h2>Label &amp; Title Variants</h2>
-<pre><code class="language-html">&lt;span class=&quot;label label--small&quot;&gt;Small&lt;/span&gt;
-&lt;span class=&quot;label label--medium&quot;&gt;Medium&lt;/span&gt;
-&lt;span class=&quot;label label--underline&quot;&gt;Underlined&lt;/span&gt;
-&lt;span class=&quot;label label--gray&quot;&gt;Muted/completed&lt;/span&gt;
-&lt;span class=&quot;title title--small&quot;&gt;Compact title&lt;/span&gt;
-</code></pre>
-<h2>Gap Utilities</h2>
-<p><code>gap--space-between</code> | <code>gap--xxlarge</code> | <code>gap--xlarge</code> | <code>gap--large</code> | <code>gap--medium</code> | <code>gap</code> | <code>gap--small</code> | <code>gap--xsmall</code> | <code>gap--none</code></p>
-<h2>Typography Guidelines</h2>
-<p><strong>Recommended:</strong> Georgia serif font for e-ink readability.</p>
-<p><strong>Content-aware sizing:</strong></p>
-<ul>
-<li>Short content = bigger fonts (24-28px body)</li>
-<li>Long content = smaller fonts (20px body)</li>
-<li>Headings: 36-48px</li>
-</ul>
-<h2>User Experience</h2>
-<p><strong>Critical:</strong> Do NOT echo content back to chat. Just confirm &quot;Sent to TRMNL&quot;.</p>
-<h2>Anti-Patterns</h2>
-<ol>
-<li>Tiny fonts for short content</li>
-<li>Center-aligning columns with different lengths (use <code>layout--start</code>)</li>
-<li>Spoiling content in chat confirmation</li>
-<li>Missing <code>value--tnums</code> on numbers</li>
-<li>Missing <code>title_bar</code></li>
-<li>Not using <code>data-fit-value</code> on primary metrics</li>
-<li>Skipping <code>data-overflow</code> on variable lists</li>
-<li>Using inline gray colors instead of <code>bg--gray-*</code></li>
-<li>Forgetting dividers between sections</li>
-</ol>
 <h2>Best Practices</h2>
 <ol>
-<li>Verify <code>&lt;div&gt;{{content}}&lt;/div&gt;</code> display markup</li>
 <li>Use <code>layout</code> + <code>title_bar</code> structure</li>
 <li>Always <code>value--tnums</code> for numbers</li>
 <li>Use <code>data-fit-value</code> on primary metrics</li>
-<li>Use <code>data-overflow</code> on variable lists</li>
-<li>Use <code>item</code> component pattern</li>
-<li>Use <code>divider</code> between sections</li>
 <li>Use <code>bg--gray-*</code> dithered classes</li>
-<li>Content-aware font sizing</li>
-<li>Top-align columns (<code>layout--start</code>)</li>
-<li>Temp file method for curl</li>
-<li>Minimal confirmations</li>
+<li>Keep payload under tier limit</li>
+<li><strong>Minimal confirmations</strong> - just &quot;Sent to TRMNL&quot;</li>
 </ol>
-<h2>Mashup Layouts (Multi-Plugin)</h2>
-<p>For dashboard views with multiple plugins:</p>
-<table>
-<thead>
-<tr>
-<th>Layout</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>mashup--1Lx1R</code></td>
-<td>2 columns (50/50)</td>
-</tr>
-<tr>
-<td><code>mashup--1Tx1B</code></td>
-<td>2 rows (50/50)</td>
-</tr>
-<tr>
-<td><code>mashup--2x2</code></td>
-<td>4 quadrants</td>
-</tr>
-</tbody></table>
-<p>See <code>references/layout-systems.md</code> for all 7 layouts.</p>
 <h2>Troubleshooting</h2>
 <table>
 <thead>
@@ -381,36 +282,28 @@ curl &quot;$TRMNL_WEBHOOK&quot; -H &quot;Content-Type: application/json&quot; -d
 </tr>
 </thead>
 <tbody><tr>
-<td>Webhook fails</td>
-<td>Verify URL, check rate limits (12/hour free)</td>
+<td><code>trmnl: command not found</code></td>
+<td>Run <code>npm install -g trmnl-cli@latest</code></td>
 </tr>
 <tr>
-<td>Content missing</td>
-<td>Check display markup is <code>&lt;div&gt;{{content}}&lt;/div&gt;</code></td>
+<td>No plugins configured</td>
+<td>Run <code>trmnl plugin add &lt;name&gt; &lt;url&gt;</code></td>
+</tr>
+<tr>
+<td>Webhook fails</td>
+<td><code>trmnl config</code> - verify plugin URL</td>
 </tr>
 <tr>
 <td>Payload too large</td>
-<td>Run <code>scripts/check_payload.py</code>, keep under 2KB (free) or 5KB (TRMNL+)</td>
+<td><code>trmnl validate --file</code> - check size</td>
 </tr>
 <tr>
 <td>Numbers misaligned</td>
-<td>Add <code>value--tnums</code></td>
+<td>Add <code>value--tnums</code> class</td>
 </tr>
 <tr>
-<td>Text overflow</td>
-<td>Use <code>data-clamp</code> or <code>data-overflow</code></td>
-</tr>
-<tr>
-<td>Columns misaligned</td>
-<td>Use <code>layout--start</code> not <code>layout--center</code></td>
-</tr>
-<tr>
-<td>Multiple layouts error</td>
-<td>Keep only ONE <code>.layout</code> element per view</td>
-</tr>
-<tr>
-<td>Nested content fails</td>
-<td>Use <code>.richtext</code> for nested/formatted content</td>
+<td>Send history</td>
+<td><code>trmnl history --failed</code></td>
 </tr>
 </tbody></table>
 

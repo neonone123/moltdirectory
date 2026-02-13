@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SSH tunneling, port forwarding, and remote access patterns">
+  <title>ssh-tunnel - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/coding-agents-ides/ssh-tunnel/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+
+        <span class="logo-text">OpenClaw Directory</span>
+      </a>
+      <nav class="header-links">
+        <a href="/start-here/" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="/coding-agents-ides/" class="back-link">← Back to Coding Agents & IDEs</a>
+              <div class="skill-page-meta">
+                <a href="/coding-agents-ides/" class="skill-page-category">Coding Agents & IDEs</a>
+                <span class="skill-page-author">by @gitgoodordietrying</span>
+              </div>
+              <h1 class="skill-page-title">ssh-tunnel</h1>
+              <p class="skill-page-desc">SSH tunneling, port forwarding, and remote access patterns</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>SSH Tunnel</h1>
+<p>SSH tunneling, port forwarding, and secure remote access. Covers local/remote/dynamic forwards, jump hosts, ProxyCommand, multiplexing, key management, and connection debugging.</p>
+<h2>When to Use</h2>
+<ul>
+<li>Accessing a remote database through a firewall (local port forward)</li>
+<li>Exposing a local dev server to a remote machine (remote port forward)</li>
+<li>Using a remote server as a SOCKS proxy (dynamic forward)</li>
+<li>Connecting through bastion/jump hosts</li>
+<li>Managing SSH keys and agent forwarding</li>
+<li>Transferring files securely (scp, rsync)</li>
+<li>Debugging SSH connection failures</li>
+</ul>
+<h2>Port Forwarding</h2>
+<h3>Local forward (access remote service locally)</h3>
+<pre><code class="language-bash"># Forward local port 5432 to remote&#39;s localhost:5432
+# Use case: access a remote PostgreSQL database as if it were local
+ssh -L 5432:localhost:5432 user@remote-server
+
+# Then connect locally:
+psql -h localhost -p 5432 -U dbuser mydb
+
+# Forward to a different host accessible from the remote
+# Remote server can reach db.internal:5432, but you can&#39;t
+ssh -L 5432:db.internal:5432 user@remote-server
+
+# Forward multiple ports
+ssh -L 5432:db.internal:5432 -L 6379:redis.internal:6379 user@remote-server
+
+# Run in background (no shell)
+ssh -fNL 5432:db.internal:5432 user@remote-server
+# -f = background after auth
+# -N = no remote command
+# -L = local forward
+</code></pre>
+<h3>Remote forward (expose local service remotely)</h3>
+<pre><code class="language-bash"># Make your local port 3000 accessible on the remote server&#39;s port 8080
+ssh -R 8080:localhost:3000 user@remote-server
+# On the remote: curl http://localhost:8080 → hits your local :3000
+
+# Expose to all interfaces on the remote (not just localhost)
+# Requires GatewayPorts yes in remote sshd_config
+ssh -R 0.0.0.0:8080:localhost:3000 user@remote-server
+
+# Background mode
+ssh -fNR 8080:localhost:3000 user@remote-server
+</code></pre>
+<h3>Dynamic forward (SOCKS proxy)</h3>
+<pre><code class="language-bash"># Create a SOCKS5 proxy on local port 1080
+ssh -D 1080 user@remote-server
+
+# Route browser traffic through the tunnel
+# Configure browser proxy: SOCKS5, localhost:1080
+
+# Use with curl
+curl --socks5-hostname localhost:1080 https://example.com
+
+# Background mode
+ssh -fND 1080 user@remote-server
+</code></pre>
+<h2>Jump Hosts / Bastion</h2>
+<h3>ProxyJump (simplest, OpenSSH 7.3+)</h3>
+<pre><code class="language-bash"># Connect through a bastion host
+ssh -J bastion-user@bastion.example.com target-user@internal-server
+
+# Chain multiple jumps
+ssh -J bastion1,bastion2 target-user@internal-server
+
+# With port forward through bastion
+ssh -J bastion-user@bastion -L 5432:db.internal:5432 target-user@app-server
+</code></pre>
+<h3>ProxyCommand (older systems, more flexible)</h3>
+<pre><code class="language-bash"># Equivalent to ProxyJump but works on older OpenSSH
+ssh -o ProxyCommand=&quot;ssh -W %h:%p bastion-user@bastion&quot; target-user@internal-server
+</code></pre>
+<h3>SSH Config for jump hosts</h3>
+<pre><code># ~/.ssh/config
+
+# Bastion host
+Host bastion
+    HostName bastion.example.com
+    User bastion-user
+    IdentityFile ~/.ssh/bastion_key
+
+# Internal servers (automatically use bastion)
+Host app-server
+    HostName 10.0.1.50
+    User deploy
+    ProxyJump bastion
+
+Host db-server
+    HostName 10.0.2.30
+    User admin
+    ProxyJump bastion
+    LocalForward 5432 localhost:5432
+
+# Now just: ssh app-server
+# Or: ssh db-server (auto-forwards port 5432)
+</code></pre>
+<h2>SSH Config Patterns</h2>
+<h3>Essential config</h3>
+<pre><code># ~/.ssh/config
+
+# Global defaults
+Host *
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    AddKeysToAgent yes
+    IdentitiesOnly yes
+
+# Named hosts
+Host prod
+    HostName 203.0.113.50
+    User deploy
+    IdentityFile ~/.ssh/prod_ed25519
+    Port 2222
+
+Host staging
+    HostName staging.example.com
+    User deploy
+    IdentityFile ~/.ssh/staging_ed25519
+
+# Wildcard patterns
+Host *.dev.example.com
+    User developer
+    IdentityFile ~/.ssh/dev_key
+    StrictHostKeyChecking no
+    UserKnownHostsFile /dev/null
+</code></pre>
+<h3>Connection multiplexing (reuse connections)</h3>
+<pre><code># ~/.ssh/config
+Host *
+    ControlMaster auto
+    ControlPath ~/.ssh/sockets/%r@%h-%p
+    ControlPersist 600
+
+# First connection opens socket, subsequent connections reuse it
+# Much faster for repeated ssh/scp/rsync to same host
+</code></pre>
+<pre><code class="language-bash"># Create socket directory
+mkdir -p ~/.ssh/sockets
+
+# Manually manage control socket
+ssh -O check prod       # Check if connection is alive
+ssh -O stop prod        # Close the master connection
+ssh -O exit prod        # Close immediately
+</code></pre>
+<h2>Key Management</h2>
+<h3>Generate keys</h3>
+<pre><code class="language-bash"># Ed25519 (recommended — fast, secure, short keys)
+ssh-keygen -t ed25519 -C &quot;user@machine&quot; -f ~/.ssh/mykey_ed25519
+
+# RSA 4096 (wider compatibility)
+ssh-keygen -t rsa -b 4096 -C &quot;user@machine&quot; -f ~/.ssh/mykey_rsa
+
+# Generate without passphrase (for automation only)
+ssh-keygen -t ed25519 -N &quot;&quot; -f ~/.ssh/deploy_key
+</code></pre>
+<h3>Deploy keys</h3>
+<pre><code class="language-bash"># Copy public key to remote server
+ssh-copy-id -i ~/.ssh/mykey_ed25519.pub user@remote-server
+
+# Manual (if ssh-copy-id unavailable)
+cat ~/.ssh/mykey_ed25519.pub | ssh user@remote-server &quot;mkdir -p ~/.ssh &amp;&amp; chmod 700 ~/.ssh &amp;&amp; cat &gt;&gt; ~/.ssh/authorized_keys &amp;&amp; chmod 600 ~/.ssh/authorized_keys&quot;
+</code></pre>
+<h3>SSH Agent</h3>
+<pre><code class="language-bash"># Start agent (usually auto-started)
+eval &quot;$(ssh-agent -s)&quot;
+
+# Add key to agent
+ssh-add ~/.ssh/mykey_ed25519
+
+# Add with expiry (key removed after timeout)
+ssh-add -t 3600 ~/.ssh/mykey_ed25519
+
+# List loaded keys
+ssh-add -l
+
+# Remove all keys
+ssh-add -D
+
+# Agent forwarding (use your local keys on remote hosts)
+ssh -A user@remote-server
+# On remote: ssh git@github.com  → uses your local key
+# SECURITY: only forward to trusted hosts
+</code></pre>
+<h3>File permissions</h3>
+<pre><code class="language-bash"># SSH is strict about permissions. Fix common issues:
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/id_ed25519          # Private key
+chmod 644 ~/.ssh/id_ed25519.pub      # Public key
+chmod 600 ~/.ssh/config
+chmod 600 ~/.ssh/authorized_keys
+</code></pre>
+<h2>File Transfer</h2>
+<h3>scp</h3>
+<pre><code class="language-bash"># Copy file to remote
+scp file.txt user@remote:/path/to/destination/
+
+# Copy from remote
+scp user@remote:/path/to/file.txt ./local/
+
+# Copy directory recursively
+scp -r ./local-dir user@remote:/path/to/
+
+# Through jump host
+scp -o ProxyJump=bastion file.txt user@internal:/path/
+
+# With specific key and port
+scp -i ~/.ssh/mykey -P 2222 file.txt user@remote:/path/
+</code></pre>
+<h3>rsync over SSH</h3>
+<pre><code class="language-bash"># Sync directory (only changed files)
+rsync -avz ./local-dir/ user@remote:/path/to/remote-dir/
+
+# Dry run (preview changes)
+rsync -avzn ./local-dir/ user@remote:/path/to/remote-dir/
+
+# Delete files on remote that don&#39;t exist locally
+rsync -avz --delete ./local-dir/ user@remote:/path/to/remote-dir/
+
+# Exclude patterns
+rsync -avz --exclude=&#39;node_modules&#39; --exclude=&#39;.git&#39; ./project/ user@remote:/deploy/
+
+# With specific SSH options
+rsync -avz -e &quot;ssh -i ~/.ssh/deploy_key -p 2222&quot; ./dist/ user@remote:/var/www/
+
+# Resume interrupted transfer
+rsync -avz --partial --progress large-file.tar.gz user@remote:/path/
+
+# Through jump host
+rsync -avz -e &quot;ssh -J bastion&quot; ./files/ user@internal:/path/
+</code></pre>
+<h2>Connection Debugging</h2>
+<h3>Verbose output</h3>
+<pre><code class="language-bash"># Increasing verbosity levels
+ssh -v user@remote       # Basic debug
+ssh -vv user@remote      # More detail
+ssh -vvv user@remote     # Maximum detail
+
+# Common issues visible in verbose output:
+# &quot;Connection refused&quot; → SSH server not running or wrong port
+# &quot;Connection timed out&quot; → Firewall blocking, wrong IP
+# &quot;Permission denied (publickey)&quot; → Key not accepted
+# &quot;Host key verification failed&quot; → Server fingerprint changed
+</code></pre>
+<h3>Test connectivity</h3>
+<pre><code class="language-bash"># Check if SSH port is open
+nc -zv remote-host 22
+# or
+ssh -o ConnectTimeout=5 -o BatchMode=yes user@remote echo ok
+
+# Check which key the server accepts
+ssh -o PreferredAuthentications=publickey -v user@remote 2&gt;&amp;1 | grep &quot;Offering\|Accepted&quot;
+
+# Test config without connecting
+ssh -G remote-host   # Print effective config for this host
+</code></pre>
+<h3>Common fixes</h3>
+<pre><code class="language-bash"># &quot;WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED&quot;
+# Server was reinstalled / IP reassigned
+ssh-keygen -R remote-host   # Remove old fingerprint
+ssh user@remote-host        # Accept new fingerprint
+
+# &quot;Too many authentication failures&quot;
+# SSH agent is offering too many keys
+ssh -o IdentitiesOnly=yes -i ~/.ssh/specific_key user@remote
+
+# &quot;Connection closed by remote host&quot;
+# Often: MaxSessions or MaxStartups limit on server
+# Or: fail2ban banned your IP
+
+# Tunnel keeps dying
+# Add keepalive in config or command line:
+ssh -o ServerAliveInterval=30 -o ServerAliveCountMax=5 user@remote
+
+# Permission denied despite correct key
+# Check remote: /var/log/auth.log or /var/log/secure
+# Common: wrong permissions on ~/.ssh or authorized_keys
+</code></pre>
+<h3>Kill stuck SSH sessions</h3>
+<pre><code># If SSH session hangs (frozen terminal):
+# Type these characters in sequence:
+~.          # Disconnect
+~?          # Show escape commands
+~#          # List forwarded connections
+~&amp;          # Background SSH (when waiting for tunnel to close)
+# The ~ must be the first character on a new line (press Enter first)
+</code></pre>
+<h2>Tips</h2>
+<ul>
+<li>Use <code>~/.ssh/config</code> for everything. Named hosts with stored settings are faster and less error-prone than typing long commands.</li>
+<li>Ed25519 keys are preferred over RSA. They&#39;re shorter, faster, and equally secure.</li>
+<li>Connection multiplexing (<code>ControlMaster</code>) makes repeated connections instant. Enable it globally.</li>
+<li><code>rsync</code> is almost always better than <code>scp</code> for anything beyond a single file. It handles interruptions, only transfers changes, and supports compression.</li>
+<li>Agent forwarding (<code>-A</code>) is convenient but a security risk on untrusted servers. The remote host can use your agent to authenticate as you. Prefer <code>ProxyJump</code> instead.</li>
+<li><code>ServerAliveInterval 60</code> in config prevents most &quot;broken pipe&quot; disconnections.</li>
+<li>Keep your <code>~/.ssh/config</code> organized with comments. Future-you will appreciate it.</li>
+<li>The <code>~.</code> escape sequence is the only way to kill a stuck SSH session without closing the terminal.</li>
+</ul>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/gitgoodordietrying/ssh-tunnel/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/gitgoodordietrying/ssh-tunnel" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/gitgoodordietrying/ssh-tunnel/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@gitgoodordietrying</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Coding Agents & IDEs</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">OpenClawDirectory.com is a community-run project and is not affiliated with the official OpenClaw team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

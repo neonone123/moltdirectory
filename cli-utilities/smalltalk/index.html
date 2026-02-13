@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Interact with live Smalltalk image (Cuis or Squeak)">
   <title>smalltalk - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/cli-utilities/smalltalk/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,9 +45,9 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to CLI Utilities</a>
+              <a href="/cli-utilities/" class="back-link">← Back to CLI Utilities</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">CLI Utilities</a>
+                <a href="/cli-utilities/" class="skill-page-category">CLI Utilities</a>
                 <span class="skill-page-author">by @johnmci</span>
               </div>
               <h1 class="skill-page-title">smalltalk</h1>
@@ -92,8 +93,12 @@ python3 smalltalk.py evaluate &quot;Date today&quot;
 # Browse a class
 python3 smalltalk.py browse OrderedCollection
 
-# View method source
+# View method source (instance side)
 python3 smalltalk.py method-source String asUppercase
+
+# View method source (class side)
+python3 smalltalk.py method-source &quot;MCPServer class&quot; version
+python3 smalltalk.py method-source MCPServer version --class-side
 
 # List classes (with optional prefix filter)
 python3 smalltalk.py list-classes Collection
@@ -124,6 +129,32 @@ python3 smalltalk.py delete-method Counter increment
 # Delete a class
 python3 smalltalk.py delete-class Counter
 </code></pre>
+<h2>Operating Modes</h2>
+<h3>Playground (Default)</h3>
+<p>Stock image, ephemeral. Changes are discarded when daemon stops.
+User says: &quot;load Smalltalk skill&quot; or &quot;invoke Smalltalk&quot; — no special flags.</p>
+<pre><code class="language-bash"># Start playground daemon
+nohup python3 smalltalk-daemon.py start &gt; /tmp/daemon.log 2&gt;&amp;1 &amp;
+</code></pre>
+<h3>Dev Mode</h3>
+<p>User supplies their own image/changes pair. Changes persist across sessions.
+User says: &quot;load Smalltalk skill in dev mode with ~/MyProject.image&quot;</p>
+<pre><code class="language-bash"># Start dev daemon with custom image
+nohup python3 smalltalk-daemon.py start --dev --image ~/MyProject.image &gt; /tmp/daemon.log 2&gt;&amp;1 &amp;
+</code></pre>
+<p>Dev mode sets <code>SMALLTALK_DEV_MODE=1</code> so the MCP server keeps the .changes file
+(instead of redirecting to /dev/null). The supplied image must have a matching
+.changes file alongside it.</p>
+<h3>Common Commands</h3>
+<pre><code class="language-bash"># Check status
+python3 smalltalk.py --daemon-status
+
+# Stop daemon
+python3 smalltalk-daemon.py stop
+
+# Restart in dev mode
+python3 smalltalk-daemon.py restart --dev --image ~/MyProject.image
+</code></pre>
 <h2>Commands</h2>
 <table>
 <thead>
@@ -137,6 +168,10 @@ python3 smalltalk.py delete-class Counter
 <td>Verify VM/image paths and dependencies</td>
 </tr>
 <tr>
+<td><code>--daemon-status</code></td>
+<td>Check if daemon is running</td>
+</tr>
+<tr>
 <td><code>--debug</code></td>
 <td>Debug hung system (sends SIGUSR1, captures stack trace)</td>
 </tr>
@@ -146,11 +181,11 @@ python3 smalltalk.py delete-class Counter
 </tr>
 <tr>
 <td><code>browse &lt;class&gt;</code></td>
-<td>Get class metadata (superclass, ivars, methods)</td>
+<td>Get class metadata (superclass, ivars, instance <code>methods</code> and <code>classMethods</code>)</td>
 </tr>
 <tr>
-<td><code>method-source &lt;class&gt; &lt;selector&gt;</code></td>
-<td>View method source code</td>
+<td><code>method-source &lt;class&gt; &lt;selector&gt; [--class-side]</code></td>
+<td>View method source code (supports <code>&quot;Class class&quot;</code> syntax or <code>--class-side</code> flag)</td>
 </tr>
 <tr>
 <td><code>define-class &lt;definition&gt;</code></td>
@@ -188,6 +223,26 @@ python3 smalltalk.py delete-class Counter
 <td><code>classes-in-category &lt;cat&gt;</code></td>
 <td>List classes in a category</td>
 </tr>
+<tr>
+<td><code>explain &lt;code&gt;</code></td>
+<td>Explain Smalltalk code (requires <code>ANTHROPIC_API_KEY</code> or <code>OPENAI_API_KEY</code>)</td>
+</tr>
+<tr>
+<td><code>explain-method &lt;class&gt; &lt;sel&gt; [--class-side] [--source &lt;code&gt;]</code></td>
+<td>Fetch method from image and explain it (or use <code>--source</code>/<code>--source-file</code>/<code>--source-stdin</code> to bypass daemon)</td>
+</tr>
+<tr>
+<td><code>audit-comment &lt;class&gt; &lt;sel&gt; [--class-side] [--source &lt;code&gt;]</code></td>
+<td>Audit method comment vs implementation (or use <code>--source</code>/<code>--source-file</code>/<code>--source-stdin</code> to bypass daemon)</td>
+</tr>
+<tr>
+<td><code>audit-class &lt;class&gt;</code></td>
+<td>Audit all methods in a class (instance + class side)</td>
+</tr>
+<tr>
+<td><code>generate-sunit &lt;targets&gt; [--force] [--class-name &lt;name&gt;]</code></td>
+<td>Generate SUnit tests for methods and file into image</td>
+</tr>
 </tbody></table>
 <h2>Environment Variables</h2>
 <table>
@@ -205,12 +260,71 @@ python3 smalltalk.py delete-class Counter
 <td><code>SQUEAK_IMAGE_PATH</code></td>
 <td>Path to Smalltalk image with MCP server</td>
 </tr>
+<tr>
+<td><code>ANTHROPIC_API_KEY</code></td>
+<td>API key for Anthropic Claude (preferred for LLM tools)</td>
+</tr>
+<tr>
+<td><code>ANTHROPIC_MODEL</code></td>
+<td>Anthropic model (default: <code>claude-opus-4-20250514</code>)</td>
+</tr>
+<tr>
+<td><code>OPENAI_API_KEY</code></td>
+<td>API key for OpenAI (fallback for LLM tools)</td>
+</tr>
+<tr>
+<td><code>OPENAI_MODEL</code></td>
+<td>OpenAI model (default: <code>gpt-4o</code>)</td>
+</tr>
+<tr>
+<td><code>LLM_PROVIDER</code></td>
+<td>Force LLM provider: <code>anthropic</code> or <code>openai</code> (auto-detected if not set)</td>
+</tr>
 </tbody></table>
+<h2>Using with Claude Code (MCP mode)</h2>
+<p>When Claude Code has a live Smalltalk image connected via MCP, <code>explain-method</code> and <code>audit-comment</code> can use pre-fetched source code instead of requiring a running daemon. Use <code>--source</code>, <code>--source-file</code>, or <code>--source-stdin</code> to pass the method source directly:</p>
+<pre><code class="language-bash"># Inline source (fetched via MCP, passed on command line)
+python3 smalltalk.py explain-method SmallInteger + --source &quot;+ aNumber &lt;primitive: 1&gt; ^ super + aNumber&quot;
+
+# Source from a file
+python3 smalltalk.py audit-comment Integer factorial --source-file /tmp/factorial.st
+
+# Source piped via stdin
+echo &quot;printString ^ self printStringLimitedTo: 50000&quot; | python3 smalltalk.py explain-method Object printString --source-stdin
+</code></pre>
+<p>The three source flags are mutually exclusive. When none is provided, the daemon is used as before.</p>
+<h2>Generating SUnit Tests</h2>
+<p>The <code>generate-sunit</code> command uses an LLM to generate SUnit test cases for Smalltalk methods and files them directly into the running image:</p>
+<pre><code class="language-bash"># Generate tests for a single method
+python3 smalltalk.py generate-sunit &quot;String&gt;&gt;asUppercase&quot;
+
+# Generate tests for multiple methods
+python3 smalltalk.py generate-sunit &quot;Random&gt;&gt;next&quot; &quot;Random&gt;&gt;nextInt:&quot; &quot;Random&gt;&gt;seed:&quot;
+
+# Generate tests for an entire class (all instance methods)
+python3 smalltalk.py generate-sunit &quot;OrderedCollection&quot;
+
+# Generate tests for class-side methods
+python3 smalltalk.py generate-sunit &quot;Date class&gt;&gt;today&quot;
+
+# Custom test class name
+python3 smalltalk.py generate-sunit &quot;String&gt;&gt;asUppercase&quot; --class-name MyStringTests
+
+# Overwrite existing test class
+python3 smalltalk.py generate-sunit &quot;String&gt;&gt;asUppercase&quot; --force
+
+# Run the generated tests
+python3 smalltalk.py evaluate &quot;StringGeneratedTest buildSuite run printString&quot;
+</code></pre>
+<p>The generated TestCase uses standard SUnit assertions (<code>assert:</code>, <code>assert:equals:</code>, <code>deny:</code>, <code>should:raise:</code>) and is filed into a <code>GeneratedSUnit-*</code> category.</p>
 <h2>Notes</h2>
 <ul>
 <li>Requires xvfb for headless operation on Linux servers</li>
 <li>Uses Squeak 6.0 MCP server (GUI stays responsive if display available)</li>
 <li><code>saveImage</code> intentionally excluded for safety</li>
+<li>MCPServer version 7+ required (v7 adds class-side method support)</li>
+<li>Playground mode: ephemeral, .changes → /dev/null</li>
+<li>Dev mode: persistent, .changes kept, requires <code>--dev --image PATH</code></li>
 </ul>
 
                 </div>

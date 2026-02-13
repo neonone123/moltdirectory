@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Tesla Fleet API: HVAC, charge controls, wake vehicle, OAuth flows">
+  <meta name="description" content="Use when integrating with Tesla's official Fleet API to read">
   <title>tesla-fleet-api - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/smart-home-iot/tesla-fleet-api/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,13 +45,13 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Smart Home & IoT</a>
+              <a href="/smart-home-iot/" class="back-link">← Back to Smart Home & IoT</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Smart Home & IoT</a>
+                <a href="/smart-home-iot/" class="skill-page-category">Smart Home & IoT</a>
                 <span class="skill-page-author">by @odrobnik</span>
               </div>
               <h1 class="skill-page-title">tesla-fleet-api</h1>
-              <p class="skill-page-desc">Tesla Fleet API: HVAC, charge controls, wake vehicle, OAuth flows</p>
+              <p class="skill-page-desc">Use when integrating with Tesla's official Fleet API to read</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -94,22 +95,38 @@
 <td><code>tesla_oauth_local.py</code></td>
 <td>OAuth helper with local callback server</td>
 </tr>
+<tr>
+<td><code>start_proxy.sh</code></td>
+<td>Start the signing proxy (for vehicle commands)</td>
+</tr>
+<tr>
+<td><code>stop_proxy.sh</code></td>
+<td>Stop the signing proxy</td>
+</tr>
 </tbody></table>
 <hr>
 <h2>Setup / Configuration</h2>
 <p>Setup is documented in <strong><code>SETUP.md</code></strong>:</p>
 <ul>
-<li><a href="SETUP.md">SETUP.md</a></li>
+<li><a href="https://github.com/openclaw/skills/blob/main/skills/odrobnik/tesla-fleet-api/SETUP.md">SETUP.md</a></li>
 </ul>
-<p>(It covers <code>.env</code>, <code>config.json</code>/<code>auth.json</code>, proxy setup, and key enrollment.)</p>
+<p>State directory: <code>{workspace}/tesla-fleet-api/</code></p>
+<ul>
+<li><code>config.json</code> (provider creds + non-token config)</li>
+<li><code>auth.json</code> (tokens)</li>
+<li><code>vehicles.json</code> (cached vehicle list)</li>
+<li><code>places.json</code> (named locations)</li>
+<li><code>proxy/</code> (TLS material for signing proxy)</li>
+</ul>
+<p>No <code>.env</code> file loading — credentials in <code>config.json</code> or environment variables.</p>
 <hr>
-<h2>command.py — Vehicle Commands</h2>
+<h2>command.py - Vehicle Commands</h2>
 <p>Execute commands on your Tesla. Vehicle is auto-selected if you only have one.</p>
 <h3>Usage</h3>
 <pre><code class="language-bash">command.py [VEHICLE] &lt;command&gt; [options]
 </code></pre>
 <ul>
-<li><code>VEHICLE</code> — Vehicle name or VIN (optional if single vehicle)</li>
+<li><code>VEHICLE</code> - Vehicle name or VIN (optional if single vehicle)</li>
 <li>Commands can be run without specifying vehicle: <code>command.py honk</code></li>
 <li>Or with vehicle name: <code>command.py flash honk</code> (vehicle &quot;flash&quot;, command &quot;honk&quot;)</li>
 </ul>
@@ -316,13 +333,13 @@ command.py wake                   # wake vehicle from sleep
 command.py flash flash            # flash lights on vehicle &quot;flash&quot;
 </code></pre>
 <hr>
-<h2>vehicle_data.py — Read Vehicle Data</h2>
+<h2>vehicle_data.py - Read Vehicle Data</h2>
 <p>Fetch vehicle data with human-readable output by default.</p>
 <h3>Usage</h3>
 <pre><code class="language-bash">vehicle_data.py [VEHICLE] [flags] [--json]
 </code></pre>
 <ul>
-<li><code>VEHICLE</code> — Vehicle name or VIN (optional if single vehicle)</li>
+<li><code>VEHICLE</code> - Vehicle name or VIN (optional if single vehicle)</li>
 <li>No flags = all data</li>
 <li><code>--json</code> = raw JSON output</li>
 </ul>
@@ -408,7 +425,7 @@ vehicle_data.py -c --json
   Climate:    Off
 </code></pre>
 <hr>
-<h2>auth.py — Authentication</h2>
+<h2>auth.py - Authentication</h2>
 <p>Manage OAuth tokens and configuration.</p>
 <h3>Usage</h3>
 <pre><code class="language-bash">auth.py &lt;command&gt; [options]
@@ -425,7 +442,7 @@ vehicle_data.py -c --json
 <h4>Refresh Tokens</h4>
 <pre><code class="language-bash">auth.py refresh
 </code></pre>
-<p>Refresh access token. Note: refresh tokens rotate — the new one is saved automatically.</p>
+<p>Refresh access token. Note: refresh tokens rotate - the new one is saved automatically.</p>
 <h4>Register Domain</h4>
 <pre><code class="language-bash">auth.py register --domain &lt;domain&gt;
 </code></pre>
@@ -463,7 +480,7 @@ auth.py config set \
   --ca-cert &quot;/path/to/tls-cert.pem&quot;
 </code></pre>
 <hr>
-<h2>tesla_fleet.py — List Vehicles</h2>
+<h2>tesla_fleet.py - List Vehicles</h2>
 <p>List vehicles with human-readable output.</p>
 <pre><code class="language-bash">python3 scripts/tesla_fleet.py vehicles
 python3 scripts/tesla_fleet.py vehicles --json
@@ -476,7 +493,7 @@ python3 scripts/tesla_fleet.py vehicles --json
 </code></pre>
 <hr>
 <h2>Configuration / Proxy / File layout</h2>
-<p>All setup + configuration is documented in <strong><a href="SETUP.md">SETUP.md</a></strong>.</p>
+<p>All setup + configuration is documented in <strong><a href="https://github.com/openclaw/skills/blob/main/skills/odrobnik/tesla-fleet-api/SETUP.md">SETUP.md</a></strong>.</p>
 <hr>
 <h2>Regional Base URLs</h2>
 <table>
@@ -509,10 +526,7 @@ python3 scripts/tesla_fleet.py vehicles --json
 <pre><code class="language-bash">command.py wake
 </code></pre>
 <h3>&quot;command not signed&quot; / &quot;vehicle rejected&quot;</h3>
-<p>Ensure the proxy is running and configured:</p>
-<pre><code class="language-bash">./scripts/start_proxy.sh &lt;private-key.pem&gt;
-auth.py config set --base-url &quot;https://localhost:4443&quot; --ca-cert &quot;&lt;tls-cert.pem&gt;&quot;
-</code></pre>
+<p>Ensure the signing proxy is running and configured. See <a href="https://github.com/openclaw/skills/blob/main/skills/odrobnik/tesla-fleet-api/SETUP.md">SETUP.md</a> § Proxy Setup.</p>
 <h3>Token expired</h3>
 <pre><code class="language-bash">auth.py refresh
 </code></pre>

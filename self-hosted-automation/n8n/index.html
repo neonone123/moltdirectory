@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Manage n8n workflows and automations via API">
   <title>n8n - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/self-hosted-automation/n8n/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,9 +45,9 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Self-Hosted & Automation</a>
+              <a href="/self-hosted-automation/" class="back-link">← Back to Self-Hosted & Automation</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Self-Hosted & Automation</a>
+                <a href="/self-hosted-automation/" class="skill-page-category">Self-Hosted & Automation</a>
                 <span class="skill-page-author">by @thomasansems</span>
               </div>
               <h1 class="skill-page-title">n8n</h1>
@@ -65,53 +66,141 @@
                 </div>
                 <div class="markdown-content">
                   <h1>n8n Workflow Management</h1>
-<p>Interact with n8n automation platform via REST API.</p>
-<h2>Setup</h2>
-<p><strong>First-time setup:</strong></p>
+<p>Comprehensive workflow automation management for n8n platform with creation, testing, execution monitoring, and performance optimization capabilities.</p>
+<h2>⚠️ CRITICAL: Workflow Creation Rules</h2>
+<p><strong>When creating n8n workflows, ALWAYS:</strong></p>
 <ol>
-<li>API key must be stored in environment:</li>
+<li>✅ <strong>Generate COMPLETE workflows</strong> with all functional nodes</li>
+<li>✅ <strong>Include actual HTTP Request nodes</strong> for API calls (ImageFX, Gemini, Veo, Suno, etc.)</li>
+<li>✅ <strong>Add Code nodes</strong> for data transformation and logic</li>
+<li>✅ <strong>Create proper connections</strong> between all nodes</li>
+<li>✅ <strong>Use real node types</strong> (n8n-nodes-base.httpRequest, n8n-nodes-base.code, n8n-nodes-base.set)</li>
 </ol>
-<pre><code class="language-bash">export N8N_API_KEY=&quot;your-api-key-here&quot;
+<p><strong>NEVER:</strong></p>
+<ul>
+<li>❌ Create &quot;Setup Instructions&quot; placeholder nodes</li>
+<li>❌ Generate workflows with only TODO comments</li>
+<li>❌ Make incomplete workflows requiring manual node addition</li>
+<li>❌ Use text-only nodes as substitutes for real functionality</li>
+</ul>
+<p><strong>Example GOOD workflow:</strong></p>
+<pre><code>Manual Trigger → Set Config → HTTP Request (API call) → Code (parse) → Response
 </code></pre>
-<ol start="2">
-<li>Verify connection:</li>
-</ol>
+<p><strong>Example BAD workflow:</strong></p>
+<pre><code>Manual Trigger → Code (&quot;Add HTTP nodes here, configure APIs...&quot;)
+</code></pre>
+<p>Always build the complete, functional workflow with all necessary nodes configured and connected.</p>
+<h2>Setup</h2>
+<p><strong>Required environment variables:</strong></p>
+<ul>
+<li><code>N8N_API_KEY</code> — Your n8n API key (Settings → API in the n8n UI)</li>
+<li><code>N8N_BASE_URL</code> — Your n8n instance URL</li>
+</ul>
+<p><strong>Configure credentials via OpenClaw settings:</strong></p>
+<p>Add to <code>~/.config/openclaw/settings.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;skills&quot;: {
+    &quot;n8n&quot;: {
+      &quot;env&quot;: {
+        &quot;N8N_API_KEY&quot;: &quot;your-api-key-here&quot;,
+        &quot;N8N_BASE_URL&quot;: &quot;your-n8n-url-here&quot;
+      }
+    }
+  }
+}
+</code></pre>
+<p>Or set per-session (do <strong>not</strong> persist secrets in shell rc files):</p>
+<pre><code class="language-bash">export N8N_API_KEY=&quot;your-api-key-here&quot;
+export N8N_BASE_URL=&quot;your-n8n-url-here&quot;
+</code></pre>
+<p><strong>Verify connection:</strong></p>
 <pre><code class="language-bash">python3 scripts/n8n_api.py list-workflows --pretty
 </code></pre>
-<p>For persistent storage, add to <code>~/.bashrc</code> or <code>~/.zshrc</code>:</p>
-<pre><code class="language-bash">echo &#39;export N8N_API_KEY=&quot;your-key&quot;&#39; &gt;&gt; ~/.bashrc
-</code></pre>
+<blockquote>
+<p><strong>Security note:</strong> Never store API keys in plaintext shell config files (<code>~/.bashrc</code>, <code>~/.zshrc</code>). Use the OpenClaw settings file or a secure secret manager.</p>
+</blockquote>
 <h2>Quick Reference</h2>
-<h3>List Workflows</h3>
+<h3>Workflow Management</h3>
+<h4>List Workflows</h4>
 <pre><code class="language-bash">python3 scripts/n8n_api.py list-workflows --pretty
 python3 scripts/n8n_api.py list-workflows --active true --pretty
 </code></pre>
-<h3>Get Workflow Details</h3>
+<h4>Get Workflow Details</h4>
 <pre><code class="language-bash">python3 scripts/n8n_api.py get-workflow --id &lt;workflow-id&gt; --pretty
 </code></pre>
-<h3>Activate/Deactivate</h3>
+<h4>Create Workflows</h4>
+<pre><code class="language-bash"># From JSON file
+python3 scripts/n8n_api.py create --from-file workflow.json
+</code></pre>
+<h4>Activate/Deactivate</h4>
 <pre><code class="language-bash">python3 scripts/n8n_api.py activate --id &lt;workflow-id&gt;
 python3 scripts/n8n_api.py deactivate --id &lt;workflow-id&gt;
 </code></pre>
-<h3>Executions</h3>
-<pre><code class="language-bash"># List recent executions
+<h3>Testing &amp; Validation</h3>
+<h4>Validate Workflow Structure</h4>
+<pre><code class="language-bash"># Validate existing workflow
+python3 scripts/n8n_tester.py validate --id &lt;workflow-id&gt;
+
+# Validate from file
+python3 scripts/n8n_tester.py validate --file workflow.json --pretty
+
+# Generate validation report
+python3 scripts/n8n_tester.py report --id &lt;workflow-id&gt;
+</code></pre>
+<h4>Dry Run Testing</h4>
+<pre><code class="language-bash"># Test with data
+python3 scripts/n8n_tester.py dry-run --id &lt;workflow-id&gt; --data &#39;{&quot;email&quot;: &quot;test@example.com&quot;}&#39;
+
+# Test with data file
+python3 scripts/n8n_tester.py dry-run --id &lt;workflow-id&gt; --data-file test-data.json
+
+# Full test report (validation + dry run)
+python3 scripts/n8n_tester.py dry-run --id &lt;workflow-id&gt; --data-file test.json --report
+</code></pre>
+<h4>Test Suite</h4>
+<pre><code class="language-bash"># Run multiple test cases
+python3 scripts/n8n_tester.py test-suite --id &lt;workflow-id&gt; --test-suite test-cases.json
+</code></pre>
+<h3>Execution Monitoring</h3>
+<h4>List Executions</h4>
+<pre><code class="language-bash"># Recent executions (all workflows)
 python3 scripts/n8n_api.py list-executions --limit 10 --pretty
 
-# Get execution details
-python3 scripts/n8n_api.py get-execution --id &lt;execution-id&gt; --pretty
-
-# Filter by workflow
+# Specific workflow executions
 python3 scripts/n8n_api.py list-executions --id &lt;workflow-id&gt; --limit 20 --pretty
 </code></pre>
-<h3>Manual Execution</h3>
+<h4>Get Execution Details</h4>
+<pre><code class="language-bash">python3 scripts/n8n_api.py get-execution --id &lt;execution-id&gt; --pretty
+</code></pre>
+<h4>Manual Execution</h4>
 <pre><code class="language-bash"># Trigger workflow
 python3 scripts/n8n_api.py execute --id &lt;workflow-id&gt;
 
-# With data
+# Execute with data
 python3 scripts/n8n_api.py execute --id &lt;workflow-id&gt; --data &#39;{&quot;key&quot;: &quot;value&quot;}&#39;
 </code></pre>
+<h3>Performance Optimization</h3>
+<h4>Analyze Performance</h4>
+<pre><code class="language-bash"># Full performance analysis
+python3 scripts/n8n_optimizer.py analyze --id &lt;workflow-id&gt; --pretty
+
+# Analyze specific period
+python3 scripts/n8n_optimizer.py analyze --id &lt;workflow-id&gt; --days 30 --pretty
+</code></pre>
+<h4>Get Optimization Suggestions</h4>
+<pre><code class="language-bash"># Priority-ranked suggestions
+python3 scripts/n8n_optimizer.py suggest --id &lt;workflow-id&gt; --pretty
+</code></pre>
+<h4>Generate Optimization Report</h4>
+<pre><code class="language-bash"># Human-readable report with metrics, bottlenecks, and suggestions
+python3 scripts/n8n_optimizer.py report --id &lt;workflow-id&gt;
+</code></pre>
+<h4>Get Workflow Statistics</h4>
+<pre><code class="language-bash"># Execution statistics
+python3 scripts/n8n_api.py stats --id &lt;workflow-id&gt; --days 7 --pretty
+</code></pre>
 <h2>Python API</h2>
-<p>For programmatic access:</p>
+<h3>Basic Usage</h3>
 <pre><code class="language-python">from scripts.n8n_api import N8nClient
 
 client = N8nClient()
@@ -121,6 +210,13 @@ workflows = client.list_workflows(active=True)
 
 # Get workflow
 workflow = client.get_workflow(&#39;workflow-id&#39;)
+
+# Create workflow
+new_workflow = client.create_workflow({
+    &#39;name&#39;: &#39;My Workflow&#39;,
+    &#39;nodes&#39;: [...],
+    &#39;connections&#39;: {...}
+})
 
 # Activate/deactivate
 client.activate_workflow(&#39;workflow-id&#39;)
@@ -133,45 +229,302 @@ execution = client.get_execution(&#39;execution-id&#39;)
 # Execute workflow
 result = client.execute_workflow(&#39;workflow-id&#39;, data={&#39;key&#39;: &#39;value&#39;})
 </code></pre>
-<h2>Common Tasks</h2>
-<h3>Debug Failed Workflows</h3>
+<h3>Validation &amp; Testing</h3>
+<pre><code class="language-python">from scripts.n8n_api import N8nClient
+from scripts.n8n_tester import WorkflowTester
+
+client = N8nClient()
+tester = WorkflowTester(client)
+
+# Validate workflow
+validation = tester.validate_workflow(workflow_id=&#39;123&#39;)
+print(f&quot;Valid: {validation[&#39;valid&#39;]}&quot;)
+print(f&quot;Errors: {validation[&#39;errors&#39;]}&quot;)
+print(f&quot;Warnings: {validation[&#39;warnings&#39;]}&quot;)
+
+# Dry run
+result = tester.dry_run(
+    workflow_id=&#39;123&#39;,
+    test_data={&#39;email&#39;: &#39;test@example.com&#39;}
+)
+print(f&quot;Status: {result[&#39;status&#39;]}&quot;)
+
+# Test suite
+test_cases = [
+    {&#39;name&#39;: &#39;Test 1&#39;, &#39;input&#39;: {...}, &#39;expected&#39;: {...}},
+    {&#39;name&#39;: &#39;Test 2&#39;, &#39;input&#39;: {...}, &#39;expected&#39;: {...}}
+]
+results = tester.test_suite(&#39;123&#39;, test_cases)
+print(f&quot;Passed: {results[&#39;passed&#39;]}/{results[&#39;total_tests&#39;]}&quot;)
+
+# Generate report
+report = tester.generate_test_report(validation, result)
+print(report)
+</code></pre>
+<h3>Performance Optimization</h3>
+<pre><code class="language-python">from scripts.n8n_optimizer import WorkflowOptimizer
+
+optimizer = WorkflowOptimizer()
+
+# Analyze performance
+analysis = optimizer.analyze_performance(&#39;workflow-id&#39;, days=7)
+print(f&quot;Performance Score: {analysis[&#39;performance_score&#39;]}/100&quot;)
+print(f&quot;Health: {analysis[&#39;execution_metrics&#39;][&#39;health&#39;]}&quot;)
+
+# Get suggestions
+suggestions = optimizer.suggest_optimizations(&#39;workflow-id&#39;)
+print(f&quot;Priority Actions: {len(suggestions[&#39;priority_actions&#39;])}&quot;)
+print(f&quot;Quick Wins: {len(suggestions[&#39;quick_wins&#39;])}&quot;)
+
+# Generate report
+report = optimizer.generate_optimization_report(analysis)
+print(report)
+</code></pre>
+<h2>Common Workflows</h2>
+<h3>1. Validate and Test Workflow</h3>
+<pre><code class="language-bash"># Validate workflow structure
+python3 scripts/n8n_tester.py validate --id &lt;workflow-id&gt; --pretty
+
+# Test with sample data
+python3 scripts/n8n_tester.py dry-run --id &lt;workflow-id&gt; \
+  --data &#39;{&quot;email&quot;: &quot;test@example.com&quot;, &quot;name&quot;: &quot;Test User&quot;}&#39;
+
+# If tests pass, activate
+python3 scripts/n8n_api.py activate --id &lt;workflow-id&gt;
+</code></pre>
+<h3>2. Debug Failed Workflow</h3>
+<pre><code class="language-bash"># Check recent executions
+python3 scripts/n8n_api.py list-executions --id &lt;workflow-id&gt; --limit 10 --pretty
+
+# Get specific execution details
+python3 scripts/n8n_api.py get-execution --id &lt;execution-id&gt; --pretty
+
+# Validate workflow structure
+python3 scripts/n8n_tester.py validate --id &lt;workflow-id&gt;
+
+# Generate test report
+python3 scripts/n8n_tester.py report --id &lt;workflow-id&gt;
+
+# Check for optimization issues
+python3 scripts/n8n_optimizer.py report --id &lt;workflow-id&gt;
+</code></pre>
+<h3>3. Optimize Workflow Performance</h3>
+<pre><code class="language-bash"># Analyze current performance
+python3 scripts/n8n_optimizer.py analyze --id &lt;workflow-id&gt; --days 30 --pretty
+
+# Get actionable suggestions
+python3 scripts/n8n_optimizer.py suggest --id &lt;workflow-id&gt; --pretty
+
+# Generate comprehensive report
+python3 scripts/n8n_optimizer.py report --id &lt;workflow-id&gt;
+
+# Review execution statistics
+python3 scripts/n8n_api.py stats --id &lt;workflow-id&gt; --days 30 --pretty
+
+# Test optimizations with dry run
+python3 scripts/n8n_tester.py dry-run --id &lt;workflow-id&gt; --data-file test-data.json
+</code></pre>
+<h3>4. Monitor Workflow Health</h3>
+<pre><code class="language-bash"># Check active workflows
+python3 scripts/n8n_api.py list-workflows --active true --pretty
+
+# Review recent execution status
+python3 scripts/n8n_api.py list-executions --limit 20 --pretty
+
+# Get statistics for each critical workflow
+python3 scripts/n8n_api.py stats --id &lt;workflow-id&gt; --pretty
+
+# Generate health reports
+python3 scripts/n8n_optimizer.py report --id &lt;workflow-id&gt;
+</code></pre>
+<h2>Validation Checks</h2>
+<p>The testing module performs comprehensive validation:</p>
+<h3>Structure Validation</h3>
+<ul>
+<li>✓ Required fields present (nodes, connections)</li>
+<li>✓ All nodes have names and types</li>
+<li>✓ Connection targets exist</li>
+<li>✓ No disconnected nodes (warning)</li>
+</ul>
+<h3>Configuration Validation</h3>
+<ul>
+<li>✓ Nodes requiring credentials are configured</li>
+<li>✓ Required parameters are set</li>
+<li>✓ HTTP nodes have URLs</li>
+<li>✓ Webhook nodes have paths</li>
+<li>✓ Email nodes have content</li>
+</ul>
+<h3>Flow Validation</h3>
+<ul>
+<li>✓ Workflow has trigger nodes</li>
+<li>✓ Proper execution flow</li>
+<li>✓ No circular dependencies</li>
+<li>✓ End nodes identified</li>
+</ul>
+<h2>Optimization Analysis</h2>
+<p>The optimizer analyzes multiple dimensions:</p>
+<h3>Execution Metrics</h3>
+<ul>
+<li>Total executions</li>
+<li>Success/failure rates</li>
+<li>Health status (excellent/good/fair/poor)</li>
+<li>Error patterns</li>
+</ul>
+<h3>Performance Metrics</h3>
+<ul>
+<li>Node count and complexity</li>
+<li>Connection patterns</li>
+<li>Expensive operations (API calls, database queries)</li>
+<li>Parallel execution opportunities</li>
+</ul>
+<h3>Bottleneck Detection</h3>
+<ul>
+<li>Sequential expensive operations</li>
+<li>High failure rates</li>
+<li>Missing error handling</li>
+<li>Rate limit issues</li>
+</ul>
+<h3>Optimization Opportunities</h3>
+<ul>
+<li><strong>Parallel Execution:</strong> Identify nodes that can run concurrently</li>
+<li><strong>Caching:</strong> Suggest caching for repeated API calls</li>
+<li><strong>Batch Processing:</strong> Recommend batching for large datasets</li>
+<li><strong>Error Handling:</strong> Add error recovery mechanisms</li>
+<li><strong>Complexity Reduction:</strong> Split complex workflows</li>
+<li><strong>Timeout Settings:</strong> Configure execution limits</li>
+</ul>
+<h2>Performance Scoring</h2>
+<p>Workflows receive a performance score (0-100) based on:</p>
+<ul>
+<li><strong>Success Rate:</strong> Higher is better (50% weight)</li>
+<li><strong>Complexity:</strong> Lower is better (30% weight)</li>
+<li><strong>Bottlenecks:</strong> Fewer is better (critical: -20, high: -10, medium: -5)</li>
+<li><strong>Optimizations:</strong> Implemented best practices (+5 each)</li>
+</ul>
+<p>Score interpretation:</p>
+<ul>
+<li><strong>90-100:</strong> Excellent - Well-optimized</li>
+<li><strong>70-89:</strong> Good - Minor improvements possible</li>
+<li><strong>50-69:</strong> Fair - Optimization recommended</li>
+<li><strong>0-49:</strong> Poor - Significant issues</li>
+</ul>
+<h2>Best Practices</h2>
+<h3>Development</h3>
 <ol>
-<li>List recent executions with failures</li>
-<li>Get execution details to see error</li>
-<li>Check workflow configuration</li>
-<li>Deactivate if needed</li>
+<li><strong>Plan Structure:</strong> Design workflow nodes and connections before building</li>
+<li><strong>Validate First:</strong> Always validate before deployment</li>
+<li><strong>Test Thoroughly:</strong> Use dry-run with multiple test cases</li>
+<li><strong>Error Handling:</strong> Add error nodes for reliability</li>
+<li><strong>Documentation:</strong> Comment complex logic in Code nodes</li>
 </ol>
-<h3>Monitor Workflow Health</h3>
+<h3>Testing</h3>
 <ol>
-<li>List active workflows</li>
-<li>Check recent execution status</li>
-<li>Review error patterns</li>
+<li><strong>Sample Data:</strong> Create realistic test data files</li>
+<li><strong>Edge Cases:</strong> Test boundary conditions and errors</li>
+<li><strong>Incremental:</strong> Test each node addition</li>
+<li><strong>Regression:</strong> Retest after changes</li>
+<li><strong>Production-like:</strong> Use staging environment that mirrors production</li>
 </ol>
-<h3>Workflow Management</h3>
+<h3>Deployment</h3>
 <ol>
-<li>List all workflows</li>
-<li>Review active/inactive status</li>
-<li>Activate/deactivate as needed</li>
-<li>Delete old workflows</li>
+<li><strong>Inactive First:</strong> Deploy workflows in inactive state</li>
+<li><strong>Gradual Rollout:</strong> Test with limited traffic initially</li>
+<li><strong>Monitor Closely:</strong> Watch first executions carefully</li>
+<li><strong>Quick Rollback:</strong> Be ready to deactivate if issues arise</li>
+<li><strong>Document Changes:</strong> Keep changelog of modifications</li>
 </ol>
-<h2>API Reference</h2>
-<p>For detailed API documentation, see <a href="references/api.md">references/api.md</a>.</p>
+<h3>Optimization</h3>
+<ol>
+<li><strong>Baseline Metrics:</strong> Capture performance before changes</li>
+<li><strong>One Change at a Time:</strong> Isolate optimization impacts</li>
+<li><strong>Measure Results:</strong> Compare before/after metrics</li>
+<li><strong>Regular Reviews:</strong> Schedule monthly optimization reviews</li>
+<li><strong>Cost Awareness:</strong> Monitor API usage and execution costs</li>
+</ol>
+<h3>Maintenance</h3>
+<ol>
+<li><strong>Health Checks:</strong> Weekly execution statistics review</li>
+<li><strong>Error Analysis:</strong> Investigate failure patterns</li>
+<li><strong>Performance Monitoring:</strong> Track execution times</li>
+<li><strong>Credential Rotation:</strong> Update credentials regularly</li>
+<li><strong>Cleanup:</strong> Archive or delete unused workflows</li>
+</ol>
 <h2>Troubleshooting</h2>
-<p><strong>Authentication error:</strong></p>
+<h3>Authentication Error</h3>
+<pre><code>Error: N8N_API_KEY not found in environment
+</code></pre>
+<p><strong>Solution:</strong> Set environment variable:</p>
+<pre><code class="language-bash">export N8N_API_KEY=&quot;your-api-key&quot;
+</code></pre>
+<h3>Connection Error</h3>
+<pre><code>Error: HTTP 401: Unauthorized
+</code></pre>
+<p><strong>Solution:</strong> </p>
+<ol>
+<li>Verify API key is correct</li>
+<li>Check N8N_BASE_URL is set correctly</li>
+<li>Confirm API access is enabled in n8n</li>
+</ol>
+<h3>Validation Errors</h3>
+<pre><code>Validation failed: Node missing &#39;name&#39; field
+</code></pre>
+<p><strong>Solution:</strong> Check workflow JSON structure, ensure all required fields present</p>
+<h3>Execution Timeout</h3>
+<pre><code>Status: timeout - Execution did not complete
+</code></pre>
+<p><strong>Solution:</strong> </p>
+<ol>
+<li>Check workflow for infinite loops</li>
+<li>Reduce dataset size for testing</li>
+<li>Optimize expensive operations</li>
+<li>Set execution timeout in workflow settings</li>
+</ol>
+<h3>Rate Limiting</h3>
+<pre><code>Error: HTTP 429: Too Many Requests
+</code></pre>
+<p><strong>Solution:</strong></p>
+<ol>
+<li>Add Wait nodes between API calls</li>
+<li>Implement exponential backoff</li>
+<li>Use batch processing</li>
+<li>Check API rate limits</li>
+</ol>
+<h3>Missing Credentials</h3>
+<pre><code>Warning: Node &#39;HTTP_Request&#39; may require credentials
+</code></pre>
+<p><strong>Solution:</strong></p>
+<ol>
+<li>Configure credentials in n8n UI</li>
+<li>Assign credentials to node</li>
+<li>Test connection before activating</li>
+</ol>
+<h2>File Structure</h2>
+<pre><code>~/clawd/skills/n8n/
+├── SKILL.md                    # This file
+├── scripts/
+│   ├── n8n_api.py             # Core API client (extended)
+│   ├── n8n_tester.py          # Testing &amp; validation
+│   └── n8n_optimizer.py       # Performance optimization
+└── references/
+    └── api.md                 # n8n API reference
+</code></pre>
+<h2>API Reference</h2>
+<p>For detailed n8n REST API documentation, see <a href="https://github.com/openclaw/skills/blob/main/skills/thomasansems/n8n/references/api.md">references/api.md</a> or visit:
+<a href="https://docs.n8n.io/api/">https://docs.n8n.io/api/</a></p>
+<h2>Support</h2>
+<p><strong>Documentation:</strong></p>
 <ul>
-<li>Verify N8N_API_KEY is set: <code>echo $N8N_API_KEY</code></li>
-<li>Check API key is valid in n8n UI</li>
+<li>n8n Official Docs: <a href="https://docs.n8n.io">https://docs.n8n.io</a></li>
+<li>n8n Community Forum: <a href="https://community.n8n.io">https://community.n8n.io</a></li>
+<li>n8n API Reference: <a href="https://docs.n8n.io/api/">https://docs.n8n.io/api/</a></li>
 </ul>
-<p><strong>Connection error:</strong></p>
-<ul>
-<li>Check N8N_BASE_URL if using custom URL</li>
-</ul>
-<p><strong>Command errors:</strong></p>
-<ul>
-<li>Use <code>--pretty</code> flag for readable output</li>
-<li>Check <code>--id</code> is provided when required</li>
-<li>Validate JSON format for <code>--data</code> parameter</li>
-</ul>
+<p><strong>Debugging:</strong></p>
+<ol>
+<li>Use validation: <code>python3 scripts/n8n_tester.py validate --id &lt;workflow-id&gt;</code></li>
+<li>Check execution logs: <code>python3 scripts/n8n_api.py get-execution --id &lt;execution-id&gt;</code></li>
+<li>Review optimization report: <code>python3 scripts/n8n_optimizer.py report --id &lt;workflow-id&gt;</code></li>
+<li>Test with dry-run: <code>python3 scripts/n8n_tester.py dry-run --id &lt;workflow-id&gt; --data-file test.json</code></li>
+</ol>
 
                 </div>
               </div>

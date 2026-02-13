@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Read and manage email via IMAP (ProtonMail, Gmail, etc.)">
+  <meta name="description" content="Read and manage email via IMAP (ProtonMail Bridge, Gmail, etc.)">
   <title>imap-email - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/productivity-tasks/imap-email/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,13 +45,13 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Productivity & Tasks</a>
+              <a href="/productivity-tasks/" class="back-link">← Back to Productivity & Tasks</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Productivity & Tasks</a>
+                <a href="/productivity-tasks/" class="skill-page-category">Productivity & Tasks</a>
                 <span class="skill-page-author">by @mvarrieur</span>
               </div>
               <h1 class="skill-page-title">imap-email</h1>
-              <p class="skill-page-desc">Read and manage email via IMAP (ProtonMail, Gmail, etc.)</p>
+              <p class="skill-page-desc">Read and manage email via IMAP (ProtonMail Bridge, Gmail, etc.)</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -80,7 +81,18 @@
 <pre><code class="language-bash">node skills/imap-email/scripts/imap.js search --from &quot;sender@example.com&quot; --unseen
 </code></pre>
 <h2>Configuration</h2>
-<p>Create <code>.env</code> in the skill folder or set environment variables:</p>
+<p><strong>Quick setup (ProtonMail Bridge):</strong></p>
+<pre><code class="language-bash">cd skills/imap-email
+./setup.sh
+</code></pre>
+<p>The setup helper will prompt for Bridge credentials and test the connection.</p>
+<p><strong>Manual setup:</strong></p>
+<ol>
+<li>Copy <code>.env.example</code> to <code>.env</code> in the skill folder</li>
+<li>Fill in your IMAP credentials</li>
+<li>The <code>.env</code> file is automatically ignored by git</li>
+</ol>
+<p><strong>Environment variables:</strong></p>
 <pre><code class="language-bash">IMAP_HOST=127.0.0.1          # Server hostname
 IMAP_PORT=1143               # Server port
 IMAP_USER=your@email.com
@@ -89,6 +101,7 @@ IMAP_TLS=false               # Use TLS/SSL connection
 IMAP_REJECT_UNAUTHORIZED=false  # Set to false for self-signed certs (optional)
 IMAP_MAILBOX=INBOX           # Default mailbox
 </code></pre>
+<p><strong>⚠️ Security:</strong> Never commit your <code>.env</code> file! It&#39;s already in <code>.gitignore</code> to prevent accidents.</p>
 <p><strong>ProtonMail Bridge setup:</strong></p>
 <ul>
 <li>Install and run ProtonMail Bridge</li>
@@ -197,13 +210,12 @@ clawdbot cron add \
 <li>Generate weekly report</li>
 </ol>
 <h2>Dependencies</h2>
-<p>Install in skill folder:</p>
+<p><strong>Required packages:</strong> imap-simple, mailparser, dotenv</p>
+<p><strong>Installation:</strong></p>
 <pre><code class="language-bash">cd skills/imap-email
-npm install imap-simple dotenv
+npm install
 </code></pre>
-<p>Or install globally:</p>
-<pre><code class="language-bash">npm install -g imap-simple dotenv
-</code></pre>
+<p>This will install all dependencies listed in <code>package.json</code>.</p>
 <h2>Security Notes</h2>
 <ul>
 <li>Store credentials in <code>.env</code> (add to <code>.gitignore</code>)</li>

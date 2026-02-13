@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Swiss phone directory lookup via search.ch API">
   <title>swiss-phone-directory - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/transportation/swiss-phone-directory/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,9 +45,9 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Transportation</a>
+              <a href="/transportation/" class="back-link">← Back to Transportation</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Transportation</a>
+                <a href="/transportation/" class="skill-page-category">Transportation</a>
                 <span class="skill-page-author">by @xenofex7</span>
               </div>
               <h1 class="skill-page-title">swiss-phone-directory</h1>
@@ -109,15 +110,29 @@ python3 scripts/searchch.py search &quot;Bäckerei&quot; -l &quot;SG&quot;
 <li><strong>Name</strong> - Business or person name</li>
 <li><strong>Type</strong> - Organisation or Person</li>
 <li><strong>Address</strong> - Street, ZIP, city, canton</li>
-<li><strong>Phone</strong> - Phone number(s)</li>
-<li><strong>Fax</strong> - Fax number</li>
+<li><strong>Phone</strong> - Clickable tel: link (e.g., <code>[044 123 45 67](tel:+41441234567)</code>)</li>
+<li><strong>Fax</strong> - Clickable tel: link</li>
 <li><strong>Email</strong> - Email address</li>
 <li><strong>Website</strong> - Website URL</li>
 <li><strong>Categories</strong> - Business categories</li>
 </ul>
+<h3>Clickable Phone Numbers 📞</h3>
+<p>Phone numbers are automatically formatted as Markdown links with <code>tel:</code> protocol:</p>
+<pre><code>📞 [044 123 45 67](tel:+41441234567)
+</code></pre>
+<p>This enables <strong>one-tap calling</strong> on mobile devices (Telegram, Signal, WhatsApp, etc.).</p>
+<p>To disable clickable links, use <code>--no-clickable</code>.</p>
 <h2>Configuration</h2>
-<p>See <a href="references/configuration.md">references/configuration.md</a> for setup.</p>
-<p>Required: <code>SEARCHCH_API_KEY</code> environment variable.</p>
+<h3>Get an API Key (free)</h3>
+<ol>
+<li><strong>Request a key:</strong> <a href="https://search.ch/tel/api/getkey.en.html">https://search.ch/tel/api/getkey.en.html</a></li>
+<li>Fill out the form (name, email, use case)</li>
+<li><strong>Approval:</strong> ~10-15 minutes, key arrives via email</li>
+</ol>
+<h3>Set the Environment Variable</h3>
+<pre><code class="language-bash">export SEARCHCH_API_KEY=&quot;your-api-key-here&quot;
+</code></pre>
+<p>For permanent setup, see <a href="https://github.com/openclaw/skills/blob/main/skills/xenofex7/swiss-phone-directory/references/configuration.md">references/configuration.md</a>.</p>
 <h2>API Reference</h2>
 <ul>
 <li>Base URL: <code>https://search.ch/tel/api/</code></li>

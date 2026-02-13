@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Local RAG system for agent memory using ChromaDB">
+  <title>jasper-recall - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/ai-llms/jasper-recall/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+
+        <span class="logo-text">OpenClaw Directory</span>
+      </a>
+      <nav class="header-links">
+        <a href="/start-here/" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="/ai-llms/" class="back-link">← Back to AI & LLMs</a>
+              <div class="skill-page-meta">
+                <a href="/ai-llms/" class="skill-page-category">AI & LLMs</a>
+                <span class="skill-page-author">by @emberdesire</span>
+              </div>
+              <h1 class="skill-page-title">jasper-recall</h1>
+              <p class="skill-page-desc">Local RAG system for agent memory using ChromaDB</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Jasper Recall v0.2.3</h1>
+<p>Local RAG (Retrieval-Augmented Generation) system for AI agent memory. Gives your agent the ability to remember and search past conversations.</p>
+<p><strong>New in v0.2.2:</strong> Shared ChromaDB Collections — separate collections for private, shared, and learnings content. Better isolation for multi-agent setups.</p>
+<p><strong>New in v0.2.1:</strong> Recall Server — HTTP API for Docker-isolated agents that can&#39;t run CLI directly.</p>
+<p><strong>New in v0.2.0:</strong> Shared Agent Memory — bidirectional learning between main and sandboxed agents with privacy controls.</p>
+<h2>When to Use</h2>
+<ul>
+<li><strong>Memory recall</strong>: Search past sessions for context before answering</li>
+<li><strong>Continuous learning</strong>: Index daily notes and decisions for future reference</li>
+<li><strong>Session continuity</strong>: Remember what happened across restarts</li>
+<li><strong>Knowledge base</strong>: Build searchable documentation from your agent&#39;s experience</li>
+</ul>
+<h2>Quick Start</h2>
+<h3>Setup</h3>
+<p>One command installs everything:</p>
+<pre><code class="language-bash">npx jasper-recall setup
+</code></pre>
+<p>This creates:</p>
+<ul>
+<li>Python venv at <code>~/.openclaw/rag-env</code></li>
+<li>ChromaDB database at <code>~/.openclaw/chroma-db</code></li>
+<li>CLI scripts in <code>~/.local/bin/</code></li>
+<li>OpenClaw plugin config in <code>openclaw.json</code></li>
+</ul>
+<h3>Why Python?</h3>
+<p>The core search and embedding functionality uses Python libraries:</p>
+<ul>
+<li><strong>ChromaDB</strong> — Vector database for semantic search</li>
+<li><strong>sentence-transformers</strong> — Local embedding models (no API needed)</li>
+</ul>
+<p>These are the gold standard for local RAG. There are no good Node.js equivalents that work fully offline.</p>
+<h3>Why a Separate Venv?</h3>
+<p>The venv at <code>~/.openclaw/rag-env</code> provides:</p>
+<table>
+<thead>
+<tr>
+<th>Benefit</th>
+<th>Why It Matters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Isolation</strong></td>
+<td>Won&#39;t conflict with your other Python projects</td>
+</tr>
+<tr>
+<td><strong>No sudo</strong></td>
+<td>Installs to your home directory, no root needed</td>
+</tr>
+<tr>
+<td><strong>Clean uninstall</strong></td>
+<td>Delete the folder and it&#39;s gone</td>
+</tr>
+<tr>
+<td><strong>Reproducibility</strong></td>
+<td>Same versions everywhere</td>
+</tr>
+</tbody></table>
+<p>The dependencies are heavy (~200MB total with the embedding model), but this is a one-time download that runs entirely locally.</p>
+<h3>Basic Usage</h3>
+<p><strong>Search your memory:</strong></p>
+<pre><code class="language-bash">recall &quot;what did we decide about the API design&quot;
+recall &quot;hopeIDS patterns&quot; --limit 10
+recall &quot;meeting notes&quot; --json
+</code></pre>
+<p><strong>Index your files:</strong></p>
+<pre><code class="language-bash">index-digests  # Index memory files into ChromaDB
+</code></pre>
+<p><strong>Create session digests:</strong></p>
+<pre><code class="language-bash">digest-sessions          # Process new sessions
+digest-sessions --dry-run  # Preview what would be processed
+</code></pre>
+<h2>How It Works</h2>
+<h3>Three Components</h3>
+<ol>
+<li><strong>digest-sessions</strong> — Extracts key info from session logs (topics, tools used)</li>
+<li><strong>index-digests</strong> — Chunks and embeds markdown files into ChromaDB</li>
+<li><strong>recall</strong> — Semantic search across your indexed memory</li>
+</ol>
+<h3>What Gets Indexed</h3>
+<p>By default, indexes files from <code>~/.openclaw/workspace/memory/</code>:</p>
+<ul>
+<li><code>*.md</code> — Daily notes, MEMORY.md</li>
+<li><code>session-digests/*.md</code> — Session summaries</li>
+<li><code>repos/*.md</code> — Project documentation</li>
+<li><code>founder-logs/*.md</code> — Development logs (if present)</li>
+</ul>
+<h3>Embedding Model</h3>
+<p>Uses <code>sentence-transformers/all-MiniLM-L6-v2</code>:</p>
+<ul>
+<li>384-dimensional embeddings</li>
+<li>~80MB download on first run</li>
+<li>Runs locally, no API needed</li>
+</ul>
+<h2>Agent Integration</h2>
+<h3>Memory-Augmented Responses</h3>
+<pre><code class="language-python"># Before answering questions about past work
+results = exec(&quot;recall &#39;project setup decisions&#39; --json&quot;)
+# Include relevant context in your response
+</code></pre>
+<h3>Automated Indexing (Heartbeat)</h3>
+<p>Add to HEARTBEAT.md:</p>
+<pre><code class="language-markdown">## Memory Maintenance
+- [ ] New session logs? → `digest-sessions`
+- [ ] Memory files updated? → `index-digests`
+</code></pre>
+<h3>Cron Job</h3>
+<p>Schedule regular indexing:</p>
+<pre><code class="language-json">{
+  &quot;schedule&quot;: { &quot;kind&quot;: &quot;cron&quot;, &quot;expr&quot;: &quot;0 */6 * * *&quot; },
+  &quot;payload&quot;: {
+    &quot;kind&quot;: &quot;agentTurn&quot;,
+    &quot;message&quot;: &quot;Run index-digests to update the memory index&quot;
+  },
+  &quot;sessionTarget&quot;: &quot;isolated&quot;
+}
+</code></pre>
+<h2>Shared Agent Memory (v0.2.0+)</h2>
+<p>For multi-agent setups where sandboxed agents need access to some memories:</p>
+<h3>Memory Tagging</h3>
+<p>Tag entries in daily notes:</p>
+<pre><code class="language-markdown">## 2026-02-05 [public] - Feature shipped
+This is visible to all agents.
+
+## 2026-02-05 [private] - Personal note
+This is main agent only (default if untagged).
+
+## 2026-02-05 [learning] - Pattern discovered
+Learnings shared bidirectionally between agents.
+</code></pre>
+<h3>ChromaDB Collections (v0.2.2+)</h3>
+<p>Memory is stored in separate collections for isolation:</p>
+<table>
+<thead>
+<tr>
+<th>Collection</th>
+<th>Purpose</th>
+<th>Who accesses</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>private_memories</code></td>
+<td>Main agent&#39;s private content</td>
+<td>Main agent only</td>
+</tr>
+<tr>
+<td><code>shared_memories</code></td>
+<td>[public] tagged content</td>
+<td>Sandboxed agents</td>
+</tr>
+<tr>
+<td><code>agent_learnings</code></td>
+<td>Learnings from any agent</td>
+<td>All agents</td>
+</tr>
+<tr>
+<td><code>jasper_memory</code></td>
+<td>Legacy unified (backward compat)</td>
+<td>Fallback</td>
+</tr>
+</tbody></table>
+<p><strong>Collection selection:</strong></p>
+<pre><code class="language-bash"># Main agent (default) - searches private_memories
+recall &quot;api design&quot;
+
+# Sandboxed agents - searches shared_memories only
+recall &quot;product info&quot; --public-only
+
+# Search learnings only
+recall &quot;patterns&quot; --learnings
+
+# Search all collections (merged results)
+recall &quot;everything&quot; --all
+
+# Specific collection
+recall &quot;something&quot; --collection private_memories
+
+# Legacy mode (single collection)
+recall &quot;old way&quot; --legacy
+</code></pre>
+<h3>Sandboxed Agent Access</h3>
+<pre><code class="language-bash"># Sandboxed agents use --public-only
+recall &quot;product info&quot; --public-only
+
+# Main agent can see everything
+recall &quot;product info&quot;
+</code></pre>
+<h3>Moltbook Agent Setup (v0.4.0+)</h3>
+<p>For the moltbook-scanner (or any sandboxed agent), use the built-in setup:</p>
+<pre><code class="language-bash"># Configure sandboxed agent with --public-only restriction
+npx jasper-recall moltbook-setup
+
+# Verify the setup is correct
+npx jasper-recall moltbook-verify
+</code></pre>
+<p>This creates:</p>
+<ul>
+<li><code>~/bin/recall</code> — Wrapper that forces <code>--public-only</code> flag</li>
+<li><code>shared/</code> — Symlink to main workspace&#39;s shared memory</li>
+</ul>
+<p>The sandboxed agent can then use:</p>
+<pre><code class="language-bash">~/bin/recall &quot;query&quot;  # Automatically restricted to public memories
+</code></pre>
+<p><strong>Privacy model:</strong></p>
+<ol>
+<li>Main agent tags memories as <code>[public]</code> or <code>[private]</code> in daily notes</li>
+<li><code>sync-shared</code> extracts <code>[public]</code> content to <code>memory/shared/</code></li>
+<li>Sandboxed agents can ONLY search the <code>shared</code> collection</li>
+</ol>
+<h3>Privacy Workflow</h3>
+<pre><code class="language-bash"># Check for sensitive data before sharing
+privacy-check &quot;text to scan&quot;
+privacy-check --file notes.md
+
+# Extract [public] entries to shared directory
+sync-shared
+sync-shared --dry-run  # Preview first
+</code></pre>
+<h2>CLI Reference</h2>
+<h3>recall</h3>
+<pre><code>recall &quot;query&quot; [OPTIONS]
+
+Options:
+  -n, --limit N     Number of results (default: 5)
+  --json            Output as JSON
+  -v, --verbose     Show similarity scores and collection source
+  --public-only     Search shared_memories only (sandboxed agents)
+  --learnings       Search agent_learnings only
+  --all             Search all collections (merged results)
+  --collection X    Search specific collection by name
+  --legacy          Use legacy jasper_memory collection
+</code></pre>
+<h3>serve (v0.2.1+)</h3>
+<pre><code>npx jasper-recall serve [OPTIONS]
+
+Options:
+  --port, -p N    Port to listen on (default: 3458)
+  --host, -h H    Host to bind (default: 127.0.0.1)
+
+Starts HTTP API server for Docker-isolated agents.
+
+Endpoints:
+  GET /recall?q=query&amp;limit=5    Search memories
+  GET /health                    Health check
+
+Security: public_only=true enforced by default.
+Set RECALL_ALLOW_PRIVATE=true to allow private queries.
+</code></pre>
+<p><strong>Example (from Docker container):</strong></p>
+<pre><code class="language-bash">curl &quot;http://host.docker.internal:3458/recall?q=product+info&quot;
+</code></pre>
+<h3>privacy-check (v0.2.0+)</h3>
+<pre><code>privacy-check &quot;text&quot;     # Scan inline text
+privacy-check --file X   # Scan a file
+
+Detects: emails, API keys, internal IPs, home paths, credentials.
+Returns: CLEAN or list of violations.
+</code></pre>
+<h3>sync-shared (v0.2.0+)</h3>
+<pre><code>sync-shared [OPTIONS]
+
+Options:
+  --dry-run    Preview without writing
+  --all        Process all daily notes
+
+Extracts [public] tagged entries to memory/shared/.
+</code></pre>
+<h3>index-digests</h3>
+<pre><code>index-digests
+
+Indexes markdown files from:
+  ~/.openclaw/workspace/memory/*.md
+  ~/.openclaw/workspace/memory/session-digests/*.md
+  ~/.openclaw/workspace/memory/repos/*.md
+  ~/.openclaw/workspace/memory/founder-logs/*.md
+
+Skips files that haven&#39;t changed (content hash check).
+</code></pre>
+<h3>digest-sessions</h3>
+<pre><code>digest-sessions [OPTIONS]
+
+Options:
+  --dry-run    Preview without writing
+  --all        Process all sessions (not just new)
+  --recent N   Process only N most recent sessions
+</code></pre>
+<h2>Configuration</h2>
+<h3>Custom Paths</h3>
+<p>Set environment variables:</p>
+<pre><code class="language-bash">export RECALL_WORKSPACE=~/.openclaw/workspace
+export RECALL_CHROMA_DB=~/.openclaw/chroma-db
+export RECALL_SESSIONS_DIR=~/.openclaw/agents/main/sessions
+</code></pre>
+<h3>Chunking</h3>
+<p>Default settings in index-digests:</p>
+<ul>
+<li>Chunk size: 500 characters</li>
+<li>Overlap: 100 characters</li>
+</ul>
+<h2>Security Considerations</h2>
+<p>⚠️ <strong>Review these settings before enabling in production:</strong></p>
+<h3>Server Binding</h3>
+<p>The <code>serve</code> command defaults to <code>127.0.0.1</code> (localhost only). <strong>Do not use <code>--host 0.0.0.0</code></strong> unless you explicitly intend to expose the API externally and have secured it appropriately.</p>
+<h3>Private Memory Access</h3>
+<p>The server enforces <code>public_only=true</code> by default. The env var <code>RECALL_ALLOW_PRIVATE=true</code> bypasses this restriction. <strong>Never set this on public/shared hosts</strong> — it exposes your private memories to any client.</p>
+<h3>autoRecall Plugin</h3>
+<p>When <code>autoRecall: true</code> in the OpenClaw plugin config, memories are automatically injected before every agent message. Consider:</p>
+<ul>
+<li>Set <code>publicOnly: true</code> in plugin config for sandboxed agents</li>
+<li>Review which collections will be searched</li>
+<li>Use <code>minScore</code> to filter low-relevance injections</li>
+</ul>
+<p><strong>What&#39;s automatically skipped (no recall triggered):</strong></p>
+<ul>
+<li>Heartbeat polls (<code>HEARTBEAT</code>, <code>Read HEARTBEAT.md</code>, <code>HEARTBEAT_OK</code>)</li>
+<li>Messages containing <code>NO_REPLY</code></li>
+<li>Messages &lt; 10 characters</li>
+<li>Agent-to-agent messages (cron jobs, workers, spawned agents)</li>
+<li>Automated reports (<code>📋 PR Review</code>, <code>🤖 Codex Watch</code>, <code>ANNOUNCE_*</code>)</li>
+<li>Messages from senders starting with <code>agent:</code> or <code>worker-</code></li>
+</ul>
+<p><strong>Safer config for untrusted contexts:</strong></p>
+<pre><code class="language-json">&quot;jasper-recall&quot;: {
+  &quot;enabled&quot;: true,
+  &quot;config&quot;: {
+    &quot;autoRecall&quot;: true,
+    &quot;publicOnly&quot;: true,
+    &quot;minScore&quot;: 0.5
+  }
+}
+</code></pre>
+<h3>Environment Variables</h3>
+<p>The following env vars affect behavior — set them explicitly rather than relying on defaults:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>RECALL_WORKSPACE</code></td>
+<td><code>~/.openclaw/workspace</code></td>
+<td>Memory files location</td>
+</tr>
+<tr>
+<td><code>RECALL_CHROMA_DB</code></td>
+<td><code>~/.openclaw/chroma-db</code></td>
+<td>Vector database path</td>
+</tr>
+<tr>
+<td><code>RECALL_SESSIONS_DIR</code></td>
+<td><code>~/.openclaw/agents/main/sessions</code></td>
+<td>Session logs</td>
+</tr>
+<tr>
+<td><code>RECALL_ALLOW_PRIVATE</code></td>
+<td><code>false</code></td>
+<td>Server private access</td>
+</tr>
+<tr>
+<td><code>RECALL_PORT</code></td>
+<td><code>3458</code></td>
+<td>Server port</td>
+</tr>
+<tr>
+<td><code>RECALL_HOST</code></td>
+<td><code>127.0.0.1</code></td>
+<td>Server bind address</td>
+</tr>
+</tbody></table>
+<h3>Dry-Run First</h3>
+<p>Before sharing or syncing, use dry-run options to preview what will be exposed:</p>
+<pre><code class="language-bash">privacy-check --file notes.md     # Scan for sensitive data
+sync-shared --dry-run             # Preview public extraction
+digest-sessions --dry-run         # Preview session processing
+</code></pre>
+<h3>Sandboxed Environments</h3>
+<p>For maximum isolation, run jasper-recall in a container or dedicated account:</p>
+<ul>
+<li>Limits risk of accidental data exposure</li>
+<li>Separates private memory from shared contexts</li>
+<li>Recommended for multi-agent setups with untrusted agents</li>
+</ul>
+<h2>Troubleshooting</h2>
+<p><strong>&quot;No index found&quot;</strong></p>
+<pre><code class="language-bash">index-digests  # Create the index first
+</code></pre>
+<p><strong>&quot;Collection not found&quot;</strong></p>
+<pre><code class="language-bash">rm -rf ~/.openclaw/chroma-db  # Clear and rebuild
+index-digests
+</code></pre>
+<p><strong>Model download slow</strong>
+First run downloads ~80MB model. Subsequent runs are instant.</p>
+<h2>Links</h2>
+<ul>
+<li><strong>GitHub</strong>: <a href="https://github.com/E-x-O-Entertainment-Studios-Inc/jasper-recall">https://github.com/E-x-O-Entertainment-Studios-Inc/jasper-recall</a></li>
+<li><strong>npm</strong>: <a href="https://www.npmjs.com/package/jasper-recall">https://www.npmjs.com/package/jasper-recall</a></li>
+<li><strong>ClawHub</strong>: <a href="https://clawhub.ai/skills/jasper-recall">https://clawhub.ai/skills/jasper-recall</a></li>
+</ul>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/emberdesire/jasper-recall/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/emberdesire/jasper-recall" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/emberdesire/jasper-recall/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@emberdesire</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">AI & LLMs</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">OpenClawDirectory.com is a community-run project and is not affiliated with the official OpenClaw team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

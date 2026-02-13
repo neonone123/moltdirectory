@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Local Voice Input/Output for Agents using the AI Voice Agent API">
+  <meta name="description" content="Local Voice Input/Output for Agents using the AI Voice Agent">
   <title>voice-agent - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/speech-transcription/voice-agent/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,13 +45,13 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Speech & Transcription</a>
+              <a href="/speech-transcription/" class="back-link">← Back to Speech & Transcription</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Speech & Transcription</a>
+                <a href="/speech-transcription/" class="skill-page-category">Speech & Transcription</a>
                 <span class="skill-page-author">by @ricardotrevisan</span>
               </div>
               <h1 class="skill-page-title">voice-agent</h1>
-              <p class="skill-page-desc">Local Voice Input/Output for Agents using the AI Voice Agent API</p>
+              <p class="skill-page-desc">Local Voice Input/Output for Agents using the AI Voice Agent</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -65,38 +66,44 @@
                 </div>
                 <div class="markdown-content">
                   <h1>Voice Agent</h1>
-<p>This skill allows you to speak and listen to the user using the local Voice Agent API.</p>
+<p>This skill allows you to speak and listen to the user using a local Voice Agent API.
+It is client-only and does not start containers or services.
+It uses <strong>local Whisper</strong> for Speech-to-Text transcription and <strong>AWS Polly</strong> for Text-to-Speech generation.</p>
+<h2>Prerequisite</h2>
+<p>Requires a running backend API at <code>http://localhost:8000</code>.
+Backend setup instructions are in this repository:</p>
+<ul>
+<li><code>README.md</code></li>
+<li><code>walkthrough.md</code></li>
+<li><code>DOCKER_README.md</code></li>
+</ul>
 <h2>Behavior Guidelines</h2>
 <ul>
 <li><strong>Audio First</strong>: When the user communicates via audio (files), your PRIMARY mode of response is <strong>Audio File</strong>.</li>
 <li><strong>Silent Delivery</strong>: When sending an audio response, <strong>DO NOT</strong> send a text explanation like &quot;I sent an audio&quot;. Just send the audio file.</li>
 <li><strong>Workflow</strong>:<ol>
 <li>User sends audio.</li>
-<li>You usage <code>transcribe</code> to read it.</li>
+<li>Use <code>transcribe</code> to read it.</li>
 <li>You think of a response.</li>
-<li>You usage <code>synthesize</code> to generate the audio file.</li>
+<li>Use <code>synthesize</code> to generate the audio file.</li>
 <li>You send the file.</li>
 <li><strong>STOP</strong>. Do not add text commentary.</li>
 </ol>
 </li>
+<li><strong>Failure Handling</strong>: If <code>health</code> fails or connection errors occur, do not attempt service management from this skill. Ask the user to start or fix the backend using the repository docs.</li>
 </ul>
 <h2>Tools</h2>
 <h3>Transcribe File</h3>
-<p>To transcribe an audio file (Speech-to-Text), run the client script with the <code>transcribe</code> command.</p>
+<p>To transcribe an audio file with <strong>local Whisper STT</strong>, run the client script with the <code>transcribe</code> command.</p>
 <pre><code class="language-bash">python3 {baseDir}/scripts/client.py transcribe &quot;/path/to/audio/file.ogg&quot;
 </code></pre>
 <h3>Synthesize to File</h3>
-<p>To generate audio from text and save it to a file (Text-to-Speech), run the client script with the <code>synthesize</code> command.</p>
+<p>To generate audio from text with <strong>AWS Polly TTS</strong> and save it to a file, run the client script with the <code>synthesize</code> command.</p>
 <pre><code class="language-bash">python3 {baseDir}/scripts/client.py synthesize &quot;Text to speak&quot; --output &quot;/path/to/output.mp3&quot;
 </code></pre>
 <h3>Health Check</h3>
 <p>To check if the voice agent API is running and healthy:</p>
 <pre><code class="language-bash">python3 {baseDir}/scripts/client.py health
-</code></pre>
-<h3>Service Management</h3>
-<p>If the <code>Health Check</code> fails or you receive a connection error, the service may be stopped.
-You can attempt to start it by running:</p>
-<pre><code class="language-bash">{baseDir}/scripts/start.sh
 </code></pre>
 
                 </div>

@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Computer Use Agent (CUA) for macOS automation using TuriX">
   <title>turix-cua - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/browser-automation/turix-cua/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,9 +45,9 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Browser & Automation</a>
+              <a href="/browser-automation/" class="back-link">← Back to Browser & Automation</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Browser & Automation</a>
+                <a href="/browser-automation/" class="skill-page-category">Browser & Automation</a>
                 <span class="skill-page-author">by @tongyu-yan</span>
               </div>
               <h1 class="skill-page-title">turix-cua</h1>
@@ -99,7 +100,7 @@
 <pre><code class="language-bash">skills/local/turix-mac/scripts/run_turix.sh --resume my-task-001
 </code></pre>
 <blockquote>
-<p>⚠️ <strong>Important</strong>: The <code>./run_turix.sh</code> command does NOT automatically update the task in <code>config.json</code>. <strong>You must manually edit <code>examples/config.json</code> and modify the <code>agent.task</code> field before running!</strong></p>
+<p>✅ <strong>Note</strong>: <code>run_turix.sh</code> updates <code>examples/config.json</code> for you (task, resume, <code>use_plan</code>, <code>use_skills</code>). If you want to keep a hand-edited config, skip passing a task and edit <code>examples/config.json</code> directly.</p>
 </blockquote>
 <h3>Tips for Effective Tasks</h3>
 <p><strong>✅ Good Examples:</strong></p>
@@ -297,9 +298,9 @@ description: When performing X specific task
 </ol>
 <h3>5. Chinese Text Support</h3>
 <p><strong>Background:</strong>
-Passing Chinese text to TuriX via a shell heredoc (<code>cat &lt;&lt; &#39;EOF&#39; &gt; file</code>) can cause encoding issues because shell variable handling of UTF-8 may introduce escaping errors.</p>
+Passing Chinese text through shell interpolation can mangle UTF-8, and interpolating untrusted text into a heredoc is unsafe.</p>
 <p><strong>Solution:</strong>
-The <code>run_turix.sh</code> script uses Python to handle UTF-8 correctly:</p>
+The <code>run_turix.sh</code> script uses Python to handle UTF-8 correctly and reads task text from environment variables:</p>
 <pre><code class="language-python">import json
 
 # Read with UTF-8
@@ -314,7 +315,7 @@ with open(config_path, &#39;w&#39;, encoding=&#39;utf-8&#39;) as f:
 <ol>
 <li>Always use <code>encoding=&#39;utf-8&#39;</code> when reading/writing files</li>
 <li>Use <code>ensure_ascii=False</code> to preserve non-ASCII text</li>
-<li>Pass task content via an inline Python script instead of a shell heredoc</li>
+<li>Pass task content via environment variables or stdin, and use a single-quoted heredoc to avoid shell interpolation</li>
 </ol>
 <h3>6. Document Creation Best Practices</h3>
 <p><strong>Challenges:</strong></p>
@@ -372,7 +373,7 @@ description: When performing tasks in a web browser (search, navigate, fill form
 <h2>Monitoring and Debugging Guide</h2>
 <h3>1. Run a Task</h3>
 <pre><code class="language-bash"># Run in background (recommended)
-cd /Users/tonyyan/clawd/skills/local/turix-mac/scripts
+cd your_dir/clawd/skills/local/turix-mac/scripts
 ./run_turix.sh &quot;Your task description&quot; --background
 
 # Or use timeout to set a max runtime

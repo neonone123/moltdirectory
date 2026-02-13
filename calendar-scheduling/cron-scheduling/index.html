@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Schedule and manage recurring tasks with cron">
+  <title>cron-scheduling - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/calendar-scheduling/cron-scheduling/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+
+        <span class="logo-text">OpenClaw Directory</span>
+      </a>
+      <nav class="header-links">
+        <a href="/start-here/" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="/calendar-scheduling/" class="back-link">← Back to Calendar & Scheduling</a>
+              <div class="skill-page-meta">
+                <a href="/calendar-scheduling/" class="skill-page-category">Calendar & Scheduling</a>
+                <span class="skill-page-author">by @gitgoodordietrying</span>
+              </div>
+              <h1 class="skill-page-title">cron-scheduling</h1>
+              <p class="skill-page-desc">Schedule and manage recurring tasks with cron</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Cron &amp; Scheduling</h1>
+<p>Schedule and manage recurring tasks. Covers cron syntax, crontab management, systemd timers, one-off scheduling, timezone handling, monitoring, and common failure patterns.</p>
+<h2>When to Use</h2>
+<ul>
+<li>Running scripts on a schedule (backups, reports, cleanup)</li>
+<li>Setting up systemd timers (modern cron alternative)</li>
+<li>Debugging why a scheduled job didn&#39;t run</li>
+<li>Handling timezones in scheduled tasks</li>
+<li>Monitoring and alerting on job failures</li>
+<li>Running one-off delayed commands</li>
+</ul>
+<h2>Cron Syntax</h2>
+<h3>The five fields</h3>
+<pre><code>┌───────── minute (0-59)
+│ ┌─────── hour (0-23)
+│ │ ┌───── day of month (1-31)
+│ │ │ ┌─── month (1-12 or JAN-DEC)
+│ │ │ │ ┌─ day of week (0-7, 0 and 7 = Sunday, or SUN-SAT)
+│ │ │ │ │
+* * * * * command
+</code></pre>
+<h3>Common schedules</h3>
+<pre><code class="language-bash"># Every minute
+* * * * * /path/to/script.sh
+
+# Every 5 minutes
+*/5 * * * * /path/to/script.sh
+
+# Every hour at :00
+0 * * * * /path/to/script.sh
+
+# Every day at 2:30 AM
+30 2 * * * /path/to/script.sh
+
+# Every Monday at 9:00 AM
+0 9 * * 1 /path/to/script.sh
+
+# Every weekday at 8:00 AM
+0 8 * * 1-5 /path/to/script.sh
+
+# First day of every month at midnight
+0 0 1 * * /path/to/script.sh
+
+# Every 15 minutes during business hours (Mon-Fri 9-17)
+*/15 9-17 * * 1-5 /path/to/script.sh
+
+# Twice a day (9 AM and 5 PM)
+0 9,17 * * * /path/to/script.sh
+
+# Every quarter (Jan, Apr, Jul, Oct) on the 1st at midnight
+0 0 1 1,4,7,10 * /path/to/script.sh
+
+# Every Sunday at 3 AM
+0 3 * * 0 /path/to/script.sh
+</code></pre>
+<h3>Special strings (shorthand)</h3>
+<pre><code class="language-bash">@reboot    /path/to/script.sh   # Run once at startup
+@yearly    /path/to/script.sh   # 0 0 1 1 *
+@monthly   /path/to/script.sh   # 0 0 1 * *
+@weekly    /path/to/script.sh   # 0 0 * * 0
+@daily     /path/to/script.sh   # 0 0 * * *
+@hourly    /path/to/script.sh   # 0 * * * *
+</code></pre>
+<h2>Crontab Management</h2>
+<pre><code class="language-bash"># Edit current user&#39;s crontab
+crontab -e
+
+# List current crontab
+crontab -l
+
+# Edit another user&#39;s crontab (root)
+sudo crontab -u www-data -e
+
+# Remove all cron jobs (be careful!)
+crontab -r
+
+# Install crontab from file
+crontab mycrontab.txt
+
+# Backup crontab
+crontab -l &gt; crontab-backup-$(date +%Y%m%d).txt
+</code></pre>
+<h3>Crontab best practices</h3>
+<pre><code class="language-bash"># Set PATH explicitly (cron has minimal PATH)
+PATH=/usr/local/bin:/usr/bin:/bin
+
+# Set MAILTO for error notifications
+MAILTO=admin@example.com
+
+# Set shell explicitly
+SHELL=/bin/bash
+
+# Full crontab example
+PATH=/usr/local/bin:/usr/bin:/bin
+MAILTO=admin@example.com
+SHELL=/bin/bash
+
+# Backups
+0 2 * * * /opt/scripts/backup.sh &gt;&gt; /var/log/backup.log 2&gt;&amp;1
+
+# Cleanup old logs
+0 3 * * 0 find /var/log/myapp -name &quot;*.log&quot; -mtime +30 -delete
+
+# Health check
+*/5 * * * * /opt/scripts/healthcheck.sh || /opt/scripts/alert.sh &quot;Health check failed&quot;
+</code></pre>
+<h2>Systemd Timers</h2>
+<h3>Create a timer (modern cron replacement)</h3>
+<pre><code class="language-ini"># /etc/systemd/system/backup.service
+[Unit]
+Description=Daily backup
+
+[Service]
+Type=oneshot
+ExecStart=/opt/scripts/backup.sh
+User=backup
+StandardOutput=journal
+StandardError=journal
+</code></pre>
+<pre><code class="language-ini"># /etc/systemd/system/backup.timer
+[Unit]
+Description=Run backup daily at 2 AM
+
+[Timer]
+OnCalendar=*-*-* 02:00:00
+Persistent=true
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target
+</code></pre>
+<pre><code class="language-bash"># Enable and start the timer
+sudo systemctl daemon-reload
+sudo systemctl enable --now backup.timer
+
+# Check timer status
+systemctl list-timers
+systemctl list-timers --all
+
+# Check last run
+systemctl status backup.service
+journalctl -u backup.service --since today
+
+# Run manually (for testing)
+sudo systemctl start backup.service
+
+# Disable timer
+sudo systemctl disable --now backup.timer
+</code></pre>
+<h3>OnCalendar syntax</h3>
+<pre><code class="language-ini"># Systemd calendar expressions
+
+# Daily at midnight
+OnCalendar=daily
+# or: OnCalendar=*-*-* 00:00:00
+
+# Every Monday at 9 AM
+OnCalendar=Mon *-*-* 09:00:00
+
+# Every 15 minutes
+OnCalendar=*:0/15
+
+# Weekdays at 8 AM
+OnCalendar=Mon..Fri *-*-* 08:00:00
+
+# First of every month
+OnCalendar=*-*-01 00:00:00
+
+# Every 6 hours
+OnCalendar=0/6:00:00
+
+# Specific dates
+OnCalendar=2026-02-03 12:00:00
+
+# Test calendar expressions
+systemd-analyze calendar &quot;Mon *-*-* 09:00:00&quot;
+systemd-analyze calendar &quot;*:0/15&quot;
+systemd-analyze calendar --iterations=5 &quot;Mon..Fri *-*-* 08:00:00&quot;
+</code></pre>
+<h3>Advantages over cron</h3>
+<pre><code>Systemd timers vs cron:
++ Logs in journald (journalctl -u service-name)
++ Persistent: catches up on missed runs after reboot
++ RandomizedDelaySec: prevents thundering herd
++ Dependencies: can depend on network, mounts, etc.
++ Resource limits: CPUQuota, MemoryMax, etc.
++ No lost-email problem (MAILTO often misconfigured)
+- More files to create (service + timer)
+- More verbose configuration
+</code></pre>
+<h2>One-Off Scheduling</h2>
+<h3>at (run once at a specific time)</h3>
+<pre><code class="language-bash"># Schedule a command
+echo &quot;/opt/scripts/deploy.sh&quot; | at 2:00 AM tomorrow
+echo &quot;reboot&quot; | at now + 30 minutes
+echo &quot;/opt/scripts/report.sh&quot; | at 5:00 PM Friday
+
+# Interactive (type commands, Ctrl+D to finish)
+at 10:00 AM
+&gt; /opt/scripts/task.sh
+&gt; echo &quot;Done&quot; | mail -s &quot;Task complete&quot; admin@example.com
+&gt; &lt;Ctrl+D&gt;
+
+# List pending jobs
+atq
+
+# View job details
+at -c &lt;job-number&gt;
+
+# Remove a job
+atrm &lt;job-number&gt;
+</code></pre>
+<h3>sleep-based (simplest)</h3>
+<pre><code class="language-bash"># Run something after a delay
+(sleep 3600 &amp;&amp; /opt/scripts/task.sh) &amp;
+
+# With nohup (survives logout)
+nohup bash -c &quot;sleep 7200 &amp;&amp; /opt/scripts/task.sh&quot; &amp;
+</code></pre>
+<h2>Timezone Handling</h2>
+<pre><code class="language-bash"># Cron runs in the system timezone by default
+# Check system timezone
+timedatectl
+date +%Z
+
+# Set timezone for a specific cron job
+# Method 1: TZ variable in crontab
+TZ=America/New_York
+0 9 * * * /opt/scripts/report.sh
+
+# Method 2: In the script itself
+#!/bin/bash
+export TZ=UTC
+# All date operations now use UTC
+
+# Method 3: Wrapper
+TZ=Europe/London date &#39;+%Y-%m-%d %H:%M:%S&#39;
+
+# List available timezones
+timedatectl list-timezones
+timedatectl list-timezones | grep America
+</code></pre>
+<h3>DST pitfalls</h3>
+<pre><code>Problem: A job scheduled for 2:30 AM may run twice or not at all
+during DST transitions.
+
+&quot;Spring forward&quot;: 2:30 AM doesn&#39;t exist (clock jumps 2:00 → 3:00)
+&quot;Fall back&quot;: 2:30 AM happens twice
+
+Mitigation:
+1. Schedule critical jobs outside 1:00-3:00 AM
+2. Use UTC for the schedule: TZ=UTC in crontab
+3. Make jobs idempotent (safe to run twice)
+4. Systemd timers handle DST correctly
+</code></pre>
+<h2>Monitoring and Debugging</h2>
+<h3>Why didn&#39;t my cron job run?</h3>
+<pre><code class="language-bash"># 1. Check cron daemon is running
+systemctl status cron    # Debian/Ubuntu
+systemctl status crond   # CentOS/RHEL
+
+# 2. Check cron logs
+grep CRON /var/log/syslog           # Debian/Ubuntu
+grep CRON /var/log/cron             # CentOS/RHEL
+journalctl -u cron --since today    # systemd
+
+# 3. Check crontab actually exists
+crontab -l
+
+# 4. Test the command manually (with cron&#39;s environment)
+env -i HOME=$HOME SHELL=/bin/sh PATH=/usr/bin:/bin /opt/scripts/backup.sh
+# If it fails here but works normally → PATH or env issue
+
+# 5. Check permissions
+ls -la /opt/scripts/backup.sh   # Must be executable
+ls -la /var/spool/cron/         # Crontab file permissions
+
+# 6. Check for syntax errors in crontab
+# cron silently ignores lines with errors
+
+# 7. Check if output is being discarded
+# By default, cron emails output. If no MTA, output is lost.
+# Always redirect: &gt;&gt; /var/log/myjob.log 2&gt;&amp;1
+</code></pre>
+<h3>Job wrapper with logging and alerting</h3>
+<pre><code class="language-bash">#!/bin/bash
+# cron-wrapper.sh — Run a command with logging, timing, and error alerting
+# Usage: cron-wrapper.sh &lt;job-name&gt; &lt;command&gt; [args...]
+
+set -euo pipefail
+
+JOB_NAME=&quot;${1:?Usage: cron-wrapper.sh &lt;job-name&gt; &lt;command&gt; [args...]}&quot;
+shift
+COMMAND=(&quot;$@&quot;)
+
+LOG_DIR=&quot;/var/log/cron-jobs&quot;
+mkdir -p &quot;$LOG_DIR&quot;
+LOG_FILE=&quot;$LOG_DIR/$JOB_NAME.log&quot;
+
+log() { echo &quot;[$(date -u &#39;+%Y-%m-%dT%H:%M:%SZ&#39;)] $*&quot; &gt;&gt; &quot;$LOG_FILE&quot;; }
+
+log &quot;START: ${COMMAND[*]}&quot;
+START_TIME=$(date +%s)
+
+if &quot;${COMMAND[@]}&quot; &gt;&gt; &quot;$LOG_FILE&quot; 2&gt;&amp;1; then
+    ELAPSED=$(( $(date +%s) - START_TIME ))
+    log &quot;SUCCESS (${ELAPSED}s)&quot;
+else
+    EXIT_CODE=$?
+    ELAPSED=$(( $(date +%s) - START_TIME ))
+    log &quot;FAILED with exit code $EXIT_CODE (${ELAPSED}s)&quot;
+    # Alert (customize as needed)
+    echo &quot;Cron job &#39;$JOB_NAME&#39; failed with exit $EXIT_CODE&quot; | \
+        mail -s &quot;CRON FAIL: $JOB_NAME&quot; admin@example.com 2&gt;/dev/null || true
+    exit $EXIT_CODE
+fi
+</code></pre>
+<pre><code class="language-bash"># Use in crontab:
+0 2 * * * /opt/scripts/cron-wrapper.sh daily-backup /opt/scripts/backup.sh
+*/5 * * * * /opt/scripts/cron-wrapper.sh health-check /opt/scripts/healthcheck.sh
+</code></pre>
+<h3>Lock to prevent overlap</h3>
+<pre><code class="language-bash"># Prevent concurrent runs (job takes longer than interval)
+# Method 1: flock
+* * * * * flock -n /tmp/myjob.lock /opt/scripts/slow-job.sh
+
+# Method 2: In the script
+LOCKFILE=&quot;/tmp/myjob.lock&quot;
+exec 200&gt;&quot;$LOCKFILE&quot;
+flock -n 200 || { echo &quot;Already running&quot;; exit 0; }
+# ... do work ...
+</code></pre>
+<h2>Idempotent Job Patterns</h2>
+<pre><code class="language-bash"># Idempotent backup (only creates if newer than last backup)
+#!/bin/bash
+BACKUP_DIR=&quot;/backups/$(date +%Y%m%d)&quot;
+[[ -d &quot;$BACKUP_DIR&quot; ]] &amp;&amp; { echo &quot;Backup already exists&quot;; exit 0; }
+mkdir -p &quot;$BACKUP_DIR&quot;
+pg_dump mydb &gt; &quot;$BACKUP_DIR/mydb.sql&quot;
+
+# Idempotent cleanup (safe to run multiple times)
+find /tmp/uploads -mtime +7 -type f -delete 2&gt;/dev/null || true
+
+# Idempotent sync (rsync only transfers changes)
+rsync -az /data/ backup-server:/backups/data/
+</code></pre>
+<h2>Tips</h2>
+<ul>
+<li>Always redirect output in cron jobs: <code>&gt;&gt; /var/log/job.log 2&gt;&amp;1</code>. Without this, output goes to mail (if configured) or is silently lost.</li>
+<li>Test cron jobs by running them with <code>env -i</code> to simulate cron&#39;s minimal environment. Most failures are caused by missing <code>PATH</code> or environment variables.</li>
+<li>Use <code>flock</code> to prevent overlapping runs when a job might take longer than its schedule interval.</li>
+<li>Make all scheduled jobs idempotent. If a job runs twice (DST, manual trigger, crash recovery), it should produce the same result.</li>
+<li><code>systemd-analyze calendar</code> is invaluable for verifying timer schedules before deploying.</li>
+<li>Never schedule critical jobs between 1:00 AM and 3:00 AM if DST applies. Use UTC schedules instead.</li>
+<li>Log the start time, end time, and exit code of every cron job. Without this, debugging failures after the fact is guesswork.</li>
+<li>Prefer systemd timers over cron for production services: you get journald logging, missed-run catchup (<code>Persistent=true</code>), and resource limits for free.</li>
+</ul>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/gitgoodordietrying/cron-scheduling/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/gitgoodordietrying/cron-scheduling" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/gitgoodordietrying/cron-scheduling/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@gitgoodordietrying</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Calendar & Scheduling</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">OpenClawDirectory.com is a community-run project and is not affiliated with the official OpenClaw team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

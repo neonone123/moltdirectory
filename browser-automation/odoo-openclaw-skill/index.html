@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Advanced Odoo financial intelligence tool for automated accounting audits, VAT reports, cash flow analysis">
+  <meta name="description" content="Advanced Odoo financial intelligence tool">
   <title>odoo-openclaw-skill - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/browser-automation/odoo-openclaw-skill/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,13 +45,13 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Browser & Automation</a>
+              <a href="/browser-automation/" class="back-link">← Back to Browser & Automation</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Browser & Automation</a>
+                <a href="/browser-automation/" class="skill-page-category">Browser & Automation</a>
                 <span class="skill-page-author">by @ashrf-in</span>
               </div>
               <h1 class="skill-page-title">odoo-openclaw-skill</h1>
-              <p class="skill-page-desc">Advanced Odoo financial intelligence tool for automated accounting audits, VAT reports, cash flow analysis</p>
+              <p class="skill-page-desc">Advanced Odoo financial intelligence tool</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -65,52 +66,419 @@
                 </div>
                 <div class="markdown-content">
                   <h1>Odoo Financial Intelligence</h1>
-<p>This skill enables interaction with the Odoo financial system to perform audits, generate reports, and analyze business intelligence.</p>
-<h2>Tools and Commands</h2>
-<p>The core functionality is provided by the <code>cfo-cli</code> (bundled in <code>scripts/</code>).</p>
-<h3>Core Capabilities</h3>
-<ol>
-<li><strong>Financial Summary</strong>: Get a snapshot of invoices and expenses.</li>
-<li><strong>Cash Flow</strong>: Check bank balances and petty cash status.</li>
-<li><strong>VAT Reporting</strong>: Calculate Output/Input VAT and net liability.</li>
-<li><strong>Trend Analysis</strong>: Monthly revenue vs. spending comparisons with visualization.</li>
-<li><strong>Anomaly Detection</strong>: Use AI (Gemini) or rules to find duplicate bills, missing taxes, or payment outliers.</li>
-<li><strong>Natural Language Query</strong>: Ask complex questions about the financial data.</li>
-</ol>
-<h2>Usage</h2>
-<h3>Environment Setup</h3>
-<p>The skill requires the following environment variables (stored in <code>autonomous-cfo/.env</code>):</p>
+<p><strong>Read-only, Evidence-First, Ledger-Based Reports</strong></p>
+<h2>Quick Reference: Common Odoo Models</h2>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>What It Contains</th>
+<th>Use For</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>res.users</code></td>
+<td>Users/Salespeople</td>
+<td>Find salesperson by name, get user_id</td>
+</tr>
+<tr>
+<td><code>sale.order</code></td>
+<td>Sales Orders</td>
+<td>Revenue by salesperson, order counts, status</td>
+</tr>
+<tr>
+<td><code>account.move</code></td>
+<td>Invoices/Journal Entries</td>
+<td>Invoice tracking, payments, P&amp;L data</td>
+</tr>
+<tr>
+<td><code>res.partner</code></td>
+<td>Contacts/Customers</td>
+<td>Customer info, top customers by revenue</td>
+</tr>
+<tr>
+<td><code>product.product</code></td>
+<td>Products</td>
+<td>Product sales, inventory</td>
+</tr>
+<tr>
+<td><code>account.account</code></td>
+<td>Chart of Accounts</td>
+<td>Financial reporting, balance sheet</td>
+</tr>
+<tr>
+<td><code>account.move.line</code></td>
+<td>Journal Lines</td>
+<td>Detailed ledger entries</td>
+</tr>
+</tbody></table>
+<h2>Security &amp; Credentials</h2>
+<h3>Required Environment Variables</h3>
+<p>This skill requires Odoo connection credentials stored in <code>assets/autonomous-cfo/.env</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Secret</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ODOO_URL</code></td>
+<td>Odoo instance URL (e.g., <code>https://your-odoo.com</code>)</td>
+<td>No</td>
+</tr>
+<tr>
+<td><code>ODOO_DB</code></td>
+<td>Odoo database name</td>
+<td>No</td>
+</tr>
+<tr>
+<td><code>ODOO_USER</code></td>
+<td>Odoo username/email</td>
+<td>No</td>
+</tr>
+<tr>
+<td><code>ODOO_PASSWORD</code></td>
+<td>Odoo password or API key</td>
+<td><strong>Yes</strong></td>
+</tr>
+</tbody></table>
+<p><strong>Setup:</strong></p>
+<pre><code class="language-bash">cd skills/odoo/assets/autonomous-cfo
+cp .env.example .env
+# Edit .env with your actual credentials
+nano .env
+</code></pre>
+<h3>Model Invocation Policy</h3>
+<p><strong>Model invocation is DISABLED</strong> per <code>skill.json</code> policy. This skill handles sensitive financial data and external Odoo connections — it must be explicitly invoked by the user.</p>
+<p><strong>Data Handling:</strong> All queries are read-only. No data is modified or exfiltrated.</p>
+<h3>Data Handling</h3>
 <ul>
-<li><code>ODOO_URL</code></li>
-<li><code>ODOO_DB</code></li>
-<li><code>ODOO_USER</code></li>
-<li><code>ODOO_PASSWORD</code></li>
-<li><code>GOOGLE_API_KEY</code> (for Gemini intelligence)</li>
+<li><strong>Read-only:</strong> All mutating methods (<code>create</code>, <code>write</code>, <code>unlink</code>, etc.) are blocked at the client level</li>
+<li><strong>No exfiltration:</strong> Reports are generated locally in <code>assets/autonomous-cfo/output/</code></li>
+<li><strong>Network endpoints:</strong> Only connects to the Odoo URL specified in <code>.env</code></li>
+<li><strong>Output formats:</strong> PDF, Excel, and WhatsApp image cards (local files only)</li>
 </ul>
-<h3>Common Workflows</h3>
-<h4>1. Quick Financial Pulse</h4>
-<p>Check the last 30 days:
-<code>./scripts/cfo-cli summary --days 30</code></p>
-<h4>2. VAT Liability Check</h4>
-<p><code>./scripts/cfo-cli vat --date-from 2026-01-01 --date-to 2026-03-31</code></p>
-<h4>3. Monthly Trends with Charts</h4>
-<p><code>./scripts/cfo-cli trends --months 12 --visualize</code></p>
-<h4>4. Forensic Audit (AI Anomaly Detection)</h4>
-<p><code>./scripts/cfo-cli anomalies --ai</code></p>
-<h4>5. Natural Language Questions</h4>
-<p>&quot;What was my most expensive month in 2025?&quot;
-<code>./scripts/cfo-cli ask &quot;What was my most expensive month in 2025?&quot;</code></p>
-<h2>Delivery Guidelines</h2>
-<p>When the skill generates files (charts, reports, data exports):</p>
+<h3>Installation</h3>
+<p>The skill requires a Python virtual environment with specific packages:</p>
+<pre><code class="language-bash">cd skills/odoo/assets/autonomous-cfo
+./install.sh
+</code></pre>
+<p>Or manually:</p>
+<pre><code class="language-bash">cd skills/odoo/assets/autonomous-cfo
+python3 -m venv venv
+./venv/bin/pip install -r requirements.txt
+</code></pre>
+<p><strong>Dependencies:</strong> <code>requests</code>, <code>matplotlib</code>, <code>pillow</code>, <code>fpdf2</code>, <code>openpyxl</code></p>
+<h2>Critical Rules</h2>
 <ol>
-<li><strong>Proactive Sending</strong>: Do NOT just provide a download link. Use the <code>message</code> tool to send the file directly to the chat.</li>
-<li><strong>Formatting</strong>:<ul>
-<li><strong>Images (PNG, JPG)</strong>: Send as an image with a summary caption.</li>
-<li><strong>Documents (PDF, XLSX, CSV)</strong>: Send as a document attachment.</li>
+<li><strong>NEVER assume</strong> - Always ask clarifying questions before generating reports</li>
+<li><strong>Multi-company check</strong> - If multiple companies exist, ASK which one to use</li>
+<li><strong>Ledger-based</strong> - Use Chart of Accounts and journal entries (account.move.line), not just invoice summaries</li>
+<li><strong>Verify periods</strong> - Confirm date ranges with user before running</li>
+<li><strong>No silent defaults</strong> - Every assumption must be confirmed</li>
+</ol>
+<h2>Before Any Report, Ask:</h2>
+<ol>
+<li>&quot;Which company should I use?&quot; (if multiple exist)</li>
+<li>&quot;What period? (from/to dates)&quot;</li>
+<li>&quot;Which accounts or account types to include?&quot;</li>
+<li>&quot;Any specific breakdown needed?&quot; (by account, by partner, by journal, etc.)</li>
+<li>&quot;Output format preference?&quot; (PDF, WhatsApp cards, or both)</li>
+</ol>
+<h2>Entrypoint</h2>
+<p>Uses the venv with fpdf2, matplotlib, pillow for proper PDF/chart generation:</p>
+<pre><code class="language-bash">./skills/odoo/assets/autonomous-cfo/venv/bin/python ./skills/odoo/assets/autonomous-cfo/src/tools/cfo_cli.py &lt;command&gt;
+</code></pre>
+<p>Or from the skill directory:</p>
+<pre><code class="language-bash">cd skills/odoo/assets/autonomous-cfo &amp;&amp; ./venv/bin/python src/tools/cfo_cli.py &lt;command&gt;
+</code></pre>
+<h2>Chart of Accounts Based Reporting</h2>
+<p>Reports should be built from:</p>
+<ul>
+<li><code>account.account</code> - Chart of Accounts structure (code, name, type, internal_group)</li>
+<li><code>account.move.line</code> - Journal entry lines (debit, credit, account_id, date)</li>
+<li><code>account.journal</code> - Source journals (type: sale, purchase, cash, bank, general)</li>
+</ul>
+<h3>Account Internal Groups</h3>
+<ul>
+<li><strong>ASSET</strong> - Assets (current, non-current, cash, receivables)</li>
+<li><strong>LIABILITY</strong> - Liabilities (payables, taxes, accrued)</li>
+<li><strong>EQUITY</strong> - Owner&#39;s equity</li>
+<li><strong>INCOME</strong> - Revenue accounts</li>
+<li><strong>EXPENSE</strong> - Cost and expense accounts</li>
+<li><strong>OFF_BALANCE</strong> - Off-balance sheet accounts</li>
+</ul>
+<h3>Common Account Types</h3>
+<ul>
+<li><code>asset_cash</code> - Bank and cash accounts</li>
+<li><code>asset_receivable</code> - Accounts receivable</li>
+<li><code>asset_current</code> - Current assets</li>
+<li><code>liability_payable</code> - Accounts payable</li>
+<li><code>income</code> - Revenue</li>
+<li><code>expense</code> - Expenses</li>
+</ul>
+<h3>Special Equity Types (Odoo-Specific)</h3>
+<ul>
+<li><code>equity</code> - Standard equity accounts (share capital, retained earnings)</li>
+<li><code>equity_unaffected</code> - <strong>Suspense account</strong> for undistributed profits/losses (e.g., 999999)</li>
+</ul>
+<p><strong>CRITICAL for Balance Sheet:</strong>
+Odoo&#39;s <code>equity_unaffected</code> is a SUSPENSE account. Do NOT use its ledger balance directly.</p>
+<p><strong>Correct Equity Calculation:</strong></p>
+<ol>
+<li><strong>Equity Proper</strong> (type: <code>equity</code>) - Use ledger balance (credit - debit)</li>
+<li><strong>Retained Earnings</strong> (prior years) - Ledger balance from <code>equity_unaffected</code></li>
+<li><strong>Current Year Earnings</strong> - Compute real-time: Income - Expenses</li>
+</ol>
+<pre><code>Total Equity = Equity Proper + Retained Earnings + Current Year Earnings
+</code></pre>
+<p>Where Current Year Earnings = Σ(income credit-debit) - Σ(expense debit-credit)</p>
+<p><strong>Why this matters:</strong> Odoo computes Current Year Earnings in real-time on the Balance Sheet. Using only the <code>equity_unaffected</code> ledger balance will cause the balance sheet to NOT balance.</p>
+<h2>Automatic Reporting Standard Detection</h2>
+<p>The skill automatically detects the company&#39;s accounting standard based on country/jurisdiction and formats reports accordingly.</p>
+<p><strong>Supported Standards:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Standard</th>
+<th>Jurisdiction</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>IFRS</td>
+<td>International</td>
+<td>Default for most countries</td>
+</tr>
+<tr>
+<td>US GAAP</td>
+<td>United States</td>
+<td>SEC registrants</td>
+</tr>
+<tr>
+<td>Ind-AS</td>
+<td>India</td>
+<td>Indian GAAP converged with IFRS</td>
+</tr>
+<tr>
+<td>UK GAAP</td>
+<td>United Kingdom</td>
+<td>FRS 102</td>
+</tr>
+<tr>
+<td>SOCPA</td>
+<td>Saudi Arabia</td>
+<td>IFRS adopted</td>
+</tr>
+<tr>
+<td>EU IFRS</td>
+<td>European Union</td>
+<td>IAS Regulation</td>
+</tr>
+<tr>
+<td>CAS</td>
+<td>China</td>
+<td>Chinese Accounting Standards</td>
+</tr>
+<tr>
+<td>JGAAP</td>
+<td>Japan</td>
+<td>Japanese GAAP</td>
+</tr>
+<tr>
+<td>ASPE</td>
+<td>Canada</td>
+<td>Private enterprises</td>
+</tr>
+<tr>
+<td>AASB</td>
+<td>Australia</td>
+<td>Australian standards</td>
+</tr>
+</tbody></table>
+<p><strong>Detection Logic:</strong></p>
+<ol>
+<li>Query company&#39;s country from <code>res.company</code></li>
+<li>Map country code to reporting standard</li>
+<li>Apply standard-specific formatting:<ul>
+<li>Number format (1,234.56 vs 1.234,56)</li>
+<li>Negative display ((123) vs -123)</li>
+<li>Date format (DD/MM/YYYY vs MM/DD/YYYY)</li>
+<li>Statement titles (Balance Sheet vs Statement of Financial Position)</li>
+<li>Cash flow method (indirect vs direct)</li>
 </ul>
 </li>
-<li><strong>Captions</strong>: Always include a brief summary of the file&#39;s content in the message caption.</li>
 </ol>
+<p><strong>Override:</strong></p>
+<pre><code class="language-python"># Force a specific standard
+reporter.generate(..., standard=&quot;US_GAAP&quot;)
+</code></pre>
+<h2>Commands</h2>
+<h3>Sales &amp; CRM Queries</h3>
+<pre><code class="language-bash"># Salesperson performance - use direct RPC for flexibility
+./venv/bin/python -c &quot;
+from src.visualizers.whatsapp_cards import WhatsAppCardGenerator
+# Query sale.order by user_id, aggregate by month/status
+# Generate cards with generate_kpi_card() and generate_comparison_card()
+&quot;
+
+# Example RPC query for salesperson:
+# - sale.order (user_id, amount_total, state, date_order)
+# - account.move (invoice_user_id, amount_total, payment_state)
+# - res.users (salesperson info)
+# - res.partner (customer info)
+</code></pre>
+<h3>Pre-built Reports</h3>
+<pre><code class="language-bash"># Financial Health - cash flow, liquidity, burn rate, runway
+cfo_cli.py health --from YYYY-MM-DD --to YYYY-MM-DD --company-id ID
+
+# Revenue Analytics - MoM trends, top customers
+cfo_cli.py revenue --from YYYY-MM-DD --to YYYY-MM-DD --company-id ID
+
+# AR/AP Aging - overdue buckets
+cfo_cli.py aging --as-of YYYY-MM-DD --company-id ID
+
+# Expense Breakdown - by vendor/category
+cfo_cli.py expenses --from YYYY-MM-DD --to YYYY-MM-DD --company-id ID
+
+# Executive Summary - one-page CFO snapshot
+cfo_cli.py executive --from YYYY-MM-DD --to YYYY-MM-DD --company-id ID
+</code></pre>
+<h3>Direct RPC Queries (Advanced)</h3>
+<p>For sales/CRM data not covered by pre-built commands, use direct RPC:</p>
+<pre><code class="language-python"># Query sales orders by salesperson
+orders = jsonrpc(&#39;sale.order&#39;, &#39;search_read&#39;,
+    [[(&#39;user_id&#39;, &#39;=&#39;, SALESPERSON_ID)]],
+    {&#39;fields&#39;: [&#39;name&#39;, &#39;partner_id&#39;, &#39;amount_total&#39;, &#39;state&#39;, &#39;date_order&#39;]})
+
+# Query invoices by salesperson
+invoices = jsonrpc(&#39;account.move&#39;, &#39;search_read&#39;,
+    [[(&#39;invoice_user_id&#39;, &#39;=&#39;, SALESPERSON_ID), (&#39;move_type&#39;, &#39;=&#39;, &#39;out_invoice&#39;)]],
+    {&#39;fields&#39;: [&#39;name&#39;, &#39;partner_id&#39;, &#39;amount_total&#39;, &#39;payment_state&#39;]})
+
+# Find salesperson by name
+users = jsonrpc(&#39;res.users&#39;, &#39;search_read&#39;,
+    [[(&#39;name&#39;, &#39;ilike&#39;, &#39;name_here&#39;)]],
+    {&#39;fields&#39;: [&#39;id&#39;, &#39;name&#39;, &#39;login&#39;]})
+</code></pre>
+<h3>Ad-hoc Reports</h3>
+<pre><code class="language-bash"># Custom comparison
+cfo_cli.py adhoc --from YYYY-MM-DD --to YYYY-MM-DD --metric-a &quot;revenue&quot; --metric-b &quot;expenses&quot;
+
+# Examples:
+cfo_cli.py adhoc --metric-a &quot;cash in&quot; --metric-b &quot;cash out&quot;
+cfo_cli.py adhoc --metric-a &quot;direct expenses&quot; --metric-b &quot;indirect expenses&quot;
+</code></pre>
+<h3>Output Formats</h3>
+<pre><code class="language-bash">--output whatsapp   # Dark theme 1080x1080 PNG cards
+--output pdf        # Light theme A4 PDF
+--output excel      # Excel workbook (.xlsx)
+--output both       # PDF + WhatsApp cards
+--output all        # PDF + Excel + WhatsApp cards
+</code></pre>
+<h2>Automatic Visualizations</h2>
+<p><strong>Reports always include appropriate visualizations by default:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Report</th>
+<th>Auto-Included Charts</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Financial Health</td>
+<td>Cash position, burn rate trend, runway</td>
+</tr>
+<tr>
+<td>Revenue</td>
+<td>MoM trend, top customers, growth KPI</td>
+</tr>
+<tr>
+<td>AR/AP Aging</td>
+<td>Aging buckets pie, overdue highlights</td>
+</tr>
+<tr>
+<td>Expenses</td>
+<td>Category breakdown, trend, top vendors</td>
+</tr>
+<tr>
+<td>Executive</td>
+<td>All KPI cards, summary charts</td>
+</tr>
+<tr>
+<td>Balance Sheet</td>
+<td>Asset/liability composition</td>
+</tr>
+<tr>
+<td>P&amp;L</td>
+<td>Revenue vs expense, margin trend</td>
+</tr>
+<tr>
+<td>Cash Flow</td>
+<td>Operating breakdown, cash trend</td>
+</tr>
+</tbody></table>
+<p><strong>Rule:</strong> If visualization makes the report clearer, include it automatically. Never ask &quot;do you want charts?&quot; — just add them.</p>
+<h2>Interactive Param Collection</h2>
+<p>If required params are missing, the skill will ask:</p>
+<ol>
+<li><strong>Company:</strong> &quot;Which company?&quot; (list available options)</li>
+<li><strong>Period:</strong> &quot;What period? (e.g., &#39;last month&#39;, &#39;Q4 2024&#39;, custom dates)&quot;</li>
+<li><strong>Accounts:</strong> &quot;Which accounts or groups?&quot; (e.g., &#39;all income&#39;, &#39;bank accounts only&#39;)</li>
+<li><strong>Breakdown:</strong> &quot;Group by? (Month, Customer, Category, Account)&quot;</li>
+<li><strong>Output:</strong> &quot;Output format? (WhatsApp cards, PDF, Both)&quot;</li>
+</ol>
+<h2>How to Use in Chat</h2>
+<p>Just ask naturally:</p>
+<p><strong>Sales &amp; CRM:</strong></p>
+<ul>
+<li>&quot;How is [name] salesperson performance?&quot;</li>
+<li>&quot;Show me top customers for [salesperson]&quot;</li>
+<li>&quot;Compare sales team performance&quot;</li>
+<li>&quot;Which salesperson has the most orders?&quot;</li>
+</ul>
+<p><strong>Financial Reports:</strong></p>
+<ul>
+<li>&quot;Give me a financial health report for last quarter&quot;</li>
+<li>&quot;Show revenue vs expenses for the past 6 months&quot;</li>
+<li>&quot;What&#39;s my AR aging?&quot;</li>
+<li>&quot;Generate an executive summary for this month&quot;</li>
+<li>&quot;Show me profit &amp; loss statement based on chart of accounts&quot;</li>
+</ul>
+<p><strong>General Queries:</strong></p>
+<ul>
+<li>&quot;How many orders did we get this month?&quot;</li>
+<li>&quot;Who are the top 10 customers?&quot;</li>
+<li>&quot;Show invoice status for [customer name]&quot;</li>
+</ul>
+<p>The skill will:</p>
+<ol>
+<li>Check for multiple companies and ask which one</li>
+<li>Parse your request</li>
+<li>Ask for any missing info</li>
+<li>Fetch data from Odoo using ledger entries or direct RPC</li>
+<li>Generate charts + WhatsApp cards</li>
+<li>Deliver via WhatsApp cards and/or PDF</li>
+</ol>
+<h2>Hard Rules</h2>
+<ol>
+<li>Odoo RPC output is source of truth</li>
+<li>Strict read-only (no create/write/unlink)</li>
+<li>No proactive actions unless requested</li>
+<li>Every number includes methodology note</li>
+<li>Always verify with user before assuming</li>
+<li><strong>Always include visualizations</strong> - If a report benefits from charts/graphs, include them automatically without asking. Reports should be visually complete.</li>
+</ol>
+<h2>Diagnostics</h2>
+<pre><code class="language-bash">python3 ./skills/odoo/assets/autonomous-cfo/src/tools/cfo_cli.py doctor
+</code></pre>
+<h2>Report Themes</h2>
+<ul>
+<li><strong>WhatsApp Cards:</strong> &quot;Midnight Ledger&quot; — Navy-black (#0a0e1a), copper glow (#cd7f32)</li>
+<li><strong>PDF Reports:</strong> Clean white, copper accents, professional layout</li>
+</ul>
 
                 </div>
               </div>

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Generate Ecto migrations from natural language or schema">
+  <title>ecto-migrator - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/web-frontend-development/ecto-migrator/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+
+        <span class="logo-text">OpenClaw Directory</span>
+      </a>
+      <nav class="header-links">
+        <a href="/start-here/" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="/web-frontend-development/" class="back-link">← Back to Web & Frontend Development</a>
+              <div class="skill-page-meta">
+                <a href="/web-frontend-development/" class="skill-page-category">Web & Frontend Development</a>
+                <span class="skill-page-author">by @gchapim</span>
+              </div>
+              <h1 class="skill-page-title">ecto-migrator</h1>
+              <p class="skill-page-desc">Generate Ecto migrations from natural language or schema</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Ecto Migrator</h1>
+<h2>Generating Migrations</h2>
+<h3>From Natural Language</h3>
+<p>Parse the user&#39;s description and generate a migration file. Common patterns:</p>
+<table>
+<thead>
+<tr>
+<th>User Says</th>
+<th>Migration Action</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&quot;Create users table with email and name&quot;</td>
+<td><code>create table(:users)</code> with columns</td>
+</tr>
+<tr>
+<td>&quot;Add phone to users&quot;</td>
+<td><code>alter table(:users), add :phone</code></td>
+</tr>
+<tr>
+<td>&quot;Make email unique on users&quot;</td>
+<td><code>create unique_index(:users, [:email])</code></td>
+</tr>
+<tr>
+<td>&quot;Add tenant_id to all tables&quot;</td>
+<td>Multiple <code>alter table</code> with index</td>
+</tr>
+<tr>
+<td>&quot;Rename status to state on orders&quot;</td>
+<td><code>rename table(:orders), :status, to: :state</code></td>
+</tr>
+<tr>
+<td>&quot;Remove the legacy_id column from users&quot;</td>
+<td><code>alter table(:users), remove :legacy_id</code></td>
+</tr>
+<tr>
+<td>&quot;Add a check constraint on orders amount &gt; 0&quot;</td>
+<td><code>create constraint(:orders, ...)</code></td>
+</tr>
+</tbody></table>
+<h3>File Naming</h3>
+<pre><code class="language-bash">mix ecto.gen.migration &lt;name&gt;
+# Generates: priv/repo/migrations/YYYYMMDDHHMMSS_&lt;name&gt;.exs
+</code></pre>
+<p>Name conventions: <code>create_&lt;table&gt;</code>, <code>add_&lt;column&gt;_to_&lt;table&gt;</code>, <code>create_&lt;table&gt;_&lt;column&gt;_index</code>, <code>alter_&lt;table&gt;_add_&lt;columns&gt;</code>.</p>
+<h2>Migration Template</h2>
+<pre><code class="language-elixir">defmodule MyApp.Repo.Migrations.CreateUsers do
+  use Ecto.Migration
+
+  def change do
+    create table(:users, primary_key: false) do
+      add :id, :binary_id, primary_key: true
+      add :email, :string, null: false
+      add :name, :string, null: false
+      add :role, :string, null: false, default: &quot;member&quot;
+      add :metadata, :map, default: %{}
+      add :tenant_id, :binary_id, null: false
+
+      add :team_id, references(:teams, type: :binary_id, on_delete: :delete_all)
+
+      timestamps(type: :utc_datetime_usec)
+    end
+
+    create unique_index(:users, [:tenant_id, :email])
+    create index(:users, [:tenant_id])
+    create index(:users, [:team_id])
+  end
+end
+</code></pre>
+<h2>Column Types</h2>
+<p>See <a href="https://github.com/openclaw/skills/blob/main/skills/gchapim/ecto-migrator/references/column-types.md">references/column-types.md</a> for complete type mapping and guidance.</p>
+<p>Key decisions:</p>
+<ul>
+<li><strong>IDs</strong>: Use <code>:binary_id</code> (UUID) — set <code>primary_key: false</code> on table, add <code>:id</code> manually.</li>
+<li><strong>Money</strong>: Use <code>:integer</code> (cents) or <code>:decimal</code> — never <code>:float</code>.</li>
+<li><strong>Timestamps</strong>: Always <code>timestamps(type: :utc_datetime_usec)</code>.</li>
+<li><strong>Enums</strong>: Use <code>:string</code> with app-level <code>Ecto.Enum</code> — avoid Postgres enums (hard to migrate).</li>
+<li><strong>JSON</strong>: Use <code>:map</code> (maps to <code>jsonb</code>).</li>
+<li><strong>Arrays</strong>: Use <code>{:array, :string}</code> etc.</li>
+</ul>
+<h2>Index Strategies</h2>
+<p>See <a href="https://github.com/openclaw/skills/blob/main/skills/gchapim/ecto-migrator/references/index-patterns.md">references/index-patterns.md</a> for detailed index guidance.</p>
+<h3>When to Add Indexes</h3>
+<p>Always index:</p>
+<ul>
+<li>Foreign keys (<code>_id</code> columns)</li>
+<li><code>tenant_id</code> (first column in composite indexes)</li>
+<li>Columns used in <code>WHERE</code> clauses</li>
+<li>Columns used in <code>ORDER BY</code></li>
+<li>Unique constraints</li>
+</ul>
+<h3>Index Types</h3>
+<pre><code class="language-elixir"># Standard B-tree
+create index(:users, [:tenant_id])
+
+# Unique
+create unique_index(:users, [:tenant_id, :email])
+
+# Partial (conditional)
+create index(:orders, [:status], where: &quot;status != &#39;completed&#39;&quot;, name: :orders_active_status_idx)
+
+# GIN for JSONB
+create index(:events, [:metadata], using: :gin)
+
+# GIN for array columns
+create index(:posts, [:tags], using: :gin)
+
+# Composite
+create index(:orders, [:tenant_id, :status, :inserted_at])
+
+# Concurrent (no table lock — use in separate migration)
+@disable_ddl_transaction true
+@disable_migration_lock true
+
+def change do
+  create index(:users, [:email], concurrently: true)
+end
+</code></pre>
+<h2>Constraints</h2>
+<pre><code class="language-elixir"># Check constraint
+create constraint(:orders, :amount_must_be_positive, check: &quot;amount &gt; 0&quot;)
+
+# Exclusion constraint (requires btree_gist extension)
+execute &quot;CREATE EXTENSION IF NOT EXISTS btree_gist&quot;, &quot;&quot;
+create constraint(:reservations, :no_overlapping_bookings,
+  exclude: ~s|gist (room_id WITH =, tstzrange(starts_at, ends_at) WITH &amp;&amp;)|
+)
+
+# Unique constraint (same as unique_index for most purposes)
+create unique_index(:accounts, [:slug])
+</code></pre>
+<h2>References (Foreign Keys)</h2>
+<pre><code class="language-elixir">add :user_id, references(:users, type: :binary_id, on_delete: :delete_all), null: false
+add :team_id, references(:teams, type: :binary_id, on_delete: :nilify_all)
+add :parent_id, references(:categories, type: :binary_id, on_delete: :nothing)
+</code></pre>
+<table>
+<thead>
+<tr>
+<th><code>on_delete</code></th>
+<th>Use When</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>:delete_all</code></td>
+<td>Child can&#39;t exist without parent (memberships, line items)</td>
+</tr>
+<tr>
+<td><code>:nilify_all</code></td>
+<td>Child should survive parent deletion (optional association)</td>
+</tr>
+<tr>
+<td><code>:nothing</code></td>
+<td>Handle in application code (default)</td>
+</tr>
+<tr>
+<td><code>:restrict</code></td>
+<td>Prevent parent deletion if children exist</td>
+</tr>
+</tbody></table>
+<h2>Multi-Tenant Patterns</h2>
+<h3>Every Table Gets tenant_id</h3>
+<pre><code class="language-elixir">def change do
+  create table(:items, primary_key: false) do
+    add :id, :binary_id, primary_key: true
+    add :name, :string, null: false
+    add :tenant_id, :binary_id, null: false
+    timestamps(type: :utc_datetime_usec)
+  end
+
+  # Always composite index with tenant_id first
+  create index(:items, [:tenant_id])
+  create unique_index(:items, [:tenant_id, :name])
+end
+</code></pre>
+<h3>Adding tenant_id to Existing Tables</h3>
+<pre><code class="language-elixir">def change do
+  alter table(:items) do
+    add :tenant_id, :binary_id
+  end
+
+  # Backfill in a separate data migration, then:
+  # alter table(:items) do
+  #   modify :tenant_id, :binary_id, null: false
+  # end
+end
+</code></pre>
+<h2>Data Migrations</h2>
+<p><strong>Rule: Never mix schema changes and data changes in the same migration.</strong></p>
+<h3>Safe Data Migration Pattern</h3>
+<pre><code class="language-elixir">defmodule MyApp.Repo.Migrations.BackfillUserRoles do
+  use Ecto.Migration
+
+  # Don&#39;t use schema modules — they may change after this migration runs
+  def up do
+    execute &quot;&quot;&quot;
+    UPDATE users SET role = &#39;member&#39; WHERE role IS NULL
+    &quot;&quot;&quot;
+  end
+
+  def down do
+    # Data migrations may not be reversible
+    :ok
+  end
+end
+</code></pre>
+<h3>Batched Data Migration (large tables)</h3>
+<pre><code class="language-elixir">def up do
+  execute &quot;&quot;&quot;
+  UPDATE users SET role = &#39;member&#39;
+  WHERE id IN (
+    SELECT id FROM users WHERE role IS NULL LIMIT 10000
+  )
+  &quot;&quot;&quot;
+
+  # For very large tables, use a Task or Oban job instead
+end
+</code></pre>
+<h2>Reversible vs Irreversible</h2>
+<h3>Reversible (use <code>change</code>)</h3>
+<p>These are auto-reversible:</p>
+<ul>
+<li><code>create table</code> ↔ <code>drop table</code></li>
+<li><code>add column</code> ↔ <code>remove column</code></li>
+<li><code>create index</code> ↔ <code>drop index</code></li>
+<li><code>rename</code> ↔ <code>rename</code></li>
+</ul>
+<h3>Irreversible (use <code>up</code>/<code>down</code>)</h3>
+<p>Must define both directions:</p>
+<ul>
+<li><code>modify</code> column type — Ecto can&#39;t infer the old type</li>
+<li><code>execute</code> raw SQL</li>
+<li>Data backfills</li>
+<li>Dropping columns with data</li>
+</ul>
+<pre><code class="language-elixir">def up do
+  alter table(:users) do
+    modify :email, :citext, from: :string  # from: helps reversibility
+  end
+end
+
+def down do
+  alter table(:users) do
+    modify :email, :string, from: :citext
+  end
+end
+</code></pre>
+<h3>Using <code>modify</code> with <code>from:</code></h3>
+<p>Phoenix 1.7+ supports <code>from:</code> for reversible <code>modify</code>:</p>
+<pre><code class="language-elixir">def change do
+  alter table(:users) do
+    modify :email, :citext, null: false, from: {:string, null: true}
+  end
+end
+</code></pre>
+<h2>PostgreSQL Extensions</h2>
+<pre><code class="language-elixir">def change do
+  execute &quot;CREATE EXTENSION IF NOT EXISTS citext&quot;, &quot;DROP EXTENSION IF EXISTS citext&quot;
+  execute &quot;CREATE EXTENSION IF NOT EXISTS pgcrypto&quot;, &quot;DROP EXTENSION IF EXISTS pgcrypto&quot;
+  execute &quot;CREATE EXTENSION IF NOT EXISTS pg_trgm&quot;, &quot;DROP EXTENSION IF EXISTS pg_trgm&quot;
+end
+</code></pre>
+<h2>Enum Types (PostgreSQL native — use sparingly)</h2>
+<p>Prefer <code>Ecto.Enum</code> with <code>:string</code> columns. If you must use Postgres enums:</p>
+<pre><code class="language-elixir">def up do
+  execute &quot;CREATE TYPE order_status AS ENUM (&#39;pending&#39;, &#39;confirmed&#39;, &#39;shipped&#39;, &#39;delivered&#39;)&quot;
+
+  alter table(:orders) do
+    add :status, :order_status, null: false, default: &quot;pending&quot;
+  end
+end
+
+def down do
+  alter table(:orders) do
+    remove :status
+  end
+
+  execute &quot;DROP TYPE order_status&quot;
+end
+</code></pre>
+<p><strong>Warning:</strong> Adding values to Postgres enums requires <code>ALTER TYPE ... ADD VALUE</code> which cannot run inside a transaction. Prefer <code>:string</code> + <code>Ecto.Enum</code>.</p>
+<h2>Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Primary key: <code>primary_key: false</code> + <code>add :id, :binary_id, primary_key: true</code></li>
+<li><input disabled="" type="checkbox"> <code>null: false</code> on required columns</li>
+<li><input disabled="" type="checkbox"> <code>timestamps(type: :utc_datetime_usec)</code></li>
+<li><input disabled="" type="checkbox"> Foreign keys with appropriate <code>on_delete</code></li>
+<li><input disabled="" type="checkbox"> Index on every foreign key column</li>
+<li><input disabled="" type="checkbox"> <code>tenant_id</code> indexed (composite with lookup fields)</li>
+<li><input disabled="" type="checkbox"> Unique constraints where needed</li>
+<li><input disabled="" type="checkbox"> Concurrent indexes in separate migration with <code>@disable_ddl_transaction true</code></li>
+<li><input disabled="" type="checkbox"> Data migrations in separate files from schema migrations</li>
+</ul>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/gchapim/ecto-migrator/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/gchapim/ecto-migrator" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/gchapim/ecto-migrator/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@gchapim</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Web & Frontend Development</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">OpenClawDirectory.com is a community-run project and is not affiliated with the official OpenClaw team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

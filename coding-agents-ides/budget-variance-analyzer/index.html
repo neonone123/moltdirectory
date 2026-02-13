@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Analyze budget vs actual">
+  <title>budget-variance-analyzer - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/coding-agents-ides/budget-variance-analyzer/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+
+        <span class="logo-text">OpenClaw Directory</span>
+      </a>
+      <nav class="header-links">
+        <a href="/start-here/" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="/coding-agents-ides/" class="back-link">← Back to Coding Agents & IDEs</a>
+              <div class="skill-page-meta">
+                <a href="/coding-agents-ides/" class="skill-page-category">Coding Agents & IDEs</a>
+                <span class="skill-page-author">by @datadrivenconstruction</span>
+              </div>
+              <h1 class="skill-page-title">budget-variance-analyzer</h1>
+              <p class="skill-page-desc">Analyze budget vs actual</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Budget Variance Analyzer</h1>
+<h2>Business Case</h2>
+<h3>Problem Statement</h3>
+<p>Cost overruns surprise project teams:</p>
+<ul>
+<li>Late detection of budget issues</li>
+<li>No systematic variance analysis</li>
+<li>Difficult to forecast final costs</li>
+<li>Unclear root causes</li>
+</ul>
+<h3>Solution</h3>
+<p>Systematic budget variance analysis that tracks costs against budget, identifies trends, and forecasts final project costs.</p>
+<h3>Business Value</h3>
+<ul>
+<li><strong>Early warning</strong> - Detect overruns early</li>
+<li><strong>Forecasting</strong> - Predict final costs</li>
+<li><strong>Accountability</strong> - Track variance causes</li>
+<li><strong>Decision support</strong> - Informed cost decisions</li>
+</ul>
+<h2>Technical Implementation</h2>
+<pre><code class="language-python">import pandas as pd
+from datetime import datetime, date
+from typing import Dict, Any, List, Optional, Tuple
+from dataclasses import dataclass, field
+from enum import Enum
+
+
+class VarianceStatus(Enum):
+    &quot;&quot;&quot;Variance status.&quot;&quot;&quot;
+    UNDER_BUDGET = &quot;under_budget&quot;
+    ON_BUDGET = &quot;on_budget&quot;
+    OVER_BUDGET = &quot;over_budget&quot;
+    CRITICAL = &quot;critical&quot;
+
+
+class CostCategory(Enum):
+    &quot;&quot;&quot;Cost categories.&quot;&quot;&quot;
+    LABOR = &quot;labor&quot;
+    MATERIAL = &quot;material&quot;
+    EQUIPMENT = &quot;equipment&quot;
+    SUBCONTRACTOR = &quot;subcontractor&quot;
+    OVERHEAD = &quot;overhead&quot;
+    CONTINGENCY = &quot;contingency&quot;
+    OTHER = &quot;other&quot;
+
+
+class VarianceCause(Enum):
+    &quot;&quot;&quot;Common variance causes.&quot;&quot;&quot;
+    SCOPE_CHANGE = &quot;scope_change&quot;
+    QUANTITY_CHANGE = &quot;quantity_change&quot;
+    PRICE_ESCALATION = &quot;price_escalation&quot;
+    PRODUCTIVITY = &quot;productivity&quot;
+    REWORK = &quot;rework&quot;
+    DELAY = &quot;delay&quot;
+    UNFORESEEN = &quot;unforeseen&quot;
+    ESTIMATE_ERROR = &quot;estimate_error&quot;
+    OTHER = &quot;other&quot;
+
+
+@dataclass
+class BudgetItem:
+    &quot;&quot;&quot;Single budget line item.&quot;&quot;&quot;
+    item_code: str
+    description: str
+    category: CostCategory
+    original_budget: float
+    current_budget: float  # After approved changes
+    committed_cost: float  # Contracts, POs
+    actual_cost: float     # Paid/invoiced
+    forecast_cost: float   # Estimate at completion
+    percent_complete: float
+    notes: str = &quot;&quot;
+
+    @property
+    def variance_amount(self) -&gt; float:
+        &quot;&quot;&quot;Budget variance (negative = over budget).&quot;&quot;&quot;
+        return self.current_budget - self.forecast_cost
+
+    @property
+    def variance_percent(self) -&gt; float:
+        &quot;&quot;&quot;Variance as percentage.&quot;&quot;&quot;
+        if self.current_budget == 0:
+            return 0
+        return (self.variance_amount / self.current_budget) * 100
+
+    @property
+    def status(self) -&gt; VarianceStatus:
+        &quot;&quot;&quot;Determine variance status.&quot;&quot;&quot;
+        pct = self.variance_percent
+        if pct &gt; 5:
+            return VarianceStatus.UNDER_BUDGET
+        elif pct &gt;= -5:
+            return VarianceStatus.ON_BUDGET
+        elif pct &gt;= -15:
+            return VarianceStatus.OVER_BUDGET
+        else:
+            return VarianceStatus.CRITICAL
+
+
+@dataclass
+class VarianceRecord:
+    &quot;&quot;&quot;Record of budget variance.&quot;&quot;&quot;
+    record_id: str
+    item_code: str
+    variance_amount: float
+    cause: VarianceCause
+    explanation: str
+    recorded_date: date
+    recorded_by: str
+    approved: bool = False
+    approval_date: Optional[date] = None
+
+
+@dataclass
+class ForecastScenario:
+    &quot;&quot;&quot;Cost forecast scenario.&quot;&quot;&quot;
+    name: str
+    description: str
+    adjustments: Dict[str, float]  # item_code: adjustment amount
+    total_forecast: float
+    variance_from_budget: float
+
+
+class BudgetVarianceAnalyzer:
+    &quot;&quot;&quot;Analyze budget vs actual cost variances.&quot;&quot;&quot;
+
+    VARIANCE_THRESHOLD_WARNING = -0.05  # -5%
+    VARIANCE_THRESHOLD_CRITICAL = -0.15  # -15%
+
+    def __init__(self, project_name: str, original_budget: float, currency: str = &quot;USD&quot;):
+        self.project_name = project_name
+        self.original_budget = original_budget
+        self.currency = currency
+        self.items: Dict[str, BudgetItem] = {}
+        self.variance_records: List[VarianceRecord] = []
+        self.history: List[Dict[str, Any]] = []
+
+    def add_budget_item(self,
+                       item_code: str,
+                       description: str,
+                       category: CostCategory,
+                       budget: float,
+                       committed: float = 0,
+                       actual: float = 0,
+                       percent_complete: float = 0) -&gt; BudgetItem:
+        &quot;&quot;&quot;Add budget line item.&quot;&quot;&quot;
+        forecast = max(committed, actual / percent_complete * 100) if percent_complete &gt; 0 else budget
+
+        item = BudgetItem(
+            item_code=item_code,
+            description=description,
+            category=category,
+            original_budget=budget,
+            current_budget=budget,
+            committed_cost=committed,
+            actual_cost=actual,
+            forecast_cost=forecast,
+            percent_complete=percent_complete
+        )
+
+        self.items[item_code] = item
+        return item
+
+    def update_costs(self, item_code: str,
+                    committed: float = None,
+                    actual: float = None,
+                    percent_complete: float = None,
+                    forecast: float = None):
+        &quot;&quot;&quot;Update item costs.&quot;&quot;&quot;
+        if item_code not in self.items:
+            raise ValueError(f&quot;Item {item_code} not found&quot;)
+
+        item = self.items[item_code]
+
+        if committed is not None:
+            item.committed_cost = committed
+        if actual is not None:
+            item.actual_cost = actual
+        if percent_complete is not None:
+            item.percent_complete = percent_complete
+        if forecast is not None:
+            item.forecast_cost = forecast
+        else:
+            # Auto-calculate forecast
+            if item.percent_complete &gt; 0:
+                item.forecast_cost = item.actual_cost / item.percent_complete * 100
+            else:
+                item.forecast_cost = max(item.committed_cost, item.current_budget)
+
+        self._record_history()
+
+    def adjust_budget(self, item_code: str, amount: float, reason: str):
+        &quot;&quot;&quot;Adjust current budget (approved change).&quot;&quot;&quot;
+        if item_code not in self.items:
+            raise ValueError(f&quot;Item {item_code} not found&quot;)
+
+        self.items[item_code].current_budget += amount
+        self.items[item_code].notes += f&quot;\nBudget adjusted by {amount}: {reason}&quot;
+
+    def record_variance(self,
+                       item_code: str,
+                       cause: VarianceCause,
+                       explanation: str,
+                       recorded_by: str) -&gt; VarianceRecord:
+        &quot;&quot;&quot;Record variance explanation.&quot;&quot;&quot;
+        item = self.items.get(item_code)
+        if not item:
+            raise ValueError(f&quot;Item {item_code} not found&quot;)
+
+        record_id = f&quot;VAR-{len(self.variance_records) + 1:04d}&quot;
+
+        record = VarianceRecord(
+            record_id=record_id,
+            item_code=item_code,
+            variance_amount=item.variance_amount,
+            cause=cause,
+            explanation=explanation,
+            recorded_date=date.today(),
+            recorded_by=recorded_by
+        )
+
+        self.variance_records.append(record)
+        return record
+
+    def _record_history(self):
+        &quot;&quot;&quot;Record current state to history.&quot;&quot;&quot;
+        snapshot = {
+            &#39;date&#39;: date.today().isoformat(),
+            &#39;total_budget&#39;: sum(i.current_budget for i in self.items.values()),
+            &#39;total_committed&#39;: sum(i.committed_cost for i in self.items.values()),
+            &#39;total_actual&#39;: sum(i.actual_cost for i in self.items.values()),
+            &#39;total_forecast&#39;: sum(i.forecast_cost for i in self.items.values())
+        }
+        self.history.append(snapshot)
+
+    def calculate_summary(self) -&gt; Dict[str, Any]:
+        &quot;&quot;&quot;Calculate overall budget summary.&quot;&quot;&quot;
+        total_budget = sum(i.current_budget for i in self.items.values())
+        total_committed = sum(i.committed_cost for i in self.items.values())
+        total_actual = sum(i.actual_cost for i in self.items.values())
+        total_forecast = sum(i.forecast_cost for i in self.items.values())
+
+        variance = total_budget - total_forecast
+        variance_pct = (variance / total_budget * 100) if total_budget &gt; 0 else 0
+
+        # By category
+        by_category = {}
+        for item in self.items.values():
+            cat = item.category.value
+            if cat not in by_category:
+                by_category[cat] = {
+                    &#39;budget&#39;: 0, &#39;actual&#39;: 0, &#39;forecast&#39;: 0, &#39;variance&#39;: 0
+                }
+            by_category[cat][&#39;budget&#39;] += item.current_budget
+            by_category[cat][&#39;actual&#39;] += item.actual_cost
+            by_category[cat][&#39;forecast&#39;] += item.forecast_cost
+            by_category[cat][&#39;variance&#39;] += item.variance_amount
+
+        # Items needing attention
+        critical = [i for i in self.items.values() if i.status == VarianceStatus.CRITICAL]
+        over_budget = [i for i in self.items.values() if i.status == VarianceStatus.OVER_BUDGET]
+
+        return {
+            &#39;project&#39;: self.project_name,
+            &#39;currency&#39;: self.currency,
+            &#39;original_budget&#39;: self.original_budget,
+            &#39;current_budget&#39;: total_budget,
+            &#39;committed&#39;: total_committed,
+            &#39;actual&#39;: total_actual,
+            &#39;forecast&#39;: total_forecast,
+            &#39;variance&#39;: variance,
+            &#39;variance_percent&#39;: round(variance_pct, 1),
+            &#39;status&#39;: &#39;ON_TRACK&#39; if variance &gt;= 0 else &#39;OVER_BUDGET&#39;,
+            &#39;by_category&#39;: by_category,
+            &#39;critical_items&#39;: len(critical),
+            &#39;over_budget_items&#39;: len(over_budget),
+            &#39;contingency_used&#39;: total_budget - self.original_budget
+        }
+
+    def get_critical_items(self) -&gt; List[BudgetItem]:
+        &quot;&quot;&quot;Get items with critical variances.&quot;&quot;&quot;
+        return [i for i in self.items.values()
+                if i.status in [VarianceStatus.CRITICAL, VarianceStatus.OVER_BUDGET]]
+
+    def forecast_completion(self,
+                           optimistic_factor: float = 0.95,
+                           pessimistic_factor: float = 1.15) -&gt; Dict[str, ForecastScenario]:
+        &quot;&quot;&quot;Generate forecast scenarios.&quot;&quot;&quot;
+        current_forecast = sum(i.forecast_cost for i in self.items.values())
+        current_budget = sum(i.current_budget for i in self.items.values())
+
+        scenarios = {
+            &#39;optimistic&#39;: ForecastScenario(
+                name=&quot;Optimistic&quot;,
+                description=&quot;Best case with no further overruns&quot;,
+                adjustments={},
+                total_forecast=current_forecast * optimistic_factor,
+                variance_from_budget=current_budget - (current_forecast * optimistic_factor)
+            ),
+            &#39;most_likely&#39;: ForecastScenario(
+                name=&quot;Most Likely&quot;,
+                description=&quot;Current trend continues&quot;,
+                adjustments={},
+                total_forecast=current_forecast,
+                variance_from_budget=current_budget - current_forecast
+            ),
+            &#39;pessimistic&#39;: ForecastScenario(
+                name=&quot;Pessimistic&quot;,
+                description=&quot;Additional overruns expected&quot;,
+                adjustments={},
+                total_forecast=current_forecast * pessimistic_factor,
+                variance_from_budget=current_budget - (current_forecast * pessimistic_factor)
+            )
+        }
+
+        return scenarios
+
+    def analyze_trends(self) -&gt; Dict[str, Any]:
+        &quot;&quot;&quot;Analyze cost trends from history.&quot;&quot;&quot;
+        if len(self.history) &lt; 2:
+            return {&#39;trend&#39;: &#39;insufficient_data&#39;}
+
+        forecasts = [h[&#39;total_forecast&#39;] for h in self.history]
+        actuals = [h[&#39;total_actual&#39;] for h in self.history]
+
+        # Calculate trend direction
+        forecast_trend = forecasts[-1] - forecasts[0]
+        actual_trend = actuals[-1] - actuals[0]
+
+        return {
+            &#39;forecast_trend&#39;: &#39;increasing&#39; if forecast_trend &gt; 0 else &#39;decreasing&#39;,
+            &#39;forecast_change&#39;: forecast_trend,
+            &#39;actual_trend&#39;: &#39;increasing&#39; if actual_trend &gt; 0 else &#39;stable&#39;,
+            &#39;actual_change&#39;: actual_trend,
+            &#39;data_points&#39;: len(self.history)
+        }
+
+    def export_variance_report(self, output_path: str):
+        &quot;&quot;&quot;Export detailed variance report to Excel.&quot;&quot;&quot;
+        with pd.ExcelWriter(output_path, engine=&#39;openpyxl&#39;) as writer:
+            # Summary
+            summary = self.calculate_summary()
+            summary_df = pd.DataFrame([
+                {&#39;Metric&#39;: k, &#39;Value&#39;: v}
+                for k, v in summary.items()
+                if not isinstance(v, dict)
+            ])
+            summary_df.to_excel(writer, sheet_name=&#39;Summary&#39;, index=False)
+
+            # Line items
+            items_data = []
+            for item in self.items.values():
+                items_data.append({
+                    &#39;Code&#39;: item.item_code,
+                    &#39;Description&#39;: item.description,
+                    &#39;Category&#39;: item.category.value,
+                    &#39;Budget&#39;: item.current_budget,
+                    &#39;Committed&#39;: item.committed_cost,
+                    &#39;Actual&#39;: item.actual_cost,
+                    &#39;Forecast&#39;: item.forecast_cost,
+                    &#39;Variance $&#39;: item.variance_amount,
+                    &#39;Variance %&#39;: round(item.variance_percent, 1),
+                    &#39;Status&#39;: item.status.value,
+                    &#39;% Complete&#39;: item.percent_complete
+                })
+
+            pd.DataFrame(items_data).to_excel(writer, sheet_name=&#39;Line Items&#39;, index=False)
+
+            # Variance records
+            if self.variance_records:
+                records_df = pd.DataFrame([{
+                    &#39;ID&#39;: r.record_id,
+                    &#39;Item&#39;: r.item_code,
+                    &#39;Amount&#39;: r.variance_amount,
+                    &#39;Cause&#39;: r.cause.value,
+                    &#39;Explanation&#39;: r.explanation,
+                    &#39;Date&#39;: r.recorded_date,
+                    &#39;By&#39;: r.recorded_by
+                } for r in self.variance_records])
+                records_df.to_excel(writer, sheet_name=&#39;Variance Records&#39;, index=False)
+
+        return output_path
+</code></pre>
+<h2>Quick Start</h2>
+<pre><code class="language-python"># Initialize analyzer
+analyzer = BudgetVarianceAnalyzer(
+    project_name=&quot;Office Tower&quot;,
+    original_budget=50000000,
+    currency=&quot;USD&quot;
+)
+
+# Add budget items
+analyzer.add_budget_item(&quot;01-SITE&quot;, &quot;Site Work&quot;, CostCategory.SUBCONTRACTOR, 2000000)
+analyzer.add_budget_item(&quot;03-CONC&quot;, &quot;Concrete&quot;, CostCategory.SUBCONTRACTOR, 8000000)
+analyzer.add_budget_item(&quot;05-STEEL&quot;, &quot;Structural Steel&quot;, CostCategory.SUBCONTRACTOR, 6000000)
+
+# Update with actuals
+analyzer.update_costs(&quot;03-CONC&quot;, committed=8500000, actual=4000000, percent_complete=45)
+
+# Get summary
+summary = analyzer.calculate_summary()
+print(f&quot;Variance: ${summary[&#39;variance&#39;]:,.0f} ({summary[&#39;variance_percent&#39;]}%)&quot;)
+</code></pre>
+<h2>Common Use Cases</h2>
+<h3>1. Monthly Cost Review</h3>
+<pre><code class="language-python">summary = analyzer.calculate_summary()
+critical = analyzer.get_critical_items()
+print(f&quot;Items needing attention: {len(critical)}&quot;)
+</code></pre>
+<h3>2. Record Variance Cause</h3>
+<pre><code class="language-python">analyzer.record_variance(
+    item_code=&quot;03-CONC&quot;,
+    cause=VarianceCause.PRICE_ESCALATION,
+    explanation=&quot;Steel rebar prices increased 15%&quot;,
+    recorded_by=&quot;Cost Manager&quot;
+)
+</code></pre>
+<h3>3. Forecast Scenarios</h3>
+<pre><code class="language-python">scenarios = analyzer.forecast_completion()
+for name, scenario in scenarios.items():
+    print(f&quot;{scenario.name}: ${scenario.total_forecast:,.0f}&quot;)
+</code></pre>
+<h2>Resources</h2>
+<ul>
+<li><strong>DDC Book</strong>: Chapter 3.1 - Cost Management</li>
+<li><strong>Reference</strong>: PMI Cost Management</li>
+</ul>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/datadrivenconstruction/budget-variance-analyzer/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/datadrivenconstruction/budget-variance-analyzer" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/datadrivenconstruction/budget-variance-analyzer/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@datadrivenconstruction</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Coding Agents & IDEs</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">OpenClawDirectory.com is a community-run project and is not affiliated with the official OpenClaw team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

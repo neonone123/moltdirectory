@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Unblock websites and bypass CAPTCHAs and 403 errors using Aluvia mobile proxies">
+  <meta name="description" content="Unblock websites and bypass CAPTCHAs and 403">
   <title>aluvia-web-proxy - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/search-research/aluvia-web-proxy/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,13 +45,13 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Search & Research</a>
+              <a href="/search-research/" class="back-link">← Back to Search & Research</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Search & Research</a>
+                <a href="/search-research/" class="skill-page-category">Search & Research</a>
                 <span class="skill-page-author">by @aluvia-connectivity</span>
               </div>
               <h1 class="skill-page-title">aluvia-web-proxy</h1>
-              <p class="skill-page-desc">Unblock websites and bypass CAPTCHAs and 403 errors using Aluvia mobile proxies</p>
+              <p class="skill-page-desc">Unblock websites and bypass CAPTCHAs and 403</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -64,54 +65,177 @@
                   </button>
                 </div>
                 <div class="markdown-content">
-                  <h1>Aluvia Web Proxy</h1>
-<p>Provides unblockable web access for agents using Aluvia mobile proxies.
-Use this skill to search the web or fetch page content from sites that block bots, scrapers, or datacenter IPs.</p>
-<h2>Capabilities</h2>
+                  <h1>Aluvia Proxy: Unblock agent browser with proxies + playwright</h1>
+<h2>The Problem</h2>
+<p>Your OpenClaw agent gets blocked because anti-bot systems are built to stop cloud-based agent/bot traffic with datacenter IP addresses. You get 403 Forbidden, CAPTCHAs, 429 rate limits, IP bans, empty responses.</p>
+<h2>The Solution</h2>
+<p>Aluvia routes your agent&#39;s traffic through <strong>real US mobile carrier IPs</strong> — the same IPs used by millions of real people on their phones. Websites cannot distinguish your agent from a legitimate user browsing on a mobile device.</p>
+<p>Aluvia&#39;s proxies + Playwright + Chrome stack: detects website blocks and routes your agent&#39;s traffic through a clean mobile IP when necessary. All automatically. All without proxy configs. All without building custom routing rules.</p>
+<h2>Features</h2>
 <ul>
-<li>Web search with unblockable access</li>
-<li>Fetch and extract page content as Markdown</li>
-<li>Bypass CAPTCHAs and anti-bot challenges</li>
-<li>Avoid 403 and IP-based blocking</li>
-<li>Route requests through Aluvia mobile IPs</li>
-<li>Reuse proxy connections</li>
+<li><strong>Mobile carrier residential proxies</strong> — Not datacenter or shared residential IPs. Real mobile carrier IPs that websites inherently trust. Highest-quality proxy tier available.</li>
+<li><strong>Automatic block detection and bypass</strong> — Every page load is scored 0.0–1.0. Detects Cloudflare challenges, CAPTCHAs, 403/429 responses, soft blocks, and empty pages. With <code>--auto-unblock</code>, blocks are remediated automatically by rerouting through proxy and reloading.</li>
+<li><strong>One-command IP rotation</strong> — Rotate to a fresh mobile IP mid-session without restarting the browser. Break through persistent blocks and rate limits instantly.</li>
+<li><strong>US geo-targeting</strong> — Pin your exit IP to a specific US state (California, New York, Texas, etc.) for location-sensitive scraping and content access.</li>
+<li><strong>Dynamic proxy routing rules</strong> — Proxy only the domains that need it. Add or remove hostnames on the fly as your agent navigates across sites and discovers new endpoints.</li>
+<li><strong>Managed headless Chromium with Playwright</strong> — Full browser sessions with Chrome DevTools Protocol (CDP) access. No browser setup, no stealth plugins, no fingerprint patching required.</li>
+<li><strong>JSON-first CLI built for agents</strong> — Every command returns structured JSON to stdout. Designed for programmatic use by AI agents, not for humans typing in a terminal.</li>
 </ul>
-<h2>Requirements</h2>
+<h2>Installation</h2>
+<pre><code class="language-bash">npm install -g @aluvia/sdk
+</code></pre>
+<p>Or use directly with npx (no install needed):</p>
+<pre><code class="language-bash">npx aluvia help
+</code></pre>
+<h2>CLI Interface</h2>
 <ul>
-<li>Aluvia API key</li>
-<li>Brave Search API key</li>
-<li>Optional Aluvia connection ID for connection reuse</li>
+<li>Every command outputs a single JSON object to stdout. Parse it with your JSON tool.</li>
+<li>Exit code <code>0</code> = success, <code>1</code> = error. Errors return <code>{&quot;error&quot;: &quot;message&quot;}</code>.</li>
+<li>The CLI manages long-running browser daemons — start a session, interact via the <code>exec</code> tool, close when done.</li>
+<li>Block detection scores pages 0.0-1.0: <code>blocked</code> &gt;= 0.7, <code>suspected</code> &gt;= 0.4, <code>clear</code> &lt; 0.4.</li>
+<li><code>--auto-unblock</code> handles most blocks automatically by adding hostnames to proxy rules and reloading.</li>
 </ul>
-<h2>Setup</h2>
-<pre><code class="language-bash">cd ~/Projects/agent-scripts/skills/aluvia-web-proxy
-npm ci
+<h2>Prerequisites Check</h2>
+<p>Before using any command, verify the environment:</p>
+<pre><code class="language-bash"># 1. Check API key is set (never log the full value)
+echo &quot;${ALUVIA_API_KEY:0:8}...&quot;
+
+# 2. Verify the CLI binary is available
+aluvia help --json
+
+# 3. Verify Playwright is installed (required for browser sessions)
+node -e &quot;require(&#39;playwright&#39;)&quot;
 </code></pre>
-<pre><code class="language-bash">export ALUVIA_API_KEY=your_aluvia_key
-export BRAVE_API_KEY=your_brave_key
+<p>If the API key is missing, direct the user to create one at the <a href="https://dashboard.aluvia.io">Aluvia dashboard</a> and set <code>ALUVIA_API_KEY</code>. If <code>aluvia</code> is not found, run <code>npm install @aluvia/sdk</code>. If Playwright is missing, run <code>npm install playwright</code>.</p>
+<h2>Core Commands Quick Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Purpose</th>
+<th>Common Usage</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>session start &lt;url&gt;</code></td>
+<td>Launch a headless browser session</td>
+<td><code>aluvia session start https://example.com --auto-unblock --browser-session my-task</code></td>
+</tr>
+<tr>
+<td><code>session close</code></td>
+<td>Stop a running session</td>
+<td><code>aluvia session close --browser-session my-task</code></td>
+</tr>
+<tr>
+<td><code>session list</code></td>
+<td>List all active sessions</td>
+<td><code>aluvia session list</code></td>
+</tr>
+<tr>
+<td><code>session get</code></td>
+<td>Get session details + block detection + connection info</td>
+<td><code>aluvia session get --browser-session my-task</code></td>
+</tr>
+<tr>
+<td><code>session rotate-ip</code></td>
+<td>Rotate to a new upstream IP</td>
+<td><code>aluvia session rotate-ip --browser-session my-task</code></td>
+</tr>
+<tr>
+<td><code>session set-geo &lt;geo&gt;</code></td>
+<td>Target IPs from a specific US region</td>
+<td><code>aluvia session set-geo us_ca --browser-session my-task</code></td>
+</tr>
+<tr>
+<td><code>session set-rules &lt;rules&gt;</code></td>
+<td>Add hostnames to proxy routing</td>
+<td><code>aluvia session set-rules &quot;example.com,api.example.com&quot; --browser-session my-task</code></td>
+</tr>
+<tr>
+<td><code>account</code></td>
+<td>Show account info and balance</td>
+<td><code>aluvia account</code></td>
+</tr>
+<tr>
+<td><code>account usage</code></td>
+<td>Show bandwidth usage stats</td>
+<td><code>aluvia account usage</code></td>
+</tr>
+<tr>
+<td><code>geos</code></td>
+<td>List available geo-targeting regions</td>
+<td><code>aluvia geos</code></td>
+</tr>
+<tr>
+<td><code>help</code></td>
+<td>Show help (use <code>--json</code> for structured output)</td>
+<td><code>aluvia help --json</code></td>
+</tr>
+</tbody></table>
+<h2>Standard Workflow</h2>
+<h3>1. Start a session</h3>
+<p>Always use <code>--browser-session</code> to name your session. Always use <code>--auto-unblock</code> unless you need manual block control.</p>
+<pre><code class="language-bash">aluvia session start https://example.com --auto-unblock --browser-session my-task
 </code></pre>
-<p>Optional:</p>
-<pre><code class="language-bash">export ALUVIA_CONNECTION_ID=your_connection_id
+<h3>2. Parse the JSON output</h3>
+<p>The start command returns:</p>
+<pre><code class="language-json">{
+  &quot;browserSession&quot;: &quot;my-task&quot;,
+  &quot;pid&quot;: 12345,
+  &quot;startUrl&quot;: &quot;https://example.com&quot;,
+  &quot;cdpUrl&quot;: &quot;http://127.0.0.1:38209&quot;,
+  &quot;connectionId&quot;: 3449,
+  &quot;blockDetection&quot;: true,
+  &quot;autoUnblock&quot;: true
+}
 </code></pre>
-<h2>Usage</h2>
-<h3>Web Search</h3>
-<pre><code class="language-bash">./search.js &quot;query&quot;
-./search.js &quot;query&quot; -n 10
-./search.js &quot;query&quot; --content
+<p>Save <code>browserSession</code> — you need it for every subsequent command.</p>
+<p><strong>If the agent uses the OpenClaw browser tool:</strong> create a remote CDP profile with this session&#39;s <code>cdpUrl</code> and use that profile for all browser commands. See <a href="https://github.com/aluvia-connect/aluvia-skill/blob/main/references/openclaw-browser-integration.md">OpenClaw browser integration</a>.</p>
+<h3>3. Monitor for blocks</h3>
+<p>Check session status including the latest block detection result:</p>
+<pre><code class="language-bash">aluvia session get --browser-session my-task
 </code></pre>
-<h3>Fetch Page Content</h3>
-<pre><code class="language-bash">./content.js https://example.com/article
+<p>Look at the <code>lastDetection</code> object in the response. If <code>blockStatus</code> is <code>&quot;blocked&quot;</code> and <code>--auto-unblock</code> is on, the SDK already handled it. If blocks persist, escalate:</p>
+<h3>4. Rotate IP if blocked</h3>
+<pre><code class="language-bash">aluvia session rotate-ip --browser-session my-task
 </code></pre>
-<h2>Output</h2>
-<p>Returns structured search results and extracted page content in Markdown format.</p>
-<h2>Use Cases</h2>
+<p>Returns a new <code>sessionId</code> (UUID). The next request through the proxy uses a fresh IP.</p>
+<h3>5. Set geo-targeting if needed</h3>
+<p>Some sites serve different content or apply different blocks by region:</p>
+<pre><code class="language-bash">aluvia session set-geo us_ca --browser-session my-task
+</code></pre>
+<h3>6. Expand routing rules</h3>
+<p>If your agent navigates to new domains that need proxying, add them dynamically:</p>
+<pre><code class="language-bash">aluvia session set-rules &quot;newsite.com,api.newsite.com&quot; --browser-session my-task
+</code></pre>
+<p>Rules are appended to existing rules (not replaced).</p>
+<h3>7. Close the session when done</h3>
+<p><strong>Always close your session.</strong> Sessions consume resources until explicitly closed.</p>
+<pre><code class="language-bash">aluvia session close --browser-session my-task
+</code></pre>
+<h2>Safety Constraints</h2>
+<p>Follow these rules in every interaction:</p>
+<ol>
+<li><strong>Always close sessions.</strong> When your task finishes — success or failure — run <code>session close</code>. If uncertain whether a session exists, run <code>session list</code> first.</li>
+<li><strong>Never expose the API key.</strong> Reference <code>ALUVIA_API_KEY</code> by name only. Never log, print, or include its value in output.</li>
+<li><strong>Check balance before expensive operations.</strong> Run <code>aluvia account</code> and inspect <code>balance_gb</code> before long scraping tasks.</li>
+<li><strong>Limit IP rotation retries to 3.</strong> If rotating IP three times doesn&#39;t resolve a block, stop and report the issue — the site may use fingerprinting beyond IP.</li>
+<li><strong>Prefer <code>--auto-unblock</code>.</strong> Let the SDK handle block detection and remediation automatically. Only disable it when you need manual control over routing decisions.</li>
+<li><strong>Prefer headless mode.</strong> Only use <code>--headful</code> for debugging. Headless is faster and uses fewer resources.</li>
+<li><strong>Parse exit codes.</strong> Always check the exit code. On exit code 1, parse the <code>error</code> field and handle it — do not blindly retry.</li>
+<li><strong>Use named sessions.</strong> Always pass <code>--browser-session &lt;name&gt;</code> to avoid ambiguity errors when multiple sessions run.</li>
+<li><strong>Clean up on failure.</strong> If any step fails, close the session before retrying or aborting. Use <code>session close --all</code> as a last resort.</li>
+<li><strong>One session per task.</strong> Do not start multiple sessions unless the task explicitly requires parallel browsing of different sites.</li>
+</ol>
+<h2>References</h2>
+<p>For detailed command specs, workflows, and troubleshooting:</p>
 <ul>
-<li>Agents blocked by CAPTCHAs or 403 errors</li>
-<li>Web retrieval without headless browsers</li>
-<li>Scraping sites that block cloud IPs</li>
-<li>Search + fetch workflows requiring stable IPs</li>
+<li><strong>Command reference:</strong> <a href="https://github.com/aluvia-connect/aluvia-skill/blob/main/references/command-reference.md">references/command-reference.md</a> — every flag, output schema, and error for all 11 commands</li>
+<li><strong>Workflow recipes:</strong> <a href="https://github.com/aluvia-connect/aluvia-skill/blob/main/references/workflows.md">references/workflows.md</a> — step-by-step patterns for common scenarios</li>
+<li><strong>Troubleshooting:</strong> <a href="https://github.com/aluvia-connect/aluvia-skill/blob/main/references/troubleshooting.md">references/troubleshooting.md</a> — error messages, block score interpretation, signal names, recovery steps</li>
+<li><strong>agent-browser integration:</strong> <a href="https://github.com/aluvia-connect/aluvia-skill/blob/main/references/agent-browser-integration.md">references/agent-browser-integration.md</a> — using Aluvia CDP with <a href="https://www.npmjs.com/package/agent-browser">agent-browser</a> CLI</li>
+<li><strong>OpenClaw browser integration:</strong> <a href="https://github.com/aluvia-connect/aluvia-skill/blob/main/references/openclaw-browser-integration.md">references/openclaw-browser-integration.md</a> — using Aluvia CDP with <a href="https://docs.openclaw.ai/tools/browser">OpenClaw browser tool</a></li>
 </ul>
-<h2>Keywords</h2>
-<p>unblock, bypass captcha, 403 errors, website block, mobile proxy, web scraping, agent retrieval, anti-bot</p>
 
                 </div>
               </div>

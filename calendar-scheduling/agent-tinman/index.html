@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="AI security scanner with active prevention - 168 detection patterns, 288 attack probes, safer/risky/yolo modes, agent">
+  <meta name="description" content="AI security scanner with active prevention - 168 detection">
   <title>agent-tinman - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/calendar-scheduling/agent-tinman/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,13 +45,13 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Calendar & Scheduling</a>
+              <a href="/calendar-scheduling/" class="back-link">← Back to Calendar & Scheduling</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Calendar & Scheduling</a>
+                <a href="/calendar-scheduling/" class="skill-page-category">Calendar & Scheduling</a>
                 <span class="skill-page-author">by @oliveskin</span>
               </div>
               <h1 class="skill-page-title">agent-tinman</h1>
-              <p class="skill-page-desc">AI security scanner with active prevention - 168 detection patterns, 288 attack probes, safer/risky/yolo modes, agent</p>
+              <p class="skill-page-desc">AI security scanner with active prevention - 168 detection</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -66,6 +67,13 @@
                 <div class="markdown-content">
                   <h1>Tinman - AI Failure Mode Research</h1>
 <p>Tinman is a forward-deployed research agent that discovers unknown failure modes in AI systems through systematic experimentation.</p>
+<h2>Security and Trust Notes</h2>
+<ul>
+<li>This skill intentionally declares <code>install.pip</code> and session/file permissions because scanning requires local analysis of session traces and report output.</li>
+<li>The default watch gateway is loopback-only (<code>ws://127.0.0.1:18789</code>) to reduce accidental data exposure.</li>
+<li>Remote gateways require explicit opt-in with <code>--allow-remote-gateway</code> and should only be used for trusted internal endpoints.</li>
+<li>Event streaming is local (<code>~/.openclaw/workspace/tinman-events.jsonl</code>) and best-effort; values are truncated and obvious secret patterns are redacted.</li>
+</ul>
 <h2>What It Does</h2>
 <ul>
 <li><strong>Checks</strong> tool calls before execution for security risks (agent self-protection)</li>
@@ -73,6 +81,7 @@
 <li><strong>Classifies</strong> failures by severity (S0-S4) and type</li>
 <li><strong>Proposes</strong> mitigations mapped to OpenClaw controls (SOUL.md, sandbox policy, tool allow/deny)</li>
 <li><strong>Reports</strong> findings in actionable format</li>
+<li><strong>Streams</strong> structured local events to <code>~/.openclaw/workspace/tinman-events.jsonl</code> (for local dashboards like Oilcan)</li>
 </ul>
 <h2>Commands</h2>
 <h3><code>/tinman init</code></h3>
@@ -165,6 +174,7 @@ If SAFE: proceed
 <p><strong>Real-time mode (recommended):</strong> Connects to Gateway WebSocket for instant event monitoring.</p>
 <pre><code>/tinman watch                           # Real-time via ws://127.0.0.1:18789
 /tinman watch --gateway ws://host:port  # Custom gateway URL
+/tinman watch --gateway ws://host:port --allow-remote-gateway  # Explicit opt-in for remote
 /tinman watch --interval 5              # Analysis every 5 minutes
 </code></pre>
 <p><strong>Polling mode:</strong> Periodic session scans (fallback when gateway unavailable).</p>
@@ -193,17 +203,18 @@ heartbeat:
 </code></pre>
 <p><strong>Attack Categories:</strong></p>
 <ul>
-<li><code>prompt_injection</code> (15 attacks): Jailbreaks, DAN, instruction override</li>
-<li><code>tool_exfil</code> (42 attacks): SSH keys, credentials, cloud creds, supply-chain tokens, network exfil</li>
-<li><code>context_bleed</code> (14 attacks): Cross-session leaks, memory extraction</li>
-<li><code>privilege_escalation</code> (15 attacks): Sandbox escape, elevation bypass</li>
-<li><code>financial</code> (26 attacks): Crypto wallets (BTC, ETH, SOL, Base), transactions, exchange API keys</li>
-<li><code>unauthorized_action</code> (28 attacks): Actions without consent, implicit execution</li>
-<li><code>mcp_attacks</code> (20 attacks): MCP tool abuse, server injection, cross-MCP exfil</li>
-<li><code>indirect_injection</code> (20 attacks): Injection via files, URLs, documents</li>
-<li><code>evasion_bypass</code> (30 attacks): Unicode bypass, URL/base64/hex encoding, shell injection</li>
-<li><code>memory_poisoning</code> (25 attacks): Context injection, RAG poisoning, history rewriting</li>
-<li><code>platform_specific</code> (35 attacks): Windows (mimikatz, schtasks, PowerShell IEX, certutil), macOS (LaunchAgents, keychain), Linux (systemd, cron), cloud metadata</li>
+<li><code>prompt_injection</code> (15): Jailbreaks, instruction override</li>
+<li><code>tool_exfil</code> (42): SSH keys, credentials, cloud creds, network exfil</li>
+<li><code>context_bleed</code> (14): Cross-session leaks, memory extraction</li>
+<li><code>privilege_escalation</code> (15): Sandbox escape, elevation bypass</li>
+<li><code>supply_chain</code> (18): Malicious skills, dependency/update attacks</li>
+<li><code>financial_transaction</code> (26): Wallet/seed theft, transactions, exchange API keys (alias: <code>financial</code>)</li>
+<li><code>unauthorized_action</code> (28): Actions without consent, implicit execution</li>
+<li><code>mcp_attack</code> (20): MCP tool abuse, server injection, cross-tool exfil (alias: <code>mcp_attacks</code>)</li>
+<li><code>indirect_injection</code> (20): Injection via files, URLs, documents, issues</li>
+<li><code>evasion_bypass</code> (30): Unicode/encoding bypass, obfuscation</li>
+<li><code>memory_poisoning</code> (25): Persistent instruction poisoning, fabricated history</li>
+<li><code>platform_specific</code> (35): Windows/macOS/Linux/cloud-metadata payloads</li>
 </ul>
 <p><strong>Output:</strong> Writes sweep report to <code>~/.openclaw/workspace/tinman-sweep.md</code></p>
 <h2>Failure Categories</h2>

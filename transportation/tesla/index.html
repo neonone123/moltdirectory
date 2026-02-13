@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Control your Tesla vehicles - lock/unlock, climate, location, charge status">
+  <meta name="description" content="Control your Tesla vehicles - lock/unlock, climate, location, charge status,">
   <title>tesla - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/transportation/tesla/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,13 +45,13 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Transportation</a>
+              <a href="/transportation/" class="back-link">← Back to Transportation</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Transportation</a>
+                <a href="/transportation/" class="skill-page-category">Transportation</a>
                 <span class="skill-page-author">by @mvanhorn</span>
               </div>
               <h1 class="skill-page-title">tesla</h1>
-              <p class="skill-page-desc">Control your Tesla vehicles - lock/unlock, climate, location, charge status</p>
+              <p class="skill-page-desc">Control your Tesla vehicles - lock/unlock, climate, location, charge status,</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -136,12 +137,36 @@ python3 {baseDir}/scripts/tesla.py wake
 <h2>API Reference</h2>
 <p>Uses the unofficial Tesla Owner API documented at:
 <a href="https://tesla-api.timdorr.com">https://tesla-api.timdorr.com</a></p>
-<h2>Privacy &amp; Security</h2>
+<h2>Troubleshooting</h2>
+<p><strong>Auth not working?</strong></p>
 <ul>
-<li>Credentials stored locally only</li>
-<li>Refresh token cached in <code>~/.tesla_cache.json</code></li>
-<li>No data sent to third parties</li>
+<li>Try opening the auth URL on your <strong>phone browser</strong> instead of desktop</li>
+<li>Make sure you&#39;re logged into the correct Tesla account</li>
+<li>Clear cookies and try again</li>
+</ul>
+<h2>Security &amp; Permissions</h2>
+<p><strong>This skill controls physical vehicles. Use with caution.</strong></p>
+<p><strong>What this skill does:</strong></p>
+<ul>
+<li>Authenticates via Tesla&#39;s official OAuth flow using the <code>teslapy</code> library</li>
+<li>Sends vehicle commands (lock, unlock, climate, charge) to Tesla&#39;s official API</li>
+<li>Caches OAuth refresh token locally in <code>~/.tesla_cache.json</code></li>
+<li>All communication is between your machine and Tesla&#39;s servers only</li>
+</ul>
+<p><strong>What this skill does NOT do:</strong></p>
+<ul>
+<li>Does not store your Tesla password — uses OAuth token flow</li>
+<li>Does not send credentials or vehicle data to any third party</li>
+<li>Does not access any system resources beyond the Tesla API</li>
+<li>Cannot be invoked autonomously by the agent (<code>disable-model-invocation: true</code>)</li>
+<li>The agent must be explicitly triggered by you for every command</li>
+</ul>
+<p><strong>Key safety:</strong></p>
+<ul>
+<li>Refresh token cached in <code>~/.tesla_cache.json</code> with restricted permissions</li>
 <li>Tokens auto-refresh for ~30 days</li>
+<li>Only use on trusted, personal machines</li>
+<li>Review <code>scripts/tesla.py</code> before first use — it communicates only with Tesla&#39;s official API</li>
 </ul>
 
                 </div>

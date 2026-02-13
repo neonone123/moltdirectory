@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="plan2meal">
   <title>plan2meal - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/shopping-e-commerce/plan2meal/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,9 +45,9 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Shopping & E-commerce</a>
+              <a href="/shopping-e-commerce/" class="back-link">← Back to Shopping & E-commerce</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Shopping & E-commerce</a>
+                <a href="/shopping-e-commerce/" class="skill-page-category">Shopping & E-commerce</a>
                 <span class="skill-page-author">by @okikesolutions</span>
               </div>
               <h1 class="skill-page-title">plan2meal</h1>
@@ -66,11 +67,17 @@
                 <div class="markdown-content">
                   <h1>Plan2Meal Skill</h1>
 <p>A ClawdHub skill for managing recipes and grocery lists via Plan2Meal, a React Native recipe app.</p>
+<p><strong>Data routing disclosure</strong></p>
+<ul>
+<li>By default, this skill sends authentication and recipe/grocery API traffic to:
+<code>https://gallant-bass-875.convex.cloud</code></li>
+<li>You can override <code>CONVEX_URL</code> to use your own/self-hosted backend.</li>
+</ul>
 <h2>Features</h2>
 <ul>
 <li><strong>Recipe Management</strong>: Add recipes from URLs, search, view, and delete your recipes</li>
 <li><strong>Grocery Lists</strong>: Create and manage shopping lists with recipes</li>
-<li><strong>Backend Authentication</strong>: Secure authentication via Plan2Meal web app (no secrets in skill)</li>
+<li><strong>Multi-Provider Auth</strong>: Login with GitHub, Google, or Apple</li>
 <li><strong>Recipe Extraction</strong>: Automatically fetch recipe metadata from URLs</li>
 <li><strong>Telegram Formatting</strong>: Pretty-printed output for Telegram</li>
 </ul>
@@ -85,23 +92,39 @@
 # Edit .env with your credentials
 </code></pre>
 </li>
-<li><p>Required environment variables:</p>
+<li><p>Environment variables:</p>
 <ul>
-<li><code>PLAN2MEAL_API_URL</code>: Your Plan2Meal backend API URL (e.g., <code>https://api.plan2meal.app</code>)</li>
+<li><code>CONVEX_URL</code> (optional): backend URL for Plan2Meal API calls.<ul>
+<li>Default: <code>https://gallant-bass-875.convex.cloud</code></li>
+<li>Override this if you want to use your own/self-hosted backend.</li>
 </ul>
-<p><strong>Optional:</strong></p>
-<ul>
-<li><code>PLAN2MEAL_AUTH_URL</code>: Custom authentication URL (defaults to <code>https://app.plan2meal.com/sign-in</code>)</li>
-</ul>
-<p><strong>Important</strong>: </p>
-<ul>
-<li><strong>Public Skill</strong>: This skill is published on ClawdHub. No secrets are stored in the skill.</li>
-<li><strong>Authentication</strong>: Users authenticate via your Plan2Meal web app, then copy a session token back to Telegram.</li>
-<li><strong>Backend Security</strong>: All OAuth credentials (GitHub, Convex) are configured in your backend only, never exposed.</li>
+</li>
+<li><code>AUTH_GITHUB_ID</code> / <code>AUTH_GITHUB_SECRET</code> (or <code>GITHUB_CLIENT_ID</code> / <code>GITHUB_CLIENT_SECRET</code>)</li>
+<li><code>AUTH_GOOGLE_ID</code> / <code>AUTH_GOOGLE_SECRET</code> (or <code>GOOGLE_CLIENT_ID</code> / <code>GOOGLE_CLIENT_SECRET</code>)</li>
+<li><code>AUTH_APPLE_ID</code> / <code>AUTH_APPLE_SECRET</code> (or <code>APPLE_CLIENT_ID</code> / <code>APPLE_CLIENT_SECRET</code>)</li>
+<li><code>GITHUB_CALLBACK_URL</code>, <code>GOOGLE_CALLBACK_URL</code>, <code>APPLE_CALLBACK_URL</code></li>
+<li><code>CLAWDBOT_URL</code>: Your ClawdBot URL (for OAuth callback)</li>
 </ul>
 </li>
 </ol>
 <h2>Commands</h2>
+<h3>Authentication</h3>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>plan2meal login</code></td>
+<td>Show login options (GitHub, Google, Apple)</td>
+</tr>
+<tr>
+<td><code>plan2meal logout</code></td>
+<td>Logout and clear session</td>
+</tr>
+</tbody></table>
 <h3>Recipe Commands</h3>
 <table>
 <thead>
@@ -170,26 +193,25 @@
 </tr>
 </tbody></table>
 <h2>Usage Examples</h2>
+<h3>First Login</h3>
+<pre><code>plan2meal login
+</code></pre>
+<p>Shows login options for GitHub, Google, and Apple. Click the link to authenticate.</p>
 <h3>Adding a Recipe</h3>
 <pre><code>plan2meal add https://www.allrecipes.com/recipe/12345/pasta
 </code></pre>
 <p>Output:</p>
 <pre><code>✅ Recipe added successfully!
 
-📖 Recipe Details
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Name: Classic Pasta
-Source: allrecipes.com
-Method: firecrawl-json (credit used)
-Time: 15 min prep + 20 min cook
+📖 Classic Pasta
+🔗 Source: allrecipes.com
+⚡ Method: native-fetch-json (no credits used)
+⏰ Scraped at: 3:45 PM
 
-🥘 Ingredients (4 servings)
+🥘 Ingredients (4)
 • 1 lb pasta
 • 2 cups marinara sauce
 • 1/2 cup parmesan
-
-🔪 Steps
-1. Boil water...
 </code></pre>
 <h3>Searching Recipes</h3>
 <pre><code>plan2meal search pasta
@@ -197,46 +219,16 @@ Time: 15 min prep + 20 min cook
 <h3>Creating a Grocery List</h3>
 <pre><code>plan2meal list-create Weekly Shopping
 </code></pre>
-<h3>Adding Recipe to List</h3>
-<pre><code>plan2meal list-add &lt;listId&gt; &lt;recipeId&gt;
-</code></pre>
+<h2>Authentication</h2>
+<p>First-time users need to authenticate. Choose:</p>
+<ul>
+<li><strong>GitHub</strong> - Requires GitHub OAuth app</li>
+<li><strong>Google</strong> - Requires Google OAuth client</li>
+<li><strong>Apple</strong> - Requires Apple Developer account</li>
+</ul>
+<p>Authentication is OAuth-only via provider login links.</p>
 <h2>Recipe Limits</h2>
 <p>The free tier allows up to <strong>5 recipes</strong>. You&#39;ll receive a warning when approaching this limit.</p>
-<h2>Authentication Architecture</h2>
-<h3>How It Works</h3>
-<p><strong>Skill Owner Setup</strong> (one-time):</p>
-<ol>
-<li>Configure your Plan2Meal backend API URL in the skill</li>
-<li>Your backend handles all OAuth (GitHub credentials configured in Convex environment variables)</li>
-<li>Your backend is configured with the Convex URL (stays private)</li>
-</ol>
-<p><strong>End User Flow</strong>:</p>
-<ol>
-<li>User sends a command (e.g., <code>plan2meal list</code>)</li>
-<li>Skill responds with a link to your Plan2Meal sign-in page (<code>app.plan2meal.com/sign-in</code>)</li>
-<li>User clicks the link and authenticates with GitHub via your web app</li>
-<li>Your backend (using Convex Auth) handles the GitHub OAuth flow</li>
-<li>After successful authentication, your backend shows the user a session token</li>
-<li>User copies the token and sends it back to Telegram (or types <code>token: &lt;token&gt;</code>)</li>
-<li>Skill validates the token with your backend and stores it securely</li>
-</ol>
-<p><strong>Backend Processing</strong>:</p>
-<ul>
-<li>Your Plan2Meal backend uses Convex Auth with GitHub provider</li>
-<li>GitHub OAuth credentials are stored in Convex environment variables (never exposed)</li>
-<li>After GitHub auth, backend generates a session token for the user</li>
-<li>Skill sends session token to your backend API for all requests</li>
-<li>Your backend validates the token and makes Convex API calls on behalf of the user</li>
-<li>Convex URL is never exposed to users or the skill</li>
-</ul>
-<h3>Key Points</h3>
-<ul>
-<li><strong>Public Skill</strong>: No secrets in the skill - safe to publish on ClawdHub</li>
-<li><strong>Backend OAuth</strong>: All OAuth credentials (GitHub, Convex) stay in your backend</li>
-<li><strong>User Identification</strong>: Your backend maps session tokens to Convex users internally</li>
-<li><strong>Privacy</strong>: Convex URL stays private in your backend only</li>
-<li><strong>Security</strong>: Session tokens are validated with your backend before use</li>
-</ul>
 <h2>License</h2>
 <p>MIT</p>
 

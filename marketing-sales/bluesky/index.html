@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Read, post, and interact with Bluesky (AT Protocol)">
+  <meta name="description" content="Complete Bluesky CLI: post, reply, like, repost, follow, block, mute, search,">
   <title>bluesky - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/marketing-sales/bluesky/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,13 +45,13 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Marketing & Sales</a>
+              <a href="/marketing-sales/" class="back-link">← Back to Marketing & Sales</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Marketing & Sales</a>
+                <a href="/marketing-sales/" class="skill-page-category">Marketing & Sales</a>
                 <span class="skill-page-author">by @jeffaf</span>
               </div>
               <h1 class="skill-page-title">bluesky</h1>
-              <p class="skill-page-desc">Read, post, and interact with Bluesky (AT Protocol)</p>
+              <p class="skill-page-desc">Complete Bluesky CLI: post, reply, like, repost, follow, block, mute, search,</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -65,68 +66,190 @@
                 </div>
                 <div class="markdown-content">
                   <h1>Bluesky CLI</h1>
-<p>Interact with Bluesky/AT Protocol from the command line.</p>
+<p>Full-featured CLI for Bluesky/AT Protocol.</p>
+<h2>Agent Instructions</h2>
+<p><strong>First: Check if logged in</strong></p>
+<pre><code class="language-bash">bsky whoami
+</code></pre>
+<ul>
+<li>If shows handle → ready to use commands below</li>
+<li>If &quot;Not logged in&quot; → guide user through Setup section</li>
+</ul>
+<p><strong>Common tasks:</strong></p>
+<ul>
+<li>&quot;Post to Bluesky&quot; → <code>bsky post &quot;text&quot;</code></li>
+<li>&quot;Check my timeline&quot; → <code>bsky timeline</code></li>
+<li>&quot;Like this post&quot; → <code>bsky like &lt;url&gt;</code></li>
+<li>&quot;Follow someone&quot; → <code>bsky follow @handle</code></li>
+</ul>
 <h2>Setup</h2>
-<p>First-time setup requires an app password from Bluesky:</p>
-<ol>
-<li>Go to bsky.app → Settings → Privacy and Security → App Passwords</li>
-<li>Create a new app password</li>
-<li>Run: <code>bsky login --handle yourhandle.bsky.social --password xxxx-xxxx-xxxx-xxxx</code></li>
-</ol>
-<p><strong>Security:</strong> Password is NOT stored. The CLI exports a session token on login, which auto-refreshes. Your app password only exists in memory during login.</p>
+<p>If user isn&#39;t logged in (<code>bsky whoami</code> shows &quot;Not logged in&quot;), guide them through setup:</p>
+<h3>Getting an App Password</h3>
+<p>Tell the user:</p>
+<blockquote>
+<p>Go to bsky.app → click your avatar → Settings → Privacy and Security → App Passwords → Add App Password. Name it &quot;OpenClaw&quot; and copy the password (like <code>xxxx-xxxx-xxxx-xxxx</code>). You&#39;ll only see it once!</p>
+</blockquote>
+<h3>Logging In</h3>
+<p>Once they have the app password, run:</p>
+<pre><code class="language-bash">bsky login --handle THEIR_HANDLE.bsky.social --password THEIR_APP_PASSWORD
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-bash">bsky login --handle alice.bsky.social --password abcd-1234-efgh-5678
+</code></pre>
+<p><strong>Security:</strong> Password is used once to get a session token, then immediately discarded. Never stored on disk. Session auto-refreshes.</p>
+<h2>Quick Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>View timeline</td>
+<td><code>bsky timeline</code> or <code>bsky tl</code></td>
+</tr>
+<tr>
+<td>Post</td>
+<td><code>bsky post &quot;text&quot;</code></td>
+</tr>
+<tr>
+<td>Post with image</td>
+<td><code>bsky post &quot;text&quot; --image photo.jpg --alt &quot;description&quot;</code></td>
+</tr>
+<tr>
+<td>Reply</td>
+<td><code>bsky reply &lt;url&gt; &quot;text&quot;</code></td>
+</tr>
+<tr>
+<td>Quote-post</td>
+<td><code>bsky quote &lt;url&gt; &quot;text&quot;</code></td>
+</tr>
+<tr>
+<td>View thread</td>
+<td><code>bsky thread &lt;url&gt;</code></td>
+</tr>
+<tr>
+<td>Like</td>
+<td><code>bsky like &lt;url&gt;</code></td>
+</tr>
+<tr>
+<td>Repost</td>
+<td><code>bsky repost &lt;url&gt;</code></td>
+</tr>
+<tr>
+<td>Follow</td>
+<td><code>bsky follow @handle</code></td>
+</tr>
+<tr>
+<td>Block</td>
+<td><code>bsky block @handle</code></td>
+</tr>
+<tr>
+<td>Mute</td>
+<td><code>bsky mute @handle</code></td>
+</tr>
+<tr>
+<td>Search</td>
+<td><code>bsky search &quot;query&quot;</code></td>
+</tr>
+<tr>
+<td>Notifications</td>
+<td><code>bsky notifications</code> or <code>bsky n</code></td>
+</tr>
+<tr>
+<td>Delete post</td>
+<td><code>bsky delete &lt;url&gt;</code></td>
+</tr>
+</tbody></table>
 <h2>Commands</h2>
-<pre><code class="language-bash"># Authentication
-bsky login --handle user.bsky.social --password xxxx-xxxx-xxxx-xxxx
-bsky whoami
-
-# Timeline
-bsky timeline              # Show home feed (10 posts)
-bsky timeline -n 20        # Show 20 posts
-bsky tl                    # Alias
-
-# Posting
-bsky post &quot;Hello world!&quot;   # Create a post
-bsky p &quot;Short post&quot;        # Alias
-bsky post &quot;Test&quot; --dry-run # Preview without posting
-
-# Version
-bsky --version             # Show version
-
-# Delete
-bsky delete &lt;post_id&gt;      # Delete a post by ID or URL
-bsky rm &lt;url&gt;              # Alias
-
-# Profiles
-bsky profile               # Your profile
-bsky profile @someone.bsky.social
-
-# Search
-bsky search &quot;query&quot;        # Search posts
-bsky search &quot;offsec&quot; -n 20
-
-# Notifications
-bsky notifications         # Likes, reposts, follows, mentions
-bsky notif -n 30           # Alias with count
+<h3>Timeline</h3>
+<pre><code class="language-bash">bsky timeline              # 10 posts
+bsky timeline -n 20        # 20 posts
+bsky timeline --json       # JSON output
 </code></pre>
-<h2>Output Format</h2>
-<p>Timeline and search results show:</p>
-<pre><code>@handle · Jan 25 14:30
-  Post text (truncated to 200 chars)
-  ❤️ likes  🔁 reposts  💬 replies
-  🔗 https://bsky.app/profile/handle/post/id
+<h3>Posting</h3>
+<pre><code class="language-bash">bsky post &quot;Hello world!&quot;                           # Basic post
+bsky post &quot;Check this!&quot; --image pic.jpg --alt &quot;A photo&quot;  # With image
+bsky post &quot;Test&quot; --dry-run                         # Preview only
 </code></pre>
-<h2>Installation</h2>
-<p>The skill uses a Python virtual environment. On first run:</p>
-<pre><code class="language-bash">cd {baseDir}/scripts
-python3 -m venv venv
-./venv/bin/pip install atproto
+<h3>Reply &amp; Quote</h3>
+<pre><code class="language-bash">bsky reply &lt;post-url&gt; &quot;Your reply&quot;
+bsky quote &lt;post-url&gt; &quot;Your take on this&quot;
 </code></pre>
-<p>Then run commands via:</p>
-<pre><code class="language-bash">{baseDir}/scripts/venv/bin/python {baseDir}/scripts/bsky.py [command]
+<h3>Thread View</h3>
+<pre><code class="language-bash">bsky thread &lt;post-url&gt;           # View conversation
+bsky thread &lt;url&gt; --depth 10     # More replies
+bsky thread &lt;url&gt; --json         # JSON output
 </code></pre>
-<p>Or use the wrapper script:</p>
-<pre><code class="language-bash">{baseDir}/scripts/bsky [command]
+<h3>Engagement</h3>
+<pre><code class="language-bash">bsky like &lt;post-url&gt;             # ❤️ Like
+bsky unlike &lt;post-url&gt;           # Remove like
+bsky repost &lt;post-url&gt;           # 🔁 Repost (aliases: boost, rt)
+bsky unrepost &lt;post-url&gt;         # Remove repost
 </code></pre>
+<h3>Social Graph</h3>
+<pre><code class="language-bash">bsky follow @someone             # Follow user
+bsky unfollow @someone           # Unfollow user
+bsky profile @someone            # View profile
+bsky profile --json              # JSON output
+</code></pre>
+<h3>Moderation</h3>
+<pre><code class="language-bash">bsky block @someone              # 🚫 Block user
+bsky unblock @someone            # Unblock
+bsky mute @someone               # 🔇 Mute user
+bsky unmute @someone             # Unmute
+</code></pre>
+<h3>Search &amp; Notifications</h3>
+<pre><code class="language-bash">bsky search &quot;query&quot;              # Search posts
+bsky search &quot;topic&quot; -n 20        # More results
+bsky notifications               # Recent notifications
+bsky n -n 30                     # More notifications
+</code></pre>
+<h3>Delete</h3>
+<pre><code class="language-bash">bsky delete &lt;post-url&gt;           # Delete your post
+bsky delete &lt;post-id&gt;            # By ID
+</code></pre>
+<h2>JSON Output</h2>
+<p>Add <code>--json</code> to read commands for structured output:</p>
+<pre><code class="language-bash">bsky timeline --json
+bsky search &quot;topic&quot; --json
+bsky notifications --json
+bsky profile @someone --json
+bsky thread &lt;url&gt; --json
+</code></pre>
+<h2>Error Handling</h2>
+<table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&quot;Session expired&quot;</td>
+<td>Run <code>bsky login</code> again</td>
+</tr>
+<tr>
+<td>&quot;Not logged in&quot;</td>
+<td>Run <code>bsky login --handle ... --password ...</code></td>
+</tr>
+<tr>
+<td>&quot;Post is X chars (max 300)&quot;</td>
+<td>Shorten text</td>
+</tr>
+<tr>
+<td>&quot;Image too large&quot;</td>
+<td>Use image under 1MB</td>
+</tr>
+</tbody></table>
+<h2>Notes</h2>
+<ul>
+<li>All <code>&lt;url&gt;</code> parameters accept either <code>https://bsky.app/...</code> URLs or <code>at://</code> URIs</li>
+<li>Handles auto-append <code>.bsky.social</code> if no domain specified</li>
+<li>Image posts require <code>--alt</code> for accessibility (Bluesky requirement)</li>
+<li>Session tokens auto-refresh; password never stored</li>
+</ul>
 
                 </div>
               </div>

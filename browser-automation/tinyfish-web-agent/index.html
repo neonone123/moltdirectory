@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Use TinyFish/Mino web agent to extract/scrape websites, extract data, and automate browser actions using natural">
+  <meta name="description" content="Use TinyFish/Mino web agent to extract/scrape">
   <title>tinyfish-web-agent - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/browser-automation/tinyfish-web-agent/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,13 +45,13 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Browser & Automation</a>
+              <a href="/browser-automation/" class="back-link">← Back to Browser & Automation</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Browser & Automation</a>
+                <a href="/browser-automation/" class="skill-page-category">Browser & Automation</a>
                 <span class="skill-page-author">by @simantak-dabhade</span>
               </div>
               <h1 class="skill-page-title">tinyfish-web-agent</h1>
-              <p class="skill-page-desc">Use TinyFish/Mino web agent to extract/scrape websites, extract data, and automate browser actions using natural</p>
+              <p class="skill-page-desc">Use TinyFish/Mino web agent to extract/scrape</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -65,7 +66,29 @@
                 </div>
                 <div class="markdown-content">
                   <h1>TinyFish Web Agent</h1>
-<p>Requires: <code>MINO_API_KEY</code> environment variable</p>
+<p>Requires: <code>TINYFISH_API_KEY</code> environment variable</p>
+<h2>Pre-flight Check (REQUIRED)</h2>
+<p>Before making any API call, <strong>always</strong> run this first to verify the key is available:</p>
+<pre><code class="language-bash">[ -n &quot;$TINYFISH_API_KEY&quot; ] &amp;&amp; echo &quot;TINYFISH_API_KEY is set&quot; || echo &quot;TINYFISH_API_KEY is NOT set&quot;
+</code></pre>
+<p>If the key is <strong>not set</strong>, you <strong>MUST stop and ask the user</strong> to add their API key. Do <strong>NOT</strong> fall back to other tools or approaches — the task requires TinyFish.</p>
+<p>Tell the user:</p>
+<blockquote>
+<p>You need a TinyFish API key. Get one at: <a href="https://agent.tinyfish.ai/api-keys">https://agent.tinyfish.ai/api-keys</a></p>
+<p>Then set it so the agent can use it:</p>
+<p><strong>Option 1 — Environment variable (works everywhere):</strong></p>
+<pre><code class="language-bash">export TINYFISH_API_KEY=&quot;your-key-here&quot;
+</code></pre>
+<p><strong>Option 2 — Claude Code settings (Claude Code only):</strong>
+Add to <code>~/.claude/settings.local.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;env&quot;: {
+    &quot;TINYFISH_API_KEY&quot;: &quot;your-key-here&quot;
+  }
+}
+</code></pre>
+</blockquote>
+<p>Do NOT proceed until the key is confirmed available.</p>
 <h2>Best Practices</h2>
 <ol>
 <li><strong>Specify JSON format</strong>: Always describe the exact structure you want returned</li>
@@ -73,70 +96,78 @@
 </ol>
 <h2>Basic Extract/Scrape</h2>
 <p>Extract data from a page. Specify the JSON structure you want:</p>
-<pre><code class="language-python">import requests
-import json
-import os
-
-response = requests.post(
-    &quot;https://mino.ai/v1/automation/run-sse&quot;,
-    headers={
-        &quot;X-API-Key&quot;: os.environ[&quot;MINO_API_KEY&quot;],
-        &quot;Content-Type&quot;: &quot;application/json&quot;,
-    },
-    json={
-        &quot;url&quot;: &quot;https://example.com&quot;,
-        &quot;goal&quot;: &quot;Extract product info as JSON: {\&quot;name\&quot;: str, \&quot;price\&quot;: str, \&quot;in_stock\&quot;: bool}&quot;,
-    },
-    stream=True,
-)
-
-for line in response.iter_lines():
-    if line:
-        line_str = line.decode(&quot;utf-8&quot;)
-        if line_str.startswith(&quot;data: &quot;):
-            event = json.loads(line_str[6:])
-            if event.get(&quot;type&quot;) == &quot;COMPLETE&quot; and event.get(&quot;status&quot;) == &quot;COMPLETED&quot;:
-                print(json.dumps(event[&quot;resultJson&quot;], indent=2))
+<pre><code class="language-bash">curl -N -s -X POST &quot;https://agent.tinyfish.ai/v1/automation/run-sse&quot; \
+  -H &quot;X-API-Key: $TINYFISH_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;url&quot;: &quot;https://example.com&quot;,
+    &quot;goal&quot;: &quot;Extract product info as JSON: {\&quot;name\&quot;: str, \&quot;price\&quot;: str, \&quot;in_stock\&quot;: bool}&quot;
+  }&#39;
 </code></pre>
 <h2>Multiple Items</h2>
 <p>Extract lists of data with explicit structure:</p>
-<pre><code class="language-python">json={
+<pre><code class="language-bash">curl -N -s -X POST &quot;https://agent.tinyfish.ai/v1/automation/run-sse&quot; \
+  -H &quot;X-API-Key: $TINYFISH_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
     &quot;url&quot;: &quot;https://example.com/products&quot;,
-    &quot;goal&quot;: &quot;Extract all products as JSON array: [{\&quot;name\&quot;: str, \&quot;price\&quot;: str, \&quot;url\&quot;: str}]&quot;,
-}
+    &quot;goal&quot;: &quot;Extract all products as JSON array: [{\&quot;name\&quot;: str, \&quot;price\&quot;: str, \&quot;url\&quot;: str}]&quot;
+  }&#39;
 </code></pre>
 <h2>Stealth Mode</h2>
-<p>For bot-protected sites:</p>
-<pre><code class="language-python">json={
+<p>For bot-protected sites, add <code>&quot;browser_profile&quot;: &quot;stealth&quot;</code> to the request body:</p>
+<pre><code class="language-bash">curl -N -s -X POST &quot;https://agent.tinyfish.ai/v1/automation/run-sse&quot; \
+  -H &quot;X-API-Key: $TINYFISH_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
     &quot;url&quot;: &quot;https://protected-site.com&quot;,
     &quot;goal&quot;: &quot;Extract product data as JSON: {\&quot;name\&quot;: str, \&quot;price\&quot;: str, \&quot;description\&quot;: str}&quot;,
-    &quot;browser_profile&quot;: &quot;stealth&quot;,
-}
+    &quot;browser_profile&quot;: &quot;stealth&quot;
+  }&#39;
 </code></pre>
 <h2>Proxy</h2>
-<p>Route through specific country:</p>
-<pre><code class="language-python">json={
+<p>Route through a specific country by adding <code>&quot;proxy_config&quot;</code> to the body:</p>
+<pre><code class="language-bash">curl -N -s -X POST &quot;https://agent.tinyfish.ai/v1/automation/run-sse&quot; \
+  -H &quot;X-API-Key: $TINYFISH_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
     &quot;url&quot;: &quot;https://geo-restricted-site.com&quot;,
     &quot;goal&quot;: &quot;Extract pricing data as JSON: {\&quot;item\&quot;: str, \&quot;price\&quot;: str, \&quot;currency\&quot;: str}&quot;,
     &quot;browser_profile&quot;: &quot;stealth&quot;,
-    &quot;proxy_config&quot;: {
-        &quot;enabled&quot;: True,
-        &quot;country_code&quot;: &quot;US&quot;,
-    },
-}
+    &quot;proxy_config&quot;: {&quot;enabled&quot;: true, &quot;country_code&quot;: &quot;US&quot;}
+  }&#39;
 </code></pre>
 <h2>Output</h2>
-<p>Results are in <code>event[&quot;resultJson&quot;]</code> when <code>event[&quot;type&quot;] == &quot;COMPLETE&quot;</code></p>
+<p>The SSE stream returns <code>data: {...}</code> lines. The final result is the event where <code>type == &quot;COMPLETE&quot;</code> and <code>status == &quot;COMPLETED&quot;</code> — the extracted data is in the <code>resultJson</code> field. Claude reads the raw SSE output directly; no script-side parsing is needed.</p>
 <h2>Parallel Extraction</h2>
-<p>When extracting from multiple independent sources, make separate parallel API calls instead of combining into one prompt:</p>
+<p>When extracting from multiple independent sources, make separate parallel curl calls instead of combining into one prompt:</p>
 <p><strong>Good</strong> - Parallel calls:</p>
-<pre><code class="language-python"># Compare pizza prices - run these simultaneously
-call_1 = extract(&quot;https://pizzahut.com&quot;, &quot;Extract pizza prices as JSON: [{\&quot;name\&quot;: str, \&quot;price\&quot;: str}]&quot;)
-call_2 = extract(&quot;https://dominos.com&quot;, &quot;Extract pizza prices as JSON: [{\&quot;name\&quot;: str, \&quot;price\&quot;: str}]&quot;)
+<pre><code class="language-bash"># Compare pizza prices - run these simultaneously
+curl -N -s -X POST &quot;https://agent.tinyfish.ai/v1/automation/run-sse&quot; \
+  -H &quot;X-API-Key: $TINYFISH_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;url&quot;: &quot;https://pizzahut.com&quot;,
+    &quot;goal&quot;: &quot;Extract pizza prices as JSON: [{\&quot;name\&quot;: str, \&quot;price\&quot;: str}]&quot;
+  }&#39;
+
+curl -N -s -X POST &quot;https://agent.tinyfish.ai/v1/automation/run-sse&quot; \
+  -H &quot;X-API-Key: $TINYFISH_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;url&quot;: &quot;https://dominos.com&quot;,
+    &quot;goal&quot;: &quot;Extract pizza prices as JSON: [{\&quot;name\&quot;: str, \&quot;price\&quot;: str}]&quot;
+  }&#39;
 </code></pre>
 <p><strong>Bad</strong> - Single combined call:</p>
-<pre><code class="language-python"># Don&#39;t do this - less reliable and slower
-extract(&quot;https://pizzahut.com&quot;, &quot;Extract prices from Pizza Hut and also go to Dominos...&quot;)
+<pre><code class="language-bash"># Don&#39;t do this - less reliable and slower
+curl -N -s -X POST &quot;https://agent.tinyfish.ai/v1/automation/run-sse&quot; \
+  -H &quot;X-API-Key: $TINYFISH_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;url&quot;: &quot;https://pizzahut.com&quot;,
+    &quot;goal&quot;: &quot;Extract prices from Pizza Hut and also go to Dominos...&quot;
+  }&#39;
 </code></pre>
 <p>Each independent extraction task should be its own API call. This is faster (parallel execution) and more reliable.</p>
 

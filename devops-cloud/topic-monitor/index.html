@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Monitor topics of interest and proactively alert when important developments occur">
+  <meta name="description" content="Monitor topics of interest and proactively alert">
   <title>topic-monitor - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/devops-cloud/topic-monitor/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,13 +45,13 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to DevOps & Cloud</a>
+              <a href="/devops-cloud/" class="back-link">← Back to DevOps & Cloud</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">DevOps & Cloud</a>
+                <a href="/devops-cloud/" class="skill-page-category">DevOps & Cloud</a>
                 <span class="skill-page-author">by @robbyczgw-cla</span>
               </div>
               <h1 class="skill-page-title">topic-monitor</h1>
-              <p class="skill-page-desc">Monitor topics of interest and proactively alert when important developments occur</p>
+              <p class="skill-page-desc">Monitor topics of interest and proactively alert</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -440,14 +441,10 @@ python3 scripts/setup_cron.py --remove
 }
 </code></pre>
 <h3>Discord</h3>
-<p>Webhook-based:</p>
+<p>Agent-delivered (no webhook in skill config):</p>
+<p><code>monitor.py</code> emits <code>DISCORD_ALERT</code> JSON payloads, and OpenClaw sends them via the message tool. This matches the Telegram alert flow (structured output, no direct HTTP in skill code).</p>
 <pre><code class="language-json">{
-  &quot;channels&quot;: [&quot;discord&quot;],
-  &quot;discord_config&quot;: {
-    &quot;webhook_url&quot;: &quot;https://discord.com/api/webhooks/...&quot;,
-    &quot;username&quot;: &quot;Research Bot&quot;,
-    &quot;avatar_url&quot;: &quot;https://...&quot;
-  }
+  &quot;channels&quot;: [&quot;discord&quot;]
 }
 </code></pre>
 <h3>Email</h3>
@@ -506,8 +503,46 @@ python3 scripts/setup_cron.py --remove
   }
 }
 </code></pre>
+<h2>Environment Variables</h2>
+<p>Configure these environment variables to customize topic-monitor:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>TOPIC_MONITOR_TELEGRAM_ID</code></td>
+<td>—</td>
+<td>Your Telegram chat ID for receiving alerts</td>
+</tr>
+<tr>
+<td><code>TOPIC_MONITOR_DATA_DIR</code></td>
+<td><code>.data/</code> in skill dir</td>
+<td>Where to store state and findings</td>
+</tr>
+<tr>
+<td><code>WEB_SEARCH_PLUS_PATH</code></td>
+<td>Relative to skill</td>
+<td>Path to web-search-plus search.py</td>
+</tr>
+<tr>
+<td><code>SERPER_API_KEY</code> / <code>TAVILY_API_KEY</code> / <code>EXA_API_KEY</code> / <code>YOU_API_KEY</code> / <code>SEARXNG_INSTANCE_URL</code> / <code>WSP_CACHE_DIR</code></td>
+<td>—</td>
+<td>Optional search-provider vars passed via subprocess env allowlist</td>
+</tr>
+</tbody></table>
+<p><strong>Example setup:</strong></p>
+<pre><code class="language-bash"># Add to ~/.bashrc or .env
+export TOPIC_MONITOR_TELEGRAM_ID=&quot;123456789&quot;
+export TOPIC_MONITOR_DATA_DIR=&quot;/home/user/topic-monitor-data&quot;
+export WEB_SEARCH_PLUS_PATH=&quot;/path/to/skills/web-search-plus/scripts/search.py&quot;
+</code></pre>
 <h2>State Management</h2>
 <h3>.research_state.json</h3>
+<p>Stored in <code>TOPIC_MONITOR_DATA_DIR</code> (default: <code>.data/</code> in skill directory).</p>
 <p>Tracks:</p>
 <ul>
 <li>Last check time per topic</li>
@@ -570,12 +605,14 @@ python3 scripts/setup_cron.py --remove
 <li><strong>State files gitignored</strong> - Safe to use in version-controlled workspace</li>
 <li><strong>Memory hints optional</strong> - You control what context is shared</li>
 <li><strong>Learning data stays local</strong> - Never sent to APIs</li>
+<li><strong>Subprocess env allowlist</strong> - monitor forwards only PATH/HOME/LANG/TERM and search-provider keys</li>
+<li><strong>No direct HTTP in skill code</strong> - alerts are emitted as JSON for OpenClaw delivery</li>
 </ul>
 <h2>Troubleshooting</h2>
 <p><strong>No alerts being sent:</strong></p>
 <ul>
 <li>Check cron is running: <code>crontab -l</code></li>
-<li>Verify channel config (Telegram chat ID, Discord webhook)</li>
+<li>Verify channel config (Telegram chat ID, topic channel list for Discord/email)</li>
 <li>Run with <code>--dry-run --verbose</code> to see scoring</li>
 </ul>
 <p><strong>Too many alerts:</strong></p>

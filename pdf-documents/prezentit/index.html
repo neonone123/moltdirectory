@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Generate beautiful AI-powered presentations instantly">
+  <meta name="description" content="description: Generate beautiful AI-powered presentations instantly">
   <title>prezentit - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/pdf-documents/prezentit/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,13 +45,13 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to PDF & Documents</a>
+              <a href="/pdf-documents/" class="back-link">← Back to PDF & Documents</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">PDF & Documents</a>
+                <a href="/pdf-documents/" class="skill-page-category">PDF & Documents</a>
                 <span class="skill-page-author">by @vegovevo</span>
               </div>
               <h1 class="skill-page-title">prezentit</h1>
-              <p class="skill-page-desc">Generate beautiful AI-powered presentations instantly</p>
+              <p class="skill-page-desc">description: Generate beautiful AI-powered presentations instantly</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -64,199 +65,591 @@
                   </button>
                 </div>
                 <div class="markdown-content">
-                  <h1>Prezentit - AI Presentation Generator</h1>
-<p>Generate stunning presentations instantly with AI. Describe your topic and get a complete slide deck with custom designs.</p>
-<h2>Quick Start</h2>
-<ol>
-<li><strong>Get API Key</strong>: Sign in at <a href="https://prezentit.net">prezentit.net</a> → Profile → API → Create Key</li>
-<li><strong>Configure</strong>: <code>/config set PREZENTIT_API_KEY pk_your_key_here</code></li>
-<li><strong>Generate</strong>: &quot;Create a presentation about sustainable energy&quot;</li>
-</ol>
-<h2>Features</h2>
-<ul>
-<li><strong>40+ Themes</strong>: Minimalist, Corporate, Creative, Nature, Tech, Education</li>
-<li><strong>AI-Designed Slides</strong>: Each slide uniquely designed to match content  </li>
-<li><strong>External Outlines</strong>: Provide your own outline to save credits (33% savings)</li>
-<li><strong>Direct Download</strong>: Get your presentation link immediately</li>
-</ul>
-<h2>Pricing</h2>
+                  <pre><code class="language-skill">
+
+# Prezentit - AI Presentation Generator
+
+**Base URL**: `https://prezentit.net/api/v1`
+**Auth Header**: `Authorization: Bearer {PREZENTIT_API_KEY}`
+
+&gt; **This skill requires a `PREZENTIT_API_KEY` environment variable.** Get a free API key at https://prezentit.net/api-keys — new accounts include 100 free credits.
+
+## ⚠️ CRITICAL FOR AI AGENTS
+
+**ALWAYS use `&quot;stream&quot;: false`** in generation requests! Without this, you get streaming responses that cause issues.
+
+---
+
+## Complete Workflow (FOLLOW THIS ORDER)
+
+### Step 1: Check Credits First
+
+```http
+GET /api/v1/me/credits
+Authorization: Bearer {PREZENTIT_API_KEY}
+</code></pre>
+<p><strong>Response:</strong></p>
+<pre><code class="language-json">{
+  &quot;credits&quot;: 100,
+  &quot;pricing&quot;: {
+    &quot;outlinePerSlide&quot;: 5,
+    &quot;designPerSlide&quot;: 10,
+    &quot;estimatedCostPerSlide&quot;: 15
+  },
+  &quot;_ai&quot;: {
+    &quot;canGenerate&quot;: true,
+    &quot;maxSlidesAffordable&quot;: 6,
+    &quot;nextSteps&quot;: [&quot;...&quot;]
+  }
+}
+</code></pre>
+<p>→ If <code>_ai.canGenerate</code> is false, direct user to <a href="https://prezentit.net/buy-credits">https://prezentit.net/buy-credits</a>
+→ Use <code>_ai.maxSlidesAffordable</code> to know the limit</p>
+<h3>Step 2: Choose a Theme</h3>
+<p><strong>Option A — Browse all available themes and pick by ID:</strong></p>
+<pre><code class="language-http">GET /api/v1/themes
+Authorization: Bearer {PREZENTIT_API_KEY}
+</code></pre>
+<p><strong>Response:</strong></p>
+<pre><code class="language-json">{
+  &quot;themes&quot;: [
+    { &quot;id&quot;: &quot;corporate_blue&quot;, &quot;name&quot;: &quot;Corporate Blue&quot;, &quot;category&quot;: &quot;Corporate &amp; Professional&quot; },
+    { &quot;id&quot;: &quot;nature_earth&quot;, &quot;name&quot;: &quot;Nature Earth&quot;, &quot;category&quot;: &quot;Nature &amp; Organic&quot; }
+  ],
+  &quot;categories&quot;: [&quot;Corporate &amp; Professional&quot;, &quot;Creative &amp; Visual&quot;, &quot;Data &amp; Analytics&quot;, ...],
+  &quot;_ai&quot;: {
+    &quot;totalThemes&quot;: 20,
+    &quot;popularThemes&quot;: [&quot;corporate_blue&quot;, &quot;midnight_tech&quot;, &quot;nature_earth&quot;, &quot;storyteller&quot;, &quot;data_dashboard&quot;]
+  }
+}
+</code></pre>
+<p>→ Use the exact <code>id</code> value in your generation request</p>
+<p><strong>Option B — Search for a theme by keyword:</strong></p>
+<pre><code class="language-http">GET /api/v1/themes?search=minimalist
+Authorization: Bearer {PREZENTIT_API_KEY}
+</code></pre>
+<p>→ Returns best matches ranked by relevance. Use the <code>id</code> from <code>bestMatch</code>.</p>
+<p><strong>Option C — Describe a custom style (no theme ID needed):</strong></p>
+<p>Use the <code>customDesignPrompt</code> parameter instead. See the Custom Design Prompt section below.</p>
+<h3>Step 3: Generate Presentation</h3>
+<pre><code class="language-http">POST /api/v1/presentations/generate
+Authorization: Bearer {PREZENTIT_API_KEY}
+Content-Type: application/json
+
+{
+  &quot;topic&quot;: &quot;User&#39;s topic here&quot;,
+  &quot;slideCount&quot;: 5,
+  &quot;theme&quot;: &quot;corporate_blue&quot;,
+  &quot;stream&quot;: false
+}
+</code></pre>
+<p><strong>⏱️ IMPORTANT: Generation takes 1-3 minutes. The API will return when complete.</strong></p>
+<p><strong>Full Request Parameters:</strong></p>
 <table>
 <thead>
 <tr>
-<th>Action</th>
-<th>Credits</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Outline (per slide)</td>
-<td>5 credits</td>
-</tr>
-<tr>
-<td>Design (per slide)</td>
-<td>10 credits</td>
-</tr>
-<tr>
-<td><strong>Total per slide</strong></td>
-<td><strong>15 credits</strong></td>
-</tr>
-<tr>
-<td><strong>With your outline</strong></td>
-<td><strong>10 credits</strong> (design only)</td>
-</tr>
-</tbody></table>
-<p>New accounts: 100 free credits. Purchase more at <a href="https://prezentit.net/buy-credits">prezentit.net/buy-credits</a></p>
-<h2>API Quick Reference</h2>
-<p><strong>Base URL</strong>: <code>https://prezentit.net/api/v1</code><br><strong>Auth</strong>: <code>Authorization: Bearer pk_your_api_key_here</code></p>
-<h3>Essential Endpoints</h3>
-<table>
-<thead>
-<tr>
-<th>Endpoint</th>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><code>GET /me/credits</code></td>
-<td>Check your credit balance</td>
+<td><code>topic</code></td>
+<td>string</td>
+<td>Yes*</td>
+<td>Presentation topic (2-500 chars). Required if no <code>outline</code>. <code>prompt</code> is also accepted as an alias.</td>
 </tr>
 <tr>
-<td><code>GET /themes</code></td>
-<td>List available themes</td>
+<td><code>outline</code></td>
+<td>object</td>
+<td>No</td>
+<td>Pre-built outline (saves ~33% credits). See Outline section below.</td>
 </tr>
 <tr>
-<td><code>GET /themes?search=NAME</code></td>
-<td>Find theme by name</td>
+<td><code>slideCount</code></td>
+<td>number</td>
+<td>No</td>
+<td>Number of slides (3-50, default: 5). Ignored if outline provided.</td>
 </tr>
 <tr>
-<td><code>POST /presentations/generate</code></td>
-<td>Generate presentation</td>
+<td><code>theme</code></td>
+<td>string</td>
+<td>No</td>
+<td>Theme ID from <code>GET /api/v1/themes</code>. Use the exact <code>id</code> value.</td>
 </tr>
 <tr>
-<td><code>GET /docs/outline-format</code></td>
-<td><strong>Get outline validation rules</strong></td>
+<td><code>customDesignPrompt</code></td>
+<td>string</td>
+<td>No</td>
+<td>Custom visual style description (see below). Overrides theme ID.</td>
+</tr>
+<tr>
+<td><code>details</code></td>
+<td>string</td>
+<td>No</td>
+<td>Additional context about the presentation content.</td>
+</tr>
+<tr>
+<td><code>confirmPartial</code></td>
+<td>boolean</td>
+<td>No</td>
+<td>Set <code>true</code> to confirm partial generation when credits are limited.</td>
+</tr>
+<tr>
+<td><code>stream</code></td>
+<td>boolean</td>
+<td><strong>ALWAYS false</strong></td>
+<td><strong>AI agents must always set <code>stream: false</code></strong>.</td>
 </tr>
 </tbody></table>
-<h3>Generate Presentation</h3>
-<pre><code class="language-json">POST /presentations/generate
+<p>*<code>topic</code> is required even when providing an <code>outline</code> (used for presentation metadata).</p>
+<h3>Step 4: Get the Result</h3>
+<p><strong>Success Response:</strong></p>
+<pre><code class="language-json">{
+  &quot;presentationId&quot;: &quot;uuid-here&quot;,
+  &quot;viewUrl&quot;: &quot;https://prezentit.net/view/abc123&quot;,
+  &quot;creditsUsed&quot;: 75,
+  &quot;remainingCredits&quot;: 25
+}
+</code></pre>
+<p>→ Share the <code>viewUrl</code> with the user. That&#39;s their presentation!</p>
+<h3>Step 5: Download (Optional)</h3>
+<pre><code class="language-http">GET /api/v1/presentations/{presentationId}/download?format=pptx
+Authorization: Bearer {PREZENTIT_API_KEY}
+</code></pre>
+<p><strong>Formats:</strong> <code>pptx</code> (PowerPoint), <code>pdf</code>, <code>json</code> (raw data)</p>
+<hr>
+<h2>Pricing</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Cost per Slide</th>
+<th>Example (5 slides)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Auto-generate outline</td>
+<td>15 credits</td>
+<td>75 credits</td>
+</tr>
+<tr>
+<td>Provide your own outline</td>
+<td>10 credits</td>
+<td>50 credits (~33% savings!)</td>
+</tr>
+</tbody></table>
+<ul>
+<li>New accounts get <strong>100 free credits</strong></li>
+<li>Buy more at: <a href="https://prezentit.net/buy-credits">https://prezentit.net/buy-credits</a></li>
+</ul>
+<hr>
+<h2>Theme Selection</h2>
+<h3>How to Pick a Theme</h3>
+<ol>
+<li><strong>Fetch the theme list</strong>: <code>GET /api/v1/themes</code> — returns all available themes with <code>id</code>, <code>name</code>, and <code>category</code></li>
+<li><strong>Pick the best match</strong> for the user&#39;s topic and style preference</li>
+<li><strong>Pass the <code>id</code></strong> in the generation request as the <code>theme</code> parameter</li>
+</ol>
+<p>You can also search: <code>GET /api/v1/themes?search=KEYWORD</code> or filter by category: <code>GET /api/v1/themes?category=CATEGORY_NAME</code></p>
+<h3>Custom Design Prompt (Skip the Theme List)</h3>
+<p>If no existing theme fits, use <code>customDesignPrompt</code> to describe a fully custom visual style. <strong>This must be a detailed, structured description</strong> — not just a color palette.</p>
+<p><strong>REQUIRED structure for customDesignPrompt</strong> (include ALL of these sections):</p>
+<pre><code>COLOR SYSTEM: Primary [hex], secondary [hex], accent [hex], background [hex/gradient], text colors for headings and body.
 
-{
-  &quot;topic&quot;: &quot;Your topic (required)&quot;,
-  &quot;details&quot;: &quot;Additional context (optional)&quot;,
-  &quot;slideCount&quot;: 5,           // 3-50, default: 5
-  &quot;theme&quot;: &quot;minimalist&quot;,     // Theme ID from /themes
-  &quot;outline&quot;: { ... },        // Optional: provide your own outline
-  &quot;stream&quot;: false            // IMPORTANT: Set to false for AI agents
+TYPOGRAPHY: Heading font style [e.g., bold geometric sans-serif like Montserrat], body font style [e.g., clean humanist sans-serif like Open Sans], size hierarchy [large/medium/small], weight contrast.
+
+LAYOUT SYSTEM: Slide structure [e.g., asymmetric split with 60/40 content-to-visual ratio], alignment [left-aligned text with right visual panel], spacing philosophy [generous whitespace vs. dense information], grid approach.
+
+VISUAL ELEMENTS: Background treatment [solid/gradient/textured/patterned], decorative motifs [geometric shapes, organic curves, line art, etc.], image style [photography with overlay, illustrations, icons, data visualizations], border/frame treatments.
+
+MOOD &amp; TONE: Overall aesthetic [e.g., corporate authority, playful creativity, academic rigor, tech-forward], energy level [calm/dynamic/bold], intended audience impression.
+</code></pre>
+<p><strong>Example — Good customDesignPrompt:</strong></p>
+<pre><code class="language-json">{
+  &quot;topic&quot;: &quot;AI in Healthcare&quot;,
+  &quot;customDesignPrompt&quot;: &quot;COLOR SYSTEM: Primary deep medical blue (#1B3A5C), secondary teal (#2A9D8F), accent warm coral (#E76F51) for callouts, backgrounds alternate between clean white (#FAFAFA) and very subtle blue-gray (#F0F4F8), heading text dark navy, body text #333333. TYPOGRAPHY: Headings in bold geometric sans-serif (Montserrat style), body in clean humanist sans (Source Sans style), strong size hierarchy with 48pt titles, 24pt subtitles, 16pt body. LAYOUT SYSTEM: Asymmetric layouts with 60/40 content-to-visual split, left-aligned text blocks with right-side data visualizations or medical imagery, generous padding (60px margins), clean grid structure. VISUAL ELEMENTS: Subtle DNA helix watermark in corners at 5% opacity, thin teal accent lines as section dividers, medical iconography (stethoscope, heartbeat, molecular structures) as small decorative elements, photography with blue-tinted overlay for full-bleed backgrounds. MOOD &amp; TONE: Professional medical authority balanced with approachable warmth, calm and trustworthy, designed for hospital executives and medical professionals.&quot;,
+  &quot;stream&quot;: false
 }
 </code></pre>
-<p><strong>CRITICAL for AI Agents</strong>: Always set <code>&quot;stream&quot;: false</code> to receive a single JSON response instead of Server-Sent Events (SSE). This prevents polling issues and rate limits.</p>
-<p><strong>Response with <code>stream: false</code></strong>:</p>
+<p><strong>Example — Bad customDesignPrompt (TOO VAGUE, will produce generic results):</strong></p>
+<pre><code>&quot;blue and white medical theme&quot;
+</code></pre>
+<hr>
+<h2>Creating Outlines (Save ~33% Credits)</h2>
+<p>Providing your own outline saves credits and gives you full control over content.</p>
+<h3>Outline Structure</h3>
+<p>The outline is an object with a <code>slides</code> array. Each slide has these fields:</p>
 <pre><code class="language-json">{
-  &quot;success&quot;: true,
-  &quot;data&quot;: {
-    &quot;presentationId&quot;: &quot;uuid&quot;,
-    &quot;title&quot;: &quot;Your Presentation Title&quot;,
-    &quot;viewUrl&quot;: &quot;https://prezentit.net/view/abc123...&quot;,
-    &quot;slideCount&quot;: 5,
-    &quot;creditsUsed&quot;: 75,
-    &quot;remainingCredits&quot;: 25
-  }
+  &quot;topic&quot;: &quot;Your Presentation Topic&quot;,
+  &quot;outline&quot;: {
+    &quot;slides&quot;: [
+      {
+        &quot;title&quot;: &quot;Slide Title Here&quot;,
+        &quot;mainIdea&quot;: &quot;A clear sentence explaining the core message of this slide and what the audience should take away from it.&quot;,
+        &quot;talkingPoints&quot;: [
+          &quot;First key point with enough detail to be meaningful (at least 10 characters)&quot;,
+          &quot;Second key point expanding on the main idea&quot;,
+          &quot;Third key point providing supporting evidence or examples&quot;
+        ],
+        &quot;visualGuide&quot;: &quot;Detailed description of the visual layout: background style, image placement, icon suggestions, chart types, color emphasis areas, and decorative elements for this specific slide.&quot;
+      }
+    ]
+  },
+  &quot;stream&quot;: false
 }
 </code></pre>
-<p><strong>Theme Selection</strong>: Either provide <code>theme</code> (from /themes) OR <code>customDesignPrompt</code> for custom styles.</p>
-<h3>External Outlines (Save 33% Credits)</h3>
-<p>You can provide your own outline to skip AI outline generation. This is useful when:</p>
+<h3>Slide Field Reference</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Required</th>
+<th>Constraints</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>title</code></td>
+<td>Yes</td>
+<td>3-100 chars, 1-15 words</td>
+<td>Slide heading</td>
+</tr>
+<tr>
+<td><code>mainIdea</code></td>
+<td>Yes</td>
+<td>10-500 chars, 3-75 words</td>
+<td>Core message of the slide</td>
+</tr>
+<tr>
+<td><code>talkingPoints</code></td>
+<td>Yes</td>
+<td>2-7 items, each 10-300 chars (3-50 words)</td>
+<td>Key points to cover</td>
+</tr>
+<tr>
+<td><code>visualGuide</code></td>
+<td>Yes</td>
+<td>20-500 chars, 5-75 words</td>
+<td>Visual design instructions for this slide</td>
+</tr>
+</tbody></table>
+<h3>Validation Rules</h3>
+<p><strong>Overall:</strong></p>
 <ul>
-<li>You have specific content requirements</li>
-<li>You want to save credits</li>
-<li>An external AI (like Clawdbot) generates the outline</li>
+<li>Minimum <strong>3 slides</strong>, maximum <strong>50 slides</strong></li>
+<li><code>topic</code> is still required (used for presentation metadata)</li>
+<li>All four fields (<code>title</code>, <code>mainIdea</code>, <code>talkingPoints</code>, <code>visualGuide</code>) are required per slide</li>
 </ul>
-<p><strong>Get the exact format requirements</strong>:</p>
-<pre><code class="language-bash">GET /api/v1/docs/outline-format
-</code></pre>
-<p>This endpoint returns:</p>
-<ul>
-<li>All validation constraints (min/max words, characters, slide counts)</li>
-<li>Required fields for each slide</li>
-<li>Example outline structure</li>
-<li>Error fix suggestions</li>
-</ul>
-<p><strong>Important</strong>: Presentations with external outlines cannot be shared to the community feed (but can have public view links).</p>
-<h3>Example with External Outline</h3>
+<p><strong>The API returns detailed error messages with <code>fix</code> suggestions if validation fails.</strong></p>
+<h3>Complete Example</h3>
 <pre><code class="language-json">{
-  &quot;topic&quot;: &quot;Machine Learning Basics&quot;,
-  &quot;theme&quot;: &quot;minimalist&quot;,
-  &quot;stream&quot;: false,
+  &quot;topic&quot;: &quot;Introduction to Machine Learning&quot;,
   &quot;outline&quot;: {
     &quot;slides&quot;: [
       {
         &quot;title&quot;: &quot;Introduction to Machine Learning&quot;,
-        &quot;mainIdea&quot;: &quot;Machine learning enables computers to learn from data...&quot;,
+        &quot;mainIdea&quot;: &quot;Machine learning is transforming how businesses operate by enabling systems to learn from data and improve automatically without explicit programming.&quot;,
         &quot;talkingPoints&quot;: [
-          &quot;Definition and core principles&quot;,
-          &quot;How ML differs from traditional programming&quot;,
-          &quot;Key applications in everyday life&quot;
+          &quot;Machine learning is a subset of artificial intelligence focused on pattern recognition&quot;,
+          &quot;ML systems improve through experience rather than manual rule-writing&quot;,
+          &quot;Global ML market projected to reach $209 billion by 2029&quot;
         ],
-        &quot;visualGuide&quot;: &quot;Split-screen comparison of traditional programming vs ML...&quot;
+        &quot;visualGuide&quot;: &quot;Bold title slide with futuristic tech aesthetic. Dark gradient background transitioning from deep navy to midnight blue. Large bold title text centered with a subtle neural network node pattern behind it. Accent glow in electric blue.&quot;
+      },
+      {
+        &quot;title&quot;: &quot;How Machine Learning Works&quot;,
+        &quot;mainIdea&quot;: &quot;Machine learning algorithms are categorized into supervised, unsupervised, and reinforcement learning based on how they learn from data.&quot;,
+        &quot;talkingPoints&quot;: [
+          &quot;Supervised learning uses labeled data for classification and regression tasks&quot;,
+          &quot;Unsupervised learning discovers hidden patterns in unlabeled data through clustering&quot;,
+          &quot;Reinforcement learning optimizes decisions through trial, error, and reward signals&quot;
+        ],
+        &quot;visualGuide&quot;: &quot;Three distinct visual sections showing each ML type with representative icons: labeled data pairs for supervised, clustered groups for unsupervised, and a game-like reward loop for reinforcement. Use consistent color coding with blue, green, and purple.&quot;
+      },
+      {
+        &quot;title&quot;: &quot;Business Applications&quot;,
+        &quot;mainIdea&quot;: &quot;Companies across industries are leveraging machine learning for competitive advantage in customer experience, operations, and decision-making.&quot;,
+        &quot;talkingPoints&quot;: [
+          &quot;Customer churn prediction reduces revenue loss by identifying at-risk accounts early&quot;,
+          &quot;Fraud detection systems process millions of transactions in real-time&quot;,
+          &quot;Personalized recommendation engines drive significant increases in engagement and sales&quot;
+        ],
+        &quot;visualGuide&quot;: &quot;Clean content layout with left-aligned text and right-side icons or mini-charts for each application. Use a white background with subtle grid lines. Each talking point gets a small illustrative icon (shield for fraud, chart for prediction, user icon for personalization).&quot;
+      },
+      {
+        &quot;title&quot;: &quot;Getting Started with ML&quot;,
+        &quot;mainIdea&quot;: &quot;Successful ML adoption requires starting with clear use cases, quality data, and the right team rather than jumping straight to complex algorithms.&quot;,
+        &quot;talkingPoints&quot;: [
+          &quot;Identify high-impact use cases where prediction or automation adds clear value&quot;,
+          &quot;Invest in clean, well-structured data before selecting algorithms&quot;,
+          &quot;Build or partner with ML expertise and start with proven frameworks&quot;
+        ],
+        &quot;visualGuide&quot;: &quot;Conclusion slide with a numbered roadmap or step layout. Three large numbered circles (1, 2, 3) each containing a step. Background with subtle upward-pointing arrows suggesting progress. Call-to-action feel with bold accent color on the final step.&quot;
       }
-      // ... more slides
     ]
-  }
+  },
+  &quot;theme&quot;: &quot;midnight_tech&quot;,
+  &quot;stream&quot;: false
 }
 </code></pre>
-<h3>Error Handling</h3>
-<p>When outline validation fails, you&#39;ll receive detailed errors:</p>
+<h3>Get Schema Programmatically</h3>
+<pre><code class="language-http">GET /api/v1/docs/outline-format
+Authorization: Bearer {PREZENTIT_API_KEY}
+</code></pre>
+<p>Returns the full JSON schema with all constraints and example slides.</p>
+<hr>
+<h2>Error Handling</h2>
+<h3>Error Response Format</h3>
 <pre><code class="language-json">{
-  &quot;error&quot;: &quot;Invalid outline format&quot;,
-  &quot;code&quot;: &quot;INVALID_OUTLINE&quot;,
-  &quot;validationErrors&quot;: [
-    {
-      &quot;slide&quot;: 1,
-      &quot;field&quot;: &quot;title&quot;,
-      &quot;error&quot;: &quot;Title must be between 3-100 characters&quot;,
-      &quot;value&quot;: &quot;ML&quot;,
-      &quot;fix&quot;: &quot;Expand the title to at least 3 characters&quot;
-    }
-  ],
-  &quot;constraints&quot;: { ... },
-  &quot;documentation&quot;: &quot;https://prezentit.net/api/v1/docs/outline-format&quot;
+  &quot;error&quot;: &quot;Human readable message&quot;,
+  &quot;code&quot;: &quot;ERROR_CODE&quot;,
+  &quot;fix&quot;: &quot;Guidance on how to resolve this&quot;
 }
 </code></pre>
-<h3>Common Errors</h3>
+<h3>Common Errors &amp; Solutions</h3>
 <table>
 <thead>
 <tr>
+<th>HTTP</th>
 <th>Code</th>
-<th>Meaning</th>
+<th>Message</th>
+<th>Solution</th>
 </tr>
 </thead>
 <tbody><tr>
+<td>400</td>
+<td><code>MISSING_TOPIC</code></td>
+<td>Topic or prompt is required</td>
+<td>Provide a <code>topic</code> or <code>prompt</code> field</td>
+</tr>
+<tr>
+<td>400</td>
+<td><code>INVALID_OUTLINE</code></td>
+<td>Outline validation failed</td>
+<td>Check outline structure — response includes detailed <code>validationErrors</code> with <code>fix</code> per field</td>
+</tr>
+<tr>
+<td>400</td>
+<td><code>INVALID_SLIDE_COUNT</code></td>
+<td>Slide count must be 3-50</td>
+<td>Adjust <code>slideCount</code> to be between 3 and 50</td>
+</tr>
+<tr>
 <td>401</td>
-<td>Invalid/missing API key</td>
+<td><code>UNAUTHORIZED</code></td>
+<td>Invalid or missing API key</td>
+<td>Check <code>Authorization: Bearer pk_...</code> header</td>
 </tr>
 <tr>
 <td>402</td>
-<td>Insufficient credits</td>
+<td><code>INSUFFICIENT_CREDITS</code></td>
+<td>Not enough credits</td>
+<td>Response includes <code>required</code>, <code>available</code>, and <code>purchaseUrl</code></td>
+</tr>
+<tr>
+<td>404</td>
+<td><code>PRESENTATION_NOT_FOUND</code></td>
+<td>Presentation doesn&#39;t exist</td>
+<td>Verify presentation ID</td>
+</tr>
+<tr>
+<td>409</td>
+<td><code>DUPLICATE_REQUEST</code></td>
+<td>Same request within cooldown</td>
+<td>Wait and retry — don&#39;t resend identical requests</td>
+</tr>
+<tr>
+<td>409</td>
+<td><code>GENERATION_IN_PROGRESS</code></td>
+<td>Already generating</td>
+<td>Check status at <code>GET /api/v1/me/generation/status</code> or cancel at <code>POST /api/v1/me/generation/cancel</code></td>
 </tr>
 <tr>
 <td>429</td>
-<td>Rate limited (retry after 60s)</td>
+<td><code>RATE_LIMITED</code></td>
+<td>Too many requests</td>
+<td>Wait <code>retryAfter</code> seconds before retrying</td>
+</tr>
+<tr>
+<td>500</td>
+<td><code>GENERATION_FAILED</code></td>
+<td>Internal error</td>
+<td>Retry once, then contact support</td>
+</tr>
+<tr>
+<td>503</td>
+<td><code>SERVICE_UNAVAILABLE</code></td>
+<td>System overloaded</td>
+<td>Retry after <code>retryAfter</code> seconds</td>
 </tr>
 </tbody></table>
-<h2>Best Practices for Clawdbot</h2>
-<ol>
-<li><strong>ALWAYS use <code>stream: false</code></strong> - This is critical! Without it, you&#39;ll get SSE streaming which causes polling issues and rate limits</li>
-<li><strong>Always check credits first</strong> before generating</li>
-<li><strong>Search themes</strong> when user requests a specific style</li>
-<li><strong>Use outline format endpoint</strong> to get current validation rules before generating outlines</li>
-<li><strong>Handle validation errors</strong> - they include fix suggestions</li>
-<li><strong>Inform user</strong> about external outline restrictions (no community feed sharing)</li>
-<li><strong>Don&#39;t poll</strong> - With <code>stream: false</code>, the API returns a single JSON response when generation is complete</li>
-</ol>
-<h2>Support</h2>
+<h3>Handling Insufficient Credits</h3>
+<pre><code class="language-json">{
+  &quot;error&quot;: &quot;Insufficient credits&quot;,
+  &quot;code&quot;: &quot;INSUFFICIENT_CREDITS&quot;,
+  &quot;required&quot;: 75,
+  &quot;available&quot;: 50,
+  &quot;purchaseUrl&quot;: &quot;https://prezentit.net/buy-credits&quot;
+}
+</code></pre>
+<p><strong>AI Agent Response:</strong> &quot;You need 75 credits but only have 50. Purchase more at <a href="https://prezentit.net/buy-credits">https://prezentit.net/buy-credits</a>&quot;</p>
+<h3>Handling Partial Generation</h3>
+<p>If the user has some credits but not enough for full generation, the API returns a <code>confirmation_required</code> response with options. Read the <code>_ai.options</code> array and present them to the user. To proceed with partial generation, resend the request with <code>&quot;confirmPartial&quot;: true</code>.</p>
+<h3>Handling Rate Limits</h3>
+<pre><code class="language-json">{
+  &quot;error&quot;: &quot;Too many requests&quot;,
+  &quot;code&quot;: &quot;RATE_LIMITED&quot;,
+  &quot;retryAfter&quot;: 30
+}
+</code></pre>
+<p><strong>AI Agent Action:</strong> Wait <code>retryAfter</code> seconds before retrying.</p>
+<hr>
+<h2>Additional Endpoints</h2>
+<h3>Check Generation Status</h3>
+<pre><code class="language-http">GET /api/v1/me/generation/status
+Authorization: Bearer {PREZENTIT_API_KEY}
+</code></pre>
+<p>Returns current progress if a generation is running: stage, percentage, designs completed.</p>
+<h3>Cancel Active Generation</h3>
+<pre><code class="language-http">POST /api/v1/me/generation/cancel
+Authorization: Bearer {PREZENTIT_API_KEY}
+</code></pre>
+<p>Cancels the current generation in progress.</p>
+<h3>Get Presentation Details</h3>
+<pre><code class="language-http">GET /api/v1/presentations/{presentationId}
+Authorization: Bearer {PREZENTIT_API_KEY}
+</code></pre>
+<h3>List User&#39;s Presentations</h3>
+<pre><code class="language-http">GET /api/v1/me/presentations
+Authorization: Bearer {PREZENTIT_API_KEY}
+</code></pre>
+<p>Optional: <code>?limit=20&amp;offset=0</code></p>
+<h3>List All Themes</h3>
+<pre><code class="language-http">GET /api/v1/themes
+Authorization: Bearer {PREZENTIT_API_KEY}
+</code></pre>
+<p>Optional query params:</p>
 <ul>
-<li><strong>Website</strong>: <a href="https://prezentit.net">prezentit.net</a></li>
-<li><strong>API Docs</strong>: Call <code>GET /api/v1/docs/outline-format</code> for live documentation</li>
+<li><code>?search=keyword</code> — Filter by name</li>
+<li><code>?category=corporate</code> — Filter by category</li>
 </ul>
+<hr>
+<h2>Anti-Spam Rules</h2>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Limit</th>
+<th>What Happens</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Duplicate detection</td>
+<td>~30 seconds</td>
+<td>409 error for identical requests</td>
+</tr>
+<tr>
+<td>Rate limit</td>
+<td>Varies by key</td>
+<td>429 error with <code>retryAfter</code></td>
+</tr>
+<tr>
+<td>One generation at a time</td>
+<td>1 concurrent</td>
+<td>409 <code>GENERATION_IN_PROGRESS</code> error</td>
+</tr>
+</tbody></table>
+<p><strong>Best Practice:</strong> Always check for <code>retryAfter</code> in error responses and wait that duration.</p>
+<hr>
+<h2>Quick Copy-Paste Examples</h2>
+<h3>Minimal Generation</h3>
+<pre><code class="language-json">POST /api/v1/presentations/generate
+
+{
+  &quot;topic&quot;: &quot;Introduction to Climate Change&quot;,
+  &quot;stream&quot;: false
+}
+</code></pre>
+<h3>With Theme (Fetch ID First)</h3>
+<pre><code>1. GET /api/v1/themes → find the theme ID
+2. POST /api/v1/presentations/generate
+</code></pre>
+<pre><code class="language-json">{
+  &quot;topic&quot;: &quot;Q4 Sales Report&quot;,
+  &quot;slideCount&quot;: 8,
+  &quot;theme&quot;: &quot;corporate_blue&quot;,
+  &quot;stream&quot;: false
+}
+</code></pre>
+<h3>With Custom Design Prompt</h3>
+<pre><code class="language-json">{
+  &quot;topic&quot;: &quot;Startup Pitch Deck&quot;,
+  &quot;slideCount&quot;: 10,
+  &quot;customDesignPrompt&quot;: &quot;COLOR SYSTEM: Primary electric indigo (#4F46E5), secondary cyan (#06B6D4), accent hot pink (#EC4899), background dark charcoal (#111827) with subtle radial gradient to #1F2937, heading text white, body text #D1D5DB. TYPOGRAPHY: Headings in extra-bold wide-tracking sans-serif (Inter/Poppins style), body in medium-weight clean sans, dramatic size contrast with 56pt titles and 18pt body. LAYOUT SYSTEM: Full-bleed dark slides with asymmetric content placement, bold left-aligned headlines with supporting text below, large visual areas for mockups and charts, 80px margins. VISUAL ELEMENTS: Subtle dot grid pattern at 3% opacity on backgrounds, neon-glow accent lines, rounded corners on all containers, glassmorphism cards with frosted backgrounds for data callouts, gradient mesh blobs as decorative elements. MOOD &amp; TONE: Bold tech-startup energy, confident and forward-looking, designed to impress venture capital investors.&quot;,
+  &quot;stream&quot;: false
+}
+</code></pre>
+<h3>With Outline (~33% Savings)</h3>
+<pre><code class="language-json">{
+  &quot;topic&quot;: &quot;Weekly Team Sync&quot;,
+  &quot;outline&quot;: {
+    &quot;slides&quot;: [
+      {
+        &quot;title&quot;: &quot;Weekly Team Sync&quot;,
+        &quot;mainIdea&quot;: &quot;Kickoff slide for the January 15, 2024 weekly team synchronization meeting covering accomplishments and upcoming goals.&quot;,
+        &quot;talkingPoints&quot;: [
+          &quot;Welcome the team and set the agenda for today&#39;s sync&quot;,
+          &quot;Cover last week&#39;s wins and this week&#39;s priorities&quot;
+        ],
+        &quot;visualGuide&quot;: &quot;Clean title slide with company colors. Bold centered title, date as subtitle below. Simple professional background with subtle geometric pattern.&quot;
+      },
+      {
+        &quot;title&quot;: &quot;Last Week&#39;s Accomplishments&quot;,
+        &quot;mainIdea&quot;: &quot;The team delivered significant progress across feature development, bug resolution, and performance optimization last week.&quot;,
+        &quot;talkingPoints&quot;: [
+          &quot;Feature X completed and merged into the main branch ahead of schedule&quot;,
+          &quot;Resolved three critical production bugs affecting checkout flow&quot;,
+          &quot;Database query optimization improved page load times by twenty percent&quot;
+        ],
+        &quot;visualGuide&quot;: &quot;Content slide with checkmark icons next to each accomplishment. Green accent color for completed items. Left-aligned text with small celebration graphic in the corner.&quot;
+      },
+      {
+        &quot;title&quot;: &quot;This Week&#39;s Goals&quot;,
+        &quot;mainIdea&quot;: &quot;This week focuses on the beta launch, initial user testing, and completing documentation before the public release.&quot;,
+        &quot;talkingPoints&quot;: [
+          &quot;Launch beta version to internal testers by Wednesday&quot;,
+          &quot;Conduct user testing sessions with five pilot customers&quot;,
+          &quot;Complete API documentation and developer onboarding guide&quot;
+        ],
+        &quot;visualGuide&quot;: &quot;Forward-looking slide with numbered steps or timeline visual. Blue accent color for upcoming items. Arrow or roadmap graphic showing progression from current state to launch.&quot;
+      },
+      {
+        &quot;title&quot;: &quot;Open Discussion&quot;,
+        &quot;mainIdea&quot;: &quot;Time for team questions, blockers, and any items not covered in the structured agenda.&quot;,
+        &quot;talkingPoints&quot;: [
+          &quot;Open floor for questions and discussion of blockers&quot;,
+          &quot;Next sync meeting scheduled for Monday at ten AM&quot;
+        ],
+        &quot;visualGuide&quot;: &quot;Simple closing slide with question mark icon or discussion bubble graphic. Calm colors, minimal text, large font for the key info. Meeting time prominently displayed.&quot;
+      }
+    ]
+  },
+  &quot;theme&quot;: &quot;corporate_blue&quot;,
+  &quot;stream&quot;: false
+}
+</code></pre>
+<hr>
+<h2>Getting Help</h2>
+<ul>
+<li><strong>Website</strong>: <a href="https://prezentit.net">https://prezentit.net</a></li>
+<li><strong>Buy Credits</strong>: <a href="https://prezentit.net/buy-credits">https://prezentit.net/buy-credits</a></li>
+<li><strong>Support</strong>: <a href="https://prezentit.net/support">https://prezentit.net/support</a></li>
+<li><strong>API Key Management</strong>: <a href="https://prezentit.net/api-keys">https://prezentit.net/api-keys</a></li>
+</ul>
+<pre><code>
+</code></pre>
 
                 </div>
               </div>

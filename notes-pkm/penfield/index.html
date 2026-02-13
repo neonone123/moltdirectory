@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Persistent agent memory with hybrid search (BM25 + vector + graph), knowledge graphs, cognitive context handoffs, and artifact storage via OpenClaw native plugin or Penfield MCP">
+  <meta name="description" content="Persistent memory for OpenClaw agents">
   <title>penfield - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/notes-pkm/penfield/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,13 +45,13 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Notes & PKM</a>
+              <a href="/notes-pkm/" class="back-link">← Back to Notes & PKM</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Notes & PKM</a>
+                <a href="/notes-pkm/" class="skill-page-category">Notes & PKM</a>
                 <span class="skill-page-author">by @dial481</span>
               </div>
               <h1 class="skill-page-title">penfield</h1>
-              <p class="skill-page-desc">Persistent agent memory with hybrid search (BM25 + vector + graph), knowledge graphs, cognitive context handoffs, and artifact storage via OpenClaw native plugin or Penfield MCP</p>
+              <p class="skill-page-desc">Persistent memory for OpenClaw agents</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -66,18 +67,6 @@
                 <div class="markdown-content">
                   <h1>Penfield Memory</h1>
 <p>Persistent memory that compounds. Your agent remembers conversations, learns preferences, connects ideas, and picks up exactly where it left off—across sessions, days, and channels.</p>
-<h2>Install</h2>
-<pre><code>openclaw plugins install openclaw-penfield
-openclaw penfield login
-openclaw gateway restart
-</code></pre>
-<p>Sign up: <a href="https://portal.penfield.app/sign-up">https://portal.penfield.app/sign-up</a></p>
-<h2>Every Session Starts Here</h2>
-<p>Always do this first, before anything else:</p>
-<pre><code>penfield_awaken()
-penfield_reflect({ time_window: &quot;7d&quot; })
-</code></pre>
-<p><code>awaken</code> loads your identity and personality context. <code>reflect</code> orients you on recent work. Without these, you&#39;re starting cold.</p>
 <h2>Tools</h2>
 <h3>Memory</h3>
 <table>
@@ -422,14 +411,14 @@ penfield_connect({
 </code></pre>
 <h3>Session handoff</h3>
 <pre><code>penfield_save_context({
-  memory_ids: [discovery.id, correction.id, initial_report.id],
-  session_id: &quot;deployment-investigation-2026-02&quot;
+  name: &quot;deployment-investigation-2026-02&quot;,
+  description: &quot;Investigated deployment timeout issues. memory_id: &quot; + discovery.id,
+  memory_ids: [discovery.id, correction.id, initial_report.id]
 })
 </code></pre>
 <p>Next session or different agent:</p>
 <pre><code>penfield_restore_context({
-  checkpoint_id: &quot;checkpoint-uuid&quot;,
-  merge_mode: &quot;append&quot;
+  name: &quot;deployment-investigation-2026-02&quot;
 })
 </code></pre>
 <h2>What NOT to Store</h2>

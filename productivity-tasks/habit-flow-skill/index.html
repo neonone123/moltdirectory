@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="AI-powered atomic habit tracker with natural language logging, streak tracking, smart reminders">
+  <meta name="description" content="AI-powered atomic habit tracker with natural language">
   <title>habit-flow-skill - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/productivity-tasks/habit-flow-skill/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,13 +45,13 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Productivity & Tasks</a>
+              <a href="/productivity-tasks/" class="back-link">← Back to Productivity & Tasks</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Productivity & Tasks</a>
+                <a href="/productivity-tasks/" class="skill-page-category">Productivity & Tasks</a>
                 <span class="skill-page-author">by @tralves</span>
               </div>
               <h1 class="skill-page-title">habit-flow-skill</h1>
-              <p class="skill-page-desc">AI-powered atomic habit tracker with natural language logging, streak tracking, smart reminders</p>
+              <p class="skill-page-desc">AI-powered atomic habit tracker with natural language</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -119,6 +120,7 @@
 <p><strong>Process:</strong></p>
 <ol>
 <li>Read <code>~/clawd/habit-flow-data/config.json</code> to get the <code>activePersona</code> field</li>
+<li><strong>Validate</strong> the value is one of the allowed IDs: <code>flex</code>, <code>coach-blaze</code>, <code>luna</code>, <code>ava</code>, <code>max</code>, <code>sofi</code>, <code>the-monk</code>. If not, fall back to <code>flex</code></li>
 <li>Load the corresponding persona file: <code>references/personas/{activePersona}.md</code></li>
 <li>Adopt that persona&#39;s communication style (tone, vocabulary, response patterns)</li>
 </ol>
@@ -126,6 +128,7 @@
 <pre><code class="language-bash"># Read config
 cat ~/clawd/habit-flow-data/config.json  # → &quot;activePersona&quot;: &quot;coach-blaze&quot;
 
+# Validate: &quot;coach-blaze&quot; is in allowed list → OK
 # Load persona
 cat references/personas/coach-blaze.md
 </code></pre>
@@ -146,10 +149,12 @@ cat references/personas/coach-blaze.md
 <pre><code class="language-bash">cat ~/clawd/habit-flow-data/config.json
 </code></pre>
 </li>
-<li><p>Update the <code>activePersona</code> field to the requested persona ID</p>
+<li><p><strong>Validate</strong> the requested persona ID is one of: <code>flex</code>, <code>coach-blaze</code>, <code>luna</code>, <code>ava</code>, <code>max</code>, <code>sofi</code>, <code>the-monk</code>. If not, inform the user and show the available personas</p>
+</li>
+<li><p>Update the <code>activePersona</code> field to the validated persona ID</p>
 </li>
 <li><p>Load the new persona file:</p>
-<pre><code class="language-bash">cat references/personas/{new-persona-id}.md
+<pre><code class="language-bash">cat references/personas/{validated-persona-id}.md
 </code></pre>
 </li>
 <li><p>Confirm the switch <strong>using the new persona&#39;s communication style</strong> (see persona file for introduction example)</p>
@@ -161,6 +166,8 @@ cat references/personas/coach-blaze.md
 <li><p>Read current config to get <code>activePersona</code>:</p>
 <pre><code class="language-bash">cat ~/clawd/habit-flow-data/config.json
 </code></pre>
+</li>
+<li><p><strong>Validate</strong> the <code>activePersona</code> value is one of the allowed IDs listed above. If not, fall back to <code>flex</code></p>
 </li>
 <li><p>Display the persona image using Read tool:</p>
 <pre><code class="language-bash"># Example for coach-blaze
@@ -199,6 +206,13 @@ npx tsx scripts/parse_natural_language.ts --text &quot;I meditated today&quot;
 <li>0.60-0.84: Ask user confirmation first</li>
 <li>&lt; 0.60: Request clarification</li>
 </ul>
+<p><strong>Tip:</strong> Remember to run <code>log_habit.ts</code> when logging completions — verbal confirmation alone doesn&#39;t persist the data.</p>
+<p><strong>Typical flow:</strong></p>
+<ol>
+<li>Parse user input → identify habit + date</li>
+<li>Run <code>log_habit.ts --habit-id ... --date ... --status completed</code></li>
+<li>Confirm with streak update from the script output</li>
+</ol>
 <p><strong>Example Response (high confidence):</strong></p>
 <blockquote>
 <p>&quot;Logged! 🔥 Your meditation streak is now 9 days. Keep up the excellent work.&quot;</p>
@@ -282,14 +296,14 @@ npx tsx scripts/parse_natural_language.ts --text &quot;I meditated today&quot;
 </code></pre>
 <p><strong>Display in Conversation:</strong>
 After generating, display the image to user in the conversation using the Read tool.</p>
-<p><strong>For more visualization options:</strong> See <a href="references/COMMANDS.md">references/COMMANDS.md</a></p>
+<p><strong>For more visualization options:</strong> See <a href="https://github.com/openclaw/skills/blob/main/skills/tralves/habit-flow-skill/references/COMMANDS.md">references/COMMANDS.md</a></p>
 <h3>6. Proactive Coaching</h3>
 <p>HabitFlow automatically sends coaching messages at optimal times without user prompting.</p>
 <p><strong>Types of Proactive Messages:</strong></p>
 <ul>
 <li><strong>Milestone Celebrations</strong> - Reaching 7, 14, 21, 30+ day streaks</li>
 <li><strong>Risk Warnings</strong> - 24h before high-risk situations</li>
-<li><strong>Weekly Check-ins</strong> - Every Sunday at 7pm</li>
+<li><strong>Weekly Check-ins</strong> - Every Monday at 8am</li>
 <li><strong>Pattern Insights</strong> - When significant patterns detected</li>
 </ul>
 <p><strong>Setup &amp; Configuration:</strong></p>
@@ -301,7 +315,7 @@ npx tsx scripts/init_skill.ts
 <p>This creates 3 cron jobs:</p>
 <ul>
 <li>Daily Coaching Check (8am): Milestone celebrations + risk warnings</li>
-<li>Weekly Check-in (Sunday 7pm): Progress summary with visualizations</li>
+<li>Weekly Check-in (Monday 8am): Progress summary with visualizations</li>
 <li>Pattern Insights (Wednesday 10am): Mid-week pattern detection</li>
 </ul>
 <p><strong>Check Cron Status:</strong></p>
@@ -325,7 +339,7 @@ npx tsx scripts/sync_reminders.ts sync-coaching --remove
 <li>After skill updates, run <code>init_skill.ts</code> again to update cron jobs</li>
 <li>Messages are sent to your last active chat channel</li>
 </ul>
-<p><strong>For detailed setup:</strong> See <a href="references/proactive-coaching.md">references/proactive-coaching.md</a></p>
+<p><strong>For detailed setup:</strong> See <a href="https://github.com/openclaw/skills/blob/main/skills/tralves/habit-flow-skill/references/proactive-coaching.md">references/proactive-coaching.md</a></p>
 <h3>7. Smart Reminders</h3>
 <p><strong>Sync All Reminders:</strong></p>
 <pre><code class="language-bash">npx tsx scripts/sync_reminders.ts --sync-all
@@ -336,7 +350,7 @@ npx tsx scripts/sync_reminders.ts sync-coaching --remove
 <p><strong>Remove Reminder:</strong></p>
 <pre><code class="language-bash">npx tsx scripts/sync_reminders.ts --habit-id h_abc123 --remove
 </code></pre>
-<p><strong>For technical details on reminders:</strong> See <a href="references/REMINDERS.md">references/REMINDERS.md</a></p>
+<p><strong>For technical details on reminders:</strong> See <a href="https://github.com/openclaw/skills/blob/main/skills/tralves/habit-flow-skill/references/REMINDERS.md">references/REMINDERS.md</a></p>
 <hr>
 <h2>Coaching Techniques</h2>
 <p>When users struggle with habits, apply evidence-based techniques from <em>Atomic Habits</em>.</p>
@@ -348,10 +362,10 @@ npx tsx scripts/sync_reminders.ts sync-coaching --remove
 <li>Identify breakdown points</li>
 <li>Connect to identity (&quot;I am someone who...&quot;)</li>
 </ul>
-<p><strong>For detailed coaching techniques and guidelines:</strong> See <a href="references/atomic-habits-coaching.md">references/atomic-habits-coaching.md</a></p>
+<p><strong>For detailed coaching techniques and guidelines:</strong> See <a href="https://github.com/openclaw/skills/blob/main/skills/tralves/habit-flow-skill/references/atomic-habits-coaching.md">references/atomic-habits-coaching.md</a></p>
 <hr>
 <h2>Conversation Flow Examples</h2>
-<p><strong>For detailed interaction examples:</strong> See <a href="references/EXAMPLES.md">references/EXAMPLES.md</a></p>
+<p><strong>For detailed interaction examples:</strong> See <a href="https://github.com/openclaw/skills/blob/main/skills/tralves/habit-flow-skill/references/EXAMPLES.md">references/EXAMPLES.md</a></p>
 <p><strong>Quick patterns:</strong></p>
 <ul>
 <li><strong>Creating habits:</strong> Ask clarifying questions, create habit, sync reminder, confirm</li>
@@ -368,7 +382,7 @@ npx tsx scripts/sync_reminders.ts sync-coaching --remove
 <li>Offer persona selection (Flex, Coach Blaze, Luna, Ava, Max, The Monk)</li>
 <li>Guide them to create first habit</li>
 </ol>
-<p><strong>For welcome message example:</strong> See <a href="references/EXAMPLES.md#example-10-first-time-user-welcome">references/EXAMPLES.md</a></p>
+<p><strong>For welcome message example:</strong> See <a href="https://github.com/openclaw/skills/blob/main/skills/tralves/habit-flow-skill/references/EXAMPLES.md#example-10-first-time-user-welcome">references/EXAMPLES.md</a></p>
 <hr>
 <h2>Error Handling</h2>
 <p><strong>Habit Not Found:</strong></p>
@@ -390,14 +404,14 @@ npx tsx scripts/sync_reminders.ts sync-coaching --remove
 <hr>
 <h2>References</h2>
 <ul>
-<li><strong>Conversation Examples:</strong> <a href="references/EXAMPLES.md">references/EXAMPLES.md</a></li>
-<li><strong>Coaching Techniques:</strong> <a href="references/atomic-habits-coaching.md">references/atomic-habits-coaching.md</a></li>
-<li><strong>Commands:</strong> <a href="references/COMMANDS.md">references/COMMANDS.md</a></li>
-<li><strong>Reminders:</strong> <a href="references/REMINDERS.md">references/REMINDERS.md</a></li>
-<li><strong>Data Storage:</strong> <a href="references/DATA.md">references/DATA.md</a></li>
-<li><strong>Data Schema:</strong> <a href="references/data-schema.md">references/data-schema.md</a></li>
-<li><strong>Personas:</strong> <a href="references/personas.md">references/personas.md</a></li>
-<li><strong>Proactive Coaching:</strong> <a href="references/proactive-coaching.md">references/proactive-coaching.md</a></li>
+<li><strong>Conversation Examples:</strong> <a href="https://github.com/openclaw/skills/blob/main/skills/tralves/habit-flow-skill/references/EXAMPLES.md">references/EXAMPLES.md</a></li>
+<li><strong>Coaching Techniques:</strong> <a href="https://github.com/openclaw/skills/blob/main/skills/tralves/habit-flow-skill/references/atomic-habits-coaching.md">references/atomic-habits-coaching.md</a></li>
+<li><strong>Commands:</strong> <a href="https://github.com/openclaw/skills/blob/main/skills/tralves/habit-flow-skill/references/COMMANDS.md">references/COMMANDS.md</a></li>
+<li><strong>Reminders:</strong> <a href="https://github.com/openclaw/skills/blob/main/skills/tralves/habit-flow-skill/references/REMINDERS.md">references/REMINDERS.md</a></li>
+<li><strong>Data Storage:</strong> <a href="https://github.com/openclaw/skills/blob/main/skills/tralves/habit-flow-skill/references/DATA.md">references/DATA.md</a></li>
+<li><strong>Data Schema:</strong> <a href="https://github.com/openclaw/skills/blob/main/skills/tralves/habit-flow-skill/references/data-schema.md">references/data-schema.md</a></li>
+<li><strong>Personas:</strong> <a href="https://github.com/openclaw/skills/blob/main/skills/tralves/habit-flow-skill/references/personas.md">references/personas.md</a></li>
+<li><strong>Proactive Coaching:</strong> <a href="https://github.com/openclaw/skills/blob/main/skills/tralves/habit-flow-skill/references/proactive-coaching.md">references/proactive-coaching.md</a></li>
 </ul>
 <hr>
 <h2>Installation</h2>

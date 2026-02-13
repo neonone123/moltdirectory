@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Fetch content from Feishu (Lark) Wiki, Docs, Sheets">
+  <meta name="description" content="Fetch content from Feishu (Lark) Wiki, Docs, Sheets, and Bitable">
   <title>feishu-doc - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/browser-automation/feishu-doc/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,13 +45,13 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Browser & Automation</a>
+              <a href="/browser-automation/" class="back-link">← Back to Browser & Automation</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Browser & Automation</a>
+                <a href="/browser-automation/" class="skill-page-category">Browser & Automation</a>
                 <span class="skill-page-author">by @autogame-17</span>
               </div>
               <h1 class="skill-page-title">feishu-doc</h1>
-              <p class="skill-page-desc">Fetch content from Feishu (Lark) Wiki, Docs, Sheets</p>
+              <p class="skill-page-desc">Fetch content from Feishu (Lark) Wiki, Docs, Sheets, and Bitable</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -65,9 +66,40 @@
                 </div>
                 <div class="markdown-content">
                   <h1>Feishu Doc Skill</h1>
-<p>Fetch content from Feishu (Lark) Wiki, Docs, Sheets, and Bitable.</p>
+<p>Fetch content from Feishu (Lark) Wiki, Docs, Sheets, and Bitable. Write and update documents.</p>
+<h2>Prerequisites</h2>
+<ul>
+<li>Install <code>feishu-common</code> first.</li>
+<li>This skill depends on <code>../feishu-common/index.js</code> for token and API auth.</li>
+</ul>
+<h2>Capabilities</h2>
+<ul>
+<li><strong>Read</strong>: Fetch content from Docs, Sheets, Bitable, and Wiki.</li>
+<li><strong>Create</strong>: Create new blank documents.</li>
+<li><strong>Write</strong>: Overwrite document content with Markdown.</li>
+<li><strong>Append</strong>: Append Markdown content to the end of a document.</li>
+<li><strong>Blocks</strong>: List, get, update, and delete specific blocks.</li>
+</ul>
+<h2>Long Document Handling (Unlimited Length)</h2>
+<p>To generate long documents (exceeding LLM output limits of ~2000-4000 tokens):</p>
+<ol>
+<li><strong>Create</strong> the document first to get a <code>doc_token</code>.</li>
+<li><strong>Chunk</strong> the content into logical sections (e.g., Introduction, Chapter 1, Chapter 2).</li>
+<li><strong>Append</strong> each chunk sequentially using <code>feishu_doc_append</code>.</li>
+<li>Do NOT try to write the entire document in one <code>feishu_doc_write</code> call if it is very long; use the append loop pattern.</li>
+</ol>
 <h2>Usage</h2>
-<pre><code class="language-bash">node index.js fetch &lt;url&gt;
+<pre><code class="language-bash"># Read
+node index.js --action read --token &lt;doc_token&gt;
+
+# Create
+node index.js --action create --title &quot;My Doc&quot;
+
+# Write (Overwrite)
+node index.js --action write --token &lt;doc_token&gt; --content &quot;# Title\nHello world&quot;
+
+# Append
+node index.js --action append --token &lt;doc_token&gt; --content &quot;## Section 2\nMore text&quot;
 </code></pre>
 <h2>Configuration</h2>
 <p>Create a <code>config.json</code> file in the root of the skill or set environment variables:</p>
@@ -80,14 +112,6 @@
 <ul>
 <li><code>FEISHU_APP_ID</code></li>
 <li><code>FEISHU_APP_SECRET</code></li>
-</ul>
-<h2>Supported URL Types</h2>
-<ul>
-<li>Wiki</li>
-<li>Docx</li>
-<li>Doc (Legacy)</li>
-<li>Sheets</li>
-<li>Bitable</li>
 </ul>
 
                 </div>

@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="This skill interacts with Helpscout to fetch all conversations from specific inboxes">
+  <meta name="description" content="This skill interacts with Helpscout to fetch all conversations">
   <title>helpscout - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/communication/helpscout/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,13 +45,13 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Communication</a>
+              <a href="/communication/" class="back-link">← Back to Communication</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Communication</a>
+                <a href="/communication/" class="skill-page-category">Communication</a>
                 <span class="skill-page-author">by @fabiensebban</span>
               </div>
               <h1 class="skill-page-title">helpscout</h1>
-              <p class="skill-page-desc">This skill interacts with Helpscout to fetch all conversations from specific inboxes</p>
+              <p class="skill-page-desc">This skill interacts with Helpscout to fetch all conversations</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -66,12 +67,15 @@
                 <div class="markdown-content">
                   <h1>Helpscout Skill</h1>
 <h2>Description</h2>
-<p>This skill interacts with Helpscout to fetch all conversations from specific inboxes. It is designed to streamline the retrieval of customer support conversations directly into OpenClaw, ensuring easy integration and follow-up.</p>
+<p>This skill interacts with Helpscout to fetch conversations from specific inboxes with powerful filtering options. It is designed to streamline the retrieval of customer support conversations directly into OpenClaw, ensuring easy integration and follow-up.</p>
 <h2>Features</h2>
 <ul>
-<li>Fetch conversations from multiple Helpscout inboxes.</li>
-<li>Securely authenticate using an API key and App Secret.</li>
-<li>Handle potential errors like invalid credentials or network issues gracefully.</li>
+<li>Fetch conversations from multiple Helpscout inboxes</li>
+<li>Filter by status, folder, assignee, customer, tags, and more</li>
+<li>Sort conversations by various fields</li>
+<li>Embed thread data directly in the response</li>
+<li>Securely authenticate using an API key and App Secret</li>
+<li>Handle potential errors like invalid credentials or network issues gracefully</li>
 </ul>
 <h2>Setup Instructions</h2>
 <p>To use this skill, you need to configure Helpscout credentials and specify the IDs of the inboxes you want to fetch conversations from.</p>
@@ -87,35 +91,146 @@
 </ol>
 <h3>2. Collect Inbox IDs</h3>
 <ol>
-<li>Retrieve the IDs of the inboxes you want to fetch conversations from using Helpscout’s <a href="https://developer.helpscout.com/">API documentation</a>.</li>
+<li>Retrieve the IDs of the inboxes you want to fetch conversations from using Helpscout&#39;s <a href="https://developer.helpscout.com/">API documentation</a>.</li>
 </ol>
 <h3>3. Save Credentials in OpenClaw</h3>
 <p>Use the following command to save your Helpscout credentials:</p>
-<pre><code class="language-bash">cat ~/.openclaw/openclaw.json | jq &#39;.skills.helpscout = {
-  &quot;apiKey&quot;: &quot;your-api-key&quot;,
-  &quot;appSecret&quot;: &quot;your-app-secret&quot;,
-  &quot;inboxIds&quot;: [&quot;inbox-id-1&quot;, &quot;inbox-id-2&quot;]
+<pre><code class="language-bash">cat ~/.openclaw/openclaw.json | jq &#39;.skills.entries.helpscout = {
+  enabled: true,
+  env: {
+    API_KEY: &quot;your-api-key&quot;,
+    APP_SECRET: &quot;your-app-secret&quot;,
+    INBOX_IDS: [&quot;inbox-id-1&quot;, &quot;inbox-id-2&quot;]
+  }
 }&#39; | openclaw gateway config.apply
 </code></pre>
 <h3>4. Verify Configuration</h3>
 <p>To ensure the credentials are properly set, check your configuration:</p>
 <pre><code class="language-bash">openclaw gateway config.get
 </code></pre>
-<p>Make sure the <code>helpscout</code> object looks correct (avoid sharing the <code>apiKey</code> or <code>appSecret</code>).</p>
-<h3>Usage</h3>
-<ul>
-<li>Once the setup is complete, the skill will securely authenticate and fetch conversations based on the specified inbox IDs.</li>
-<li>If credentials or inbox IDs are missing or invalid, the skill will throw a detailed error message to help you fix the issue.</li>
-</ul>
+<p>Make sure the <code>helpscout</code> object looks correct (avoid sharing the <code>API_KEY</code> or <code>APP_SECRET</code>).</p>
+<h2>Usage</h2>
+<h3>Basic Usage</h3>
+<p>Fetch all active conversations from configured inboxes:</p>
+<pre><code class="language-javascript">const { fetchAllInboxes } = require(&#39;./index.js&#39;);
+
+// Fetch all active conversations (default)
+const results = await fetchAllInboxes();
+</code></pre>
+<h3>Advanced Filtering</h3>
+<pre><code class="language-javascript">const { fetchConversations } = require(&#39;./index.js&#39;);
+
+// Fetch closed conversations from a specific inbox
+const conversations = await fetchConversations(321755, {
+  status: &#39;closed&#39;,
+  sortField: &#39;modifiedAt&#39;,
+  sortOrder: &#39;desc&#39;,
+  page: 1
+});
+
+// Fetch conversations assigned to a specific user
+const assigned = await fetchConversations(321755, {
+  assignedTo: 782728,
+  status: &#39;active&#39;
+});
+
+// Fetch conversations with a specific tag
+const tagged = await fetchConversations(321755, {
+  tag: &#39;urgent&#39;,
+  status: &#39;active&#39;
+});
+
+// Fetch conversations with embedded threads
+const withThreads = await fetchConversations(321755, {
+  embed: &#39;threads&#39;,
+  status: &#39;active&#39;
+});
+
+// Advanced search query
+const searched = await fetchConversations(321755, {
+  query: &#39;(customerEmail:user@example.com)&#39;,
+  status: &#39;all&#39;
+});
+</code></pre>
+<h3>Available Options</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>status</code></td>
+<td>string</td>
+<td>Filter by status: <code>active</code>, <code>pending</code>, <code>closed</code>, <code>spam</code>, or <code>all</code> (default: <code>active</code>)</td>
+</tr>
+<tr>
+<td><code>folderId</code></td>
+<td>number</td>
+<td>Filter by folder ID</td>
+</tr>
+<tr>
+<td><code>assignedTo</code></td>
+<td>number</td>
+<td>Filter by user ID</td>
+</tr>
+<tr>
+<td><code>customerId</code></td>
+<td>number</td>
+<td>Filter by customer ID</td>
+</tr>
+<tr>
+<td><code>number</code></td>
+<td>number</td>
+<td>Filter by conversation number</td>
+</tr>
+<tr>
+<td><code>modifiedSince</code></td>
+<td>string</td>
+<td>ISO8601 date to filter conversations modified after this date</td>
+</tr>
+<tr>
+<td><code>sortField</code></td>
+<td>string</td>
+<td>Sort field: <code>createdAt</code>, <code>mailboxId</code>, <code>modifiedAt</code>, <code>number</code>, <code>score</code>, <code>status</code>, <code>subject</code> (default: <code>createdAt</code>)</td>
+</tr>
+<tr>
+<td><code>sortOrder</code></td>
+<td>string</td>
+<td>Sort order: <code>asc</code> or <code>desc</code> (default: <code>desc</code>)</td>
+</tr>
+<tr>
+<td><code>tag</code></td>
+<td>string</td>
+<td>Filter by tag name</td>
+</tr>
+<tr>
+<td><code>query</code></td>
+<td>string</td>
+<td>Advanced search query in <code>fieldId:value</code> format</td>
+</tr>
+<tr>
+<td><code>embed</code></td>
+<td>string</td>
+<td>Comma-separated list of resources to embed: <code>threads</code></td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td>number</td>
+<td>Page number for pagination (default: 1)</td>
+</tr>
+</tbody></table>
 <h3>Security Best Practices</h3>
 <ul>
 <li>Never hardcode credentials into your codebase.</li>
-<li>Use OpenClaw’s <code>config.apply</code> system for securely managing sensitive details.</li>
-<li>Avoid sharing sensitive parts of your configuration output (<code>apiKey</code> and <code>appSecret</code>) with others.</li>
+<li>Use OpenClaw&#39;s <code>config.apply</code> system for securely managing sensitive details.</li>
+<li>Avoid sharing sensitive parts of your configuration output (<code>API_KEY</code> and <code>APP_SECRET</code>) with others.</li>
 </ul>
 <h2>Contribution Guidelines</h2>
 <ul>
-<li>Ensure compliance with Helpscout’s API usage policies.</li>
+<li>Ensure compliance with Helpscout&#39;s API usage policies.</li>
 <li>Add documentation for any new features added.</li>
 </ul>
 

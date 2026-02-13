@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Security advisory feed with automated NVD CVE polling">
+  <title>clawsec-feed - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/devops-cloud/clawsec-feed/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+
+        <span class="logo-text">OpenClaw Directory</span>
+      </a>
+      <nav class="header-links">
+        <a href="/start-here/" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="/devops-cloud/" class="back-link">← Back to DevOps & Cloud</a>
+              <div class="skill-page-meta">
+                <a href="/devops-cloud/" class="skill-page-category">DevOps & Cloud</a>
+                <span class="skill-page-author">by @davida-ps</span>
+              </div>
+              <h1 class="skill-page-title">clawsec-feed</h1>
+              <p class="skill-page-desc">Security advisory feed with automated NVD CVE polling</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>ClawSec Feed 📡</h1>
+<p>Security advisory feed monitoring for AI agents. Subscribe to community-driven threat intelligence and stay informed about emerging threats.</p>
+<p>This feed is automatically updated daily with CVEs related to OpenClaw, clawdbot, and Moltbot from the NIST National Vulnerability Database (NVD).</p>
+<p><strong>An open source project by <a href="https://prompt.security">Prompt Security</a></strong></p>
+<hr>
+<h2>Installation Options</h2>
+<p>You can get clawsec-feed in two ways:</p>
+<h3>Option A: Bundled with ClawSec Suite (Recommended)</h3>
+<p><strong>If you&#39;ve installed clawsec-suite, you may already have this!</strong></p>
+<p>ClawSec-feed is bundled alongside ClawSec Suite to provide crucial CVE and threat intelligence information. When you install the suite, if you don&#39;t already have the feed installed, it will be deployed from the bundled copy.</p>
+<p><strong>Advantages:</strong></p>
+<ul>
+<li>Convenient - no separate download needed</li>
+<li>Standard location - installed to <code>~/.openclaw/skills/clawsec-feed/</code></li>
+<li>Preserved - if you already have feed installed, it won&#39;t be overwritten</li>
+<li>Single verification - integrity checked as part of suite package</li>
+</ul>
+<h3>Option B: Standalone Installation (This Page)</h3>
+<p>Install clawsec-feed independently without the full suite.</p>
+<p><strong>When to use standalone:</strong></p>
+<ul>
+<li>You only need the advisory feed (not other suite components)</li>
+<li>You want to install before installing the suite</li>
+<li>You prefer explicit control over feed installation</li>
+</ul>
+<p><strong>Advantages:</strong></p>
+<ul>
+<li>Lighter weight installation</li>
+<li>Independent from suite</li>
+<li>Direct control over installation process</li>
+</ul>
+<p>Continue below for standalone installation instructions.</p>
+<hr>
+<p>Installation Steps:
+Agents should review scripts before execution!</p>
+<pre><code class="language-bash"># Get latest clawsec-feed release tag
+LATEST_TAG=$(curl -sSL https://api.github.com/repos/prompt-security/ClawSec/releases | \
+  jq -r &#39;[.[] | select(.tag_name | startswith(&quot;clawsec-feed-v&quot;))][0].tag_name&#39;)
+
+# Download SKILL.md from latest release
+SKILL_URL=&quot;https://github.com/prompt-security/clawsec/releases/download/$LATEST_TAG/SKILL.md&quot;
+curl -sSL --fail --show-error &quot;$SKILL_URL&quot;
+</code></pre>
+<p>Once you have this skill file, proceed to <strong><a href="#deploy-clawsec-feed">Deploy ClawSec Feed</a></strong> below.</p>
+<hr>
+<h2>Deploy ClawSec Feed</h2>
+<p>Installation steps:</p>
+<h3>Step 1: Create skill directory and save this file</h3>
+<pre><code class="language-bash">mkdir -p ~/.openclaw/skills/clawsec-feed
+# Save this SKILL.md as SKILL.md in the directory above
+</code></pre>
+<h3>Step 2: Install skill files</h3>
+<pre><code class="language-bash"># Get latest release tag with retry logic
+LATEST_TAG=$(curl -sSL --retry 3 --retry-delay 1 \
+  https://api.github.com/repos/prompt-security/ClawSec/releases | \
+  jq -r &#39;[.[] | select(.tag_name | startswith(&quot;clawsec-feed-v&quot;))][0].tag_name&#39;)
+
+BASE_URL=&quot;https://github.com/prompt-security/clawsec/releases/download/$LATEST_TAG&quot;
+INSTALL_DIR=&quot;${CLAWSEC_INSTALL_DIR:-$HOME/.openclaw/skills/clawsec-feed}&quot;
+TEMP_DIR=$(mktemp -d)
+trap &quot;rm -rf &#39;$TEMP_DIR&#39;&quot; EXIT
+
+# Download checksums.json (REQUIRED for integrity verification)
+echo &quot;Downloading checksums...&quot;
+if ! curl -sSL --fail --show-error --retry 3 --retry-delay 1 \
+     &quot;$BASE_URL/checksums.json&quot; -o &quot;$TEMP_DIR/checksums.json&quot;; then
+  echo &quot;ERROR: Failed to download checksums.json&quot;
+  exit 1
+fi
+
+# Validate checksums.json structure
+if ! jq -e &#39;.skill and .version and .files&#39; &quot;$TEMP_DIR/checksums.json&quot; &gt;/dev/null 2&gt;&amp;1; then
+  echo &quot;ERROR: Invalid checksums.json structure&quot;
+  exit 1
+fi
+
+# PRIMARY: Try .skill artifact
+echo &quot;Attempting .skill artifact installation...&quot;
+if curl -sSL --fail --show-error --retry 3 --retry-delay 1 \
+   &quot;$BASE_URL/clawsec-feed.skill&quot; -o &quot;$TEMP_DIR/clawsec-feed.skill&quot; 2&gt;/dev/null; then
+
+  # Security: Check artifact size (prevent DoS)
+  ARTIFACT_SIZE=$(stat -c%s &quot;$TEMP_DIR/clawsec-feed.skill&quot; 2&gt;/dev/null || stat -f%z &quot;$TEMP_DIR/clawsec-feed.skill&quot;)
+  MAX_SIZE=$((50 * 1024 * 1024))  # 50MB
+
+  if [ &quot;$ARTIFACT_SIZE&quot; -gt &quot;$MAX_SIZE&quot; ]; then
+    echo &quot;WARNING: Artifact too large ($(( ARTIFACT_SIZE / 1024 / 1024 ))MB), falling back to individual files&quot;
+  else
+    echo &quot;Extracting artifact ($(( ARTIFACT_SIZE / 1024 ))KB)...&quot;
+
+    # Security: Check for path traversal before extraction
+    if unzip -l &quot;$TEMP_DIR/clawsec-feed.skill&quot; | grep -qE &#39;\.\./|^/|~/&#39;; then
+      echo &quot;ERROR: Path traversal detected in artifact - possible security issue!&quot;
+      exit 1
+    fi
+
+    # Security: Check file count (prevent zip bomb)
+    FILE_COUNT=$(unzip -l &quot;$TEMP_DIR/clawsec-feed.skill&quot; | grep -c &quot;^[[:space:]]*[0-9]&quot; || echo 0)
+    if [ &quot;$FILE_COUNT&quot; -gt 100 ]; then
+      echo &quot;ERROR: Artifact contains too many files ($FILE_COUNT) - possible zip bomb&quot;
+      exit 1
+    fi
+
+    # Extract to temp directory
+    unzip -q &quot;$TEMP_DIR/clawsec-feed.skill&quot; -d &quot;$TEMP_DIR/extracted&quot;
+
+    # Verify skill.json exists
+    if [ ! -f &quot;$TEMP_DIR/extracted/clawsec-feed/skill.json&quot; ]; then
+      echo &quot;ERROR: skill.json not found in artifact&quot;
+      exit 1
+    fi
+
+    # Verify checksums for all extracted files
+    echo &quot;Verifying checksums...&quot;
+    CHECKSUM_FAILED=0
+    for file in $(jq -r &#39;.files | keys[]&#39; &quot;$TEMP_DIR/checksums.json&quot;); do
+      EXPECTED=$(jq -r --arg f &quot;$file&quot; &#39;.files[$f].sha256&#39; &quot;$TEMP_DIR/checksums.json&quot;)
+      FILE_PATH=$(jq -r --arg f &quot;$file&quot; &#39;.files[$f].path&#39; &quot;$TEMP_DIR/checksums.json&quot;)
+
+      # Try nested path first, then flat filename
+      if [ -f &quot;$TEMP_DIR/extracted/clawsec-feed/$FILE_PATH&quot; ]; then
+        ACTUAL=$(shasum -a 256 &quot;$TEMP_DIR/extracted/clawsec-feed/$FILE_PATH&quot; | cut -d&#39; &#39; -f1)
+      elif [ -f &quot;$TEMP_DIR/extracted/clawsec-feed/$file&quot; ]; then
+        ACTUAL=$(shasum -a 256 &quot;$TEMP_DIR/extracted/clawsec-feed/$file&quot; | cut -d&#39; &#39; -f1)
+      else
+        echo &quot;  ✗ $file (not found in artifact)&quot;
+        CHECKSUM_FAILED=1
+        continue
+      fi
+
+      if [ &quot;$EXPECTED&quot; != &quot;$ACTUAL&quot; ]; then
+        echo &quot;  ✗ $file (checksum mismatch)&quot;
+        CHECKSUM_FAILED=1
+      else
+        echo &quot;  ✓ $file&quot;
+      fi
+    done
+
+    if [ &quot;$CHECKSUM_FAILED&quot; -eq 0 ]; then
+      # Validate feed.json structure (skill-specific)
+      if [ -f &quot;$TEMP_DIR/extracted/clawsec-feed/advisories/feed.json&quot; ]; then
+        FEED_FILE=&quot;$TEMP_DIR/extracted/clawsec-feed/advisories/feed.json&quot;
+      elif [ -f &quot;$TEMP_DIR/extracted/clawsec-feed/feed.json&quot; ]; then
+        FEED_FILE=&quot;$TEMP_DIR/extracted/clawsec-feed/feed.json&quot;
+      else
+        echo &quot;ERROR: feed.json not found in artifact&quot;
+        exit 1
+      fi
+
+      if ! jq -e &#39;.version and .advisories&#39; &quot;$FEED_FILE&quot; &gt;/dev/null 2&gt;&amp;1; then
+        echo &quot;ERROR: feed.json missing required fields (version, advisories)&quot;
+        exit 1
+      fi
+
+      # SUCCESS: Install from artifact
+      echo &quot;Installing from artifact...&quot;
+      mkdir -p &quot;$INSTALL_DIR&quot;
+      cp -r &quot;$TEMP_DIR/extracted/clawsec-feed&quot;/* &quot;$INSTALL_DIR/&quot;
+      chmod 600 &quot;$INSTALL_DIR/skill.json&quot;
+      find &quot;$INSTALL_DIR&quot; -type f ! -name &quot;skill.json&quot; -exec chmod 644 {} \;
+      echo &quot;SUCCESS: Skill installed from .skill artifact&quot;
+      exit 0
+    else
+      echo &quot;WARNING: Checksum verification failed, falling back to individual files&quot;
+    fi
+  fi
+fi
+
+# FALLBACK: Download individual files
+echo &quot;Downloading individual files from checksums.json manifest...&quot;
+mkdir -p &quot;$TEMP_DIR/downloads&quot;
+
+DOWNLOAD_FAILED=0
+for file in $(jq -r &#39;.files | keys[]&#39; &quot;$TEMP_DIR/checksums.json&quot;); do
+  FILE_URL=$(jq -r --arg f &quot;$file&quot; &#39;.files[$f].url&#39; &quot;$TEMP_DIR/checksums.json&quot;)
+  EXPECTED=$(jq -r --arg f &quot;$file&quot; &#39;.files[$f].sha256&#39; &quot;$TEMP_DIR/checksums.json&quot;)
+
+  echo &quot;Downloading: $file&quot;
+  if ! curl -sSL --fail --show-error --retry 3 --retry-delay 1 \
+       &quot;$FILE_URL&quot; -o &quot;$TEMP_DIR/downloads/$file&quot;; then
+    echo &quot;ERROR: Failed to download $file&quot;
+    DOWNLOAD_FAILED=1
+    continue
+  fi
+
+  # Verify checksum immediately
+  ACTUAL=$(shasum -a 256 &quot;$TEMP_DIR/downloads/$file&quot; | cut -d&#39; &#39; -f1)
+  if [ &quot;$EXPECTED&quot; != &quot;$ACTUAL&quot; ]; then
+    echo &quot;ERROR: Checksum mismatch for $file&quot;
+    DOWNLOAD_FAILED=1
+  else
+    echo &quot;  ✓ Verified: $file&quot;
+  fi
+done
+
+if [ &quot;$DOWNLOAD_FAILED&quot; -eq 1 ]; then
+  echo &quot;ERROR: Individual file download failed&quot;
+  exit 1
+fi
+
+# Validate JSON files structure
+if ! jq -e &#39;.name and .version&#39; &quot;$TEMP_DIR/downloads/skill.json&quot; &gt;/dev/null 2&gt;&amp;1; then
+  echo &quot;ERROR: skill.json missing required fields (name, version)&quot;
+  exit 1
+fi
+
+if ! jq -e &#39;.version and .advisories&#39; &quot;$TEMP_DIR/downloads/feed.json&quot; &gt;/dev/null 2&gt;&amp;1; then
+  echo &quot;ERROR: feed.json missing required fields (version, advisories)&quot;
+  exit 1
+fi
+
+# Install files
+echo &quot;Installing from individual files...&quot;
+mkdir -p &quot;$INSTALL_DIR&quot;
+cp &quot;$TEMP_DIR/downloads&quot;/* &quot;$INSTALL_DIR/&quot;
+chmod 600 &quot;$INSTALL_DIR/skill.json&quot;
+find &quot;$INSTALL_DIR&quot; -type f ! -name &quot;skill.json&quot; -exec chmod 644 {} \;
+echo &quot;SUCCESS: Skill installed from individual files&quot;
+</code></pre>
+<h3>Step 3: Add to your heartbeat</h3>
+<p>Add ClawSec Feed to your heartbeat routine:</p>
+<pre><code class="language-markdown">## ClawSec Feed (every heartbeat)
+1. Check advisory feed for new security alerts
+2. Cross-reference with installed skills
+3. Notify user if action is required
+</code></pre>
+<h3>Step 4: Confirm deployment</h3>
+<p>Tell your user:</p>
+<pre><code>ClawSec Feed deployed successfully. I will now:
+- Monitor the community advisory feed for threats
+- Alert you to any security issues affecting your environment
+- Keep you informed of emerging attack patterns
+</code></pre>
+<hr>
+<h2>What ClawSec Feed Does</h2>
+<h3>Advisory Feed Monitoring</h3>
+<p>Subscribes to the community advisory feed for:</p>
+<ul>
+<li><strong>Known malicious skills/plugins</strong> - Skills that have been identified as harmful</li>
+<li><strong>Prompt injection patterns</strong> - Attack patterns observed in the wild</li>
+<li><strong>Vulnerable skill versions</strong> - Skills with known security flaws</li>
+<li><strong>Security best practice updates</strong> - New recommendations for agent safety</li>
+</ul>
+<p>When a relevant advisory is published, your agent will notify you.</p>
+<hr>
+<h2>Checking the Advisory Feed</h2>
+<pre><code class="language-bash"># Use environment variable if set, otherwise use raw GitHub feed (always up-to-date)
+DEFAULT_FEED_URL=&quot;https://raw.githubusercontent.com/prompt-security/ClawSec/main/advisories/feed.json&quot;
+FEED_URL=&quot;${CLAWSEC_FEED_URL:-$DEFAULT_FEED_URL}&quot;
+
+# Fetch with error handling and retry logic
+curl -sSL --fail --show-error --retry 3 --retry-delay 1 &quot;$FEED_URL&quot;
+</code></pre>
+<p><strong>Feed structure:</strong></p>
+<pre><code class="language-json">{
+  &quot;version&quot;: &quot;1.0&quot;,
+  &quot;updated&quot;: &quot;2026-02-02T12:00:00Z&quot;,
+  &quot;advisories&quot;: [
+    {
+      &quot;id&quot;: &quot;GA-2026-001&quot;,
+      &quot;severity&quot;: &quot;critical&quot;,
+      &quot;type&quot;: &quot;malicious_skill&quot;,
+      &quot;title&quot;: &quot;Malicious data exfiltration in skill &#39;helper-plus&#39;&quot;,
+      &quot;description&quot;: &quot;Skill sends user data to external server&quot;,
+      &quot;affected&quot;: [&quot;helper-plus@1.0.0&quot;, &quot;helper-plus@1.0.1&quot;],
+      &quot;action&quot;: &quot;Remove immediately&quot;,
+      &quot;published&quot;: &quot;2026-02-01T10:00:00Z&quot;
+    }
+  ]
+}
+</code></pre>
+<hr>
+<h2>Parsing the Feed</h2>
+<h3>Get advisory count</h3>
+<pre><code class="language-bash"># Use environment variable if set, otherwise use raw GitHub feed (always up-to-date)
+DEFAULT_FEED_URL=&quot;https://raw.githubusercontent.com/prompt-security/ClawSec/main/advisories/feed.json&quot;
+FEED_URL=&quot;${CLAWSEC_FEED_URL:-$DEFAULT_FEED_URL}&quot;
+
+TEMP_FEED=$(mktemp)
+trap &quot;rm -f &#39;$TEMP_FEED&#39;&quot; EXIT
+
+if ! curl -sSL --fail --show-error --retry 3 --retry-delay 1 &quot;$FEED_URL&quot; -o &quot;$TEMP_FEED&quot;; then
+  echo &quot;Error: Failed to fetch advisory feed&quot;
+  exit 1
+fi
+
+# Validate JSON before parsing
+if ! jq empty &quot;$TEMP_FEED&quot; 2&gt;/dev/null; then
+  echo &quot;Error: Invalid JSON in feed&quot;
+  exit 1
+fi
+
+FEED=$(cat &quot;$TEMP_FEED&quot;)
+
+# Get advisory count with error handling
+COUNT=$(echo &quot;$FEED&quot; | jq &#39;.advisories | length&#39;)
+if [ $? -ne 0 ]; then
+  echo &quot;Error: Failed to parse advisories&quot;
+  exit 1
+fi
+echo &quot;Advisory count: $COUNT&quot;
+</code></pre>
+<h3>Get critical advisories</h3>
+<pre><code class="language-bash"># Parse critical advisories with jq error handling
+CRITICAL=$(echo &quot;$FEED&quot; | jq &#39;.advisories[] | select(.severity == &quot;critical&quot;)&#39;)
+if [ $? -ne 0 ]; then
+  echo &quot;Error: Failed to filter critical advisories&quot;
+  exit 1
+fi
+echo &quot;$CRITICAL&quot;
+</code></pre>
+<h3>Get advisories from the last 7 days</h3>
+<pre><code class="language-bash"># Use UTC timezone for consistent date handling
+WEEK_AGO=$(TZ=UTC date -v-7d +%Y-%m-%dT00:00:00Z 2&gt;/dev/null || TZ=UTC date -d &#39;7 days ago&#39; +%Y-%m-%dT00:00:00Z)
+RECENT=$(echo &quot;$FEED&quot; | jq --arg since &quot;$WEEK_AGO&quot; &#39;.advisories[] | select(.published &gt; $since)&#39;)
+if [ $? -ne 0 ]; then
+  echo &quot;Error: Failed to filter recent advisories&quot;
+  exit 1
+fi
+echo &quot;$RECENT&quot;
+</code></pre>
+<hr>
+<h2>Cross-Reference Installed Skills</h2>
+<p>Check if any of your installed skills are affected by advisories:</p>
+<pre><code class="language-bash"># List your installed skills (adjust path for your platform)
+INSTALL_DIR=&quot;${CLAWSEC_INSTALL_DIR:-$HOME/.openclaw/skills}&quot;
+
+# Use environment variable if set, otherwise use raw GitHub feed (always up-to-date)
+DEFAULT_FEED_URL=&quot;https://raw.githubusercontent.com/prompt-security/ClawSec/main/advisories/feed.json&quot;
+FEED_URL=&quot;${CLAWSEC_FEED_URL:-$DEFAULT_FEED_URL}&quot;
+
+TEMP_FEED=$(mktemp)
+trap &quot;rm -f &#39;$TEMP_FEED&#39;&quot; EXIT
+
+if ! curl -sSL --fail --show-error --retry 3 --retry-delay 1 &quot;$FEED_URL&quot; -o &quot;$TEMP_FEED&quot;; then
+  echo &quot;Error: Failed to fetch advisory feed&quot;
+  exit 1
+fi
+
+# Validate and parse feed
+if ! jq empty &quot;$TEMP_FEED&quot; 2&gt;/dev/null; then
+  echo &quot;Error: Invalid JSON in feed&quot;
+  exit 1
+fi
+
+FEED=$(cat &quot;$TEMP_FEED&quot;)
+AFFECTED=$(echo &quot;$FEED&quot; | jq -r &#39;.advisories[].affected[]?&#39; 2&gt;/dev/null | sort -u)
+if [ $? -ne 0 ]; then
+  echo &quot;Error: Failed to parse affected skills from feed&quot;
+  exit 1
+fi
+
+# Safely validate all installed skills before processing
+# This prevents shell injection via malicious filenames
+VALIDATED_SKILLS=()
+while IFS= read -r -d &#39;&#39; skill_path; do
+  skill=$(basename &quot;$skill_path&quot;)
+
+  # Validate skill name BEFORE adding to array (prevents injection)
+  if [[ &quot;$skill&quot; =~ ^[a-zA-Z0-9_-]+$ ]]; then
+    VALIDATED_SKILLS+=(&quot;$skill&quot;)
+  else
+    echo &quot;Warning: Skipping invalid skill name: $skill&quot; &gt;&amp;2
+  fi
+done &lt; &lt;(find &quot;$INSTALL_DIR&quot; -mindepth 1 -maxdepth 1 -type d -print0 2&gt;/dev/null)
+
+# Check each validated skill against affected list
+# Use grep -qF for fixed string matching (prevents regex injection)
+for skill in &quot;${VALIDATED_SKILLS[@]}&quot;; do
+  # At this point, $skill is guaranteed to match ^[a-zA-Z0-9_-]+$
+  if echo &quot;$AFFECTED&quot; | grep -qF &quot;$skill&quot;; then
+    echo &quot;WARNING: Installed skill &#39;$skill&#39; has a security advisory!&quot;
+    # Get advisory details for this skill
+    echo &quot;$FEED&quot; | jq --arg s &quot;$skill&quot; &#39;.advisories[] | select(.affected[] | contains($s))&#39;
+  fi
+done
+</code></pre>
+<p><strong>If you find affected skills:</strong></p>
+<ol>
+<li>Check the advisory for details and severity</li>
+<li>Notify your user immediately for critical/high severity</li>
+<li>Include the recommended action from the advisory</li>
+</ol>
+<hr>
+<h2>Advisory Types</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>malicious_skill</code></td>
+<td>Skill identified as intentionally harmful</td>
+</tr>
+<tr>
+<td><code>vulnerable_skill</code></td>
+<td>Skill with security vulnerabilities</td>
+</tr>
+<tr>
+<td><code>prompt_injection</code></td>
+<td>Known prompt injection pattern</td>
+</tr>
+<tr>
+<td><code>attack_pattern</code></td>
+<td>Observed attack technique</td>
+</tr>
+<tr>
+<td><code>best_practice</code></td>
+<td>Security recommendation</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Severity Levels</h2>
+<table>
+<thead>
+<tr>
+<th>Severity</th>
+<th>Action Required</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>critical</code></td>
+<td>Notify user immediately, take action</td>
+</tr>
+<tr>
+<td><code>high</code></td>
+<td>Notify user soon, plan remediation</td>
+</tr>
+<tr>
+<td><code>medium</code></td>
+<td>Notify at next interaction</td>
+</tr>
+<tr>
+<td><code>low</code></td>
+<td>Log for reference</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>When to Notify Your User</h2>
+<p><strong>Notify Immediately (Critical):</strong></p>
+<ul>
+<li>New critical advisory affecting an installed skill</li>
+<li>Active exploitation detected</li>
+</ul>
+<p><strong>Notify Soon (High):</strong></p>
+<ul>
+<li>New high-severity advisory affecting installed skills</li>
+<li>Failed to fetch advisory feed (network issue?)</li>
+</ul>
+<p><strong>Notify at Next Interaction (Medium):</strong></p>
+<ul>
+<li>New medium-severity advisories</li>
+<li>General security updates</li>
+</ul>
+<p><strong>Log Only (Low/Info):</strong></p>
+<ul>
+<li>Low-severity advisories (mention if user asks)</li>
+<li>Feed checked, no new advisories</li>
+</ul>
+<hr>
+<h2>Response Format</h2>
+<h3>If there are new advisories:</h3>
+<pre><code>📡 ClawSec Feed: 2 new advisories since last check
+
+CRITICAL - GA-2026-015: Malicious prompt pattern &quot;ignore-all&quot;
+  → Detected prompt injection technique. Update your system prompt defenses.
+
+HIGH - GA-2026-016: Vulnerable skill &quot;data-helper&quot; v1.2.0
+  → You have this installed! Recommended action: Update to v1.2.1 or remove.
+</code></pre>
+<h3>If nothing new:</h3>
+<pre><code>FEED_OK - Advisory feed checked, no new alerts. 📡
+</code></pre>
+<hr>
+<h2>State Tracking</h2>
+<p>Track the last feed check to identify new advisories:</p>
+<pre><code class="language-json">{
+  &quot;schema_version&quot;: &quot;1.0&quot;,
+  &quot;last_feed_check&quot;: &quot;2026-02-02T15:00:00Z&quot;,
+  &quot;last_feed_updated&quot;: &quot;2026-02-02T12:00:00Z&quot;,
+  &quot;known_advisories&quot;: [&quot;GA-2026-001&quot;, &quot;GA-2026-002&quot;]
+}
+</code></pre>
+<p>Save to: <code>~/.openclaw/clawsec-feed-state.json</code></p>
+<h3>State File Operations</h3>
+<pre><code class="language-bash">STATE_FILE=&quot;$HOME/.openclaw/clawsec-feed-state.json&quot;
+
+# Create state file with secure permissions if it doesn&#39;t exist
+if [ ! -f &quot;$STATE_FILE&quot; ]; then
+  echo &#39;{&quot;schema_version&quot;:&quot;1.0&quot;,&quot;last_feed_check&quot;:null,&quot;last_feed_updated&quot;:null,&quot;known_advisories&quot;:[]}&#39; &gt; &quot;$STATE_FILE&quot;
+  chmod 600 &quot;$STATE_FILE&quot;
+fi
+
+# Validate state file before reading
+if ! jq -e &#39;.schema_version&#39; &quot;$STATE_FILE&quot; &gt;/dev/null 2&gt;&amp;1; then
+  echo &quot;Warning: State file corrupted or invalid schema. Creating backup and resetting.&quot;
+  cp &quot;$STATE_FILE&quot; &quot;${STATE_FILE}.bak.$(TZ=UTC date +%Y%m%d%H%M%S)&quot;
+  echo &#39;{&quot;schema_version&quot;:&quot;1.0&quot;,&quot;last_feed_check&quot;:null,&quot;last_feed_updated&quot;:null,&quot;known_advisories&quot;:[]}&#39; &gt; &quot;$STATE_FILE&quot;
+  chmod 600 &quot;$STATE_FILE&quot;
+fi
+
+# Check for major version compatibility
+SCHEMA_VER=$(jq -r &#39;.schema_version // &quot;0&quot;&#39; &quot;$STATE_FILE&quot;)
+if [[ &quot;${SCHEMA_VER%%.*}&quot; != &quot;1&quot; ]]; then
+  echo &quot;Warning: State file schema version $SCHEMA_VER may not be compatible with this version&quot;
+fi
+
+# Update last check time (always use UTC)
+TEMP_STATE=$(mktemp)
+if jq --arg t &quot;$(TZ=UTC date +%Y-%m-%dT%H:%M:%SZ)&quot; &#39;.last_feed_check = $t&#39; &quot;$STATE_FILE&quot; &gt; &quot;$TEMP_STATE&quot;; then
+  mv &quot;$TEMP_STATE&quot; &quot;$STATE_FILE&quot;
+  chmod 600 &quot;$STATE_FILE&quot;
+else
+  echo &quot;Error: Failed to update state file&quot;
+  rm -f &quot;$TEMP_STATE&quot;
+fi
+</code></pre>
+<hr>
+<h2>Rate Limiting</h2>
+<p><strong>Important:</strong> To avoid excessive requests to the feed server, follow these guidelines:</p>
+<table>
+<thead>
+<tr>
+<th>Check Type</th>
+<th>Recommended Interval</th>
+<th>Minimum Interval</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Heartbeat check</td>
+<td>Every 15-30 minutes</td>
+<td>5 minutes</td>
+</tr>
+<tr>
+<td>Full feed refresh</td>
+<td>Every 1-4 hours</td>
+<td>30 minutes</td>
+</tr>
+<tr>
+<td>Cross-reference scan</td>
+<td>Once per session</td>
+<td>5 minutes</td>
+</tr>
+</tbody></table>
+<pre><code class="language-bash"># Check if enough time has passed since last check
+STATE_FILE=&quot;$HOME/.openclaw/clawsec-feed-state.json&quot;
+MIN_INTERVAL_SECONDS=300  # 5 minutes
+
+LAST_CHECK=$(jq -r &#39;.last_feed_check // &quot;1970-01-01T00:00:00Z&quot;&#39; &quot;$STATE_FILE&quot; 2&gt;/dev/null)
+LAST_EPOCH=$(TZ=UTC date -j -f &quot;%Y-%m-%dT%H:%M:%SZ&quot; &quot;$LAST_CHECK&quot; +%s 2&gt;/dev/null || date -d &quot;$LAST_CHECK&quot; +%s 2&gt;/dev/null || echo 0)
+NOW_EPOCH=$(TZ=UTC date +%s)
+
+if [ $((NOW_EPOCH - LAST_EPOCH)) -lt $MIN_INTERVAL_SECONDS ]; then
+  echo &quot;Rate limit: Last check was less than 5 minutes ago. Skipping.&quot;
+  exit 0
+fi
+</code></pre>
+<hr>
+<h2>Environment Variables (Optional)</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>CLAWSEC_FEED_URL</code></td>
+<td>Custom advisory feed URL</td>
+<td>Raw GitHub (<code>main</code> branch)</td>
+</tr>
+<tr>
+<td><code>CLAWSEC_INSTALL_DIR</code></td>
+<td>Installation directory</td>
+<td><code>~/.openclaw/skills/clawsec-feed</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Updating ClawSec Feed</h2>
+<p>Check for and install newer versions:</p>
+<pre><code class="language-bash"># Check current installed version
+INSTALL_DIR=&quot;${CLAWSEC_INSTALL_DIR:-$HOME/.openclaw/skills/clawsec-feed}&quot;
+CURRENT_VERSION=$(jq -r &#39;.version&#39; &quot;$INSTALL_DIR/skill.json&quot; 2&gt;/dev/null || echo &quot;unknown&quot;)
+echo &quot;Installed version: $CURRENT_VERSION&quot;
+
+# Check latest available version
+LATEST_URL=&quot;https://api.github.com/repos/prompt-security/ClawSec/releases&quot;
+LATEST_VERSION=$(curl -sSL --fail --show-error --retry 3 --retry-delay 1 &quot;$LATEST_URL&quot; 2&gt;/dev/null | \
+  jq -r &#39;[.[] | select(.tag_name | startswith(&quot;clawsec-feed-v&quot;))][0].tag_name // empty&#39; | \
+  sed &#39;s/clawsec-feed-v//&#39;)
+
+if [ -z &quot;$LATEST_VERSION&quot; ]; then
+  echo &quot;Warning: Could not determine latest version&quot;
+else
+  echo &quot;Latest version: $LATEST_VERSION&quot;
+
+  if [ &quot;$CURRENT_VERSION&quot; != &quot;$LATEST_VERSION&quot; ]; then
+    echo &quot;Update available! Run the deployment steps with the new version.&quot;
+  else
+    echo &quot;You are running the latest version.&quot;
+  fi
+fi
+</code></pre>
+<hr>
+<h2>Initial Download Integrity</h2>
+<p><strong>Bootstrap Trust Problem:</strong> The initial download of this skill cannot be verified by the skill itself. To establish trust:</p>
+<ol>
+<li><strong>Verify the source URL</strong> - Ensure you are downloading from <code>https://clawsec.prompt.security</code></li>
+<li><strong>Check release signatures</strong> - GitHub signs our releases; verify the release is from the checksums.</li>
+<li><strong>Compare checksums</strong> - After download, compare the SHA-256 hash against the published <code>checksums.json</code>:</li>
+</ol>
+<pre><code class="language-bash"># After downloading SKILL.md, verify its integrity
+EXPECTED_HASH=&quot;&lt;hash-from-checksums.json&gt;&quot;
+ACTUAL_HASH=$(shasum -a 256 SKILL.md | cut -d&#39; &#39; -f1)
+
+if [ &quot;$EXPECTED_HASH&quot; != &quot;$ACTUAL_HASH&quot; ]; then
+  echo &quot;ERROR: Skill file integrity check failed!&quot;
+  echo &quot;This file may have been tampered with. Do not proceed.&quot;
+  exit 1
+fi
+</code></pre>
+<p><strong>Note:</strong> For maximum security, verify checksums.json via a separate trusted channel (e.g., direct from GitHub release page UI, not via curl).</p>
+<hr>
+<h2>Related Skills</h2>
+<ul>
+<li><strong>openclaw-audit-watchdog</strong> - Automated daily security audits</li>
+<li><strong>clawtributor</strong> - Report vulnerabilities to the community</li>
+</ul>
+<hr>
+<h2>License</h2>
+<p>MIT License - See repository for details.</p>
+<p>Built with 📡 by the <a href="https://prompt.security">Prompt Security</a> team and the agent community.</p>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/davida-ps/clawsec-feed/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/davida-ps/clawsec-feed" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/davida-ps/clawsec-feed/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@davida-ps</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">DevOps & Cloud</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">OpenClawDirectory.com is a community-run project and is not affiliated with the official OpenClaw team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

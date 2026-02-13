@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interact with FundraiseUp REST API to manage donations, recurring">
+  <title>fundraiseup - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/marketing-sales/fundraiseup/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+
+        <span class="logo-text">OpenClaw Directory</span>
+      </a>
+      <nav class="header-links">
+        <a href="/start-here/" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="/marketing-sales/" class="back-link">← Back to Marketing & Sales</a>
+              <div class="skill-page-meta">
+                <a href="/marketing-sales/" class="skill-page-category">Marketing & Sales</a>
+                <span class="skill-page-author">by @aamish99</span>
+              </div>
+              <h1 class="skill-page-title">fundraiseup</h1>
+              <p class="skill-page-desc">Interact with FundraiseUp REST API to manage donations, recurring</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>FundraiseUp API Skill</h1>
+<h2>Overview</h2>
+<p>This skill enables Claude to interact with the FundraiseUp REST API for processing donations, managing recurring plans, retrieving supporter data, and accessing fundraising analytics. FundraiseUp is a digital fundraising platform that allows nonprofits to process donations from various channels.</p>
+<h2>Configuration</h2>
+<p>Required environment variables:</p>
+<p><code>FUNDRAISEUP_API_KEY </code>- API Key (e.g., <code>ABEDDDD_XSSSHwzZc98KR53CWQeWeclA</code>)</p>
+<h2>Base URL</h2>
+<pre><code>https://api.fundraiseup.com/v1
+</code></pre>
+<h2>Authentication</h2>
+<h3>API Key Generation</h3>
+<ol>
+<li>Go to Dashboard &gt; Settings &gt; API keys</li>
+<li>Click &quot;Create API key&quot;</li>
+<li>Enter a descriptive name</li>
+<li>Select data mode:<ul>
+<li><strong>Live data</strong>: For production use</li>
+<li><strong>Test data</strong>: For testing (keys have <code>test_</code> prefix)</li>
+</ul>
+</li>
+<li>Select permissions:<ul>
+<li>Retrieve donation data</li>
+<li>Create new donations</li>
+<li>Generate Donor Portal access links</li>
+</ul>
+</li>
+<li>Save the API key securely (shown only once)</li>
+</ol>
+<h3>Authentication Header</h3>
+<p>All API requests must include the <code>Authorization</code> header with Bearer token:</p>
+<pre><code class="language-bash">Authorization: Bearer YOUR_API_KEY
+</code></pre>
+<h3>Important Notes</h3>
+<ul>
+<li>API keys are scoped to specific accounts/subaccounts</li>
+<li>Parent account API keys cannot create donations for subaccounts</li>
+<li>Only Organization Administrators can create API keys</li>
+<li>Never expose API keys publicly</li>
+</ul>
+<h2>Rate Limits</h2>
+<ul>
+<li><strong>8 requests per second</strong></li>
+<li><strong>128 requests per minute</strong></li>
+<li>Implement retry logic with exponential backoff for rate limit handling</li>
+</ul>
+<h2>Required Headers</h2>
+<pre><code class="language-bash">Content-Type: application/json
+Accept: application/json
+Authorization: Bearer YOUR_API_KEY
+</code></pre>
+<hr>
+<h2>API Endpoints</h2>
+<h3>1. Donations</h3>
+<h4>List Donations</h4>
+<p><strong>Endpoint:</strong> <code>GET /donations</code></p>
+<p><strong>Description:</strong> Retrieve all donations with cursor-based pagination.</p>
+<p><strong>Query Parameters:</strong></p>
+<ul>
+<li><code>limit</code> (optional): Number of records per page (1-100, default: 10)</li>
+<li><code>starting_after</code> (optional): Cursor for pagination (donation ID)</li>
+<li><code>ending_before</code> (optional): Cursor for backward pagination (donation ID)</li>
+<li>Note: <code>starting_after</code> and <code>ending_before</code> are mutually exclusive</li>
+</ul>
+<p><strong>Example Request:</strong></p>
+<pre><code class="language-bash">curl --request GET \
+  --url &#39;https://api.fundraiseup.com/v1/donations?limit=50&#39; \
+  --header &#39;Accept: application/json&#39; \
+  --header &#39;Authorization: Bearer {{FUNDRAISEUP_API_KEY}}&#39;
+</code></pre>
+<p><strong>Response Fields:</strong></p>
+<ul>
+<li><code>id</code>: Donation identifier</li>
+<li><code>created_at</code>: ISO 8601 timestamp</li>
+<li><code>livemode</code>: Boolean (true for live, false for test)</li>
+<li><code>amount</code>: Donation amount in selected currency</li>
+<li><code>amount_in_default_currency</code>: Amount in organization&#39;s default currency</li>
+<li><code>currency</code>: Three-letter ISO code (lowercase)</li>
+<li><code>status</code>: Donation status (e.g., succeeded, pending, failed)</li>
+<li><code>campaign</code>: Campaign details (id, code, name)</li>
+<li><code>supporter</code>: Supporter information</li>
+<li><code>recurring_plan</code>: Recurring plan details (if applicable)</li>
+<li><code>designation</code>: Fund/program designation</li>
+<li><code>tribute</code>: Tribute information (if provided)</li>
+<li><code>custom_fields</code>: Array of custom field values</li>
+<li><code>processing_fee</code>: Processing fee details</li>
+<li><code>platform_fee</code>: Platform fee details</li>
+<li><code>fees_covered</code>: Amount of fees covered by donor</li>
+</ul>
+<hr>
+<h4>Get Single Donation</h4>
+<p><strong>Endpoint:</strong> <code>GET /donations/{id}</code></p>
+<p><strong>Description:</strong> Retrieve details of a specific donation.</p>
+<p><strong>Path Parameters:</strong></p>
+<ul>
+<li><code>id</code> (required): Donation ID</li>
+</ul>
+<p><strong>Example Request:</strong></p>
+<pre><code class="language-bash">curl --request GET \
+  --url &#39;https://api.fundraiseup.com/v1/donations/DFQLCFEP&#39; \
+  --header &#39;Accept: application/json&#39; \
+  --header &#39;Authorization: Bearer {{FUNDRAISEUP_API_KEY}}&#39;
+</code></pre>
+<hr>
+<h4>Create Donation</h4>
+<p><strong>Endpoint:</strong> <code>POST /donations</code></p>
+<p><strong>Description:</strong> Create a one-time or recurring donation. API-created donations will have &quot;API&quot; as the donation source.</p>
+<p><strong>Prerequisites:</strong></p>
+<ul>
+<li>Stripe account connected to FundraiseUp and activated</li>
+<li>Active campaign with money-based payment method</li>
+<li>API key with &quot;create new donations&quot; permission</li>
+<li>Stripe Payment Method ID (created via Stripe API)</li>
+<li>PCI compliance requirements met</li>
+</ul>
+<p><strong>Request Body:</strong></p>
+<pre><code class="language-json">{
+  &quot;campaign_id&quot;: &quot;FUNCPJTZZQR&quot;,
+  &quot;amount&quot;: &quot;25.00&quot;,
+  &quot;currency&quot;: &quot;usd&quot;,
+  &quot;payment_method_id&quot;: &quot;pm_1234567890abcdef&quot;,
+  &quot;supporter&quot;: {
+    &quot;first_name&quot;: &quot;John&quot;,
+    &quot;last_name&quot;: &quot;Doe&quot;,
+    &quot;email&quot;: &quot;john.doe@example.com&quot;,
+    &quot;phone&quot;: &quot;+1234567890&quot;,
+    &quot;mailing_address&quot;: {
+      &quot;line1&quot;: &quot;123 Main St&quot;,
+      &quot;line2&quot;: &quot;Apt 4B&quot;,
+      &quot;city&quot;: &quot;New York&quot;,
+      &quot;region&quot;: &quot;NY&quot;,
+      &quot;postal_code&quot;: &quot;10001&quot;,
+      &quot;country&quot;: &quot;us&quot;
+    }
+  },
+  &quot;recurring_plan&quot;: {
+    &quot;frequency&quot;: &quot;monthly&quot;
+  },
+  &quot;designation&quot;: [
+    {
+      &quot;id&quot;: &quot;EHHJ9R36&quot;
+    }
+  ],
+  &quot;tribute&quot;: {
+    &quot;type&quot;: &quot;in_honor_of&quot;,
+    &quot;honoree&quot;: &quot;Jane Smith&quot;
+  },
+  &quot;comment&quot;: &quot;Monthly donation for general fund&quot;,
+  &quot;anonymous&quot;: false,
+  &quot;custom_fields&quot;: [
+    {
+      &quot;name&quot;: &quot;referral_source&quot;,
+      &quot;value&quot;: &quot;Email Campaign&quot;
+    }
+  ]
+}
+</code></pre>
+<p><strong>Required Fields:</strong></p>
+<ul>
+<li><code>campaign_id</code>: Must belong to the account and be active</li>
+<li><code>amount</code>: Decimal string (e.g., &quot;9.99&quot; for USD, &quot;200&quot; for JPY), minimum $1 or equivalent</li>
+<li><code>currency</code>: Three-letter ISO code (lowercase)</li>
+<li><code>payment_method_id</code>: Stripe Payment Method ID</li>
+<li><code>supporter.first_name</code>: Up to 256 characters</li>
+<li><code>supporter.last_name</code>: Up to 256 characters</li>
+<li><code>supporter.email</code>: Valid email address (not verified by API)</li>
+<li><code>supporter.phone</code>: Up to 20 characters (required if campaign requires it)</li>
+<li><code>supporter.mailing_address</code>: Required if campaign requires it</li>
+</ul>
+<p><strong>Optional Fields:</strong></p>
+<ul>
+<li><code>recurring_plan.frequency</code>: Creates recurring plan (&quot;monthly&quot;, &quot;weekly&quot;, &quot;quarterly&quot;, &quot;yearly&quot;, &quot;daily&quot;)</li>
+<li><code>designation</code>: Array of designation IDs</li>
+<li><code>tribute.type</code>: &quot;in_honor_of&quot; or &quot;in_memory_of&quot;</li>
+<li><code>tribute.honoree</code>: Name of person being honored</li>
+<li><code>comment</code>: Donation comment</li>
+<li><code>anonymous</code>: Boolean (default: false)</li>
+<li><code>custom_fields</code>: Array of custom field objects</li>
+</ul>
+<p><strong>Example Request:</strong></p>
+<pre><code class="language-bash">curl --request POST \
+  --url &#39;https://api.fundraiseup.com/v1/donations&#39; \
+  --header &#39;Accept: application/json&#39; \
+  --header &#39;Authorization: Bearer {{FUNDRAISEUP_API_KEY}}&#39; \
+  --header &#39;Content-Type: application/json&#39; \
+  --data &#39;{
+    &quot;campaign_id&quot;: &quot;FUNCPJTZZQR&quot;,
+    &quot;amount&quot;: &quot;50.00&quot;,
+    &quot;currency&quot;: &quot;usd&quot;,
+    &quot;payment_method_id&quot;: &quot;pm_1234567890&quot;,
+    &quot;supporter&quot;: {
+      &quot;first_name&quot;: &quot;Jane&quot;,
+      &quot;last_name&quot;: &quot;Smith&quot;,
+      &quot;email&quot;: &quot;jane@example.com&quot;
+    }
+  }&#39;
+</code></pre>
+<p><strong>Important Notes:</strong></p>
+<ul>
+<li>All string parameters are trimmed; empty strings converted to null</li>
+<li>Addresses and emails are not formatted or verified</li>
+<li>Only credit card payments are currently supported</li>
+<li>Fees may show as 0 initially until Stripe finalizes (use Events endpoint for finalized fees)</li>
+</ul>
+<hr>
+<h4>Update Donation</h4>
+<p><strong>Endpoint:</strong> <code>PATCH /donations/{id}</code></p>
+<p><strong>Description:</strong> Update a donation. Updates only allowed within 24 hours of creation and only for API-created donations.</p>
+<p><strong>Path Parameters:</strong></p>
+<ul>
+<li><code>id</code> (required): Donation ID</li>
+</ul>
+<p><strong>Limitations:</strong></p>
+<ul>
+<li>Only API-created donations can be updated</li>
+<li>Updates must occur within 24 hours of creation</li>
+<li>No bulk updates supported</li>
+</ul>
+<hr>
+<h3>2. Recurring Plans</h3>
+<h4>List Recurring Plans</h4>
+<p><strong>Endpoint:</strong> <code>GET /recurring_plans</code></p>
+<p><strong>Description:</strong> Retrieve all recurring donation plans.</p>
+<p><strong>Query Parameters:</strong></p>
+<ul>
+<li><code>limit</code> (optional): Number of records per page (1-100)</li>
+<li><code>starting_after</code> (optional): Cursor for pagination</li>
+<li><code>ending_before</code> (optional): Cursor for backward pagination</li>
+</ul>
+<p><strong>Example Request:</strong></p>
+<pre><code class="language-bash">curl --request GET \
+  --url &#39;https://api.fundraiseup.com/v1/recurring_plans?limit=50&#39; \
+  --header &#39;Accept: application/json&#39; \
+  --header &#39;Authorization: Bearer {{FUNDRAISEUP_API_KEY}}&#39;
+</code></pre>
+<p><strong>Response Fields:</strong></p>
+<ul>
+<li><code>id</code>: Recurring plan identifier</li>
+<li><code>created_at</code>: ISO 8601 timestamp</li>
+<li><code>frequency</code>: &quot;monthly&quot;, &quot;weekly&quot;, &quot;quarterly&quot;, &quot;yearly&quot;, or &quot;daily&quot;</li>
+<li><code>amount</code>: Recurring donation amount</li>
+<li><code>currency</code>: Three-letter ISO code</li>
+<li><code>status</code>: Plan status (active, paused, canceled)</li>
+<li><code>next_installment_at</code>: Next scheduled donation date</li>
+<li><code>ended_at</code>: End date (if set)</li>
+<li><code>campaign</code>: Associated campaign details</li>
+<li><code>supporter</code>: Supporter information</li>
+</ul>
+<hr>
+<h4>Get Single Recurring Plan</h4>
+<p><strong>Endpoint:</strong> <code>GET /recurring_plans/{id}</code></p>
+<p><strong>Description:</strong> Retrieve details of a specific recurring plan.</p>
+<p><strong>Path Parameters:</strong></p>
+<ul>
+<li><code>id</code> (required): Recurring plan ID</li>
+</ul>
+<p><strong>Example Request:</strong></p>
+<pre><code class="language-bash">curl --request GET \
+  --url &#39;https://api.fundraiseup.com/v1/recurring_plans/RVSHJNPJ&#39; \
+  --header &#39;Accept: application/json&#39; \
+  --header &#39;Authorization: Bearer {{FUNDRAISEUP_API_KEY}}&#39;
+</code></pre>
+<hr>
+<h4>Update Recurring Plan</h4>
+<p><strong>Endpoint:</strong> <code>PATCH /recurring_plans/{id}</code></p>
+<p><strong>Description:</strong> Update a recurring plan. Updates only allowed within 24 hours of creation and only for API-created plans.</p>
+<hr>
+<h3>3. Supporters</h3>
+<h4>List Supporters</h4>
+<p><strong>Endpoint:</strong> <code>GET /supporters</code></p>
+<p><strong>Description:</strong> Retrieve all supporters/donors.</p>
+<p><strong>Query Parameters:</strong></p>
+<ul>
+<li><code>limit</code> (optional): Number of records per page (1-100)</li>
+<li><code>starting_after</code> (optional): Cursor for pagination</li>
+<li><code>ending_before</code> (optional): Cursor for backward pagination</li>
+</ul>
+<p><strong>Example Request:</strong></p>
+<pre><code class="language-bash">curl --request GET \
+  --url &#39;https://api.fundraiseup.com/v1/supporters?limit=50&#39; \
+  --header &#39;Accept: application/json&#39; \
+  --header &#39;Authorization: Bearer {{FUNDRAISEUP_API_KEY}}&#39;
+</code></pre>
+<p><strong>Response Fields:</strong></p>
+<ul>
+<li><code>id</code>: Supporter identifier</li>
+<li><code>created_at</code>: ISO 8601 timestamp</li>
+<li><code>email</code>: Email address</li>
+<li><code>first_name</code>: First name</li>
+<li><code>last_name</code>: Last name</li>
+<li><code>phone</code>: Phone number</li>
+<li><code>mailing_address</code>: Address details</li>
+<li><code>mailing_list_subscribed</code>: Boolean</li>
+<li><code>anonymous</code>: Boolean</li>
+<li><code>employer</code>: Employer name (if provided)</li>
+</ul>
+<hr>
+<h4>Get Single Supporter</h4>
+<p><strong>Endpoint:</strong> <code>GET /supporters/{id}</code></p>
+<p><strong>Description:</strong> Retrieve details of a specific supporter.</p>
+<p><strong>Path Parameters:</strong></p>
+<ul>
+<li><code>id</code> (required): Supporter ID</li>
+</ul>
+<p><strong>Example Request:</strong></p>
+<pre><code class="language-bash">curl --request GET \
+  --url &#39;https://api.fundraiseup.com/v1/supporters/SXXXXXXX&#39; \
+  --header &#39;Accept: application/json&#39; \
+  --header &#39;Authorization: Bearer {{FUNDRAISEUP_API_KEY}}&#39;
+</code></pre>
+<hr>
+<h3>4. Events</h3>
+<h4>List Events</h4>
+<p><strong>Endpoint:</strong> <code>GET /events</code></p>
+<p><strong>Description:</strong> Retrieve audit log events for donations, recurring plans, and supporters.</p>
+<p><strong>Query Parameters:</strong></p>
+<ul>
+<li><code>limit</code> (optional): Number of records per page (1-100)</li>
+<li><code>starting_after</code> (optional): Cursor for pagination</li>
+<li><code>ending_before</code> (optional): Cursor for backward pagination</li>
+</ul>
+<p><strong>Example Request:</strong></p>
+<pre><code class="language-bash">curl --request GET \
+  --url &#39;https://api.fundraiseup.com/v1/events?limit=50&#39; \
+  --header &#39;Accept: application/json&#39; \
+  --header &#39;Authorization: Bearer {{FUNDRAISEUP_API_KEY}}&#39;
+</code></pre>
+<p><strong>Use Cases:</strong></p>
+<ul>
+<li>Track when fees are finalized (look for <code>donation.success</code> event)</li>
+<li>Monitor status changes</li>
+<li>Audit trail for compliance</li>
+<li>Integration debugging</li>
+</ul>
+<hr>
+<h3>5. Campaigns</h3>
+<h4>List Campaigns</h4>
+<p><strong>Endpoint:</strong> <code>GET /campaigns</code></p>
+<p><strong>Description:</strong> Retrieve all campaigns.</p>
+<p><strong>Query Parameters:</strong></p>
+<ul>
+<li><code>limit</code> (optional): Number of records per page (1-100)</li>
+<li><code>starting_after</code> (optional): Cursor for pagination</li>
+<li><code>ending_before</code> (optional): Cursor for backward pagination</li>
+</ul>
+<p><strong>Example Request:</strong></p>
+<pre><code class="language-bash">curl --request GET \
+  --url &#39;https://api.fundraiseup.com/v1/campaigns&#39; \
+  --header &#39;Accept: application/json&#39; \
+  --header &#39;Authorization: Bearer {{FUNDRAISEUP_API_KEY}}&#39;
+</code></pre>
+<p><strong>Response Fields:</strong></p>
+<ul>
+<li><code>id</code>: Campaign identifier</li>
+<li><code>code</code>: Campaign code</li>
+<li><code>name</code>: Campaign name</li>
+<li><code>status</code>: Campaign status</li>
+</ul>
+<hr>
+<h4>Get Single Campaign</h4>
+<p><strong>Endpoint:</strong> <code>GET /campaigns/{id}</code></p>
+<p><strong>Path Parameters:</strong></p>
+<ul>
+<li><code>id</code> (required): Campaign ID</li>
+</ul>
+<hr>
+<h3>6. Designations</h3>
+<h4>List Designations</h4>
+<p><strong>Endpoint:</strong> <code>GET /designations</code></p>
+<p><strong>Description:</strong> Retrieve all fund/program designations.</p>
+<p><strong>Example Request:</strong></p>
+<pre><code class="language-bash">curl --request GET \
+  --url &#39;https://api.fundraiseup.com/v1/designations&#39; \
+  --header &#39;Accept: application/json&#39; \
+  --header &#39;Authorization: Bearer {{FUNDRAISEUP_API_KEY}}&#39;
+</code></pre>
+<hr>
+<h3>7. Donor Portal Access</h3>
+<h4>Generate Supporter Portal Link</h4>
+<p><strong>Endpoint:</strong> <code>POST /donor_portal/access_links/supporters/{id}</code></p>
+<p><strong>Description:</strong> Generate a secure link for a supporter to access their Donor Portal without logging in.</p>
+<p><strong>Path Parameters:</strong></p>
+<ul>
+<li><code>id</code> (required): Supporter ID</li>
+</ul>
+<p><strong>Prerequisites:</strong></p>
+<ul>
+<li>API key with &quot;Generate Donor Portal access links&quot; permission enabled</li>
+</ul>
+<p><strong>Example Request:</strong></p>
+<pre><code class="language-bash">curl --request POST \
+  --url &#39;https://api.fundraiseup.com/v1/donor_portal/access_links/supporters/64b0ba9d9a19ea001fa3516a&#39; \
+  --header &#39;Accept: application/json&#39; \
+  --header &#39;Authorization: Bearer {{FUNDRAISEUP_API_KEY}}&#39;
+</code></pre>
+<p><strong>Response:</strong></p>
+<pre><code class="language-json">{
+  &quot;url&quot;: &quot;https://yourorg.org/login/?auth=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...&quot;
+}
+</code></pre>
+<p><strong>Important Security Notes:</strong></p>
+<ul>
+<li>Links are valid for <strong>1 minute only</strong></li>
+<li>Should only be used within Donor Portal context</li>
+<li><strong>Never</strong> share via email, SMS, or public channels</li>
+<li>Provides access to sensitive data (payment methods, donation history, receipts)</li>
+<li>Validate supporter ownership before generating links</li>
+<li>Implement automatic redirect (do not require manual action)</li>
+</ul>
+<hr>
+<h4>Generate Recurring Plan Portal Link</h4>
+<p><strong>Endpoint:</strong> <code>POST /donor_portal/access_links/recurring_plans/{id}</code></p>
+<p><strong>Description:</strong> Generate a link for a supporter to access a specific recurring plan in the Donor Portal.</p>
+<p><strong>Path Parameters:</strong></p>
+<ul>
+<li><code>id</code> (required): Recurring plan ID</li>
+</ul>
+<p><strong>Optional Query Parameters:</strong></p>
+<ul>
+<li><code>return_url</code> (optional): URL to return to after managing the recurring plan</li>
+</ul>
+<p><strong>Example Request:</strong></p>
+<pre><code class="language-bash">curl --request POST \
+  --url &#39;https://api.fundraiseup.com/v1/donor_portal/access_links/recurring_plans/RVSHJNPJ&#39; \
+  --header &#39;Accept: application/json&#39; \
+  --header &#39;Authorization: Bearer {{FUNDRAISEUP_API_KEY}}&#39;
+</code></pre>
+<p><strong>Response:</strong></p>
+<pre><code class="language-json">{
+  &quot;url&quot;: &quot;https://yourorg.org/login/?auth=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...&quot;
+}
+</code></pre>
+<hr>
+<h2>Pagination Best Practices</h2>
+<p>All list endpoints use cursor-based pagination:</p>
+<ol>
+<li><strong>Initial Request:</strong> Set <code>limit</code> parameter (1-100)</li>
+<li><strong>Next Page:</strong> Use the last item&#39;s <code>id</code> in <code>starting_after</code></li>
+<li><strong>Previous Page:</strong> Use the first item&#39;s <code>id</code> in <code>ending_before</code></li>
+<li><strong>Sorting:</strong> Records sorted by creation date (newest first), then by ID (Z to A)</li>
+</ol>
+<p><strong>Example Pagination Flow:</strong></p>
+<pre><code class="language-bash"># Page 1
+GET /donations?limit=50
+
+# Page 2 (use last donation ID from page 1)
+GET /donations?limit=50&amp;starting_after=LAST_DONATION_ID
+
+# Previous page
+GET /donations?limit=50&amp;ending_before=FIRST_DONATION_ID
+</code></pre>
+<hr>
+<h2>Error Handling</h2>
+<h3>Standard HTTP Response Codes</h3>
+<ul>
+<li><code>200 OK</code>: Successful GET request</li>
+<li><code>201 Created</code>: Successful POST request</li>
+<li><code>400 Bad Request</code>: Invalid request parameters</li>
+<li><code>401 Unauthorized</code>: Missing or invalid API key</li>
+<li><code>403 Forbidden</code>: Insufficient permissions</li>
+<li><code>404 Not Found</code>: Resource not found</li>
+<li><code>429 Too Many Requests</code>: Rate limit exceeded</li>
+<li><code>500 Internal Server Error</code>: Server error</li>
+</ul>
+<h3>Best Practices</h3>
+<ol>
+<li>Implement exponential backoff for rate limits</li>
+<li>Log all API errors with request details</li>
+<li>Validate data before sending to API</li>
+<li>Handle null values gracefully</li>
+<li>Check for finalized fees using Events endpoint</li>
+</ol>
+<hr>
+<h2>Code Examples</h2>
+<h3>Python Example</h3>
+<pre><code class="language-python">import requests
+import os
+
+API_KEY = os.environ.get(&#39;FUNDRAISEUP_API_KEY&#39;)
+BASE_URL = &#39;https://api.fundraiseup.com/v1&#39;
+
+headers = {
+    &#39;Authorization&#39;: f&#39;Bearer {API_KEY}&#39;,
+    &#39;Accept&#39;: &#39;application/json&#39;,
+    &#39;Content-Type&#39;: &#39;application/json&#39;
+}
+
+# List donations
+def get_donations(limit=50):
+    url = f&#39;{BASE_URL}/donations&#39;
+    params = {&#39;limit&#39;: limit}
+    response = requests.get(url, headers=headers, params=params)
+    response.raise_for_status()
+    return response.json()
+
+# Create donation
+def create_donation(campaign_id, amount, currency, payment_method_id, supporter):
+    url = f&#39;{BASE_URL}/donations&#39;
+    data = {
+        &#39;campaign_id&#39;: campaign_id,
+        &#39;amount&#39;: str(amount),
+        &#39;currency&#39;: currency,
+        &#39;payment_method_id&#39;: payment_method_id,
+        &#39;supporter&#39;: supporter
+    }
+    response = requests.post(url, headers=headers, json=data)
+    response.raise_for_status()
+    return response.json()
+
+# Get single donation
+def get_donation(donation_id):
+    url = f&#39;{BASE_URL}/donations/{donation_id}&#39;
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+    return response.json()
+</code></pre>
+<h3>Node.js Example</h3>
+<pre><code class="language-javascript">const axios = require(&#39;axios&#39;);
+
+const API_KEY = process.env.FUNDRAISEUP_API_KEY;
+const BASE_URL = &#39;https://api.fundraiseup.com/v1&#39;;
+
+const headers = {
+  &#39;Authorization&#39;: `Bearer ${API_KEY}`,
+  &#39;Accept&#39;: &#39;application/json&#39;,
+  &#39;Content-Type&#39;: &#39;application/json&#39;
+};
+
+// List donations
+async function getDonations(limit = 50) {
+  const response = await axios.get(`${BASE_URL}/donations`, {
+    headers,
+    params: { limit }
+  });
+  return response.data;
+}
+
+// Create donation
+async function createDonation(campaignId, amount, currency, paymentMethodId, supporter) {
+  const response = await axios.post(`${BASE_URL}/donations`, {
+    campaign_id: campaignId,
+    amount: amount.toString(),
+    currency,
+    payment_method_id: paymentMethodId,
+    supporter
+  }, { headers });
+  return response.data;
+}
+
+// Get single donation
+async function getDonation(donationId) {
+  const response = await axios.get(`${BASE_URL}/donations/${donationId}`, { headers });
+  return response.data;
+}
+</code></pre>
+<h3>cURL Example with Environment Variable</h3>
+<pre><code class="language-bash"># Set your API key as environment variable
+export FUNDRAISEUP_API_KEY=&quot;your_api_key_here&quot;
+
+# List donations
+curl --request GET \
+  --url &#39;https://api.fundraiseup.com/v1/donations?limit=50&#39; \
+  --header &quot;Accept: application/json&quot; \
+  --header &quot;Authorization: Bearer $FUNDRAISEUP_API_KEY&quot;
+
+# Create donation
+curl --request POST \
+  --url &#39;https://api.fundraiseup.com/v1/donations&#39; \
+  --header &quot;Accept: application/json&quot; \
+  --header &quot;Authorization: Bearer $FUNDRAISEUP_API_KEY&quot; \
+  --header &quot;Content-Type: application/json&quot; \
+  --data &#39;{
+    &quot;campaign_id&quot;: &quot;FUNCPJTZZQR&quot;,
+    &quot;amount&quot;: &quot;25.00&quot;,
+    &quot;currency&quot;: &quot;usd&quot;,
+    &quot;payment_method_id&quot;: &quot;pm_1234567890&quot;,
+    &quot;supporter&quot;: {
+      &quot;first_name&quot;: &quot;John&quot;,
+      &quot;last_name&quot;: &quot;Doe&quot;,
+      &quot;email&quot;: &quot;john@example.com&quot;
+    }
+  }&#39;
+
+# Get single donation
+curl --request GET \
+  --url &quot;https://api.fundraiseup.com/v1/donations/DFQLCFEP&quot; \
+  --header &quot;Accept: application/json&quot; \
+  --header &quot;Authorization: Bearer $FUNDRAISEUP_API_KEY&quot;
+</code></pre>
+<hr>
+<h2>Testing</h2>
+<h3>Test Mode</h3>
+<ul>
+<li>Generate API keys with &quot;Test data&quot; mode</li>
+<li>Test keys have <code>test_</code> prefix</li>
+<li>Test mode data doesn&#39;t affect live data or banking networks</li>
+<li>Use test Stripe Payment Methods for creating test donations</li>
+</ul>
+<h3>URL Parameter for Testing</h3>
+<p>Add <code>fundraiseupLivemode=no</code> to any URL for testing without processing real donations</p>
+<hr>
+<h2>Integration Patterns</h2>
+<h3>Historical Data Sync</h3>
+<ol>
+<li>Use <code>limit</code> parameter to fetch batches (recommended: 50-100)</li>
+<li>Use <code>starting_after</code> with last record ID for next batch</li>
+<li>Process batches sequentially</li>
+<li>Implement error handling and retry logic</li>
+</ol>
+<h3>Real-time Polling</h3>
+<ol>
+<li>Poll API at regular intervals (respect rate limits)</li>
+<li>Use Events endpoint to track changes</li>
+<li>Store last processed record ID</li>
+<li>Use <code>starting_after</code> to get only new records</li>
+</ol>
+<h3>Event-Based Integration</h3>
+<ul>
+<li>Use Zapier for event triggers (FundraiseUp doesn&#39;t support direct webhooks)</li>
+<li>Configure Zapier to trigger on FundraiseUp events</li>
+<li>Trigger sync jobs in your system based on events</li>
+</ul>
+<hr>
+<h2>Common Use Cases</h2>
+<ol>
+<li><p><strong>Processing Offline Donations</strong></p>
+<ul>
+<li>Face-to-face fundraising</li>
+<li>Direct mail donations</li>
+<li>Telethon pledges</li>
+<li>Event registrations</li>
+</ul>
+</li>
+<li><p><strong>CRM Integration</strong></p>
+<ul>
+<li>Sync donation data to CRM (Salesforce, HubSpot, etc.)</li>
+<li>Update supporter records</li>
+<li>Track recurring plans</li>
+<li>Generate reports</li>
+</ul>
+</li>
+<li><p><strong>Analytics and Reporting</strong></p>
+<ul>
+<li>Export donation data for BI tools</li>
+<li>Track campaign performance</li>
+<li>Analyze donor behavior</li>
+<li>Calculate lifetime value</li>
+</ul>
+</li>
+<li><p><strong>Donor Portal Integration</strong></p>
+<ul>
+<li>Seamless authentication from custom portals</li>
+<li>Direct access to recurring plan management</li>
+<li>Single sign-on experience</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2>Security Best Practices</h2>
+<ol>
+<li><p><strong>API Key Management</strong></p>
+<ul>
+<li>Store API keys in environment variables (never hardcode)</li>
+<li>Use separate keys for different integrations</li>
+<li>Rotate keys periodically</li>
+<li>Revoke compromised keys immediately</li>
+</ul>
+</li>
+<li><p><strong>HTTPS Only</strong></p>
+<ul>
+<li>All requests must use HTTPS</li>
+<li>HTTP requests are rejected</li>
+</ul>
+</li>
+<li><p><strong>Data Validation</strong></p>
+<ul>
+<li>Validate all input before sending to API</li>
+<li>Sanitize user-provided data</li>
+<li>Check response data before processing</li>
+</ul>
+</li>
+<li><p><strong>PCI Compliance</strong></p>
+<ul>
+<li>Never handle raw card data in your application</li>
+<li>Use Stripe Payment Methods API for card processing</li>
+<li>Meet PCI DSS requirements (SAQ D for direct API integration)</li>
+<li>Consider using Stripe Elements to reduce PCI scope</li>
+</ul>
+</li>
+<li><p><strong>Donor Portal Security</strong></p>
+<ul>
+<li>Validate supporter ownership before generating access links</li>
+<li>Use automatic redirects (never manual links)</li>
+<li>Never share access links via email or public channels</li>
+<li>Access links expire in 1 minute</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2>Limitations and Considerations</h2>
+<ol>
+<li><strong>Payment Methods:</strong> Currently only credit cards are supported</li>
+<li><strong>Updates:</strong> Only allowed within 24 hours of creation, only for API-created records</li>
+<li><strong>Bulk Operations:</strong> No bulk update support</li>
+<li><strong>Webhooks:</strong> Direct webhooks not supported (use Zapier for events)</li>
+<li><strong>Subaccounts:</strong> Parent API keys cannot create donations for subaccounts</li>
+<li><strong>Fee Calculations:</strong> Fees may be 0 initially; use Events endpoint for finalized fees</li>
+<li><strong>Address Validation:</strong> API does not format or verify addresses</li>
+<li><strong>Email Validation:</strong> API does not verify email addresses</li>
+<li><strong>Migration:</strong> REST API is not a migration mechanism (use Migration service)</li>
+</ol>
+<hr>
+<h2>Additional Resources</h2>
+<ul>
+<li>Official Documentation: <a href="https://fundraiseup.com/docs/rest-api/">https://fundraiseup.com/docs/rest-api/</a></li>
+<li>API Resources: <a href="https://fundraiseup.com/docs/rest-api-resources/">https://fundraiseup.com/docs/rest-api-resources/</a></li>
+<li>Donor Portal Integration: <a href="https://fundraiseup.com/docs/seamless-donor-portal/">https://fundraiseup.com/docs/seamless-donor-portal/</a></li>
+<li>Support: <a href="https://fundraiseup.com/support/">https://fundraiseup.com/support/</a></li>
+</ul>
+<hr>
+<h2>Troubleshooting</h2>
+<h3>Common Issues</h3>
+<p><strong>401 Unauthorized</strong></p>
+<ul>
+<li>Check API key is correct and active</li>
+<li>Verify Authorization header format</li>
+<li>Ensure API key has required permissions</li>
+</ul>
+<p><strong>429 Rate Limit Exceeded</strong></p>
+<ul>
+<li>Implement exponential backoff</li>
+<li>Reduce request frequency</li>
+<li>Batch operations where possible</li>
+</ul>
+<p><strong>400 Bad Request</strong></p>
+<ul>
+<li>Validate all required fields are present</li>
+<li>Check data types and formats</li>
+<li>Ensure currency codes are lowercase</li>
+<li>Verify amount format (decimal string)</li>
+</ul>
+<p><strong>Fees Showing as 0</strong></p>
+<ul>
+<li>Fees are finalized asynchronously</li>
+<li>Use Events endpoint to get finalized fees</li>
+<li>Look for <code>donation.success</code> event</li>
+</ul>
+<p><strong>Cannot Update Donation</strong></p>
+<ul>
+<li>Verify donation was created via API</li>
+<li>Ensure update is within 24 hours</li>
+<li>Check API key permissions</li>
+</ul>
+<hr>
+<h2>Version Information</h2>
+<ul>
+<li>API Version: v1</li>
+<li>Last Updated: February 2026</li>
+<li>Supported Payment Methods: Credit Card only</li>
+</ul>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/aamish99/fundraiseup/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/aamish99/fundraiseup" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/aamish99/fundraiseup/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@aamish99</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Marketing & Sales</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">OpenClawDirectory.com is a community-run project and is not affiliated with the official OpenClaw team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

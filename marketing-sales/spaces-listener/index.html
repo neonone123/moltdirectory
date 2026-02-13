@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Record, transcribe, and summarize X/Twitter Spaces — live or replays">
+  <meta name="description" content="Record, transcribe, and summarize X/Twitter Spaces">
   <title>spaces-listener - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/marketing-sales/spaces-listener/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,13 +45,13 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Marketing & Sales</a>
+              <a href="/marketing-sales/" class="back-link">← Back to Marketing & Sales</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Marketing & Sales</a>
+                <a href="/marketing-sales/" class="skill-page-category">Marketing & Sales</a>
                 <span class="skill-page-author">by @jamesalmeida</span>
               </div>
               <h1 class="skill-page-title">spaces-listener</h1>
-              <p class="skill-page-desc">Record, transcribe, and summarize X/Twitter Spaces — live or replays</p>
+              <p class="skill-page-desc">Record, transcribe, and summarize X/Twitter Spaces</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -110,13 +111,34 @@ spaces transcribe ~/Desktop/space.m4a --no-summarize
 <li>Summaries are generated automatically after transcription (skip with <code>--no-summarize</code>)</li>
 </ol>
 <h2>Output</h2>
-<p>Files saved to <code>--output</code> dir (default: <code>~/Desktop</code>):</p>
+<p>Each space gets its own folder under <code>~/Dropbox/ClawdBox/XSpaces/</code>:</p>
+<pre><code>~/Dropbox/ClawdBox/XSpaces/
+  space_username_2026-02-03_1430/
+    recording.m4a     — audio
+    recording.log     — progress log
+    transcript.txt    — transcript
+    summary.txt       — summary
+</code></pre>
+<h2>Critical: Agent Usage Rules</h2>
+<p><strong>NEVER set a timeout on Space downloads.</strong> Spaces can be hours long.
+yt-dlp stops automatically when the Space ends — don&#39;t kill it early.</p>
+<p>The correct workflow:</p>
+<ol>
+<li>Run <code>spaces listen &lt;url&gt;</code> — it starts a background process and returns immediately</li>
+<li>Set a <strong>cron job</strong> (every 5–10 min) to check <code>spaces list</code></li>
+<li>When recording shows &quot;No active recordings&quot;, it&#39;s done</li>
+<li>Transcribe the audio file, summarize, notify the user</li>
+<li>Delete the cron job</li>
+</ol>
+<p><strong>Do NOT:</strong></p>
 <ul>
-<li><code>space_&lt;username&gt;_&lt;date&gt;.m4a</code> — audio</li>
-<li><code>space_&lt;username&gt;_&lt;date&gt;.log</code> — progress log</li>
-<li><code>space_&lt;username&gt;_&lt;date&gt;.txt</code> — transcript</li>
-<li><code>space_&lt;username&gt;_&lt;date&gt;_summary.txt</code> — summary</li>
+<li>Use <code>exec</code> with a timeout for downloads</li>
+<li>Run competing download processes for the same Space</li>
+<li>Kill the download process manually (unless the user asks)</li>
 </ul>
+<p>Audio is staged in <code>/tmp/spaces-listener-staging/</code> during recording, then
+automatically copied to the final Dropbox output dir when complete. This
+avoids Dropbox file-locking issues during long downloads.</p>
 <h2>Whisper Models</h2>
 <table>
 <thead>

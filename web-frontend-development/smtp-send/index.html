@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Send emails via SMTP with support for plain text, HTML">
+  <meta name="description" content="Send emails via SMTP with support for plain text, HTML, and attachments">
   <title>smtp-send - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/web-frontend-development/smtp-send/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,13 +45,13 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Web & Frontend Development</a>
+              <a href="/web-frontend-development/" class="back-link">← Back to Web & Frontend Development</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Web & Frontend Development</a>
+                <a href="/web-frontend-development/" class="skill-page-category">Web & Frontend Development</a>
                 <span class="skill-page-author">by @xiwan</span>
               </div>
               <h1 class="skill-page-title">smtp-send</h1>
-              <p class="skill-page-desc">Send emails via SMTP with support for plain text, HTML</p>
+              <p class="skill-page-desc">Send emails via SMTP with support for plain text, HTML, and attachments</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -64,71 +65,163 @@
                   </button>
                 </div>
                 <div class="markdown-content">
-                  <h1>SMTP Send</h1>
-<p>Send emails via SMTP with support for text, HTML formatting, and file attachments. Works with Gmail, Outlook, Yahoo, QQ Mail, 163 Mail, and any SMTP server.</p>
-<h2>Quick Start</h2>
-<p>Send a simple email:</p>
-<pre><code class="language-bash">python3 scripts/send_email.py \
+                  <h1>Email Send</h1>
+<p>发送邮件，支持 SMTP 和 Resend API 两种方式。</p>
+<h2>🚀 快速使用</h2>
+<pre><code class="language-bash"># 发送简单邮件
+python3 scripts/send_email.py \
   --to recipient@example.com \
   --subject &quot;Meeting Tomorrow&quot; \
   --body &quot;Hi, let&#39;s meet at 2pm tomorrow.&quot;
-</code></pre>
-<p>Send HTML email:</p>
-<pre><code class="language-bash">python3 scripts/send_email.py \
+
+# 发送 HTML 邮件
+python3 scripts/send_email.py \
   --to recipient@example.com \
   --subject &quot;Weekly Report&quot; \
   --body &quot;&lt;h1&gt;Report&lt;/h1&gt;&lt;p&gt;Here are the updates...&lt;/p&gt;&quot; \
   --html
-</code></pre>
-<p>Send with attachments:</p>
-<pre><code class="language-bash">python3 scripts/send_email.py \
+
+# 发送带附件的邮件
+python3 scripts/send_email.py \
   --to recipient@example.com \
   --subject &quot;Documents&quot; \
   --body &quot;Please find the attached files.&quot; \
   --attachments report.pdf,data.csv
+
+# 指定使用 Resend
+python3 scripts/send_email.py \
+  --to recipient@example.com \
+  --subject &quot;Test&quot; \
+  --body &quot;Hello&quot; \
+  --provider resend
 </code></pre>
-<h2>Setup</h2>
-<p><strong>One-time configuration required.</strong> Create <code>~/.smtp_config</code>:</p>
+<h2>⚙️ 配置</h2>
+<p>在 <code>~/.smtp_config</code> 中配置（二选一或两个都配）：</p>
+<h3>方式 1: Resend API（推荐，更简单）</h3>
 <pre><code class="language-json">{
-  &quot;host&quot;: &quot;smtp.gmail.com&quot;,
-  &quot;port&quot;: 587,
-  &quot;user&quot;: &quot;your-email@gmail.com&quot;,
-  &quot;password&quot;: &quot;your-app-password&quot;,
-  &quot;from&quot;: &quot;your-email@gmail.com&quot;,
-  &quot;use_ssl&quot;: false
+    &quot;resend_api_key&quot;: &quot;re_xxxxx&quot;,
+    &quot;resend_from&quot;: &quot;you@your-domain.com&quot;
 }
 </code></pre>
-<p><strong>For Gmail users:</strong> Must use App Password (not regular password). See <a href="references/setup.md">setup.md</a> for detailed instructions on generating app passwords for Gmail, Yahoo, QQ Mail, 163 Mail, and other providers.</p>
-<p>Alternatively, use environment variables (see <a href="references/setup.md">setup.md</a>).</p>
-<h2>Parameters</h2>
+<p>获取 API key: <a href="https://resend.com">https://resend.com</a></p>
+<p><strong>注意</strong>：免费账户只能发给注册邮箱，要发给其他人需要验证域名。</p>
+<h3>方式 2: SMTP（163/QQ/Gmail 等）</h3>
+<pre><code class="language-json">{
+    &quot;host&quot;: &quot;smtp.163.com&quot;,
+    &quot;port&quot;: 465,
+    &quot;user&quot;: &quot;your-email@163.com&quot;,
+    &quot;password&quot;: &quot;your-auth-code&quot;,
+    &quot;from&quot;: &quot;your-email@163.com&quot;,
+    &quot;use_ssl&quot;: true
+}
+</code></pre>
+<h3>两个都配（自动 fallback）</h3>
+<pre><code class="language-json">{
+    &quot;resend_api_key&quot;: &quot;re_xxxxx&quot;,
+    &quot;resend_from&quot;: &quot;you@your-domain.com&quot;,
+    &quot;host&quot;: &quot;smtp.163.com&quot;,
+    &quot;port&quot;: 465,
+    &quot;user&quot;: &quot;your-email@163.com&quot;,
+    &quot;password&quot;: &quot;your-auth-code&quot;,
+    &quot;from&quot;: &quot;your-email@163.com&quot;,
+    &quot;use_ssl&quot;: true
+}
+</code></pre>
+<p>配置完后设置权限：</p>
+<pre><code class="language-bash">chmod 600 ~/.smtp_config
+</code></pre>
+<h2>📋 参数</h2>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>必填</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>--to</code></td>
+<td>✅</td>
+<td>收件人邮箱</td>
+</tr>
+<tr>
+<td><code>--subject</code></td>
+<td>✅</td>
+<td>邮件标题</td>
+</tr>
+<tr>
+<td><code>--body</code></td>
+<td>✅</td>
+<td>邮件内容</td>
+</tr>
+<tr>
+<td><code>--html</code></td>
+<td>❌</td>
+<td>以 HTML 格式发送</td>
+</tr>
+<tr>
+<td><code>--attachments</code></td>
+<td>❌</td>
+<td>附件路径，多个用逗号分隔</td>
+</tr>
+<tr>
+<td><code>--provider</code></td>
+<td>❌</td>
+<td><code>auto</code>/<code>smtp</code>/<code>resend</code>（默认 auto）</td>
+</tr>
+</tbody></table>
+<h2>🔄 Provider 选择逻辑</h2>
 <ul>
-<li><code>--to</code>: Recipient email address (required)</li>
-<li><code>--subject</code>: Email subject line (required)</li>
-<li><code>--body</code>: Email body content (required)</li>
-<li><code>--html</code>: Send as HTML email (optional flag)</li>
-<li><code>--attachments</code>: Comma-separated file paths (optional)</li>
+<li><code>auto</code>（默认）：优先 Resend，失败则 fallback 到 SMTP</li>
+<li><code>smtp</code>：强制使用 SMTP</li>
+<li><code>resend</code>：强制使用 Resend API</li>
 </ul>
-<h2>Common Patterns</h2>
-<h3>User provides recipient and content</h3>
-<p>When the user says &quot;email <a href="mailto:john@example.com">john@example.com</a> about the meeting,&quot; extract the recipient and compose appropriate subject/body.</p>
-<h3>User provides only content</h3>
-<p>If the user says &quot;send an email saying the report is ready&quot; without specifying a recipient, ask who to send it to.</p>
-<h3>File attachments</h3>
-<p>When the user mentions &quot;attach the file&quot; or &quot;send the document,&quot; use <code>--attachments</code> with the file path. Multiple files can be separated by commas.</p>
-<h3>HTML formatting</h3>
-<p>Use <code>--html</code> when the user wants formatted content (headings, lists, emphasis) or explicitly asks for HTML email.</p>
-<h2>Error Handling</h2>
-<p><strong>Missing config</strong>: If <code>~/.smtp_config</code> not found and environment variables not set, the script will print an example config and exit. Guide the user to create the config file with their SMTP settings.</p>
-<p><strong>Authentication failed</strong>: Usually means incorrect password or need to use app password. Direct user to <a href="references/setup.md">setup.md</a> for provider-specific instructions.</p>
-<p><strong>Missing attachments</strong>: Script warns but continues sending email without that attachment.</p>
-<p><strong>Connection timeout</strong>: Check SMTP host/port settings or network connectivity.</p>
-<h2>Security</h2>
+<h2>📧 常见 SMTP 配置</h2>
+<table>
+<thead>
+<tr>
+<th>邮箱</th>
+<th>Host</th>
+<th>Port</th>
+<th>SSL</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>163</td>
+<td>smtp.163.com</td>
+<td>465</td>
+<td>true</td>
+</tr>
+<tr>
+<td>QQ</td>
+<td>smtp.qq.com</td>
+<td>465</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Gmail</td>
+<td>smtp.gmail.com</td>
+<td>587</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Outlook</td>
+<td>smtp.office365.com</td>
+<td>587</td>
+<td>false</td>
+</tr>
+</tbody></table>
+<p><strong>注意</strong>：163/QQ/Gmail 都需要使用授权码而非登录密码。</p>
+<h2>🔐 安全</h2>
 <ul>
-<li>Credentials stored in <code>~/.smtp_config</code> (file permissions should be 600)</li>
-<li>Or use environment variables for better security</li>
-<li>App passwords recommended over regular passwords</li>
-<li>Config file should not be committed to version control</li>
+<li>凭据存储在 <code>~/.smtp_config</code>，权限应设为 600</li>
+<li>API key 和密码不会出现在命令行参数中</li>
+<li>配置文件不应提交到版本控制</li>
 </ul>
+<h2>🐛 常见问题</h2>
+<p><strong>认证失败</strong>：检查授权码是否正确，是否开启了 SMTP 服务</p>
+<p><strong>Resend 403</strong>：免费账户只能发给注册邮箱，需要验证域名才能发给其他人</p>
+<p><strong>连接超时</strong>：检查网络，或者端口是否被防火墙拦截</p>
 
                 </div>
               </div>

@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Automated Linux server patching and Docker container updates">
+  <title>linux-patcher - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/devops-cloud/linux-patcher/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+
+        <span class="logo-text">OpenClaw Directory</span>
+      </a>
+      <nav class="header-links">
+        <a href="/start-here/" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="/devops-cloud/" class="back-link">← Back to DevOps & Cloud</a>
+              <div class="skill-page-meta">
+                <a href="/devops-cloud/" class="skill-page-category">DevOps & Cloud</a>
+                <span class="skill-page-author">by @jgm2025</span>
+              </div>
+              <h1 class="skill-page-title">linux-patcher</h1>
+              <p class="skill-page-desc">Automated Linux server patching and Docker container updates</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Linux Patcher</h1>
+<p>Automate Linux server patching and Docker container updates across multiple hosts via SSH.</p>
+<h2>⚠️ Important Disclaimers</h2>
+<h3>Distribution Support Status</h3>
+<p><strong>Fully Tested:</strong></p>
+<ul>
+<li>✅ <strong>Ubuntu</strong> - Tested end-to-end with real infrastructure</li>
+</ul>
+<p><strong>Supported but Untested:</strong></p>
+<ul>
+<li>⚠️ <strong>Debian GNU/Linux</strong> - Commands based on official documentation</li>
+<li>⚠️ <strong>Amazon Linux</strong> - Supports both AL2 (yum) and AL2023 (dnf)</li>
+<li>⚠️ <strong>RHEL (Red Hat Enterprise Linux)</strong> - Supports RHEL 7 (yum) and 8+ (dnf)</li>
+<li>⚠️ <strong>AlmaLinux</strong> - RHEL-compatible, uses dnf</li>
+<li>⚠️ <strong>Rocky Linux</strong> - RHEL-compatible, uses dnf</li>
+<li>⚠️ <strong>CentOS</strong> - Supports CentOS 7 (yum) and 8+ (dnf)</li>
+<li>⚠️ <strong>SUSE/OpenSUSE</strong> - Uses zypper package manager</li>
+</ul>
+<p><strong>Testing Recommendation:</strong>
+Always test untested distributions in a non-production environment first. The script will warn you when running on untested distributions.</p>
+<h3>Security Notice</h3>
+<p>This skill requires:</p>
+<ul>
+<li><strong>Passwordless sudo access</strong> - Configured with restricted permissions</li>
+<li><strong>SSH key authentication</strong> - No passwords stored or transmitted</li>
+<li><strong>PatchMon credentials</strong> - Stored securely in user&#39;s home directory</li>
+</ul>
+<p><strong>Read <code>SETUP.md</code> for complete security configuration guide.</strong></p>
+<h2>Quick Start</h2>
+<h3>Automated (Recommended)</h3>
+<p><strong>Patch all hosts from PatchMon</strong> (automatic detection):</p>
+<pre><code class="language-bash">scripts/patch-auto.sh
+</code></pre>
+<p><strong>Skip Docker updates</strong> (packages only):</p>
+<pre><code class="language-bash">scripts/patch-auto.sh --skip-docker
+</code></pre>
+<p><strong>Preview changes</strong> (dry-run):</p>
+<pre><code class="language-bash">scripts/patch-auto.sh --dry-run
+</code></pre>
+<h3>Manual (Alternative)</h3>
+<p><strong>Single host - packages only</strong>:</p>
+<pre><code class="language-bash">scripts/patch-host-only.sh user@hostname
+</code></pre>
+<p><strong>Single host - full update</strong>:</p>
+<pre><code class="language-bash">scripts/patch-host-full.sh user@hostname /path/to/docker/compose
+</code></pre>
+<p><strong>Multiple hosts from config</strong>:</p>
+<pre><code class="language-bash">scripts/patch-multiple.sh config-file.conf
+</code></pre>
+<h2>Features</h2>
+<ul>
+<li><strong>PatchMon integration</strong> - Automatically detects hosts needing updates</li>
+<li><strong>Smart Docker detection</strong> - Auto-detects Docker and Compose paths</li>
+<li><strong>Selective updates</strong> - Skip Docker updates with <code>--skip-docker</code> flag</li>
+<li><strong>Passwordless sudo required</strong> - Configure with <code>visudo</code> or <code>/etc/sudoers.d/</code> files</li>
+<li><strong>SSH key authentication</strong> - No password prompts</li>
+<li><strong>Parallel execution</strong> - Update multiple hosts simultaneously</li>
+<li><strong>Dry-run mode</strong> - Preview changes without applying</li>
+<li><strong>Manual override</strong> - Run updates on specific hosts without PatchMon</li>
+</ul>
+<h2>Configuration</h2>
+<h3>Option 1: Automatic via PatchMon (Recommended)</h3>
+<p>Configure PatchMon credentials for automatic host detection:</p>
+<pre><code class="language-bash">cp scripts/patchmon-credentials.example.conf ~/.patchmon-credentials.conf
+nano ~/.patchmon-credentials.conf
+</code></pre>
+<p>Set your credentials:</p>
+<pre><code class="language-bash">PATCHMON_URL=https://patchmon.example.com
+PATCHMON_USERNAME=your-username
+PATCHMON_PASSWORD=your-password
+</code></pre>
+<p>Then simply run:</p>
+<pre><code class="language-bash">scripts/patch-auto.sh
+</code></pre>
+<p>The script will:</p>
+<ol>
+<li>Query PatchMon for hosts needing updates</li>
+<li>Auto-detect Docker on each host</li>
+<li>Apply appropriate updates (host-only or full)</li>
+</ol>
+<h3>Option 2: Single Host (Quick Manual)</h3>
+<p>Run scripts directly with command-line arguments (no config file needed).</p>
+<h3>Option 3: Multiple Hosts (Manual Config)</h3>
+<p>Create a config file based on <code>scripts/patch-hosts-config.example.sh</code>:</p>
+<pre><code class="language-bash">cp scripts/patch-hosts-config.example.sh my-servers.conf
+nano my-servers.conf
+</code></pre>
+<p>Example config:</p>
+<pre><code class="language-bash"># Host definitions: hostname,ssh_user,docker_path
+HOSTS=(
+  &quot;webserver.example.com,ubuntu,/opt/docker&quot;
+  &quot;database.example.com,root,/home/admin/compose&quot;
+  &quot;monitor.example.com,docker,/srv/monitoring&quot;
+)
+
+# Update mode: &quot;host-only&quot; or &quot;full&quot;
+UPDATE_MODE=&quot;full&quot;
+
+# Dry run mode (set to &quot;false&quot; to apply changes)
+DRY_RUN=&quot;true&quot;
+</code></pre>
+<p>Then run:</p>
+<pre><code class="language-bash">scripts/patch-multiple.sh my-servers.conf
+</code></pre>
+<h2>Prerequisites</h2>
+<h3>Required on Control Machine (where OpenClaw runs)</h3>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>OpenClaw</strong> installed and running</li>
+<li><input disabled="" type="checkbox"> <strong>SSH client</strong> installed (<code>ssh</code> command available)</li>
+<li><input disabled="" type="checkbox"> <strong>Bash</strong> 4.0 or higher</li>
+<li><input disabled="" type="checkbox"> <strong>curl</strong> installed (for PatchMon API)</li>
+<li><input disabled="" type="checkbox"> <strong>jq</strong> installed (for JSON parsing)</li>
+<li><input disabled="" type="checkbox"> <strong>PatchMon</strong> installed (required to check which hosts need updating)<ul>
+<li>Does NOT need to be on the OpenClaw host</li>
+<li>Can be installed on any server accessible via HTTPS</li>
+<li>Download: <a href="https://github.com/PatchMon/PatchMon">https://github.com/PatchMon/PatchMon</a></li>
+</ul>
+</li>
+</ul>
+<p><strong>Install missing tools:</strong></p>
+<pre><code class="language-bash"># Ubuntu/Debian
+sudo apt install curl jq
+
+# RHEL/CentOS/Rocky/Alma
+sudo dnf install curl jq
+
+# macOS
+brew install curl jq
+</code></pre>
+<h3>Required on Target Hosts</h3>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>SSH server</strong> running and accessible</li>
+<li><input disabled="" type="checkbox"> <strong>SSH key authentication</strong> configured (passwordless login)</li>
+<li><input disabled="" type="checkbox"> <strong>Passwordless sudo</strong> configured for patching commands (see SETUP.md)</li>
+<li><input disabled="" type="checkbox"> <strong>Docker</strong> installed (optional, only for full updates)</li>
+<li><input disabled="" type="checkbox"> <strong>Docker Compose</strong> installed (optional, only for full updates)</li>
+<li><input disabled="" type="checkbox"> <strong>PatchMon agent</strong> installed and reporting (optional but recommended)</li>
+</ul>
+<h3>PatchMon Setup (Required for Automatic Mode)</h3>
+<p><strong>PatchMon is required to automatically detect which hosts need patching.</strong></p>
+<p><strong>Important:</strong> PatchMon does NOT need to be installed on the same server as OpenClaw. Install PatchMon on a separate server (can be any server on your network), and OpenClaw will query it via API.</p>
+<p><strong>Download PatchMon:</strong></p>
+<ul>
+<li><strong>GitHub:</strong> <a href="https://github.com/PatchMon/PatchMon">https://github.com/PatchMon/PatchMon</a></li>
+<li><strong>Documentation:</strong> <a href="https://docs.patchmon.net">https://docs.patchmon.net</a></li>
+</ul>
+<p><strong>What you need:</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> PatchMon server installed on ANY accessible server (not necessarily the OpenClaw host)</li>
+<li><input disabled="" type="checkbox"> PatchMon agents installed on all target hosts you want to patch</li>
+<li><input disabled="" type="checkbox"> PatchMon API credentials (username/password)</li>
+<li><input disabled="" type="checkbox"> Network connectivity from OpenClaw host to PatchMon server (HTTPS)</li>
+</ul>
+<p><strong>Architecture:</strong></p>
+<pre><code>┌─────────────────┐      HTTPS API      ┌─────────────────┐
+│ OpenClaw Host   │ ──────────────────&gt; │ PatchMon Server │
+│ (this machine)  │    Query updates    │ (separate host) │
+└─────────────────┘                     └─────────────────┘
+                                                  │
+                                                  │ Reports
+                                                  ▼
+                                         ┌─────────────────┐
+                                         │ Target Hosts    │
+                                         │ (with agents)   │
+                                         └─────────────────┘
+</code></pre>
+<p><strong>Quick Start:</strong></p>
+<ol>
+<li>Install PatchMon server on a separate server (see GitHub repo)</li>
+<li>Install PatchMon agents on all hosts you want to patch</li>
+<li>Configure OpenClaw to access PatchMon API:</li>
+</ol>
+<pre><code class="language-bash">cp scripts/patchmon-credentials.example.conf ~/.patchmon-credentials.conf
+nano ~/.patchmon-credentials.conf  # Set PatchMon server URL
+chmod 600 ~/.patchmon-credentials.conf
+</code></pre>
+<p><strong>Detailed setup:</strong>
+See <code>references/patchmon-setup.md</code> for complete installation guide.</p>
+<p><strong>Can I use this skill without PatchMon?</strong>
+Yes! You can use manual mode to target specific hosts without PatchMon. However, automatic detection of hosts needing updates requires PatchMon.</p>
+<h3>On Target Hosts</h3>
+<p><strong>Required:</strong></p>
+<ul>
+<li>SSH server running</li>
+<li>Passwordless sudo for the SSH user (for <code>apt</code> and <code>docker</code> commands)</li>
+<li>PatchMon agent installed and reporting (for automatic mode)</li>
+</ul>
+<p><strong>For full updates:</strong></p>
+<ul>
+<li>Docker and Docker Compose installed</li>
+<li>Docker Compose files exist at specified paths</li>
+</ul>
+<h3>Configure Passwordless Sudo</h3>
+<p>On each target host, create <code>/etc/sudoers.d/patches</code>:</p>
+<pre><code class="language-bash"># For Ubuntu/Debian systems
+username ALL=(ALL) NOPASSWD: /usr/bin/apt, /usr/bin/docker
+
+# For RHEL/CentOS systems
+username ALL=(ALL) NOPASSWD: /usr/bin/yum, /usr/bin/docker, /usr/bin/dnf
+</code></pre>
+<p>Replace <code>username</code> with your SSH user. Test with <code>sudo -l</code> to verify.</p>
+<h2>Update Modes</h2>
+<h3>Host-Only Updates</h3>
+<p>Updates system packages only:</p>
+<ul>
+<li>Run <code>apt update &amp;&amp; apt upgrade</code> (or <code>yum update</code> on RHEL)</li>
+<li>Remove unused packages (<code>apt autoremove</code>)</li>
+<li><strong>Does NOT</strong> touch Docker containers</li>
+</ul>
+<p><strong>When to use:</strong></p>
+<ul>
+<li>Hosts without Docker</li>
+<li>Security patches only</li>
+<li>Minimal downtime required</li>
+</ul>
+<h3>Full Updates</h3>
+<p>Complete update cycle:</p>
+<ul>
+<li>Update system packages</li>
+<li>Clean Docker cache (<code>docker system prune</code>)</li>
+<li>Pull latest Docker images</li>
+<li>Recreate containers with new images</li>
+<li><strong>Causes brief service interruption</strong></li>
+</ul>
+<p><strong>When to use:</strong></p>
+<ul>
+<li>Docker-based infrastructure</li>
+<li>Regular maintenance windows</li>
+<li>Application updates available</li>
+</ul>
+<h2>Workflow</h2>
+<h3>Automatic Workflow (patch-auto.sh)</h3>
+<ol>
+<li><strong>Query PatchMon</strong> - Fetch hosts needing updates via API</li>
+<li><strong>For each host:</strong><ul>
+<li>SSH into host</li>
+<li>Check if Docker is installed</li>
+<li>Auto-detect Docker Compose path (if not specified)</li>
+<li>Apply host-only OR full update based on Docker detection</li>
+</ul>
+</li>
+<li><strong>Report results</strong> - Summary of successful/failed updates</li>
+</ol>
+<h3>Host-Only Update Process</h3>
+<ol>
+<li>SSH into target host</li>
+<li>Run <code>sudo apt update</code></li>
+<li>Run <code>sudo apt -y upgrade</code></li>
+<li>Run <code>sudo apt -y autoremove</code></li>
+<li>Report results</li>
+</ol>
+<h3>Full Update Process</h3>
+<ol>
+<li>SSH into target host</li>
+<li>Run <code>sudo apt update &amp;&amp; upgrade &amp;&amp; autoremove</code></li>
+<li>Navigate to Docker Compose directory</li>
+<li>Run <code>sudo docker system prune -af</code> (cleanup)</li>
+<li>Pull all Docker images listed in compose file</li>
+<li>Run <code>sudo docker compose pull</code></li>
+<li>Run <code>sudo docker compose up -d</code> (recreate containers)</li>
+<li>Report results</li>
+</ol>
+<h3>Docker Detection Logic</h3>
+<p>When using automatic mode:</p>
+<ul>
+<li><strong>Docker installed + compose file found</strong> → Full update</li>
+<li><strong>Docker installed + no compose file</strong> → Host-only update</li>
+<li><strong>Docker not installed</strong> → Host-only update</li>
+<li><strong>--skip-docker flag set</strong> → Host-only update (ignores Docker)</li>
+</ul>
+<h2>Docker Path Auto-Detection</h2>
+<p>When Docker path is not specified, the script checks these locations:</p>
+<ol>
+<li><code>/home/$USER/Docker/docker-compose.yml</code></li>
+<li><code>/opt/docker/docker-compose.yml</code></li>
+<li><code>/srv/docker/docker-compose.yml</code></li>
+<li><code>$HOME/Docker/docker-compose.yml</code></li>
+<li>Current directory</li>
+</ol>
+<p><strong>Override auto-detection:</strong></p>
+<pre><code class="language-bash">scripts/patch-host-full.sh user@host /custom/path
+</code></pre>
+<h2>Examples</h2>
+<h3>Example 1: Automatic update via PatchMon (recommended)</h3>
+<pre><code class="language-bash"># First time: configure credentials
+cp scripts/patchmon-credentials.example.conf ~/.patchmon-credentials.conf
+nano ~/.patchmon-credentials.conf
+
+# Run automatic updates
+scripts/patch-auto.sh
+</code></pre>
+<h3>Example 2: Automatic with dry-run</h3>
+<pre><code class="language-bash"># Preview what would be updated
+scripts/patch-auto.sh --dry-run
+
+# Review output, then apply
+scripts/patch-auto.sh
+</code></pre>
+<h3>Example 3: Skip Docker updates</h3>
+<pre><code class="language-bash"># Update packages only, even if Docker is detected
+scripts/patch-auto.sh --skip-docker
+</code></pre>
+<h3>Example 4: Manual single host, packages only</h3>
+<pre><code class="language-bash">scripts/patch-host-only.sh admin@webserver.example.com
+</code></pre>
+<h3>Example 5: Manual single host, full update with custom Docker path</h3>
+<pre><code class="language-bash">scripts/patch-host-full.sh docker@app.example.com /home/docker/production
+</code></pre>
+<h3>Example 6: Manual multiple hosts from config</h3>
+<pre><code class="language-bash">scripts/patch-multiple.sh production-servers.conf
+</code></pre>
+<h3>Example 7: Via OpenClaw chat</h3>
+<p>Simply ask OpenClaw:</p>
+<ul>
+<li>&quot;Update my servers&quot;</li>
+<li>&quot;Patch all hosts that need updates&quot;</li>
+<li>&quot;Update packages only, skip Docker&quot;</li>
+</ul>
+<p>OpenClaw will use the automatic mode and report results.</p>
+<h2>Troubleshooting</h2>
+<h3>PatchMon Integration Issues</h3>
+<h4>&quot;PatchMon credentials not found&quot;</h4>
+<ul>
+<li>Create credentials file: <code>cp scripts/patchmon-credentials.example.conf ~/.patchmon-credentials.conf</code></li>
+<li>Edit with your PatchMon URL and credentials</li>
+<li>Or set <code>PATCHMON_CONFIG</code> environment variable to custom location</li>
+</ul>
+<h4>&quot;Failed to authenticate with PatchMon&quot;</h4>
+<ul>
+<li>Verify PatchMon URL is correct (without trailing slash)</li>
+<li>Check username and password</li>
+<li>Ensure PatchMon server is accessible: <code>curl -k https://patchmon.example.com/api/health</code></li>
+<li>Check firewall rules</li>
+</ul>
+<h4>&quot;No hosts need updates&quot; but PatchMon shows updates available</h4>
+<ul>
+<li>Verify PatchMon agents are running on target hosts: <code>systemctl status patchmon-agent</code></li>
+<li>Check agent reporting intervals: <code>/etc/patchmon/config.yml</code></li>
+<li>Force agent update: <code>patchmon-agent report</code></li>
+</ul>
+<h3>System Update Issues</h3>
+<h4>&quot;Permission denied&quot; on apt/docker commands</h4>
+<ul>
+<li>Configure passwordless sudo (see Prerequisites section)</li>
+<li>Test with: <code>ssh user@host sudo apt update</code></li>
+</ul>
+<h4>&quot;Connection refused&quot;</h4>
+<ul>
+<li>Verify SSH access: <code>ssh user@host echo OK</code></li>
+<li>Check SSH keys are configured</li>
+<li>Verify hostname resolution</li>
+</ul>
+<h4>Docker Compose not found</h4>
+<ul>
+<li>Specify full path: <code>scripts/patch-host-full.sh user@host /full/path</code></li>
+<li>Or install Docker Compose on target host</li>
+<li>Auto-detection searches: <code>/home/user/Docker</code>, <code>/opt/docker</code>, <code>/srv/docker</code></li>
+</ul>
+<h4>Containers fail to start after update</h4>
+<ul>
+<li>Check logs: <code>ssh user@host &quot;docker logs container-name&quot;</code></li>
+<li>Manually inspect: <code>ssh user@host &quot;cd /docker/path &amp;&amp; docker compose logs&quot;</code></li>
+<li>Rollback if needed: <code>ssh user@host &quot;cd /docker/path &amp;&amp; docker compose down &amp;&amp; docker compose up -d&quot;</code></li>
+</ul>
+<h2>PatchMon Integration (Optional)</h2>
+<p>For dashboard monitoring and scheduled patching, see <code>references/patchmon-setup.md</code>.</p>
+<p>PatchMon provides:</p>
+<ul>
+<li>Web dashboard for update status</li>
+<li>Per-host package tracking</li>
+<li>Security update highlighting</li>
+<li>Update history</li>
+</ul>
+<h2>Security Considerations</h2>
+<ul>
+<li><strong>Passwordless sudo</strong> is required for automation<ul>
+<li>Limit to specific commands (<code>apt</code>, <code>docker</code> only)</li>
+<li>Use <code>/etc/sudoers.d/</code> files (easier to manage)</li>
+</ul>
+</li>
+<li><strong>SSH keys</strong> should be protected<ul>
+<li>Use passphrase-protected keys when possible</li>
+<li>Restrict key permissions: <code>chmod 600 ~/.ssh/id_rsa</code></li>
+</ul>
+</li>
+<li><strong>Review updates</strong> before applying in production<ul>
+<li>Use dry-run mode first</li>
+<li>Test on staging environment</li>
+</ul>
+</li>
+<li><strong>Schedule updates</strong> during maintenance windows<ul>
+<li>Use OpenClaw cron jobs for automation</li>
+<li>Coordinate with team for Docker updates (brief downtime)</li>
+</ul>
+</li>
+</ul>
+<h2>Best Practices</h2>
+<ol>
+<li><strong>Test first</strong> - Run dry-run mode before applying changes</li>
+<li><strong>Stagger updates</strong> - Don&#39;t update all hosts simultaneously (avoid full outage)</li>
+<li><strong>Monitor logs</strong> - Check output for errors after updates</li>
+<li><strong>Backup configs</strong> - Keep Docker Compose files in version control</li>
+<li><strong>Schedule wisely</strong> - Update during low-traffic windows</li>
+<li><strong>Document paths</strong> - Maintain config files for infrastructure</li>
+<li><strong>Reboot when needed</strong> - Kernel updates require reboots (not automated)</li>
+</ol>
+<h2>Reboot Management</h2>
+<p>The scripts do NOT automatically reboot hosts. After updates:</p>
+<ol>
+<li>Check if reboot required: <code>ssh user@host &quot;[ -f /var/run/reboot-required ] &amp;&amp; echo YES || echo NO&quot;</code></li>
+<li>Schedule manual reboots during maintenance windows</li>
+<li>Use PatchMon dashboard to track reboot requirements</li>
+</ol>
+<h2>Integration with OpenClaw</h2>
+<h3>Run Updates on Schedule</h3>
+<p>Create a cron job for automatic nightly patching:</p>
+<pre><code class="language-bash">cron add --name &quot;Nightly Server Patching&quot; \
+  --schedule &quot;0 2 * * *&quot; \
+  --task &quot;cd ~/.openclaw/workspace/skills/linux-patcher &amp;&amp; scripts/patch-auto.sh&quot;
+</code></pre>
+<p>Or packages-only mode:</p>
+<pre><code class="language-bash">cron add --name &quot;Nightly Package Updates&quot; \
+  --schedule &quot;0 2 * * *&quot; \
+  --task &quot;cd ~/.openclaw/workspace/skills/linux-patcher &amp;&amp; scripts/patch-auto.sh --skip-docker&quot;
+</code></pre>
+<h3>Run Updates via Chat</h3>
+<p>Simply ask OpenClaw natural language commands:</p>
+<p><strong>Full updates (packages + Docker containers):</strong></p>
+<ul>
+<li>&quot;Update my servers&quot; ← <strong>Includes Docker by default</strong></li>
+<li>&quot;Patch all hosts that need updates&quot;</li>
+<li>&quot;Update all my infrastructure&quot;</li>
+</ul>
+<p><strong>Packages only (exclude Docker):</strong></p>
+<ul>
+<li>&quot;Update my servers, excluding docker&quot;</li>
+<li>&quot;Update packages only, skip Docker&quot;</li>
+<li>&quot;Patch hosts without touching containers&quot;</li>
+</ul>
+<p><strong>Query status:</strong></p>
+<ul>
+<li>&quot;What servers need patching?&quot;</li>
+<li>&quot;Show me hosts that need updates&quot;</li>
+</ul>
+<p><strong>What happens automatically:</strong></p>
+<p>When you say <strong>&quot;Update my servers&quot;</strong>:</p>
+<ol>
+<li>✅ Queries PatchMon for hosts needing updates</li>
+<li>✅ Detects Docker on each host</li>
+<li>✅ Updates system packages</li>
+<li>✅ <strong>Pulls Docker images and recreates containers</strong> (if Docker detected)</li>
+<li>✅ Reports results with success/failure count</li>
+</ol>
+<p>When you say <strong>&quot;Update my servers, excluding docker&quot;</strong>:</p>
+<ol>
+<li>✅ Queries PatchMon for hosts needing updates</li>
+<li>✅ Updates system packages only</li>
+<li>❌ Skips all Docker operations (containers keep running)</li>
+<li>✅ Reports results</li>
+</ol>
+<p><strong>Important:</strong> Docker updates are <strong>included by default</strong> for maximum automation. Use &quot;excluding docker&quot; to skip container updates.</p>
+<h3>Manual Override (Specific Hosts)</h3>
+<p>Target individual hosts without querying PatchMon:</p>
+<ul>
+<li>&quot;Update webserver.example.com&quot;</li>
+<li>&quot;Patch database.example.com packages only&quot;</li>
+<li>&quot;Update app.example.com with Docker&quot;</li>
+</ul>
+<p>OpenClaw will use the manual scripts for targeted updates.</p>
+<h2>Documentation Files</h2>
+<p>This skill includes comprehensive documentation:</p>
+<ul>
+<li><strong>SKILL.md</strong> (this file) - Overview and usage guide</li>
+<li><strong>SETUP.md</strong> - Complete setup instructions with security best practices</li>
+<li><strong>WORKFLOWS.md</strong> - Visual workflow diagrams for all modes</li>
+<li><strong>references/patchmon-setup.md</strong> - PatchMon installation and integration</li>
+</ul>
+<p><strong>First time setup?</strong> Read <code>SETUP.md</code> first - it provides step-by-step instructions for secure configuration.</p>
+<p><strong>Want to understand the flow?</strong> Check <code>WORKFLOWS.md</code> for visual diagrams of how the skill operates.</p>
+<h2>Supported Linux Distributions</h2>
+<table>
+<thead>
+<tr>
+<th>Distribution</th>
+<th>Package Manager</th>
+<th>Tested</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ubuntu</td>
+<td>apt</td>
+<td>✅ Yes</td>
+<td>Fully supported</td>
+</tr>
+<tr>
+<td>Debian</td>
+<td>apt</td>
+<td>⚠️ No</td>
+<td>Supported (untested)</td>
+</tr>
+<tr>
+<td>Amazon Linux 2</td>
+<td>yum</td>
+<td>⚠️ No</td>
+<td>Supported (untested)</td>
+</tr>
+<tr>
+<td>Amazon Linux 2023</td>
+<td>dnf</td>
+<td>⚠️ No</td>
+<td>Supported (untested)</td>
+</tr>
+<tr>
+<td>RHEL 7</td>
+<td>yum</td>
+<td>⚠️ No</td>
+<td>Supported (untested)</td>
+</tr>
+<tr>
+<td>RHEL 8+</td>
+<td>dnf</td>
+<td>⚠️ No</td>
+<td>Supported (untested)</td>
+</tr>
+<tr>
+<td>AlmaLinux</td>
+<td>dnf</td>
+<td>⚠️ No</td>
+<td>Supported (untested)</td>
+</tr>
+<tr>
+<td>Rocky Linux</td>
+<td>dnf</td>
+<td>⚠️ No</td>
+<td>Supported (untested)</td>
+</tr>
+<tr>
+<td>CentOS 7</td>
+<td>yum</td>
+<td>⚠️ No</td>
+<td>Supported (untested)</td>
+</tr>
+<tr>
+<td>CentOS 8+</td>
+<td>dnf</td>
+<td>⚠️ No</td>
+<td>Supported (untested)</td>
+</tr>
+<tr>
+<td>SUSE/OpenSUSE</td>
+<td>zypper</td>
+<td>⚠️ No</td>
+<td>Supported (untested)</td>
+</tr>
+</tbody></table>
+<p>The skill automatically detects the distribution and selects the appropriate package manager.</p>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/jgm2025/linux-patcher/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/jgm2025/linux-patcher" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/jgm2025/linux-patcher/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@jgm2025</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">DevOps & Cloud</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">OpenClawDirectory.com is a community-run project and is not affiliated with the official OpenClaw team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

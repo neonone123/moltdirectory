@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Debug DNS resolution and network connectivity">
+  <title>dns-networking - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/web-frontend-development/dns-networking/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+
+        <span class="logo-text">OpenClaw Directory</span>
+      </a>
+      <nav class="header-links">
+        <a href="/start-here/" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="/web-frontend-development/" class="back-link">← Back to Web & Frontend Development</a>
+              <div class="skill-page-meta">
+                <a href="/web-frontend-development/" class="skill-page-category">Web & Frontend Development</a>
+                <span class="skill-page-author">by @gitgoodordietrying</span>
+              </div>
+              <h1 class="skill-page-title">dns-networking</h1>
+              <p class="skill-page-desc">Debug DNS resolution and network connectivity</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>DNS &amp; Networking</h1>
+<p>Debug DNS resolution, network connectivity, and HTTP issues. Covers dig/nslookup, port testing, firewall rules, curl diagnostics, /etc/hosts, proxy configuration, and certificate troubleshooting.</p>
+<h2>When to Use</h2>
+<ul>
+<li>DNS name not resolving or resolving to wrong IP</li>
+<li>Connection refused / connection timed out errors</li>
+<li>Diagnosing firewall or security group rules</li>
+<li>HTTP requests failing for unclear reasons</li>
+<li>Proxy configuration issues</li>
+<li>SSL/TLS certificate errors</li>
+<li>Testing connectivity between services</li>
+</ul>
+<h2>DNS Debugging</h2>
+<h3>Query DNS records</h3>
+<pre><code class="language-bash"># A record (IP address)
+dig example.com
+dig +short example.com
+
+# Specific record types
+dig example.com MX        # Mail servers
+dig example.com CNAME     # Aliases
+dig example.com TXT       # Text records (SPF, DKIM, etc.)
+dig example.com NS        # Name servers
+dig example.com AAAA      # IPv6 address
+dig example.com SOA       # Start of Authority
+
+# Query a specific DNS server
+dig @8.8.8.8 example.com
+dig @1.1.1.1 example.com
+
+# Trace the full resolution path
+dig +trace example.com
+
+# Reverse lookup (IP → hostname)
+dig -x 93.184.216.34
+
+# nslookup (simpler, works everywhere)
+nslookup example.com
+nslookup example.com 8.8.8.8    # Query specific server
+nslookup -type=MX example.com
+
+# host (simplest)
+host example.com
+host -t MX example.com
+</code></pre>
+<h3>Check DNS propagation</h3>
+<pre><code class="language-bash"># Query multiple public DNS servers
+for dns in 8.8.8.8 1.1.1.1 9.9.9.9 208.67.222.222; do
+    echo -n &quot;$dns: &quot;
+    dig +short @&quot;$dns&quot; example.com
+done
+
+# Check TTL (time to live)
+dig example.com | grep -E &#39;^\S+\s+\d+\s+IN\s+A&#39;
+# The number is TTL in seconds
+</code></pre>
+<h3>Local DNS issues</h3>
+<pre><code class="language-bash"># Check /etc/resolv.conf (which DNS server the system uses)
+cat /etc/resolv.conf
+
+# Check /etc/hosts (local overrides)
+cat /etc/hosts
+
+# Flush DNS cache
+# macOS:
+sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
+# Linux (systemd-resolved):
+sudo systemd-resolve --flush-caches
+# Windows:
+ipconfig /flushdns
+
+# Check if systemd-resolved is running (Linux)
+resolvectl status
+</code></pre>
+<h3>/etc/hosts patterns</h3>
+<pre><code class="language-bash"># /etc/hosts — local DNS overrides (no TTL, instant)
+
+# Point a domain to localhost (for development)
+127.0.0.1    myapp.local
+127.0.0.1    api.myapp.local
+
+# Block a domain
+0.0.0.0      ads.example.com
+
+# Test a migration (point domain to new server before DNS change)
+203.0.113.50    example.com
+203.0.113.50    www.example.com
+
+# Multiple names for one IP
+192.168.1.100   db.local redis.local cache.local
+</code></pre>
+<h2>Port and Connectivity Testing</h2>
+<h3>Test if a port is open</h3>
+<pre><code class="language-bash"># nc (netcat) — most reliable
+nc -zv example.com 443
+nc -zv -w 5 example.com 80    # 5 second timeout
+
+# Test multiple ports
+for port in 22 80 443 5432 6379; do
+    nc -zv -w 2 example.com $port 2&gt;&amp;1
+done
+
+# /dev/tcp (bash built-in, no extra tools needed)
+timeout 3 bash -c &#39;echo &gt; /dev/tcp/example.com/443&#39; &amp;&amp; echo &quot;Open&quot; || echo &quot;Closed&quot;
+
+# curl (also tests HTTP)
+curl -sI -o /dev/null -w &quot;%{http_code}&quot; https://example.com
+
+# Test from inside a Docker container
+docker exec my-container nc -zv db 5432
+</code></pre>
+<h3>Network path diagnostics</h3>
+<pre><code class="language-bash"># traceroute (show network hops)
+traceroute example.com
+
+# mtr (continuous traceroute with stats — best for finding packet loss)
+mtr example.com
+mtr -r -c 20 example.com   # Report mode, 20 packets
+
+# ping
+ping -c 5 example.com
+
+# Show local network interfaces
+ip addr show          # Linux
+ifconfig              # macOS / older Linux
+
+# Show routing table
+ip route show         # Linux
+netstat -rn           # macOS
+route -n              # Linux (older)
+</code></pre>
+<h3>Check listening ports</h3>
+<pre><code class="language-bash"># What&#39;s listening on which port (Linux)
+ss -tlnp
+ss -tlnp | grep :8080
+
+# macOS
+lsof -i -P -n | grep LISTEN
+lsof -i :8080
+
+# Older Linux
+netstat -tlnp
+netstat -tlnp | grep :8080
+
+# Which process is using a port
+lsof -i :3000
+fuser 3000/tcp   # Linux
+</code></pre>
+<h2>curl Diagnostics</h2>
+<h3>Verbose request inspection</h3>
+<pre><code class="language-bash"># Full verbose output (headers, TLS handshake, timing)
+curl -v https://api.example.com/endpoint
+
+# Show timing breakdown
+curl -o /dev/null -s -w &quot;
+    DNS:        %{time_namelookup}s
+    Connect:    %{time_connect}s
+    TLS:        %{time_appconnect}s
+    TTFB:       %{time_starttransfer}s
+    Total:      %{time_total}s
+    Status:     %{http_code}
+    Size:       %{size_download} bytes
+&quot; https://api.example.com/endpoint
+
+# Show response headers only
+curl -sI https://api.example.com/endpoint
+
+# Follow redirects and show each hop
+curl -sIL https://example.com
+
+# Resolve a domain to a specific IP (bypass DNS)
+curl --resolve example.com:443:203.0.113.50 https://example.com
+
+# Use a specific network interface
+curl --interface eth1 https://example.com
+</code></pre>
+<h3>Debug common HTTP issues</h3>
+<pre><code class="language-bash"># Test with different HTTP versions
+curl --http1.1 https://example.com
+curl --http2 https://example.com
+
+# Test with specific TLS version
+curl --tlsv1.2 https://example.com
+curl --tlsv1.3 https://example.com
+
+# Ignore certificate errors (debugging only)
+curl -k https://self-signed.example.com
+
+# Send request with custom Host header (virtual hosts)
+curl -H &quot;Host: example.com&quot; https://203.0.113.50/
+
+# Test CORS preflight
+curl -X OPTIONS -H &quot;Origin: http://localhost:3000&quot; \
+     -H &quot;Access-Control-Request-Method: POST&quot; \
+     -v https://api.example.com/endpoint
+</code></pre>
+<h2>Firewall Basics</h2>
+<h3>iptables (Linux)</h3>
+<pre><code class="language-bash"># List all rules
+sudo iptables -L -n -v
+
+# Allow incoming on port 80
+sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+
+# Allow incoming from specific IP
+sudo iptables -A INPUT -s 203.0.113.0/24 -p tcp --dport 22 -j ACCEPT
+
+# Block incoming on a port
+sudo iptables -A INPUT -p tcp --dport 3306 -j DROP
+
+# Save rules (persist across reboot)
+sudo iptables-save &gt; /etc/iptables/rules.v4
+</code></pre>
+<h3>ufw (simpler, Ubuntu/Debian)</h3>
+<pre><code class="language-bash"># Enable
+sudo ufw enable
+
+# Allow/deny
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw allow from 203.0.113.0/24 to any port 22
+sudo ufw deny 3306
+
+# Check status
+sudo ufw status verbose
+
+# Reset all rules
+sudo ufw reset
+</code></pre>
+<h3>macOS firewall</h3>
+<pre><code class="language-bash"># Check status
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --getglobalstate
+
+# Enable
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
+
+# Allow an application
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --add /usr/local/bin/myapp
+</code></pre>
+<h2>Proxy Configuration</h2>
+<h3>Environment variables</h3>
+<pre><code class="language-bash"># Set proxy for most CLI tools
+export HTTP_PROXY=http://proxy.example.com:8080
+export HTTPS_PROXY=http://proxy.example.com:8080
+export NO_PROXY=localhost,127.0.0.1,.internal.example.com
+
+# For curl specifically
+export http_proxy=http://proxy.example.com:8080  # lowercase also works
+
+# With authentication
+export HTTPS_PROXY=http://user:password@proxy.example.com:8080
+</code></pre>
+<h3>Test through proxy</h3>
+<pre><code class="language-bash"># curl with explicit proxy
+curl -x http://proxy.example.com:8080 https://httpbin.org/ip
+
+# SOCKS proxy
+curl --socks5 localhost:1080 https://httpbin.org/ip
+
+# Verify your external IP through proxy
+curl -x http://proxy:8080 https://httpbin.org/ip
+curl https://httpbin.org/ip  # Compare with direct
+
+# Test proxy connectivity
+curl -v -x http://proxy:8080 https://example.com 2&gt;&amp;1 | grep -i &quot;proxy\|connect&quot;
+</code></pre>
+<h3>Common proxy issues</h3>
+<pre><code class="language-bash"># Node.js fetch/undici does NOT respect HTTP_PROXY
+# Use undici ProxyAgent or node-fetch with http-proxy-agent
+
+# Git through proxy
+git config --global http.proxy http://proxy:8080
+git config --global https.proxy http://proxy:8080
+# Remove:
+git config --global --unset http.proxy
+
+# npm through proxy
+npm config set proxy http://proxy:8080
+npm config set https-proxy http://proxy:8080
+
+# pip through proxy
+pip install --proxy http://proxy:8080 package-name
+</code></pre>
+<h2>Certificate Troubleshooting</h2>
+<pre><code class="language-bash"># Check certificate from a server
+echo | openssl s_client -connect example.com:443 -servername example.com 2&gt;/dev/null | \
+  openssl x509 -noout -subject -issuer -dates
+
+# Check expiry
+echo | openssl s_client -connect example.com:443 2&gt;/dev/null | \
+  openssl x509 -noout -enddate
+
+# Download certificate chain
+openssl s_client -showcerts -connect example.com:443 &lt; /dev/null 2&gt;/dev/null | \
+  awk &#39;/BEGIN CERT/,/END CERT/&#39; &gt; chain.pem
+
+# Verify a certificate against CA bundle
+openssl verify -CAfile /etc/ssl/certs/ca-certificates.crt server.pem
+
+# Check certificate for a specific hostname (SNI)
+openssl s_client -connect cdn.example.com:443 -servername cdn.example.com
+
+# Common error: &quot;certificate has expired&quot;
+# Check the date on the server:
+date
+# If the system clock is wrong, certs will appear invalid
+</code></pre>
+<h2>Quick Diagnostics Script</h2>
+<pre><code class="language-bash">#!/bin/bash
+# net-check.sh — Quick network diagnostics
+TARGET=&quot;${1:?Usage: net-check.sh &lt;hostname&gt; [port]}&quot;
+PORT=&quot;${2:-443}&quot;
+
+echo &quot;=== Network Check: $TARGET:$PORT ===&quot;
+
+echo -n &quot;DNS resolution: &quot;
+IP=$(dig +short &quot;$TARGET&quot; | head -1)
+[[ -n &quot;$IP&quot; ]] &amp;&amp; echo &quot;$IP&quot; || echo &quot;FAILED&quot;
+
+echo -n &quot;Ping: &quot;
+ping -c 1 -W 3 &quot;$TARGET&quot; &gt; /dev/null 2&gt;&amp;1 &amp;&amp; echo &quot;OK&quot; || echo &quot;FAILED (may be blocked)&quot;
+
+echo -n &quot;Port $PORT: &quot;
+nc -zv -w 5 &quot;$TARGET&quot; &quot;$PORT&quot; 2&gt;&amp;1 | grep -q &quot;succeeded\|open&quot; &amp;&amp; echo &quot;OPEN&quot; || echo &quot;CLOSED/FILTERED&quot;
+
+if [[ &quot;$PORT&quot; == &quot;443&quot; || &quot;$PORT&quot; == &quot;8443&quot; ]]; then
+    echo -n &quot;TLS: &quot;
+    echo | openssl s_client -connect &quot;$TARGET:$PORT&quot; -servername &quot;$TARGET&quot; 2&gt;/dev/null | \
+      grep -q &quot;Verify return code: 0&quot; &amp;&amp; echo &quot;VALID&quot; || echo &quot;INVALID/ERROR&quot;
+
+    echo -n &quot;Certificate expiry: &quot;
+    echo | openssl s_client -connect &quot;$TARGET:$PORT&quot; 2&gt;/dev/null | \
+      openssl x509 -noout -enddate 2&gt;/dev/null | sed &#39;s/notAfter=//&#39;
+fi
+
+echo &quot;=== Done ===&quot;
+</code></pre>
+<h2>Tips</h2>
+<ul>
+<li><code>dig +short</code> is the fastest way to check DNS from the command line. Use <code>@8.8.8.8</code> to bypass local caching.</li>
+<li><code>nc -zv</code> is the simplest port connectivity test. If nc isn&#39;t available, use bash&#39;s <code>/dev/tcp</code>.</li>
+<li>curl&#39;s <code>-w</code> format string with timing variables is the fastest way to diagnose slow HTTP requests: DNS, connect, TLS, and TTFB are all visible.</li>
+<li>DNS changes propagate based on TTL. Check the current TTL with <code>dig</code> before expecting a DNS change to take effect.</li>
+<li><code>/etc/hosts</code> changes take effect immediately (no TTL, no propagation delay). Use it to test domain migrations before changing DNS.</li>
+<li>When debugging &quot;connection refused&quot;: first verify the port is open with <code>nc</code>, then check the service is actually listening with <code>ss -tlnp</code> or <code>lsof -i</code>.</li>
+<li><code>mtr</code> is better than <code>traceroute</code> for diagnosing packet loss — it runs continuously and shows per-hop loss percentages.</li>
+<li>Node.js, Python <code>requests</code>, and many libraries do NOT automatically use <code>HTTP_PROXY</code> environment variables. Check each tool&#39;s proxy documentation.</li>
+</ul>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/gitgoodordietrying/dns-networking/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/gitgoodordietrying/dns-networking" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/gitgoodordietrying/dns-networking/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@gitgoodordietrying</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Web & Frontend Development</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">OpenClawDirectory.com is a community-run project and is not affiliated with the official OpenClaw team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

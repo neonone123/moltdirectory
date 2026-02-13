@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Generate images via Krea.ai API (Flux, Imagen, Ideogram, Seedream, etc.)">
+  <meta name="description" content="Generate images via Krea.ai API">
   <title>krea-api - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/image-video-generation/krea-api/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,13 +45,13 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Image & Video Generation</a>
+              <a href="/image-video-generation/" class="back-link">← Back to Image & Video Generation</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Image & Video Generation</a>
+                <a href="/image-video-generation/" class="skill-page-category">Image & Video Generation</a>
                 <span class="skill-page-author">by @fossilizedcarlos</span>
               </div>
               <h1 class="skill-page-title">krea-api</h1>
-              <p class="skill-page-desc">Generate images via Krea.ai API (Flux, Imagen, Ideogram, Seedream, etc.)</p>
+              <p class="skill-page-desc">Generate images via Krea.ai API</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -68,35 +69,58 @@
 <p>Generate images using Krea.ai&#39;s API with support for multiple models including Flux, Imagen 4, Ideogram 3.0, and more.</p>
 <h2>Features</h2>
 <ul>
-<li>Async job-based generation (POST → poll → result)</li>
-<li>Support for multiple image models</li>
-<li>Configurable parameters (width, height, steps, guidance, seed, etc.)</li>
-<li>Webhook support for background completion</li>
-<li>Stdlib-only dependencies (no <code>requests</code> required)</li>
+<li>✅ Async job-based generation (POST → poll → result)</li>
+<li>✅ Support for multiple image models</li>
+<li>✅ Configurable parameters (width, height, steps, guidance, seed)</li>
+<li>✅ Stdlib-only dependencies (no <code>requests</code> required)</li>
+<li>✅ Security-first credential handling (file-only, no subprocess)</li>
+</ul>
+<h2>Security</h2>
+<p>This skill prioritizes security:</p>
+<ul>
+<li><strong>No subprocess calls</strong> - Credentials read directly from file only</li>
+<li><strong>No webhook support</strong> - Removed to prevent SSRF risks</li>
+<li><strong>File-based credentials</strong> - Single credential source</li>
+<li><strong>Stdlib dependencies</strong> - Minimal attack surface</li>
 </ul>
 <h2>Setup</h2>
 <ol>
 <li>Get your Krea.ai API credentials from <a href="https://docs.krea.ai/developers/api-keys-and-billing">https://docs.krea.ai/developers/api-keys-and-billing</a></li>
-<li>Configure with:</li>
+<li>Create the credentials file:</li>
 </ol>
-<pre><code class="language-bash">clawdbot config set skill.krea_api.key_id YOUR_KEY_ID
-clawdbot config set skill.krea_api.secret YOUR_SECRET
+<pre><code class="language-bash">mkdir -p ~/.clawdbot/credentials
 </code></pre>
 <ol start="3">
-<li>Or pass credentials directly as arguments.</li>
+<li>Add your credentials:</li>
 </ol>
+<pre><code class="language-bash">echo &#39;{&quot;apiKey&quot;: &quot;YOUR_KEY_ID:YOUR_SECRET&quot;}&#39; &gt; ~/.clawdbot/credentials/krea.json
+</code></pre>
+<ol start="4">
+<li>Set secure permissions:</li>
+</ol>
+<pre><code class="language-bash">chmod 600 ~/.clawdbot/credentials/krea.json
+</code></pre>
 <h2>Usage</h2>
-<h3>Interactive Mode</h3>
-<pre><code>You: Generate a sunset over the ocean with Flux
-Klawf: Creates the image and returns the URL
+<h3>Command Line</h3>
+<pre><code class="language-bash"># Generate an image
+python3 krea_api.py --prompt &quot;A sunset over the ocean&quot;
+
+# With specific model
+python3 krea_api.py --prompt &quot;Cyberpunk city&quot; --model imagen-4
+
+# Custom size
+python3 krea_api.py --prompt &quot;Portrait&quot; --width 1024 --height 1280
+
+# List available models
+python3 krea_api.py --list-models
+
+# Check recent jobs
+python3 krea_api.py --jobs 10
 </code></pre>
 <h3>Python Script</h3>
 <pre><code class="language-python">from krea_api import KreaAPI
 
-api = KreaAPI(
-    key_id=&quot;your-key-id&quot;,
-    secret=&quot;your-secret&quot;
-)
+api = KreaAPI()  # Reads from ~/.clawdbot/credentials/krea.json
 
 # Generate and wait
 urls = api.generate_and_wait(
@@ -107,47 +131,7 @@ urls = api.generate_and_wait(
 )
 print(urls)
 </code></pre>
-<h3>Available Models (examples)</h3>
-<table>
-<thead>
-<tr>
-<th>Model</th>
-<th>Endpoint</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>flux</td>
-<td><code>/generate/image/bfl/flux-1-dev</code></td>
-</tr>
-<tr>
-<td>flux-kontext</td>
-<td><code>/generate/image/bfl/flux-1-dev-kontext</code></td>
-</tr>
-<tr>
-<td>flux-1.1-pro</td>
-<td><code>/generate/image/bfl/flux-1-1-pro</code></td>
-</tr>
-<tr>
-<td>imagen-3</td>
-<td><code>/generate/image/google/imagen-3</code></td>
-</tr>
-<tr>
-<td>imagen-4</td>
-<td><code>/generate/image/google/imagen-4</code></td>
-</tr>
-<tr>
-<td>ideogram-3.0</td>
-<td><code>/generate/image/ideogram/ideogram-3-0</code></td>
-</tr>
-<tr>
-<td>seedream-4</td>
-<td><code>/generate/image/seedream/seedream-4</code></td>
-</tr>
-</tbody></table>
-<p>For the full list, run:</p>
-<pre><code class="language-bash">python3 krea_api.py --list-models
-</code></pre>
-<h2>Parameters</h2>
+<h3>Parameters</h3>
 <table>
 <thead>
 <tr>
@@ -167,7 +151,7 @@ print(urls)
 <td>model</td>
 <td>str</td>
 <td>&quot;flux&quot;</td>
-<td>Model name from table above</td>
+<td>Model name from table below</td>
 </tr>
 <tr>
 <td>width</td>
@@ -199,13 +183,84 @@ print(urls)
 <td>None</td>
 <td>Random seed for reproducibility</td>
 </tr>
+</tbody></table>
+<h3>Available Models</h3>
+<table>
+<thead>
 <tr>
-<td>webhook_url</td>
-<td>str</td>
-<td>None</td>
-<td>URL for completion notification</td>
+<th>Model</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>flux</td>
+<td>General purpose, high quality</td>
+</tr>
+<tr>
+<td>imagen-4</td>
+<td>Latest Google model</td>
+</tr>
+<tr>
+<td>ideogram-3.0</td>
+<td>Text in images</td>
+</tr>
+<tr>
+<td>seedream-4</td>
+<td>Fast generations</td>
+</tr>
+<tr>
+<td>nano-banana</td>
+<td>Quick previews</td>
 </tr>
 </tbody></table>
+<p>Run <code>python3 krea_api.py --list-models</code> for full list.</p>
+<h2>Check Usage</h2>
+<p>Krea.ai doesn&#39;t provide a public usage API. Check your usage at:</p>
+<p><a href="https://www.krea.ai/settings/usage-statistics">https://www.krea.ai/settings/usage-statistics</a></p>
+<p>Or list recent jobs:</p>
+<pre><code class="language-bash">python3 krea_api.py --jobs 10
+</code></pre>
+<h2>File Locations</h2>
+<table>
+<thead>
+<tr>
+<th>Purpose</th>
+<th>Path</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Credentials</td>
+<td><code>~/.clawdbot/credentials/krea.json</code></td>
+</tr>
+<tr>
+<td>Script</td>
+<td><code>{skill}/krea_api.py</code></td>
+</tr>
+<tr>
+<td>Skills</td>
+<td><code>{skill}/SKILL.md</code></td>
+</tr>
+</tbody></table>
+<h2>Troubleshooting</h2>
+<h3>&quot;API credentials required&quot;</h3>
+<ol>
+<li>Check credentials file exists:</li>
+</ol>
+<pre><code class="language-bash">cat ~/.clawdbot/credentials/krea.json
+</code></pre>
+<ol start="2">
+<li>Verify permissions:</li>
+</ol>
+<pre><code class="language-bash">ls -la ~/.clawdbot/credentials/krea.json
+# Should show: -rw-------
+</code></pre>
+<ol start="3">
+<li>Check format (must have colon):</li>
+</ol>
+<pre><code class="language-json">{&quot;apiKey&quot;: &quot;KEY_ID:SECRET&quot;}
+</code></pre>
+<h3>Model not found</h3>
+<p>Run <code>python3 krea_api.py --list-models</code> to see available models.</p>
 <h2>Credits</h2>
 <p>Thanks to Claude Opus 4.5 for researching the correct API structure. The docs incorrectly suggest <code>/v1/images/flux</code> but the working endpoint is <code>/generate/image/bfl/flux-1-dev</code>.</p>
 

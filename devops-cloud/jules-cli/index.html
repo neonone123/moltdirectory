@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Interact with the Jules CLI to manage asynchronous coding sessions">
   <title>jules-cli - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/devops-cloud/jules-cli/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,9 +45,9 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to DevOps & Cloud</a>
+              <a href="/devops-cloud/" class="back-link">← Back to DevOps & Cloud</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">DevOps & Cloud</a>
+                <a href="/devops-cloud/" class="skill-page-category">DevOps & Cloud</a>
                 <span class="skill-page-author">by @ajstafford</span>
               </div>
               <h1 class="skill-page-title">jules-cli</h1>
@@ -86,10 +87,29 @@
 <li><strong>No &quot;Small&quot; Tasks</strong>: Do not submit tasks like &quot;Add a comment&quot;, &quot;Change a variable name&quot;, or &quot;Fix a typo&quot;.</li>
 </ol>
 <hr>
+<h2>Security Guidelines</h2>
+<p>To ensure safe execution of CLI commands, you <strong>must</strong> adhere to the following security practices:</p>
+<ol>
+<li><strong>Input Validation</strong>: Before running any command, validate that:<ul>
+<li><strong>Repository names</strong> follow the <code>owner/repo</code> format (alphanumeric, dots, hyphens, and underscores).</li>
+<li><strong>Session IDs</strong> are alphanumeric (typically hyphens and underscores are also allowed).</li>
+</ul>
+</li>
+<li><strong>Quoting</strong>: Always wrap shell placeholders in double quotes (e.g., <code>&quot;&lt;repo&gt;&quot;</code>).</li>
+<li><strong>No Inline Injection</strong>: Never embed user-provided data directly into script strings (like <code>python3 -c</code>). Use environment variables to pass such data safely.</li>
+<li><strong>Sanitization</strong>: Ensure task descriptions do not contain malicious shell characters if passed directly to the shell.</li>
+</ol>
+<hr>
 <h2>Safety Controls</h2>
 <ul>
-<li><strong>Approval Required</strong>: If you are unsure if a task is &quot;complex enough&quot; for Jules, ask the user for permission before running <code>jules remote new</code>.</li>
+<li><strong>Approval Required (MANDATORY)</strong>: You <strong>must</strong> ask for explicit user approval before running any of the following commands:<ul>
+<li><code>jules remote new</code>: Since this creates a remote session/VM.</li>
+<li><code>jules remote pull --apply</code>: Since this modifies the local codebase.</li>
+<li><code>jules teleport</code>: Since this clones and modifies the environment.</li>
+</ul>
+</li>
 <li><strong>Verification</strong>: Always run <code>jules remote list --session</code> before creating a new one to ensure you don&#39;t already have a pending session for the same repository.</li>
+<li><strong>Credentials</strong>: If <code>jules login</code> is required, explain <em>why</em> to the user and wait for their confirmation before proceeding.</li>
 </ul>
 <hr>
 <h2>Core Workflow (Manual Control)</h2>
@@ -102,17 +122,30 @@
 <h3>2. Submit Task</h3>
 <p>Create a session and capture the Session ID.</p>
 <pre><code class="language-bash"># Capture the output to get the ID
-jules remote new --repo &lt;repo&gt; --session &quot;Detailed task description&quot; &lt; /dev/null
+# Replace &lt;repo&gt; and task description with validated inputs
+jules remote new --repo &quot;&lt;repo&gt;&quot; --session &quot;Detailed task description&quot; &lt; /dev/null
 </code></pre>
 <h3>3. Monitor Progress</h3>
 <p>List sessions and look for your ID. Use this robust one-liner to check the status (it handles statuses with spaces like &quot;In Progress&quot;):</p>
-<p><strong>Check Status:</strong></p>
-<pre><code class="language-bash"># Extract status for a specific ID by splitting on 2+ spaces
-jules remote list --session | python3 -c &quot;import sys, re; [print(re.split(r&#39;\s{2,}&#39;, l.strip())[-1]) for l in sys.stdin if l.startswith(&#39;&lt;SESSION_ID&gt;&#39;)] &quot;
+<p><strong>Check Status (Safe Method):</strong></p>
+<pre><code class="language-bash"># Use an environment variable to pass the Session ID safely to Python
+export JULES_SESSION_ID=&quot;&lt;SESSION_ID&gt;&quot;
+jules remote list --session | python3 -c &quot;
+import sys, re, os
+session_id = os.environ.get(&#39;JULES_SESSION_ID&#39;, &#39;&#39;)
+if not session_id: sys.exit(0)
+for line in sys.stdin:
+    line = line.strip()
+    if line.startswith(session_id):
+        # Extract status (the last column after multiple spaces)
+        print(re.split(r&#39;\s{2,}&#39;, line)[-1])
+&quot;
+unset JULES_SESSION_ID
 </code></pre>
 <h3>4. Integrate Results</h3>
 <p>Once the status is <strong>Completed</strong>, pull and apply the changes.</p>
-<pre><code class="language-bash">jules remote pull --session &lt;SESSION_ID&gt; --apply &lt; /dev/null
+<pre><code class="language-bash"># Replace &lt;SESSION_ID&gt; with the validated Session ID
+jules remote pull --session &quot;&lt;SESSION_ID&gt;&quot; --apply &lt; /dev/null
 </code></pre>
 <hr>
 <h2>Error Handling &amp; Troubleshooting</h2>
@@ -147,7 +180,7 @@ jules remote list --session | python3 -c &quot;import sys, re; [print(re.split(r
 <td align="left">Apply changes from a completed session.</td>
 </tr>
 <tr>
-<td align="left"><code>jules teleport &lt;id&gt;</code></td>
+<td align="left"><code>jules teleport &quot;&lt;id&gt;&quot;</code></td>
 <td align="left">Clone and apply changes (useful for fresh environments).</td>
 </tr>
 </tbody></table>

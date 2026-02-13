@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Intelligently modify agent core context files">
+  <title>agent-config - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/coding-agents-ides/agent-config/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+
+        <span class="logo-text">OpenClaw Directory</span>
+      </a>
+      <nav class="header-links">
+        <a href="/start-here/" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="/coding-agents-ides/" class="back-link">← Back to Coding Agents & IDEs</a>
+              <div class="skill-page-meta">
+                <a href="/coding-agents-ides/" class="skill-page-category">Coding Agents & IDEs</a>
+                <span class="skill-page-author">by @thatguysizemore</span>
+              </div>
+              <h1 class="skill-page-title">agent-config</h1>
+              <p class="skill-page-desc">Intelligently modify agent core context files</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Agent Config Skill</h1>
+<p>This skill provides a structured workflow for intelligently modifying OpenClaw agent core context files. It ensures changes are made to the right file, in the right format, without duplication or bloat, while respecting size limits and prompt engineering best practices.</p>
+<h2>Core Workflow</h2>
+<p>When modifying agent context files, follow this process:</p>
+<h3>1. Identify Target File</h3>
+<p>Read <code>references/file-map.md</code> to determine which file the change belongs in.</p>
+<p><strong>Quick decision tree:</strong></p>
+<ul>
+<li>Operational procedures, memory workflows, delegation rules → <code>AGENTS.md</code></li>
+<li>Personality, tone, boundaries, ethical rules → <code>SOUL.md</code></li>
+<li>Agent name, emoji, core vibe → <code>IDENTITY.md</code></li>
+<li>User profile, preferences, family info → <code>USER.md</code></li>
+<li>Local tool notes, command examples, API locations → <code>TOOLS.md</code></li>
+<li>Curated long-term facts (main session only) → <code>MEMORY.md</code></li>
+<li>Heartbeat checklist (keep tiny) → <code>HEARTBEAT.md</code></li>
+</ul>
+<p><strong>Critical:</strong> Subagents only see <code>AGENTS.md</code> + <code>TOOLS.md</code>. Operational rules must go in <code>AGENTS.md</code>, not <code>SOUL.md</code>.</p>
+<h3>2. Check Current State</h3>
+<p>Before making changes:</p>
+<pre><code class="language-bash"># Check file size (20K char limit per file)
+wc -c ~/clawd/AGENTS.md ~/clawd/SOUL.md ~/clawd/IDENTITY.md \
+      ~/clawd/USER.md ~/clawd/TOOLS.md ~/clawd/MEMORY.md ~/clawd/HEARTBEAT.md
+
+# Read the target file section to check for duplication
+# Use grep to search for existing similar content
+grep -i &quot;keyword&quot; ~/clawd/TARGETFILE.md
+</code></pre>
+<p><strong>Size warnings:</strong></p>
+<ul>
+<li>If file is &gt; 18,000 chars, warn before adding (approaching truncation limit)</li>
+<li>If file is already &gt; 20,000 chars, it&#39;s being truncated - refactor before adding more</li>
+<li>Agent can still read full file with <code>read</code> tool, but startup context is truncated</li>
+</ul>
+<p><strong>Duplication check:</strong></p>
+<ul>
+<li>Is this instruction already present in different words?</li>
+<li>Is there a similar rule that should be updated instead of adding new?</li>
+<li>Does this belong in multiple files? (Usually no - pick ONE location)</li>
+</ul>
+<h3>3. Draft the Change</h3>
+<p>Read <code>references/claude-patterns.md</code> for instruction formats that work.</p>
+<p><strong>Format guidelines by file:</strong></p>
+<p><strong>AGENTS.md</strong> (structured, imperative):</p>
+<ul>
+<li>Use numbered processes for multi-step workflows</li>
+<li>Use tables for decision trees, model selection, routing rules</li>
+<li>Include examples for complex patterns</li>
+<li>Explain WHY rules exist (motivation &gt; bare commands)</li>
+<li>Use headers and sub-sections for organization</li>
+<li>Reference other files/skills, don&#39;t duplicate content</li>
+</ul>
+<p><strong>SOUL.md</strong> (first-person OK, narrative):</p>
+<ul>
+<li>Can use personal voice (&quot;I&#39;m Gus&quot; vs &quot;You are Gus&quot;)</li>
+<li>Anti-pattern lists work well (forbidden phrases, hedging examples)</li>
+<li>Include before/after examples for tone guidance</li>
+<li>Keep tattoos/anchors at top for immediate context</li>
+<li>Use contrasts (good vs bad examples side-by-side)</li>
+</ul>
+<p><strong>IDENTITY.md</strong> (minimal):</p>
+<ul>
+<li>Punchy bullets</li>
+<li>Keep under 500 chars if possible</li>
+<li>Core vibe only, details go in SOUL.md</li>
+</ul>
+<p><strong>USER.md</strong> (factual, third-person):</p>
+<ul>
+<li>Bullet lists by category</li>
+<li>Dates for time-sensitive info</li>
+<li>Clear section headers</li>
+<li>Cross-reference vault files for detailed project context</li>
+</ul>
+<p><strong>TOOLS.md</strong> (reference guide):</p>
+<ul>
+<li>Tables for comparison (when to use X vs Y)</li>
+<li>Code blocks for command examples</li>
+<li>Clear headings for quick lookup</li>
+<li>Include paths, env var names, exact syntax</li>
+</ul>
+<p><strong>MEMORY.md</strong> (wiki-style, topic-based):</p>
+<ul>
+<li>Section by topic, not chronologically</li>
+<li>Cross-reference entity files in vault</li>
+<li>Dates for context, but organize by subject</li>
+<li>Main session only - privacy-sensitive</li>
+</ul>
+<p><strong>HEARTBEAT.md</strong> (action list):</p>
+<ul>
+<li>Extremely concise</li>
+<li>Bullet list of checks</li>
+<li>No explanations (that&#39;s AGENTS.md)</li>
+<li>Fast to parse</li>
+</ul>
+<h3>4. Validate Before Applying</h3>
+<p>Ask yourself:</p>
+<p><strong>Fit:</strong></p>
+<ul>
+<li>Does this actually belong in this file based on file-map.md?</li>
+<li>Is it operational (AGENTS.md) or personality (SOUL.md)?</li>
+<li>Will subagents need this? (If yes, must be AGENTS.md or TOOLS.md)</li>
+</ul>
+<p><strong>Format:</strong></p>
+<ul>
+<li>Does this match the file&#39;s existing style?</li>
+<li>Is it the right structure (numbered, table, bullets, prose)?</li>
+<li>Are examples included where needed?</li>
+</ul>
+<p><strong>Size:</strong></p>
+<ul>
+<li>How many chars is this adding?</li>
+<li>Is the file approaching 20K limit?</li>
+<li>Could this be a reference file instead?</li>
+</ul>
+<p><strong>Duplication:</strong></p>
+<ul>
+<li>Is this already present somewhere else?</li>
+<li>Should existing content be updated instead?</li>
+<li>Could this consolidate multiple scattered rules?</li>
+</ul>
+<p><strong>Quality:</strong></p>
+<ul>
+<li>Is motivation explained (WHY this rule exists)?</li>
+<li>Are examples concrete and real (not generic)?</li>
+<li>Is it precise enough for an AI to follow?</li>
+<li>Does it avoid vague instructions like &quot;be helpful&quot;?</li>
+</ul>
+<h3>5. Apply the Change</h3>
+<p>Use the <code>edit</code> tool with exact text matching:</p>
+<pre><code class="language-python"># Read the section first to get exact text
+read(path=&quot;~/clawd/AGENTS.md&quot;, offset=50, limit=20)
+
+# Then edit with precise match
+edit(
+    path=&quot;~/clawd/AGENTS.md&quot;,
+    oldText=&quot;exact existing text including whitespace&quot;,
+    newText=&quot;updated text with change&quot;
+)
+</code></pre>
+<p><strong>For additions:</strong></p>
+<ul>
+<li>Find the right section anchor (read file first)</li>
+<li>Insert after relevant heading, not at end of file</li>
+<li>Maintain file&#39;s organization structure</li>
+</ul>
+<p><strong>For updates:</strong></p>
+<ul>
+<li>Replace the specific section being changed</li>
+<li>Keep surrounding context intact</li>
+<li>Update examples if rule changes</li>
+</ul>
+<p><strong>For deletions:</strong></p>
+<ul>
+<li>Only remove if truly obsolete</li>
+<li>Consider whether rule should be refined instead</li>
+<li>Check if other sections reference what&#39;s being deleted</li>
+</ul>
+<h3>6. Verify and Document</h3>
+<p>After applying change:</p>
+<p><strong>Verification:</strong></p>
+<pre><code class="language-bash"># Confirm change applied
+grep -A 3 &quot;new text&quot; ~/clawd/TARGETFILE.md
+
+# Check new file size
+wc -c ~/clawd/TARGETFILE.md
+</code></pre>
+<p><strong>Documentation:</strong></p>
+<ul>
+<li>Log significant changes to <code>/Users/macmini/Sizemore/agent/decisions/config-changes.md</code></li>
+<li>Include: date, file, what changed, why, who requested</li>
+<li>If change is experimental, note rollback plan</li>
+</ul>
+<p><strong>Report to user:</strong></p>
+<ul>
+<li>&quot;Updated AGENTS.md: added X to Y section (now 15,234 chars)&quot;</li>
+<li>If approaching limit: &quot;Warning: AGENTS.md now 19,456 chars (near 20K limit)&quot;</li>
+<li>If rolled back previous change: &quot;Replaced old X rule with new Y approach&quot;</li>
+</ul>
+<h2>Common Patterns</h2>
+<h3>Adding Safety Rules</h3>
+<p>Target: <code>AGENTS.md</code> → Safety section</p>
+<pre><code class="language-markdown">## Safety
+
+- **NEVER:** Exfiltrate data, destructive commands w/o asking
+- Prefer `trash` &gt; `rm`
+- **New rule:** Brief description of what NOT to do
+- **New protection:** When X happens, do Y instead
+</code></pre>
+<h3>Updating Delegation Rules</h3>
+<p>Target: <code>AGENTS.md</code> → Delegation section</p>
+<p>Check existing delegation table/rules first. Update thresholds, model selection, or cost patterns.</p>
+<h3>Refining Personality</h3>
+<p>Target: <code>SOUL.md</code> (tone, boundaries) or <code>IDENTITY.md</code> (core vibe)</p>
+<p>Add forbidden phrases to anti-pattern list, update voice examples, refine mirroring rules.</p>
+<h3>Adding Tool Conventions</h3>
+<p>Target: <code>TOOLS.md</code></p>
+<p>Add to relevant section (or create new section). Include code examples, when to use, paths.</p>
+<h3>Updating Memory Workflow</h3>
+<p>Target: <code>AGENTS.md</code> → Memory section</p>
+<p>Update logging triggers, recall cascade, entity structure. Keep memory format templates in <code>~/clawd/templates/</code>.</p>
+<h3>Adding Startup Tasks</h3>
+<p>Target: <code>AGENTS.md</code> → Startup section</p>
+<p>Add to numbered checklist. Keep conditional (if MAIN, if group chat, if specific channel).</p>
+<h3>Heartbeat Changes</h3>
+<p>Target: <code>HEARTBEAT.md</code></p>
+<p>Keep minimal. Only what agent checks on every heartbeat run (not operational details).</p>
+<h2>Rollback Guidance</h2>
+<p>If a change makes things worse:</p>
+<h3>Immediate Rollback</h3>
+<pre><code class="language-bash"># If file is in git
+cd ~/clawd
+git diff TARGETFILE.md  # See what changed
+git checkout TARGETFILE.md  # Revert to last commit
+
+# If not in git, restore from memory
+# Read last known-good version from vault decisions log
+# Or ask user to provide previous working version
+</code></pre>
+<h3>Iterative Refinement</h3>
+<p>Don&#39;t immediately delete failed changes. Analyze:</p>
+<ul>
+<li>Was the content wrong, or just the format?</li>
+<li>Was it in the wrong file?</li>
+<li>Was it too vague? (Add examples)</li>
+<li>Was it too verbose? (Make concise)</li>
+<li>Did it conflict with existing rules? (Consolidate)</li>
+</ul>
+<p>Update incrementally instead of full revert when possible.</p>
+<h3>Document Failures</h3>
+<p>Log failed changes to <code>/Users/macmini/Sizemore/agent/learnings/config-failures.md</code>:</p>
+<ul>
+<li>What was tried</li>
+<li>Why it didn&#39;t work</li>
+<li>What to try instead</li>
+</ul>
+<p>This prevents repeating failed patterns.</p>
+<h2>Anti-Patterns to Avoid</h2>
+<p>Read <code>references/claude-patterns.md</code> for detailed anti-patterns.</p>
+<p><strong>Quick checklist:</strong></p>
+<p>❌ <strong>Duplication</strong> - Same rule in multiple files<br>❌ <strong>Vague instructions</strong> - &quot;Be helpful&quot;, &quot;Use good judgment&quot;<br>❌ <strong>Missing examples</strong> - Complex rules with no concrete case<br>❌ <strong>Wrong file</strong> - Personality in AGENTS.md, operations in SOUL.md<br>❌ <strong>No motivation</strong> - Rule without WHY it exists<br>❌ <strong>Reference docs buried</strong> - Long guides embedded instead of linked<br>❌ <strong>Bloat</strong> - Adding when updating existing would work<br>❌ <strong>Format mismatch</strong> - Prose in table-heavy file, bullets in narrative file<br>❌ <strong>Subagent blindness</strong> - Operational rule in file subagents don&#39;t see<br>❌ <strong>Size ignorance</strong> - Adding to 19K file without checking</p>
+<h2>When to Use References</h2>
+<p>If adding &gt;500 words of content, consider:</p>
+<ul>
+<li>Is this reference material? → Create file in vault, link from context file</li>
+<li>Is this a reusable procedure? → Create template in <code>~/clawd/templates/</code></li>
+<li>Is this domain knowledge? → Create skill with references/ folder</li>
+<li>Is this a one-time setup? → Use <code>BOOTSTRAP.md</code> (deleted after first run)</li>
+</ul>
+<p><strong>Examples:</strong></p>
+<ul>
+<li>Long subagent task template → <code>~/clawd/templates/subagent-task.md</code></li>
+<li>Detailed memory format guide → vault <code>agent/decisions/memory-architecture.md</code></li>
+<li>Complex workflow with substeps → Create skill with workflow in references/</li>
+<li>Tool-specific procedures → Expand TOOLS.md section or create skill</li>
+</ul>
+<h2>Special Cases</h2>
+<h3>Multi-File Changes</h3>
+<p>When change affects multiple files:</p>
+<ol>
+<li>Determine primary location (where rule &quot;lives&quot;)</li>
+<li>Add cross-references from other files</li>
+<li>Avoid duplicating full content in both</li>
+</ol>
+<p>Example: Delegation rules live in AGENTS.md, but SOUL.md might reference &quot;see AGENTS.md for delegation&quot; in boundaries section.</p>
+<h3>Session-Specific Rules</h3>
+<p>Use conditionals in AGENTS.md:</p>
+<pre><code class="language-markdown">## Startup (Every Session)
+
+1. Read `IDENTITY.md`, `SOUL.md`, `USER.md`
+2. If MAIN: read vault README, recent decisions
+3. If FAMILY GROUP: read `FAMILY.md`
+4. If SUBAGENT: skip personality files
+</code></pre>
+<h3>Size Limit Approached</h3>
+<p>When file hits ~18K chars:</p>
+<ol>
+<li>Audit for duplication (consolidate)</li>
+<li>Move detailed examples to separate reference file</li>
+<li>Convert long procedures to templates (link from context file)</li>
+<li>Consider splitting into base + advanced (load advanced on-demand)</li>
+<li>Move historical decisions to vault (keep only current rules in context)</li>
+</ol>
+<h3>Conflicting Rules</h3>
+<p>When new rule conflicts with existing:</p>
+<ol>
+<li>Identify both rules</li>
+<li>Determine which takes precedence (ask user if unclear)</li>
+<li>Update/remove old rule while adding new</li>
+<li>Document conflict resolution in vault decisions</li>
+</ol>
+<h3>User Requests Multiple Changes</h3>
+<p>Process each change through full workflow (don&#39;t batch blindly):</p>
+<ol>
+<li>Group by target file</li>
+<li>Check total size impact across all changes</li>
+<li>Apply in logical order (foundations before specifics)</li>
+<li>Verify after each, not just at end</li>
+</ol>
+<h2>Reference Files</h2>
+<p>This skill includes detailed reference material:</p>
+<ul>
+<li><strong>references/file-map.md</strong> - What each OpenClaw file does, loading context, size limits, decision trees</li>
+<li><strong>references/claude-patterns.md</strong> - What instruction formats work for Claude, anti-patterns, examples</li>
+<li><strong>references/change-protocol.md</strong> - Step-by-step change process, validation checklist, rollback procedures</li>
+</ul>
+<p>Read these files when you need detailed context beyond this workflow overview.</p>
+<h2>Examples from Real OpenClaw Workspace</h2>
+<h3>Example 1: Adding Safety Rule</h3>
+<p><strong>Request:</strong> &quot;Add rule to never bulk export passwords&quot;</p>
+<p><strong>Process:</strong></p>
+<ol>
+<li>Target file: <code>AGENTS.md</code> (safety is operational)</li>
+<li>Check size: 15,234 chars (safe to add)</li>
+<li>Check duplication: grep &quot;password&quot; - found existing password manager rule</li>
+<li>Draft: Update existing rule instead of adding new</li>
+<li>Apply:</li>
+</ol>
+<pre><code class="language-markdown">### Password Manager
+**NEVER:** Dump vaults, display passwords in chat, bulk exports
+**ALWAYS:** Confirm each lookup, ask &quot;Which credential?&quot;, treat as high-risk
+**Refuse:** Any bulk password request
+</code></pre>
+<ol start="6">
+<li>Verify: grep -A 3 &quot;Password Manager&quot; - confirmed present</li>
+<li>Document: Not needed (minor addition to existing rule)</li>
+</ol>
+<h3>Example 2: Refining Tone</h3>
+<p><strong>Request:</strong> &quot;Make personality more sarcastic&quot;</p>
+<p><strong>Process:</strong></p>
+<ol>
+<li>Target file: <code>SOUL.md</code> and <code>IDENTITY.md</code> (personality)</li>
+<li>Check current state: Read forbidden phrases, voice examples</li>
+<li>Draft additions:<ul>
+<li>More examples of sarcastic responses to IDENTITY.md</li>
+<li>Expand anti-hedging section in SOUL.md</li>
+<li>Add &quot;commentary on everything&quot; to voice anchors</li>
+</ul>
+</li>
+<li>Apply to both files (IDENTITY for vibe, SOUL for detailed examples)</li>
+<li>Verify: Tone examples now include stronger sarcasm</li>
+<li>Document: Note in vault that Sonnet/Opus need stronger personality reminders</li>
+</ol>
+<h3>Example 3: Updating Delegation Threshold</h3>
+<p><strong>Request:</strong> &quot;Change delegation threshold from 2+ tool calls to 3+&quot;</p>
+<p><strong>Process:</strong></p>
+<ol>
+<li>Target file: <code>AGENTS.md</code> → Delegation section</li>
+<li>Check current: &quot;2+ tool calls? SPAWN&quot;</li>
+<li>Draft: Update to &quot;3+ tool calls? SPAWN. 1-2 tool calls? Do it yourself if quick.&quot;</li>
+<li>Consider impact: This will reduce subagent spawns, increase main session cost</li>
+<li>Validate with user: &quot;This will make you handle more tasks directly. Confirm?&quot;</li>
+<li>Apply after confirmation</li>
+<li>Document: Log change to vault with cost rationale</li>
+</ol>
+<h3>Example 4: Adding Tool Convention</h3>
+<p><strong>Request:</strong> &quot;Add note that iMessage attachments must use imsg CLI, not message tool&quot;</p>
+<p><strong>Process:</strong></p>
+<ol>
+<li>Target file: <code>TOOLS.md</code> (tool-specific convention)</li>
+<li>Check duplication: grep &quot;iMessage&quot; - found iMessage formatting rule</li>
+<li>Draft new section:</li>
+</ol>
+<pre><code class="language-markdown">## iMessage Attachments
+
+**NEVER use `message` tool for iMessage files - corrupts attachments.**
+
+**Always use imsg CLI:**
+```bash
+imsg send --chat-id &lt;id&gt; --file /path/to/file --text &quot;optional message&quot;
+</code></pre>
+<p>Applies to ALL iMessage attachments (images, videos, documents, vCards).</p>
+<pre><code>4. Apply: Add after iMessage formatting section (keep related content together)
+5. Verify: Confirmed in file
+6. Document: Not needed (user-facing tool note, not architectural)
+
+## Summary
+
+**Goal:** Intelligent, surgical changes to agent context files  
+**Method:** Identify → Check → Draft → Validate → Apply → Verify  
+**Key principles:** Right file, right format, no duplication, respect size limits, include examples  
+**Safety:** Check before changing, document decisions, know how to rollback
+
+When in doubt, read the reference files for deeper guidance on file purposes, Claude patterns, and change protocols.
+</code></pre>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/thatguysizemore/agent-config/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/thatguysizemore/agent-config" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/thatguysizemore/agent-config/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@thatguysizemore</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Coding Agents & IDEs</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">OpenClawDirectory.com is a community-run project and is not affiliated with the official OpenClaw team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

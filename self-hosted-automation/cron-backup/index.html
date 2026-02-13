@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Set up scheduled automated backups with version tracking and cleanup">
+  <title>cron-backup - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/self-hosted-automation/cron-backup/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+
+        <span class="logo-text">OpenClaw Directory</span>
+      </a>
+      <nav class="header-links">
+        <a href="/start-here/" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="/self-hosted-automation/" class="back-link">← Back to Self-Hosted & Automation</a>
+              <div class="skill-page-meta">
+                <a href="/self-hosted-automation/" class="skill-page-category">Self-Hosted & Automation</a>
+                <span class="skill-page-author">by @zfanmy</span>
+              </div>
+              <h1 class="skill-page-title">cron-backup</h1>
+              <p class="skill-page-desc">Set up scheduled automated backups with version tracking and cleanup</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Cron Backup</h1>
+<p>Automated backup scheduling with version detection and intelligent cleanup.</p>
+<h2>Quick Start</h2>
+<h3>One-Time Backup</h3>
+<pre><code class="language-bash"># Backup a directory with timestamp
+./scripts/backup.sh /path/to/source /path/to/backup/dir
+
+# Backup with custom name
+./scripts/backup.sh /path/to/source /path/to/backup/dir my-backup
+</code></pre>
+<h3>Schedule Daily Backup</h3>
+<pre><code class="language-bash"># Set up daily backup at 2 AM
+./scripts/setup-cron.sh daily /path/to/source /path/to/backup/dir &quot;0 2 * * *&quot;
+</code></pre>
+<h3>Version-Aware Backup</h3>
+<pre><code class="language-bash"># Backup only when version changes
+./scripts/backup-versioned.sh /path/to/source /path/to/version/file /path/to/backup/dir
+</code></pre>
+<h3>Cleanup Old Backups</h3>
+<pre><code class="language-bash"># Keep only last 7 days of backups
+./scripts/cleanup.sh /path/to/backup/dir 7
+</code></pre>
+<h2>Core Capabilities</h2>
+<h3>1. Directory Backup</h3>
+<ul>
+<li>Creates timestamped tar.gz archives</li>
+<li>Preserves file permissions and structure</li>
+<li>Excludes common temp files (node_modules, .git, etc.)</li>
+</ul>
+<h3>2. Version-Triggered Backup</h3>
+<ul>
+<li>Monitors version file or command output</li>
+<li>Backs up only when version changes</li>
+<li>Useful for software updates</li>
+</ul>
+<h3>3. Scheduled Execution</h3>
+<ul>
+<li>Integrates with system cron</li>
+<li>Supports custom schedules</li>
+<li>Logs execution results</li>
+</ul>
+<h3>4. Automatic Cleanup</h3>
+<ul>
+<li>Deletes backups older than N days</li>
+<li>Keeps minimum number of backups</li>
+<li>Prevents disk space exhaustion</li>
+</ul>
+<h2>Scripts</h2>
+<p>All scripts are in <code>scripts/</code> directory:</p>
+<ul>
+<li><code>backup.sh</code> - Single backup execution</li>
+<li><code>backup-versioned.sh</code> - Version-triggered backup</li>
+<li><code>setup-cron.sh</code> - Cron job setup</li>
+<li><code>cleanup.sh</code> - Old backup cleanup</li>
+<li><code>list-backups.sh</code> - List available backups</li>
+</ul>
+<h2>Backup Naming Convention</h2>
+<p>Backups follow the pattern: <code>{name}_YYYYMMDD_HHMMSS.tar.gz</code></p>
+<p>Examples:</p>
+<ul>
+<li><code>openclabak_20260204_101500.tar.gz</code></li>
+<li><code>myapp_20260204_000000.tar.gz</code></li>
+</ul>
+<h2>Workflow</h2>
+<h3>Setting Up Automated Backups</h3>
+<ol>
+<li><p><strong>Decide backup strategy</strong></p>
+<ul>
+<li>What to backup (source directory)</li>
+<li>Where to store (backup directory)</li>
+<li>How often (schedule)</li>
+<li>Retention policy (cleanup days)</li>
+</ul>
+</li>
+<li><p><strong>Run initial backup</strong></p>
+<pre><code class="language-bash">./scripts/backup.sh /source /backup
+</code></pre>
+</li>
+<li><p><strong>Set up schedule</strong></p>
+<pre><code class="language-bash">./scripts/setup-cron.sh daily /source /backup &quot;0 2 * * *&quot;
+</code></pre>
+</li>
+<li><p><strong>Configure cleanup</strong></p>
+<pre><code class="language-bash">./scripts/setup-cron.sh cleanup /backup &quot;&quot; &quot;0 3 * * *&quot; 7
+</code></pre>
+</li>
+</ol>
+<h3>Version-Aware Backup Workflow</h3>
+<p>For software that changes version (like OpenClaw):</p>
+<ol>
+<li><p><strong>Identify version source</strong></p>
+<ul>
+<li>Command: <code>openclaw --version</code></li>
+<li>File: <code>/path/to/version.txt</code></li>
+</ul>
+</li>
+<li><p><strong>Set up versioned backup</strong></p>
+<pre><code class="language-bash">./scripts/backup-versioned.sh /app /app/version.txt /backups/app
+</code></pre>
+</li>
+<li><p><strong>Schedule version check</strong></p>
+<pre><code class="language-bash">./scripts/setup-cron.sh versioned /app /backups/app &quot;0 */6 * * *&quot;
+</code></pre>
+</li>
+</ol>
+<h2>Common Patterns</h2>
+<h3>Pattern 1: Daily User Data Backup</h3>
+<pre><code class="language-bash"># Backup workspace daily, keep 30 days
+./scripts/setup-cron.sh daily /home/user/workspace /backups/workspace &quot;0 2 * * *&quot;
+./scripts/setup-cron.sh cleanup /backups/workspace &quot;&quot; &quot;0 3 * * *&quot; 30
+</code></pre>
+<h3>Pattern 2: Version-Aware Application Backup</h3>
+<pre><code class="language-bash"># Backup when application updates
+./scripts/setup-cron.sh versioned /opt/myapp /backups/myapp &quot;0 */6 * * *&quot;
+./scripts/setup-cron.sh cleanup /backups/myapp &quot;&quot; &quot;0 4 * * 0&quot; 10
+</code></pre>
+<h3>Pattern 3: Multi-Directory Backup</h3>
+<pre><code class="language-bash"># Backup multiple directories
+./scripts/backup.sh /home/user/.config /backups/config
+./scripts/backup.sh /home/user/projects /backups/projects
+</code></pre>
+<h2>Cron Schedule Format</h2>
+<p>Standard cron format: <code>minute hour day month weekday</code></p>
+<p>Common schedules:</p>
+<ul>
+<li>Daily at 2 AM: <code>0 2 * * *</code></li>
+<li>Every 6 hours: <code>0 */6 * * *</code></li>
+<li>Weekly on Sunday: <code>0 0 * * 0</code></li>
+<li>Every 30 minutes: <code>*/30 * * * *</code></li>
+</ul>
+<h2>Cleanup Policies</h2>
+<ul>
+<li><strong>Time-based</strong>: Keep backups for N days</li>
+<li><strong>Count-based</strong>: Keep last N backups</li>
+<li><strong>Combined</strong>: Default keeps 7 days minimum, but at least 3 backups</li>
+</ul>
+<h2>Troubleshooting</h2>
+<ul>
+<li><strong>Permission denied</strong>: Ensure scripts are executable (<code>chmod +x scripts/*.sh</code>)</li>
+<li><strong>Cron not running</strong>: Check cron service status (<code>systemctl status cron</code>)</li>
+<li><strong>Disk full</strong>: Run cleanup manually or reduce retention period</li>
+<li><strong>Backup fails</strong>: Check source directory exists and is readable</li>
+</ul>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/zfanmy/cron-backup/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/zfanmy/cron-backup" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/zfanmy/cron-backup/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@zfanmy</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Self-Hosted & Automation</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">OpenClawDirectory.com is a community-run project and is not affiliated with the official OpenClaw team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

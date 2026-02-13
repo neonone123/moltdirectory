@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Fly.io deploy, logs, SSH, secrets, scaling">
   <title>flyio-cli - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/devops-cloud/flyio-cli/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,9 +45,9 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to DevOps & Cloud</a>
+              <a href="/devops-cloud/" class="back-link">← Back to DevOps & Cloud</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">DevOps & Cloud</a>
+                <a href="/devops-cloud/" class="skill-page-category">DevOps & Cloud</a>
                 <span class="skill-page-author">by @justinburdett</span>
               </div>
               <h1 class="skill-page-title">flyio-cli</h1>
@@ -66,24 +67,20 @@
                 <div class="markdown-content">
                   <h1>Fly.io (flyctl) CLI</h1>
 <p>Operate Fly.io apps safely and repeatably with <code>flyctl</code>.</p>
-<h2>Common tasks</h2>
-<ul>
-<li>Deploy: <code>fly deploy</code> / <code>fly deploy --remote-only</code></li>
-<li>Logs: <code>fly logs -a &lt;app&gt;</code></li>
-<li>SSH / run commands: <code>fly ssh console -a &lt;app&gt; -C &quot;…&quot;</code></li>
-<li>Secrets: <code>fly secrets list/set -a &lt;app&gt;</code></li>
-<li>Postgres: <code>fly postgres list/connect/db create/attach</code></li>
-<li>GitHub Actions deploys / PR previews</li>
-</ul>
 <h2>Defaults / safety</h2>
 <ul>
 <li>Prefer <strong>read-only</strong> commands first: <code>fly status</code>, <code>fly logs</code>, <code>fly config show</code>, <code>fly releases</code>, <code>fly secrets list</code>.</li>
-<li><strong>Do not run state-changing Fly.io commands without explicit user approval</strong> (deploy/scale, secrets set/unset, volume/db create/drop, app destroy, attach/detach).<ul>
+<li><strong>Do not edit/modify Fly.io apps, machines, secrets, volumes, or databases without your human’s explicit approval.</strong><ul>
 <li>Read-only actions are OK without approval.</li>
 <li>Destructive actions (destroy/drop) always require explicit approval.</li>
 </ul>
 </li>
-<li>When debugging, classify the failure as: build/packaging vs runtime vs platform.</li>
+<li>When debugging builds, capture the exact error output and determine whether it’s a:<ul>
+<li>build/packaging issue (Dockerfile, Gemfile.lock platforms, assets precompile)</li>
+<li>runtime issue (secrets, DB, migrations)</li>
+<li>platform issue (regions, machines, health checks)</li>
+</ul>
+</li>
 </ul>
 <h2>Quick start (typical deploy)</h2>
 <p>From the app repo directory:</p>
@@ -96,20 +93,14 @@
 <li>Check <code>fly.toml</code> for <code>app = &quot;...&quot;</code></li>
 </ul>
 <ol start="2">
-<li>Deploy</li>
-</ol>
-<ul>
-<li><code>fly deploy</code> (default)</li>
-<li><code>fly deploy --remote-only</code> (common when local docker/build env is inconsistent)</li>
-</ul>
-<ol start="3">
-<li>Validate</li>
+<li>Validate / inspect (read-only)</li>
 </ol>
 <ul>
 <li><code>fly status -a &lt;app&gt;</code></li>
 <li><code>fly logs -a &lt;app&gt;</code></li>
-<li><code>fly open -a &lt;app&gt;</code></li>
+<li><code>fly config show -a &lt;app&gt;</code></li>
 </ul>
+<p>(Deploys are in <strong>High-risk operations</strong> below and require explicit user approval.)</p>
 <h2>Debugging deploy/build failures</h2>
 <h3>Common checks</h3>
 <ul>
@@ -127,36 +118,39 @@
 <li>Ensure Dockerfile’s Ruby version matches <code>.ruby-version</code>.</li>
 </ul>
 <p>(See <code>references/rails-docker-builds.md</code>.)</p>
-<h2>Logs, SSH, console</h2>
+<h2>Logs &amp; config (read-only)</h2>
 <ul>
 <li>Stream logs:<ul>
 <li><code>fly logs -a &lt;app&gt;</code></li>
-</ul>
-</li>
-<li>SSH console:<ul>
-<li><code>fly ssh console -a &lt;app&gt;</code></li>
-</ul>
-</li>
-<li>Run a one-off command:<ul>
-<li><code>fly ssh console -a &lt;app&gt; -C &quot;bin/rails db:migrate&quot;</code></li>
-</ul>
-</li>
-</ul>
-<h2>Secrets / config</h2>
-<ul>
-<li>List secrets:<ul>
-<li><code>fly secrets list -a &lt;app&gt;</code></li>
-</ul>
-</li>
-<li>Set secrets:<ul>
-<li><code>fly secrets set -a &lt;app&gt; KEY=value OTHER=value</code></li>
 </ul>
 </li>
 <li>Show config:<ul>
 <li><code>fly config show -a &lt;app&gt;</code></li>
 </ul>
 </li>
+<li>List secrets (names only):<ul>
+<li><code>fly secrets list -a &lt;app&gt;</code></li>
 </ul>
+</li>
+</ul>
+<h2>High-risk operations (ask first)</h2>
+<p>These commands can execute arbitrary code on servers or mutate production state.
+Only run them when the user explicitly asks you to.</p>
+<ul>
+<li>Deploy:<ul>
+<li><code>fly deploy</code> / <code>fly deploy --remote-only</code></li>
+</ul>
+</li>
+<li>SSH exec / console:<ul>
+<li><code>fly ssh console -a &lt;app&gt; -C &quot;&lt;command&gt;&quot;</code></li>
+</ul>
+</li>
+<li>Secrets changes:<ul>
+<li><code>fly secrets set -a &lt;app&gt; KEY=value</code></li>
+</ul>
+</li>
+</ul>
+<p>See <code>references/safety.md</code>.</p>
 <h2>Fly Postgres basics</h2>
 <h3>Identify the Postgres app</h3>
 <ul>
@@ -177,7 +171,7 @@
 </ul>
 <h2>GitHub Actions deploys / previews</h2>
 <ul>
-<li>For production CD: use Fly’s GitHub Action (<code>superfly/flyctl-actions/setup-flyctl</code>) and run <code>fly deploy</code> (often with <code>--remote-only</code>).</li>
+<li>For production CD: use Fly’s GitHub Action (<code>superfly/flyctl-actions/setup-flyctl</code>) and run <code>flyctl deploy</code>.</li>
 <li>For PR previews:<ul>
 <li>Prefer one <strong>preview app per PR</strong> and one <strong>database per PR</strong> inside a shared Fly Postgres cluster.</li>
 <li>Automate create/deploy/comment on PR; destroy on close.</li>
@@ -187,9 +181,10 @@
 <p>(See <code>references/github-actions.md</code>.)</p>
 <h2>Bundled resources</h2>
 <ul>
+<li><code>references/safety.md</code>: safety rules (read-only by default; ask before mutating state).</li>
 <li><code>references/rails-docker-builds.md</code>: Rails/Docker/Fly build failure patterns + fixes.</li>
 <li><code>references/github-actions.md</code>: Fly deploy + preview workflows.</li>
-<li><code>scripts/fly_app_from_toml.sh</code>: tiny helper to print the Fly app name from fly.toml.</li>
+<li><code>scripts/fly_app_from_toml.sh</code>: tiny helper to print the Fly app name from fly.toml (shell-only; no ruby).</li>
 </ul>
 
                 </div>

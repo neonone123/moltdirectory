@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="AI image, video">
   <title>vap-multimedia-generation - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/image-video-generation/vap-multimedia-generation/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,9 +45,9 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Image & Video Generation</a>
+              <a href="/image-video-generation/" class="back-link">← Back to Image & Video Generation</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Image & Video Generation</a>
+                <a href="/image-video-generation/" class="skill-page-category">Image & Video Generation</a>
                 <span class="skill-page-author">by @elestirelbilinc-sketch</span>
               </div>
               <h1 class="skill-page-title">vap-multimedia-generation</h1>
@@ -64,13 +65,22 @@
                   </button>
                 </div>
                 <div class="markdown-content">
-                  <h1>VAP Media - AI Media Generation</h1>
-<p>Generate images, videos, and music via the VAP API.</p>
+                  <h1>VAP Media - AI Media Generation &amp; Editing</h1>
+<blockquote>
+<p><strong>Integration Note:</strong> VAP Media is an API aggregator that provides unified access to multiple AI providers:</p>
+<ul>
+<li><strong>Images:</strong> Generated via Black Forest Labs Flux.2 Pro</li>
+<li><strong>Videos:</strong> Generated via Google Veo 3.1</li>
+<li><strong>Music:</strong> Generated via Suno V5</li>
+</ul>
+<p>All generation requests go through VAP&#39;s API (<code>api.vapagent.com</code>), which routes to the appropriate backend provider.</p>
+</blockquote>
+<p>Generate images, videos, and music. Edit with inpaint, ai_edit, upscale, background removal, video trim/merge.</p>
 <h2>Mode Selection</h2>
 <p>Check if <code>VAP_API_KEY</code> is set:</p>
 <ul>
 <li><strong>VAP_API_KEY not set</strong> → Use Free Mode (images only, 3/day)</li>
-<li><strong>VAP_API_KEY set</strong> → Use Full Mode (image, video, music, unlimited)</li>
+<li><strong>VAP_API_KEY set</strong> → Use Full Mode (all features, unlimited)</li>
 </ul>
 <hr>
 <h2>Free Mode (No API Key)</h2>
@@ -87,64 +97,243 @@
 <p>Returns <code>{&quot;status&quot;:&quot;completed&quot;,&quot;image_url&quot;:&quot;https://...&quot;}</code> when done.</p>
 <h3>Free Mode Errors</h3>
 <ul>
-<li><code>429</code> → Daily limit reached. Suggest upgrading: <code>export VAP_API_KEY=vape_xxx</code></li>
+<li><code>429</code> → Daily limit reached. Suggest upgrading: <code>export VAP_API_KEY=vap_xxx</code></li>
 <li><code>503</code> → Trial service temporarily unavailable.</li>
 </ul>
 <hr>
 <h2>Full Mode (With API Key)</h2>
-<p>Unlimited images, video, and music generation.</p>
+<p>Unlimited images, video, music, and editing operations.</p>
 <h3>Create Task</h3>
 <pre><code class="language-bash">curl -s -X POST https://api.vapagent.com/v3/tasks \
   -H &quot;Authorization: Bearer $VAP_API_KEY&quot; \
   -H &quot;Content-Type: application/json&quot; \
   -d &#39;{&quot;type&quot;:&quot;TYPE&quot;,&quot;params&quot;:{&quot;description&quot;:&quot;PROMPT&quot;}}&#39;
 </code></pre>
-<p>Returns <code>{&quot;task_id&quot;:&quot;UUID&quot;,&quot;status&quot;:&quot;pending&quot;,&quot;estimated_cost&quot;:&quot;0.1800&quot;}</code>.</p>
+<p>Returns <code>{&quot;task_id&quot;:&quot;UUID&quot;,&quot;status&quot;:&quot;pending&quot;}</code>.</p>
 <h3>Poll Result</h3>
 <pre><code class="language-bash">curl -s https://api.vapagent.com/v3/tasks/TASK_ID \
   -H &quot;Authorization: Bearer $VAP_API_KEY&quot;
 </code></pre>
 <p>Returns <code>{&quot;status&quot;:&quot;completed&quot;,&quot;result&quot;:{&quot;output_url&quot;:&quot;https://...&quot;}}</code> when done.</p>
-<h3>Task Types</h3>
+<h3>Task Types &amp; Parameters</h3>
+<h4>Image (<code>image</code> or <code>image_generation</code>)</h4>
 <table>
 <thead>
 <tr>
+<th>Param</th>
 <th>Type</th>
-<th>Model</th>
-<th>Params</th>
+<th>Default</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><code>image</code></td>
-<td>Flux</td>
-<td><code>description</code>, <code>aspect_ratio</code> (1:1, 16:9, 9:16)</td>
+<td><code>description</code></td>
+<td>string</td>
+<td>required</td>
+<td>Image description</td>
 </tr>
 <tr>
-<td><code>video</code></td>
-<td>Veo 3.1</td>
-<td><code>description</code>, <code>duration</code> (4/6/8), <code>aspect_ratio</code>, <code>generate_audio</code> (bool)</td>
+<td><code>aspect_ratio</code></td>
+<td>enum</td>
+<td><code>1:1</code></td>
+<td><code>1:1</code>, <code>16:9</code>, <code>9:16</code>, <code>4:3</code>, <code>3:4</code>, <code>3:2</code>, <code>2:3</code>, <code>21:9</code>, <code>9:21</code></td>
 </tr>
 <tr>
-<td><code>music</code></td>
-<td>Suno V5</td>
-<td><code>description</code>, <code>duration</code> (30-480), <code>instrumental</code> (bool)</td>
+<td><code>quality</code></td>
+<td>enum</td>
+<td><code>standard</code></td>
+<td><code>standard</code> or <code>high</code></td>
+</tr>
+</tbody></table>
+<p><strong>Tip:</strong> Aspect ratio is auto-detected from prompt text. &quot;a wide landscape photo&quot; → 16:9 automatically.</p>
+<h4>Video (<code>video</code> or <code>video_generation</code>) — Tier 2+</h4>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>description</code></td>
+<td>string</td>
+<td>required</td>
+<td>Video description</td>
+</tr>
+<tr>
+<td><code>duration</code></td>
+<td>int</td>
+<td><code>8</code></td>
+<td><code>4</code>, <code>6</code>, or <code>8</code> seconds</td>
+</tr>
+<tr>
+<td><code>aspect_ratio</code></td>
+<td>enum</td>
+<td><code>16:9</code></td>
+<td><code>16:9</code> (landscape) or <code>9:16</code> (portrait)</td>
+</tr>
+<tr>
+<td><code>generate_audio</code></td>
+<td>bool</td>
+<td><code>true</code></td>
+<td>Include audio track</td>
+</tr>
+<tr>
+<td><code>resolution</code></td>
+<td>enum</td>
+<td><code>720p</code></td>
+<td><code>720p</code> or <code>1080p</code></td>
+</tr>
+<tr>
+<td><code>negative_prompt</code></td>
+<td>string</td>
+<td><code>&quot;&quot;</code></td>
+<td>What to avoid</td>
+</tr>
+</tbody></table>
+<h4>Music (<code>music</code> or <code>music_generation</code>) — Tier 2+</h4>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>description</code></td>
+<td>string</td>
+<td>required</td>
+<td>Music description (genre, mood, instruments)</td>
+</tr>
+<tr>
+<td><code>duration</code></td>
+<td>int</td>
+<td><code>120</code></td>
+<td>30-480 seconds</td>
+</tr>
+<tr>
+<td><code>instrumental</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>No vocals</td>
+</tr>
+<tr>
+<td><code>audio_format</code></td>
+<td>enum</td>
+<td><code>mp3</code></td>
+<td><code>mp3</code> or <code>wav</code> (lossless)</td>
+</tr>
+<tr>
+<td><code>loudness_preset</code></td>
+<td>enum</td>
+<td><code>streaming</code></td>
+<td><code>streaming</code> (-14 LUFS), <code>apple</code> (-16 LUFS), <code>broadcast</code> (-23 LUFS)</td>
+</tr>
+<tr>
+<td><code>style</code></td>
+<td>string</td>
+<td>none</td>
+<td>Genre/style (max 1000 chars)</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>string</td>
+<td>none</td>
+<td>Song title</td>
+</tr>
+<tr>
+<td><code>custom_mode</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Enable custom lyrics + style mode</td>
 </tr>
 </tbody></table>
 <h3>Full Mode Errors</h3>
 <ul>
 <li><code>401</code> → Invalid API key.</li>
 <li><code>402</code> → Insufficient balance. Top up at <a href="https://vapagent.com/dashboard/signup.html">https://vapagent.com/dashboard/signup.html</a></li>
+<li><code>403</code> → Tier too low for this task type.</li>
 </ul>
+<hr>
+<h2>Operations (Edit &amp; Enhance)</h2>
+<p>Post-production editing operations. Tier 1+ required.</p>
+<h3>Create Operation</h3>
+<pre><code class="language-bash">curl -s -X POST https://api.vapagent.com/v3/operations \
+  -H &quot;Authorization: Bearer $VAP_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;operation&quot;:&quot;OPERATION&quot;,&quot;media_url&quot;:&quot;URL&quot;,&quot;prompt&quot;:&quot;INSTRUCTION&quot;}&#39;
+</code></pre>
+<h3>Poll Operation</h3>
+<pre><code class="language-bash">curl -s https://api.vapagent.com/v3/operations/OPERATION_ID \
+  -H &quot;Authorization: Bearer $VAP_API_KEY&quot;
+</code></pre>
+<h3>Available Operations</h3>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Required Params</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>inpaint</code></td>
+<td><code>media_url</code>, <code>prompt</code></td>
+<td>AI editing (optional: <code>mask_url</code>)</td>
+</tr>
+<tr>
+<td><code>ai_edit</code></td>
+<td><code>media_url</code>, <code>prompt</code></td>
+<td>AI-powered image editing with text instructions (optional: <code>additional_images</code>)</td>
+</tr>
+<tr>
+<td><code>background_remove</code></td>
+<td><code>media_url</code></td>
+<td>Remove background</td>
+</tr>
+<tr>
+<td><code>upscale</code></td>
+<td><code>media_url</code></td>
+<td>Enhance resolution (<code>scale</code>: 2 or 4)</td>
+</tr>
+<tr>
+<td><code>video_trim</code></td>
+<td><code>media_url</code>, <code>start_time</code>, <code>end_time</code></td>
+<td>Trim video</td>
+</tr>
+<tr>
+<td><code>video_merge</code></td>
+<td><code>media_urls</code> (array, min 2)</td>
+<td>Merge video clips</td>
+</tr>
+</tbody></table>
 <hr>
 <h2>Instructions</h2>
 <p>When a user asks to create/generate/make an image, video, or music:</p>
 <ol>
-<li><strong>Improve the prompt</strong> - Add style, lighting, composition, mood details</li>
-<li><strong>Check mode</strong> - Is <code>VAP_API_KEY</code> set?</li>
-<li><strong>Call the appropriate endpoint</strong> - Free or Full mode</li>
-<li><strong>Poll for result</strong> - Check task status until completed</li>
+<li><strong>Improve the prompt</strong> — Add style, lighting, composition, mood details</li>
+<li><strong>Check mode</strong> — Is <code>VAP_API_KEY</code> set?</li>
+<li><strong>Choose endpoint</strong>:<ul>
+<li>Single asset → <code>/v3/tasks</code> (or <code>/v3/trial/generate</code> for free)</li>
+<li>Edit/enhance → <code>/v3/operations</code></li>
+<li>Campaign (video+music+thumbnail) → <code>/v3/execute</code> with preset</li>
+</ul>
+</li>
+<li><strong>Set aspect ratio</strong> — Match the content need (portrait for social, widescreen for YouTube)</li>
+<li><strong>Poll for result</strong> — Check task/operation status until completed</li>
 <li><strong>Return the media URL</strong> to the user</li>
 <li>If free mode limit is hit, tell the user: &quot;You&#39;ve used your 3 free generations today. For unlimited access, set up an API key: <a href="https://vapagent.com/dashboard/signup.html">https://vapagent.com/dashboard/signup.html</a>&quot;</li>
+</ol>
+<p>When a user asks to edit/enhance/modify an existing image or video:</p>
+<ol>
+<li><strong>Identify the operation</strong> — inpaint, ai_edit, upscale, background remove, trim, merge</li>
+<li><strong>Get the media URL</strong> — From a previous generation or user-provided URL</li>
+<li><strong>Submit operation</strong> → <code>/v3/operations</code></li>
+<li><strong>Poll for result</strong> — Return the output URL</li>
 </ol>
 <h3>Free Mode Example</h3>
 <pre><code class="language-bash"># Create (no auth needed)
@@ -156,40 +345,98 @@ curl -s -X POST https://api.vapagent.com/v3/trial/generate \
 curl -s https://api.vapagent.com/v3/trial/status/TASK_ID
 </code></pre>
 <h3>Full Mode Examples</h3>
-<pre><code class="language-bash"># Image
+<pre><code class="language-bash"># Image (widescreen)
 curl -s -X POST https://api.vapagent.com/v3/tasks \
   -H &quot;Authorization: Bearer $VAP_API_KEY&quot; \
   -H &quot;Content-Type: application/json&quot; \
-  -d &#39;{&quot;type&quot;:&quot;image&quot;,&quot;params&quot;:{&quot;description&quot;:&quot;A fluffy orange tabby cat on a sunlit windowsill, soft bokeh, golden hour light, photorealistic&quot;}}&#39;
+  -d &#39;{&quot;type&quot;:&quot;image&quot;,&quot;params&quot;:{&quot;description&quot;:&quot;A fluffy orange tabby cat on a sunlit windowsill, soft bokeh, golden hour light, photorealistic&quot;,&quot;aspect_ratio&quot;:&quot;16:9&quot;}}&#39;
 
-# Video
+# Video (portrait, for social media)
 curl -s -X POST https://api.vapagent.com/v3/tasks \
   -H &quot;Authorization: Bearer $VAP_API_KEY&quot; \
   -H &quot;Content-Type: application/json&quot; \
-  -d &#39;{&quot;type&quot;:&quot;video&quot;,&quot;params&quot;:{&quot;description&quot;:&quot;Drone shot over misty mountains at sunrise&quot;,&quot;duration&quot;:8}}&#39;
+  -d &#39;{&quot;type&quot;:&quot;video&quot;,&quot;params&quot;:{&quot;description&quot;:&quot;Drone shot over misty mountains at sunrise&quot;,&quot;duration&quot;:8,&quot;aspect_ratio&quot;:&quot;9:16&quot;,&quot;resolution&quot;:&quot;1080p&quot;}}&#39;
 
-# Music
+# Music (instrumental WAV)
 curl -s -X POST https://api.vapagent.com/v3/tasks \
   -H &quot;Authorization: Bearer $VAP_API_KEY&quot; \
   -H &quot;Content-Type: application/json&quot; \
-  -d &#39;{&quot;type&quot;:&quot;music&quot;,&quot;params&quot;:{&quot;description&quot;:&quot;Upbeat lo-fi hip hop beat, warm vinyl crackle, chill vibes&quot;,&quot;duration&quot;:120}}&#39;
+  -d &#39;{&quot;type&quot;:&quot;music&quot;,&quot;params&quot;:{&quot;description&quot;:&quot;Upbeat lo-fi hip hop beat, warm vinyl crackle, chill vibes&quot;,&quot;duration&quot;:120,&quot;instrumental&quot;:true,&quot;audio_format&quot;:&quot;wav&quot;,&quot;loudness_preset&quot;:&quot;streaming&quot;}}&#39;
 
-# Poll (use task_id from response)
+# Inpaint (edit an image)
+curl -s -X POST https://api.vapagent.com/v3/operations \
+  -H &quot;Authorization: Bearer $VAP_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;operation&quot;:&quot;inpaint&quot;,&quot;media_url&quot;:&quot;https://example.com/photo.jpg&quot;,&quot;prompt&quot;:&quot;Remove the person in the background&quot;}&#39;
+
+# Upscale (4x)
+curl -s -X POST https://api.vapagent.com/v3/operations \
+  -H &quot;Authorization: Bearer $VAP_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;operation&quot;:&quot;upscale&quot;,&quot;media_url&quot;:&quot;https://example.com/photo.jpg&quot;,&quot;options&quot;:{&quot;scale&quot;:4}}&#39;
+
+# Background Remove
+curl -s -X POST https://api.vapagent.com/v3/operations \
+  -H &quot;Authorization: Bearer $VAP_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;operation&quot;:&quot;background_remove&quot;,&quot;media_url&quot;:&quot;https://example.com/photo.jpg&quot;}&#39;
+
+# Poll (use task_id or operation_id from response)
 curl -s https://api.vapagent.com/v3/tasks/TASK_ID \
   -H &quot;Authorization: Bearer $VAP_API_KEY&quot;
 </code></pre>
+<h3>Production Presets (Multi-Asset)</h3>
+<p>For content campaigns, use <code>/v3/execute</code> to generate multiple assets from one prompt:</p>
+<pre><code class="language-bash">curl -s -X POST https://api.vapagent.com/v3/execute \
+  -H &quot;Authorization: Bearer $VAP_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;preset&quot;:&quot;streaming_campaign&quot;,&quot;prompt&quot;:&quot;PROMPT&quot;}&#39;
+</code></pre>
+<p>Returns all assets when complete:</p>
+<pre><code class="language-json">{&quot;status&quot;:&quot;completed&quot;,&quot;outputs&quot;:{&quot;video&quot;:&quot;https://...&quot;,&quot;music&quot;:&quot;https://...&quot;,&quot;thumbnail&quot;:&quot;https://...&quot;}}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Preset</th>
+<th>Includes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>streaming_campaign</code></td>
+<td>video + music + thumbnail + metadata</td>
+</tr>
+<tr>
+<td><code>full_production</code></td>
+<td>video + music + thumbnail + metadata + SEO</td>
+</tr>
+<tr>
+<td><code>video.basic</code></td>
+<td>video only</td>
+</tr>
+<tr>
+<td><code>music.basic</code></td>
+<td>music only</td>
+</tr>
+<tr>
+<td><code>image.basic</code></td>
+<td>image only</td>
+</tr>
+</tbody></table>
+<hr>
 <h2>Prompt Tips</h2>
 <ul>
 <li><strong>Style:</strong> &quot;oil painting&quot;, &quot;3D render&quot;, &quot;watercolor&quot;, &quot;photograph&quot;, &quot;flat illustration&quot;</li>
 <li><strong>Lighting:</strong> &quot;golden hour&quot;, &quot;neon lights&quot;, &quot;soft diffused light&quot;, &quot;dramatic shadows&quot;</li>
 <li><strong>Composition:</strong> &quot;close-up&quot;, &quot;aerial view&quot;, &quot;wide angle&quot;, &quot;rule of thirds&quot;</li>
 <li><strong>Mood:</strong> &quot;serene&quot;, &quot;energetic&quot;, &quot;mysterious&quot;, &quot;whimsical&quot;</li>
+<li><strong>Aspect ratio in prompt:</strong> Mentioning &quot;widescreen&quot;, &quot;portrait&quot;, or &quot;16:9&quot; in your prompt auto-sets the aspect ratio.</li>
 </ul>
-<h2>Setup (Optional - for Full Mode)</h2>
+<h2>Setup (Optional — for Full Mode)</h2>
 <ol>
 <li>Sign up: <a href="https://vapagent.com/dashboard/signup.html">https://vapagent.com/dashboard/signup.html</a></li>
 <li>Get API key from dashboard</li>
-<li>Set: <code>export VAP_API_KEY=vape_xxxxxxxxxxxxxxxxxxxx</code></li>
+<li>Set: <code>export VAP_API_KEY=vap_xxxxxxxxxxxxxxxxxxxx</code></li>
 </ol>
 <h2>Links</h2>
 <ul>

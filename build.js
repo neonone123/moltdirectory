@@ -7,6 +7,40 @@ const { marked } = require('marked');
 const REGISTRY_URL = 'https://raw.githubusercontent.com/VoltAgent/awesome-openclaw-skills/main/README.md';
 const OUTPUT_DIR = __dirname;
 const REPO_ROOT = 'https://github.com/openclaw/skills/tree/main/skills';
+const SITE_ORIGIN = 'https://moltdirectory.com';
+
+function cleanPath(inputPath = '/', trailingSlash = true) {
+  let normalized = inputPath || '/';
+
+  if (!normalized.startsWith('/')) {
+    normalized = `/${normalized}`;
+  }
+
+  normalized = normalized.replace(/\/{2,}/g, '/');
+
+  if (normalized !== '/' && trailingSlash) {
+    normalized = normalized.replace(/\/?$/, '/');
+  }
+
+  if (!trailingSlash && normalized !== '/') {
+    normalized = normalized.replace(/\/+$/, '');
+  }
+
+  return normalized;
+}
+
+function absoluteUrl(sitePath, trailingSlash = true) {
+  return `${SITE_ORIGIN}${cleanPath(sitePath, trailingSlash)}`;
+}
+
+function escapeXml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
 
 // --- Icons Mapping ---
 const icons = {
@@ -60,8 +94,8 @@ const icons = {
 };
 
 // --- Templates ---
-const PAGE_TEMPLATE = (content, title, desc, depth = 0) => {
-  const relPath = '../'.repeat(depth) || './';
+const PAGE_TEMPLATE = (content, title, desc, canonicalPath = '/') => {
+  const canonicalUrl = absoluteUrl(canonicalPath, canonicalPath !== '/security-auditor');
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -69,11 +103,12 @@ const PAGE_TEMPLATE = (content, title, desc, depth = 0) => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="${desc}">
   <title>${title} - OpenClaw Directory</title>
+  <link rel="canonical" href="${canonicalUrl}">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="${relPath}style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -87,12 +122,12 @@ const PAGE_TEMPLATE = (content, title, desc, depth = 0) => {
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="${relPath}index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="${relPath}start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -156,6 +191,37 @@ const PAGE_TEMPLATE = (content, title, desc, depth = 0) => {
 </body>
 </html>`;
 };
+
+function rewriteRelativeDocLinks(skillHtml, skillRepoUrl) {
+  const blobBase = skillRepoUrl
+    .replace('/tree/', '/blob/')
+    .replace(/\/SKILL\.md$/, '/');
+
+  return skillHtml.replace(/<a([^>]*?)href="([^"]+)"([^>]*)>/gi, (match, pre, href, post) => {
+    const isAbsolute = /^(?:[a-z]+:)?\/\//i.test(href) || href.startsWith('/') || href.startsWith('#');
+    const isMetaLink = href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('data:');
+
+    if (isAbsolute || isMetaLink) {
+      return match;
+    }
+
+    const [pathPart, hashPart = ''] = href.split('#');
+    const [cleanHref, queryPart = ''] = pathPart.split('?');
+    const lowerHref = cleanHref.toLowerCase();
+    const targetsDoc =
+      lowerHref.endsWith('.md') ||
+      lowerHref === 'skill.md' ||
+      lowerHref.startsWith('references/') ||
+      lowerHref.includes('/references/');
+
+    if (!targetsDoc) {
+      return match;
+    }
+
+    const githubHref = `${blobBase}${cleanHref}${queryPart ? `?${queryPart}` : ''}${hashPart ? `#${hashPart}` : ''}`;
+    return `<a${pre}href="${githubHref}"${post}>`;
+  });
+}
 
 // --- Build Logic ---
 async function build() {
@@ -293,7 +359,7 @@ async function build() {
     <section class="categories-section" id="categoriesSection">
       <div class="categories-grid" id="categoriesGrid">
         ${filteredCategories.map(cat => `
-          <a href="./${cat.id}/index.html" class="category-card" data-name="${cat.name.toLowerCase()}" data-desc="${cat.desc.toLowerCase()}">
+          <a href="/${cat.id}/" class="category-card" data-name="${cat.name.toLowerCase()}" data-desc="${cat.desc.toLowerCase()}">
             <div class="category-icon">${getIcon(cat.id)}</div>
             <div class="category-content">
               <div class="category-name">${cat.name}</div>
@@ -363,7 +429,7 @@ async function build() {
         if (matchingSkills.length > 0) {
           searchResults.innerHTML = '<div class="search-results-title">Skills matching "' + q + '"</div>' +
             matchingSkills.map(s => 
-              '<a href="./' + s.catId + '/' + s.id + '/index.html" class="search-result-item">' +
+              '<a href="/' + s.catId + '/' + s.id + '/" class="search-result-item">' +
                 '<div class="search-result-name">' + s.name + '</div>' +
                 '<div class="search-result-cat">' + s.catName + '</div>' +
               '</a>'
@@ -377,7 +443,7 @@ async function build() {
       }
     </script>
   `;
-  fs.writeFileSync(path.join(OUTPUT_DIR, 'index.html'), PAGE_TEMPLATE(homeContent, 'OpenClaw Skills Directory', 'Browse AI agent skills for OpenClaw'));
+  fs.writeFileSync(path.join(OUTPUT_DIR, 'index.html'), PAGE_TEMPLATE(homeContent, 'OpenClaw Skills Directory', 'Browse AI agent skills for OpenClaw', '/'));
 
   // 2. Generate Category Pages
   for (const cat of filteredCategories) {
@@ -385,7 +451,7 @@ async function build() {
     const catContent = `
       <section class="category-hero">
         <div class="category-hero-content">
-          <a href="../index.html" class="back-link">← All Categories</a>
+          <a href="/" class="back-link">← All Categories</a>
           <div class="category-hero-header">
             <div class="category-hero-icon">${getIcon(cat.id)}</div>
             <div>
@@ -398,7 +464,7 @@ async function build() {
       <section class="skills-section">
         <div class="skills-grid">
           ${catSkills.map(s => `
-            <a href="./${s.id}/index.html" class="skill-card" style="text-decoration: none; color: inherit;">
+            <a href="/${cat.id}/${s.id}/" class="skill-card" style="text-decoration: none; color: inherit;">
               <div class="skill-header">
                 <div class="skill-name">${s.name}</div>
               </div>
@@ -414,7 +480,7 @@ async function build() {
     `;
     const catDir = path.join(OUTPUT_DIR, cat.id);
     if (!fs.existsSync(catDir)) fs.mkdirSync(catDir);
-    fs.writeFileSync(path.join(catDir, 'index.html'), PAGE_TEMPLATE(catContent, cat.name, cat.desc, 1));
+    fs.writeFileSync(path.join(catDir, 'index.html'), PAGE_TEMPLATE(catContent, cat.name, cat.desc, `/${cat.id}/`));
 
     // 3. Generate Skill Pages
     console.log(`Generating pages for ${cat.name}...`);
@@ -433,14 +499,14 @@ async function build() {
         // Remove YAML frontmatter (---...---) from the start of the markdown
         skillMd = skillMd.replace(/^---[\s\S]*?---\n*/m, '');
 
-        const skillHtml = marked(skillMd);
+        const skillHtml = rewriteRelativeDocLinks(marked(skillMd), s.url);
 
         const skillContent = `
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to ${cat.name}</a>
+              <a href="/${cat.id}/" class="back-link">← Back to ${cat.name}</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">${cat.name}</a>
+                <a href="/${cat.id}/" class="skill-page-category">${cat.name}</a>
                 <span class="skill-page-author">by @${s.author}</span>
               </div>
               <h1 class="skill-page-title">${s.name}</h1>
@@ -498,16 +564,16 @@ async function build() {
             </aside>
           </div>
         `;
-        fs.writeFileSync(path.join(skillDir, 'index.html'), PAGE_TEMPLATE(skillContent, s.name, s.desc, 2));
+        fs.writeFileSync(path.join(skillDir, 'index.html'), PAGE_TEMPLATE(skillContent, s.name, s.desc, `/${cat.id}/${s.id}/`));
       } catch (err) {
         console.error(`Failed to fetch SKILL.md for ${s.name}: ${err.message}`);
         // Fallback page if SKILL.md fails
         const fallbackContent = `
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to ${cat.name}</a>
+              <a href="/${cat.id}/" class="back-link">← Back to ${cat.name}</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">${cat.name}</a>
+                <a href="/${cat.id}/" class="skill-page-category">${cat.name}</a>
               </div>
               <h1 class="skill-page-title">${s.name}</h1>
               <p class="skill-page-desc">${s.desc}</p>
@@ -528,7 +594,7 @@ async function build() {
             </aside>
           </div>
         `;
-        fs.writeFileSync(path.join(skillDir, 'index.html'), PAGE_TEMPLATE(fallbackContent, s.name, s.desc, 2));
+        fs.writeFileSync(path.join(skillDir, 'index.html'), PAGE_TEMPLATE(fallbackContent, s.name, s.desc, `/${cat.id}/${s.id}/`));
       }
     }
   }
@@ -597,7 +663,7 @@ OpenClaw's power comes from **Skills** (plugins). Out of the box, it can do basi
   const startHereContent = `
     <section class="category-hero">
       <div class="category-hero-content">
-        <a href="../index.html" class="back-link">← Home</a>
+        <a href="/" class="back-link">← Home</a>
         <h1 class="category-hero-title">Start Here</h1>
         <p class="category-hero-desc">The Unofficial Guide to OpenClaw</p>
       </div>
@@ -610,7 +676,38 @@ OpenClaw's power comes from **Skills** (plugins). Out of the box, it can do basi
   `;
   const startHereDir = path.join(OUTPUT_DIR, 'start-here');
   if (!fs.existsSync(startHereDir)) fs.mkdirSync(startHereDir);
-  fs.writeFileSync(path.join(startHereDir, 'index.html'), PAGE_TEMPLATE(startHereContent, 'Start Here', 'The Unofficial Guide to OpenClaw', 1));
+  fs.writeFileSync(path.join(startHereDir, 'index.html'), PAGE_TEMPLATE(startHereContent, 'Start Here', 'The Unofficial Guide to OpenClaw', '/start-here/'));
+
+  console.log('Generating robots.txt...');
+  const robotsTxt = [
+    'User-agent: *',
+    'Allow: /',
+    'Disallow: /*/references/',
+    'Disallow: /*.md',
+    'Disallow: /*/SKILL.md',
+    `Sitemap: ${SITE_ORIGIN}/sitemap.xml`
+  ].join('\n');
+  fs.writeFileSync(path.join(OUTPUT_DIR, 'robots.txt'), `${robotsTxt}\n`);
+
+  console.log('Generating sitemap.xml...');
+  const todayUtc = new Date().toISOString().split('T')[0];
+  const canonicalPaths = new Set([
+    cleanPath('/'),
+    cleanPath('/start-here/'),
+    cleanPath('/security-auditor', false),
+    ...filteredCategories.map(cat => cleanPath(`/${cat.id}/`)),
+    ...filteredSkills.map(s => cleanPath(`/${s.catId}/${s.id}/`))
+  ]);
+  const sitemapUrls = [...canonicalPaths]
+    .sort()
+    .map(sitePath => `  <url><loc>${escapeXml(absoluteUrl(sitePath, sitePath !== '/security-auditor'))}</loc><lastmod>${todayUtc}</lastmod></url>`)
+    .join('\n');
+  const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${sitemapUrls}
+</urlset>
+`;
+  fs.writeFileSync(path.join(OUTPUT_DIR, 'sitemap.xml'), sitemapXml);
 
   console.log('\nBuild Finished Successfully!');
 }

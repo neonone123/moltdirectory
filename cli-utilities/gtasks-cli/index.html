@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage Google Tasks from the command line - view, create, update">
+  <title>gtasks-cli - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/cli-utilities/gtasks-cli/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+
+        <span class="logo-text">OpenClaw Directory</span>
+      </a>
+      <nav class="header-links">
+        <a href="/start-here/" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="/cli-utilities/" class="back-link">← Back to CLI Utilities</a>
+              <div class="skill-page-meta">
+                <a href="/cli-utilities/" class="skill-page-category">CLI Utilities</a>
+                <span class="skill-page-author">by @bro3886</span>
+              </div>
+              <h1 class="skill-page-title">gtasks-cli</h1>
+              <p class="skill-page-desc">Manage Google Tasks from the command line - view, create, update</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Google Tasks CLI Skill</h1>
+<p>This skill enables you to manage Google Tasks directly from the command line using the <code>gtasks</code> CLI tool.</p>
+<h2>Prerequisites</h2>
+<p>Before using any commands, ensure the following requirements are met:</p>
+<h3>1. GTasks Installation</h3>
+<p>Check if gtasks is installed on the system:</p>
+<pre><code class="language-bash"># Cross-platform check (works on macOS, Linux, Windows Git Bash)
+gtasks --version 2&gt;/dev/null || gtasks.exe --version 2&gt;/dev/null || echo &quot;gtasks not found&quot;
+
+# Or use which/where commands
+# macOS/Linux:
+which gtasks
+
+# Windows (Command Prompt):
+where gtasks
+
+# Windows (PowerShell):
+Get-Command gtasks
+</code></pre>
+<p><strong>If gtasks is not installed:</strong></p>
+<ol>
+<li>Download the binary for your system from <a href="https://github.com/BRO3886/gtasks/releases">GitHub Releases</a></li>
+<li>Install it:<ul>
+<li><strong>macOS/Linux</strong>: Move to <code>/usr/local/bin</code> or add to PATH</li>
+<li><strong>Windows</strong>: Add to a folder in your PATH environment variable</li>
+</ul>
+</li>
+<li>Verify installation: <code>gtasks --version</code></li>
+</ol>
+<p><strong>IMPORTANT for Agents:</strong> Always check if gtasks is installed before attempting to use it. If the command is not found, inform the user and provide installation instructions.</p>
+<h3>2. Environment Variables</h3>
+<p>Set up Google OAuth2 credentials as environment variables:</p>
+<pre><code class="language-bash">export GTASKS_CLIENT_ID=&quot;your-client-id.apps.googleusercontent.com&quot;
+export GTASKS_CLIENT_SECRET=&quot;your-client-secret&quot;
+</code></pre>
+<p><strong>How to get credentials:</strong></p>
+<ol>
+<li>Go to <a href="https://console.cloud.google.com/">Google Cloud Console</a></li>
+<li>Create a new project or select an existing one</li>
+<li>Enable the Google Tasks API</li>
+<li>Create OAuth2 credentials (Application type: &quot;Web application&quot;)</li>
+<li>Add authorized redirect URIs:<ul>
+<li><code>http://localhost:8080/callback</code></li>
+<li><code>http://localhost:8081/callback</code></li>
+<li><code>http://localhost:8082/callback</code></li>
+<li><code>http://localhost:9090/callback</code></li>
+<li><code>http://localhost:9091/callback</code></li>
+</ul>
+</li>
+</ol>
+<p><strong>For persistent setup</strong>, add these to your shell profile (<code>~/.bashrc</code>, <code>~/.zshrc</code>, etc.):</p>
+<pre><code class="language-bash">echo &#39;export GTASKS_CLIENT_ID=&quot;your-client-id&quot;&#39; &gt;&gt; ~/.bashrc
+echo &#39;export GTASKS_CLIENT_SECRET=&quot;your-client-secret&quot;&#39; &gt;&gt; ~/.bashrc
+source ~/.bashrc
+</code></pre>
+<h3>2. Authentication</h3>
+<p>Once environment variables are set, authenticate with Google:</p>
+<pre><code class="language-bash">gtasks login
+</code></pre>
+<p>This will open a browser for OAuth2 authentication. The token is stored in <code>~/.gtasks/token.json</code>.</p>
+<h2>Core Concepts</h2>
+<ul>
+<li><strong>Task Lists</strong>: Containers that hold tasks (like &quot;Work&quot;, &quot;Personal&quot;, &quot;Shopping&quot;)</li>
+<li><strong>Tasks</strong>: Individual to-do items within a task list</li>
+<li><strong>Task Properties</strong>: Title (required), notes/description (optional), due date (optional), status (pending/completed)</li>
+</ul>
+<h2>Command Structure</h2>
+<p>All commands follow this pattern:</p>
+<pre><code>gtasks [command] [subcommand] [flags] [arguments]
+</code></pre>
+<h2>Authentication</h2>
+<h3>Login</h3>
+<pre><code class="language-bash">gtasks login
+</code></pre>
+<p>Opens browser for Google OAuth2 authentication. Required before using any other commands.</p>
+<h3>Logout</h3>
+<pre><code class="language-bash">gtasks logout
+</code></pre>
+<p>Removes stored credentials from <code>~/.gtasks/token.json</code>.</p>
+<h2>Task List Management</h2>
+<h3>View All Task Lists</h3>
+<pre><code class="language-bash">gtasks tasklists view
+</code></pre>
+<p>Displays all task lists with numbered indices.</p>
+<p><strong>Output Example:</strong></p>
+<pre><code>[1] My Tasks
+[2] Work
+[3] Personal
+</code></pre>
+<h3>Create a Task List</h3>
+<pre><code class="language-bash">gtasks tasklists add -t &quot;Work Projects&quot;
+gtasks tasklists add --title &quot;Shopping List&quot;
+</code></pre>
+<p>Creates a new task list with the specified title.</p>
+<p><strong>Flags:</strong></p>
+<ul>
+<li><code>-t, --title</code>: Task list title (required)</li>
+</ul>
+<h3>Delete a Task List</h3>
+<pre><code class="language-bash">gtasks tasklists rm
+</code></pre>
+<p>Interactive prompt to select and delete a task list.</p>
+<h3>Update Task List Title</h3>
+<pre><code class="language-bash">gtasks tasklists update -t &quot;New Title&quot;
+</code></pre>
+<p>Interactive prompt to select a task list and update its title.</p>
+<p><strong>Flags:</strong></p>
+<ul>
+<li><code>-t, --title</code>: New title for the task list (required)</li>
+</ul>
+<h2>Task Management</h2>
+<p>All task commands can optionally specify a task list using the <code>-l</code> flag. If omitted, you&#39;ll be prompted to select one interactively.</p>
+<h3>View Tasks</h3>
+<p><strong>Basic view:</strong></p>
+<pre><code class="language-bash">gtasks tasks view
+gtasks tasks view -l &quot;Work&quot;
+</code></pre>
+<p><strong>Include completed tasks:</strong></p>
+<pre><code class="language-bash">gtasks tasks view --include-completed
+gtasks tasks view -i
+</code></pre>
+<p><strong>Show only completed tasks:</strong></p>
+<pre><code class="language-bash">gtasks tasks view --completed
+</code></pre>
+<p><strong>Sort tasks:</strong></p>
+<pre><code class="language-bash">gtasks tasks view --sort=due        # Sort by due date
+gtasks tasks view --sort=title      # Sort by title
+gtasks tasks view --sort=position   # Sort by position (default)
+</code></pre>
+<p><strong>Output formats:</strong></p>
+<pre><code class="language-bash">gtasks tasks view --format=table    # Table format (default)
+gtasks tasks view --format=json     # JSON output
+gtasks tasks view --format=csv      # CSV output
+</code></pre>
+<p><strong>Table Output Example:</strong></p>
+<pre><code>Tasks in Work:
+No  Title              Description         Status     Due
+1   Finish report      Q4 analysis         pending    25 December 2024
+2   Team meeting       Weekly sync         pending    -
+3   Code review        PR #123            completed  20 December 2024
+</code></pre>
+<p><strong>JSON Output Example:</strong></p>
+<pre><code class="language-json">[
+  {
+    &quot;number&quot;: 1,
+    &quot;title&quot;: &quot;Finish report&quot;,
+    &quot;description&quot;: &quot;Q4 analysis&quot;,
+    &quot;status&quot;: &quot;pending&quot;,
+    &quot;due&quot;: &quot;2024-12-25&quot;
+  }
+]
+</code></pre>
+<h3>Create a Task</h3>
+<p><strong>Interactive mode:</strong></p>
+<pre><code class="language-bash">gtasks tasks add
+gtasks tasks add -l &quot;Work&quot;
+</code></pre>
+<p>Prompts for title, notes, and due date.</p>
+<p><strong>Flag mode:</strong></p>
+<pre><code class="language-bash">gtasks tasks add -t &quot;Buy groceries&quot;
+gtasks tasks add -t &quot;Finish report&quot; -n &quot;Q4 analysis&quot; -d &quot;2024-12-25&quot;
+gtasks tasks add -t &quot;Call dentist&quot; -d &quot;tomorrow&quot;
+gtasks tasks add -t &quot;Team meeting&quot; -d &quot;Dec 25&quot;
+</code></pre>
+<p><strong>Flags:</strong></p>
+<ul>
+<li><code>-t, --title</code>: Task title (required for non-interactive mode)</li>
+<li><code>-n, --note</code>: Task notes/description (optional)</li>
+<li><code>-d, --due</code>: Due date (optional, flexible format)</li>
+</ul>
+<p><strong>Date Format Examples:</strong>
+The date parser supports many formats:</p>
+<ul>
+<li><code>2024-12-25</code> (ISO format)</li>
+<li><code>Dec 25, 2024</code></li>
+<li><code>December 25</code></li>
+<li><code>tomorrow</code></li>
+<li><code>next Friday</code></li>
+<li><code>12/25/2024</code></li>
+</ul>
+<p>See <a href="https://github.com/araddon/dateparse#extended-example">dateparse examples</a> for all supported formats.</p>
+<h3>Mark Task as Complete</h3>
+<p><strong>With task number:</strong></p>
+<pre><code class="language-bash">gtasks tasks done 1
+gtasks tasks done 3 -l &quot;Work&quot;
+</code></pre>
+<p><strong>Interactive mode:</strong></p>
+<pre><code class="language-bash">gtasks tasks done
+gtasks tasks done -l &quot;Personal&quot;
+</code></pre>
+<p>Prompts to select a task from the list.</p>
+<h3>Delete a Task</h3>
+<p><strong>With task number:</strong></p>
+<pre><code class="language-bash">gtasks tasks rm 2
+gtasks tasks rm 1 -l &quot;Shopping&quot;
+</code></pre>
+<p><strong>Interactive mode:</strong></p>
+<pre><code class="language-bash">gtasks tasks rm
+gtasks tasks rm -l &quot;Work&quot;
+</code></pre>
+<p>Prompts to select a task to delete.</p>
+<h3>View Task Details</h3>
+<p><strong>With task number:</strong></p>
+<pre><code class="language-bash">gtasks tasks info 1
+gtasks tasks info 3 -l &quot;Work&quot;
+</code></pre>
+<p><strong>Interactive mode:</strong></p>
+<pre><code class="language-bash">gtasks tasks info
+gtasks tasks info -l &quot;Personal&quot;
+</code></pre>
+<p><strong>Output Example:</strong></p>
+<pre><code>Task: Finish report
+Status: Needs action
+Due: 25 December 2024
+Notes: Complete Q4 analysis and submit to manager
+
+Links:
+  - https://docs.google.com/document/d/...
+
+View in Google Tasks: https://tasks.google.com/...
+</code></pre>
+<h2>Common Workflows</h2>
+<h3>Quick Task Creation</h3>
+<p>When a user says &quot;add a task to my work list&quot;:</p>
+<pre><code class="language-bash">gtasks tasks add -l &quot;Work&quot; -t &quot;Task title&quot;
+</code></pre>
+<h3>Check Today&#39;s Tasks</h3>
+<pre><code class="language-bash">gtasks tasks view --sort=due
+</code></pre>
+<h3>Complete Multiple Tasks</h3>
+<pre><code class="language-bash">gtasks tasks done -l &quot;Work&quot;
+# Interactive prompt appears, select task
+gtasks tasks done -l &quot;Work&quot;
+# Repeat as needed
+</code></pre>
+<h3>View All Tasks Across Lists</h3>
+<p>Run view command multiple times for each list, or first list all task lists:</p>
+<pre><code class="language-bash">gtasks tasklists view
+gtasks tasks view -l &quot;Work&quot;
+gtasks tasks view -l &quot;Personal&quot;
+</code></pre>
+<h3>Export Tasks</h3>
+<pre><code class="language-bash">gtasks tasks view --format=json &gt; tasks.json
+gtasks tasks view --format=csv &gt; tasks.csv
+</code></pre>
+<h2>Best Practices</h2>
+<ol>
+<li><p><strong>Always check authentication first</strong>: If commands fail with authentication errors, run <code>gtasks login</code></p>
+</li>
+<li><p><strong>Use task list flag for automation</strong>: When scripting or when the user specifies a list name, use <code>-l</code> flag to avoid interactive prompts</p>
+</li>
+<li><p><strong>Leverage flexible date parsing</strong>: The <code>--due</code> flag accepts natural language dates like &quot;tomorrow&quot;, &quot;next week&quot;, etc.</p>
+</li>
+<li><p><strong>Use appropriate output format</strong>:</p>
+<ul>
+<li>Table format for human-readable output</li>
+<li>JSON for parsing/integration with other tools</li>
+<li>CSV for spreadsheet import</li>
+</ul>
+</li>
+<li><p><strong>Task numbers are ephemeral</strong>: Task numbers change when tasks are added, completed, or deleted. Always view the list first to get current numbers.</p>
+</li>
+<li><p><strong>Handle missing lists gracefully</strong>: If a user specifies a non-existent list name, the command will error. Always verify list names first with <code>gtasks tasklists view</code>.</p>
+</li>
+</ol>
+<h2>Error Handling</h2>
+<p>Common errors and solutions:</p>
+<ul>
+<li><strong>&quot;Failed to get service&quot;</strong> or <strong>Authentication errors</strong>:<ul>
+<li>First, ensure environment variables are set: <code>echo $GTASKS_CLIENT_ID</code></li>
+<li>If variables are not set, export them (see Prerequisites section)</li>
+<li>Then run <code>gtasks login</code> to authenticate</li>
+</ul>
+</li>
+<li><strong>&quot;incorrect task-list name&quot;</strong>: The specified list name doesn&#39;t exist. Use <code>gtasks tasklists view</code> to see available lists</li>
+<li><strong>&quot;Incorrect task number&quot;</strong>: The task number is invalid. Use <code>gtasks tasks view</code> to see current task numbers</li>
+<li><strong>&quot;Date format incorrect&quot;</strong>: The date string couldn&#39;t be parsed. Use formats like &quot;2024-12-25&quot;, &quot;tomorrow&quot;, or &quot;Dec 25&quot;</li>
+</ul>
+<h2>Examples</h2>
+<h3>Example 1: Create a shopping list and add items</h3>
+<pre><code class="language-bash">gtasks tasklists add -t &quot;Shopping&quot;
+gtasks tasks add -l &quot;Shopping&quot; -t &quot;Milk&quot;
+gtasks tasks add -l &quot;Shopping&quot; -t &quot;Bread&quot;
+gtasks tasks add -l &quot;Shopping&quot; -t &quot;Eggs&quot;
+</code></pre>
+<h3>Example 2: Review and complete work tasks</h3>
+<pre><code class="language-bash">gtasks tasks view -l &quot;Work&quot; --sort=due
+gtasks tasks done 1 -l &quot;Work&quot;
+</code></pre>
+<h3>Example 3: Add task with deadline</h3>
+<pre><code class="language-bash">gtasks tasks add -l &quot;Work&quot; -t &quot;Submit proposal&quot; -n &quot;Include budget and timeline&quot; -d &quot;next Friday&quot;
+</code></pre>
+<h3>Example 4: Export completed tasks</h3>
+<pre><code class="language-bash">gtasks tasks view --completed --format=json -l &quot;Work&quot; &gt; completed_work.json
+</code></pre>
+<h2>Tips for Agents</h2>
+<h3>Before Running Any Commands</h3>
+<ol>
+<li><p><strong>Check gtasks installation first</strong>:</p>
+<pre><code class="language-bash"># Try to run gtasks version check
+gtasks --version 2&gt;/dev/null || gtasks.exe --version 2&gt;/dev/null
+</code></pre>
+<p>If this fails, inform the user that gtasks is not installed and provide installation instructions from the Prerequisites section.</p>
+</li>
+<li><p><strong>Verify environment variables are set</strong>:</p>
+<pre><code class="language-bash"># Check if variables exist (macOS/Linux)
+[ -n &quot;$GTASKS_CLIENT_ID&quot; ] &amp;&amp; echo &quot;GTASKS_CLIENT_ID is set&quot; || echo &quot;GTASKS_CLIENT_ID is not set&quot;
+[ -n &quot;$GTASKS_CLIENT_SECRET&quot; ] &amp;&amp; echo &quot;GTASKS_CLIENT_SECRET is set&quot; || echo &quot;GTASKS_CLIENT_SECRET is not set&quot;
+
+# Windows PowerShell
+if ($env:GTASKS_CLIENT_ID) { &quot;GTASKS_CLIENT_ID is set&quot; } else { &quot;GTASKS_CLIENT_ID is not set&quot; }
+if ($env:GTASKS_CLIENT_SECRET) { &quot;GTASKS_CLIENT_SECRET is set&quot; } else { &quot;GTASKS_CLIENT_SECRET is not set&quot; }
+</code></pre>
+</li>
+<li><p><strong>Check authentication status</strong>:</p>
+<pre><code class="language-bash">gtasks tasklists view &amp;&gt;/dev/null &amp;&amp; echo &quot;Authenticated&quot; || echo &quot;Not authenticated - run &#39;gtasks login&#39;&quot;
+</code></pre>
+</li>
+</ol>
+<h3>General Tips</h3>
+<ul>
+<li>When the user mentions &quot;tasks&quot; without specifying a tool, ask if they want to use Google Tasks</li>
+<li>If the user asks about their tasks, first run <code>gtasks tasklists view</code> to see available lists</li>
+<li>Always confirm which task list to use if not specified by the user</li>
+<li>When creating tasks with dates, prefer explicit date formats (YYYY-MM-DD) over relative terms for clarity</li>
+<li>Remember that task numbers are 1-indexed and change after modifications</li>
+<li>If a command requires interaction but you&#39;re running non-interactively, use flags to provide all required information</li>
+</ul>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/bro3886/gtasks-cli/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/bro3886/gtasks-cli" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/bro3886/gtasks-cli/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@bro3886</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">CLI Utilities</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">OpenClawDirectory.com is a community-run project and is not affiliated with the official OpenClaw team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Multi-perspective feedback from spawned sub-agent personas">
+  <meta name="description" content="Send an idea to the Council of the Wise">
   <title>council-of-the-wise - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/ai-llms/council-of-the-wise/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,13 +45,13 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to AI & LLMs</a>
+              <a href="/ai-llms/" class="back-link">← Back to AI & LLMs</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">AI & LLMs</a>
+                <a href="/ai-llms/" class="skill-page-category">AI & LLMs</a>
                 <span class="skill-page-author">by @jeffaf</span>
               </div>
               <h1 class="skill-page-title">council-of-the-wise</h1>
-              <p class="skill-page-desc">Multi-perspective feedback from spawned sub-agent personas</p>
+              <p class="skill-page-desc">Send an idea to the Council of the Wise</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -65,20 +66,21 @@
                 </div>
                 <div class="markdown-content">
                   <h1>Council of the Wise</h1>
-<p>When the user says &quot;send it to the council&quot; or &quot;council of the wise&quot; or similar, spawn a sub-agent to analyze the idea from multiple expert perspectives.</p>
+<p>Get multi-perspective feedback on your ideas from a panel of AI experts. Perfect for stress-testing business plans, project designs, content strategies, or major decisions.</p>
 <h2>Usage</h2>
 <pre><code>&quot;Send this to the council: [idea/plan/document]&quot;
 &quot;Council of the wise: [topic]&quot;
 &quot;Get the council&#39;s feedback on [thing]&quot;
 </code></pre>
 <h2>Council Members</h2>
-<p>The skill <strong>auto-discovers</strong> agent personas from the <code>agents/</code> folder. Any <code>.md</code> file in that folder becomes a council member.</p>
+<p>The skill <strong>auto-discovers</strong> agent personas from <code>{skill_folder}/agents/</code>. Any <code>.md</code> file in that folder becomes a council member.</p>
 <p><strong>Default members:</strong></p>
 <ul>
 <li><code>DevilsAdvocate.md</code> — Challenges assumptions, finds weaknesses, stress-tests</li>
 <li><code>Architect.md</code> — Designs systems, structure, high-level approach  </li>
 <li><code>Engineer.md</code> — Implementation details, technical feasibility</li>
 <li><code>Artist.md</code> — Voice, style, presentation, user experience</li>
+<li><code>Quant.md</code> — Risk analysis, ROI, expected value, position sizing</li>
 </ul>
 <h3>Adding New Council Members</h3>
 <p>Simply add a new <code>.md</code> file to the <code>agents/</code> folder:</p>
@@ -120,7 +122,7 @@ For each perspective:
 End with:
 - **Synthesis** section combining best ideas and flagging critical decisions
 - Note where council members **disagree** with each other — that&#39;s where the insight is
-- **Token Usage** with estimated input/output tokens (based on content length)
+- Put **Synthesis first** (TL;DR at the top, details below)
 
 Use the voice and personality defined in each agent file. Don&#39;t just list points — embody the perspective.
 </code></pre>
@@ -129,6 +131,12 @@ Use the voice and personality defined in each agent file. Don&#39;t just list po
 </ol>
 <h2>Output Format</h2>
 <pre><code class="language-markdown">## 🏛️ Council of the Wise — [Topic]
+
+### ⚖️ Synthesis (TL;DR)
+[combined recommendation + key decisions needed]
+[note where council members disagreed and why — that&#39;s the gold]
+
+---
 
 ### 👹 Devil&#39;s Advocate
 [challenges and risks — sharp, probing voice]
@@ -142,12 +150,8 @@ Use the voice and personality defined in each agent file. Don&#39;t just list po
 ### 🎨 Artist
 [voice and presentation — evocative, user-focused voice]
 
-### ⚖️ Synthesis
-[combined recommendation + key decisions needed]
-[note where council members disagreed and why — that&#39;s the gold]
-
----
-📊 **Token Usage:** ~X input / ~Y output tokens *(estimated)*
+### 📊 Quant
+[risk analysis, ROI, expected value — data-driven voice]
 </code></pre>
 <h2>Configuration</h2>
 <p>No config file needed. The skill auto-discovers agents and uses sensible defaults:</p>
@@ -160,11 +164,22 @@ Use the voice and personality defined in each agent file. Don&#39;t just list po
 <h2>Notes</h2>
 <ul>
 <li>Council review takes 2-5 minutes depending on complexity</li>
+<li><strong>Timeout:</strong> 5 minutes enforced; on timeout returns partial results if available</li>
 <li>Use for: business ideas, content plans, project designs, major decisions</li>
 <li>Don&#39;t use for: quick questions, simple tasks, time-sensitive requests</li>
-<li>Token usage is estimated based on content length (not precise API measurement)</li>
+<li>The sub-agent consolidates all perspectives into a single response with Synthesis first</li>
 <li>Add specialized agents for domain-specific analysis (security, legal, etc.)</li>
 </ul>
+<hr>
+<h2>Agent Implementation Notes</h2>
+<p><strong>Trigger phrases:</strong> &quot;send this to the council&quot;, &quot;council of the wise&quot;, &quot;get the council&#39;s feedback on&quot;</p>
+<p><strong>When triggered:</strong></p>
+<ol>
+<li>Send loading message: <code>🏛️ *The Council convenes...* (this takes 2-5 minutes)</code></li>
+<li>Spawn sub-agent with 5-minute timeout using the task template in Process section</li>
+<li>Return synthesized council report to user</li>
+</ol>
+<p><strong>Don&#39;t invoke for:</strong> Quick questions, time-sensitive tasks, simple decisions.</p>
 
                 </div>
               </div>

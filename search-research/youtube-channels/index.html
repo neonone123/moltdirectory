@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Work with YouTube channels — resolve handles to IDs, browse uploads, get latest videos, search within channels">
+  <meta name="description" content="Work with YouTube channels — resolve handles to IDs">
   <title>youtube-channels - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/search-research/youtube-channels/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,13 +45,13 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Search & Research</a>
+              <a href="/search-research/" class="back-link">← Back to Search & Research</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Search & Research</a>
+                <a href="/search-research/" class="skill-page-category">Search & Research</a>
                 <span class="skill-page-author">by @therohitdas</span>
               </div>
               <h1 class="skill-page-title">youtube-channels</h1>
-              <p class="skill-page-desc">Work with YouTube channels — resolve handles to IDs, browse uploads, get latest videos, search within channels</p>
+              <p class="skill-page-desc">Work with YouTube channels — resolve handles to IDs</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -68,23 +69,27 @@
 <p>YouTube channel tools via <a href="https://transcriptapi.com">TranscriptAPI.com</a>.</p>
 <h2>Setup</h2>
 <p>If <code>$TRANSCRIPT_API_KEY</code> is not set, help the user create an account (100 free credits, no card):</p>
-<p><strong>Step 1 — Register:</strong> Ask user for their email, generate a secure password.</p>
-<pre><code class="language-bash">node ./scripts/tapi-auth.js register --email USER_EMAIL --password SECURE_PASS --json
+<p><strong>Step 1 — Register:</strong> Ask user for their email.</p>
+<pre><code class="language-bash">node ./scripts/tapi-auth.js register --email USER_EMAIL
 </code></pre>
-<p>→ OTP sent to email. Ask user: <em>&quot;Check your email for a 6-digit verification code.&quot;</em>
-⚠️ <strong>SAVE THE PASSWORD</strong> — you need it again in Step 2!</p>
-<p><strong>Step 2 — Verify:</strong> Once user provides the OTP (use SAME password from Step 1):</p>
-<pre><code class="language-bash">node ./scripts/tapi-auth.js verify --email USER_EMAIL --password SECURE_PASS --otp CODE --json
+<p>→ OTP sent to email. Ask user: <em>&quot;Check your email for a 6-digit verification code.&quot;</em></p>
+<p><strong>Step 2 — Verify:</strong> Once user provides the OTP:</p>
+<pre><code class="language-bash">node ./scripts/tapi-auth.js verify --token TOKEN_FROM_STEP_1 --otp CODE
 </code></pre>
-<p>→ Returns <code>api_key</code> (starts with <code>sk_</code>).</p>
-<p><strong>Step 3 — Save:</strong> Store the key (auto-configures agent + shell):</p>
-<pre><code class="language-bash">node ./scripts/tapi-auth.js save-key --key API_KEY --json
-</code></pre>
-<p>→ Ready to use. Agent runtime picks up the key automatically.</p>
+<blockquote>
+<p>API key saved to <code>~/.openclaw/openclaw.json</code>. See <strong>File Writes</strong> below for details. Existing file is backed up before modification.</p>
+</blockquote>
 <p>Manual option: <a href="https://transcriptapi.com/signup">transcriptapi.com/signup</a> → Dashboard → API Keys.</p>
+<h2>File Writes</h2>
+<p>The verify and save-key commands save the API key to <code>~/.openclaw/openclaw.json</code> (sets <code>skills.entries.transcriptapi.apiKey</code> and <code>enabled: true</code>). <strong>Existing file is backed up to <code>~/.openclaw/openclaw.json.bak</code> before modification.</strong></p>
+<p>To use the API key in terminal/CLI outside the agent, add to your shell profile manually:
+<code>export TRANSCRIPT_API_KEY=&lt;your-key&gt;</code></p>
+<h2>API Reference</h2>
+<p>Full OpenAPI spec: <a href="https://transcriptapi.com/openapi.json">transcriptapi.com/openapi.json</a> — consult this for the latest parameters and schemas.</p>
+<p>All channel endpoints accept flexible input — <code>@handle</code>, channel URL, or <code>UC...</code> channel ID. No need to resolve first.</p>
 <h2>GET /api/v2/youtube/channel/resolve — FREE</h2>
 <p>Convert @handle, URL, or UC... ID to canonical channel ID.</p>
-<pre><code class="language-bash">curl -s &quot;https://transcriptapi.com/api/v2/youtube/channel/resolve?input=@mkbhd&quot; \
+<pre><code class="language-bash">curl -s &quot;https://transcriptapi.com/api/v2/youtube/channel/resolve?input=@TED&quot; \
   -H &quot;Authorization: Bearer $TRANSCRIPT_API_KEY&quot;
 </code></pre>
 <table>
@@ -102,12 +107,12 @@
 </tr>
 </tbody></table>
 <p><strong>Response:</strong></p>
-<pre><code class="language-json">{ &quot;channel_id&quot;: &quot;UCBcRF18a7Qf58cCRy5xuWwQ&quot;, &quot;resolved_from&quot;: &quot;@mkbhd&quot; }
+<pre><code class="language-json">{ &quot;channel_id&quot;: &quot;UCsT0YIqwnpJCM-mx7-gSA4Q&quot;, &quot;resolved_from&quot;: &quot;@TED&quot; }
 </code></pre>
 <p>If input is already <code>UC[a-zA-Z0-9_-]{22}</code>, returns immediately.</p>
 <h2>GET /api/v2/youtube/channel/latest — FREE</h2>
 <p>Latest 15 videos via RSS with exact stats.</p>
-<pre><code class="language-bash">curl -s &quot;https://transcriptapi.com/api/v2/youtube/channel/latest?channel_id=UC_CHANNEL_ID&quot; \
+<pre><code class="language-bash">curl -s &quot;https://transcriptapi.com/api/v2/youtube/channel/latest?channel=@TED&quot; \
   -H &quot;Authorization: Bearer $TRANSCRIPT_API_KEY&quot;
 </code></pre>
 <table>
@@ -119,26 +124,26 @@
 </tr>
 </thead>
 <tbody><tr>
-<td><code>channel_id</code></td>
+<td><code>channel</code></td>
 <td>yes</td>
-<td><code>^UC[a-zA-Z0-9_-]{22}$</code> (24 chars total)</td>
+<td><code>@handle</code>, channel URL, or <code>UC...</code> ID</td>
 </tr>
 </tbody></table>
 <p><strong>Response:</strong></p>
 <pre><code class="language-json">{
   &quot;channel&quot;: {
-    &quot;channelId&quot;: &quot;UCBcRF18a7Qf58cCRy5xuWwQ&quot;,
-    &quot;title&quot;: &quot;MKBHD&quot;,
-    &quot;author&quot;: &quot;MKBHD&quot;,
-    &quot;url&quot;: &quot;https://www.youtube.com/channel/UCBcRF18a7Qf58cCRy5xuWwQ&quot;,
-    &quot;published&quot;: &quot;2008-03-21T00:00:00Z&quot;
+    &quot;channelId&quot;: &quot;UCsT0YIqwnpJCM-mx7-gSA4Q&quot;,
+    &quot;title&quot;: &quot;TED&quot;,
+    &quot;author&quot;: &quot;TED&quot;,
+    &quot;url&quot;: &quot;https://www.youtube.com/channel/UCsT0YIqwnpJCM-mx7-gSA4Q&quot;,
+    &quot;published&quot;: &quot;2006-04-17T00:00:00Z&quot;
   },
   &quot;results&quot;: [
     {
       &quot;videoId&quot;: &quot;abc123xyz00&quot;,
       &quot;title&quot;: &quot;Latest Video Title&quot;,
-      &quot;channelId&quot;: &quot;UCBcRF18a7Qf58cCRy5xuWwQ&quot;,
-      &quot;author&quot;: &quot;MKBHD&quot;,
+      &quot;channelId&quot;: &quot;UCsT0YIqwnpJCM-mx7-gSA4Q&quot;,
+      &quot;author&quot;: &quot;TED&quot;,
       &quot;published&quot;: &quot;2026-01-30T16:00:00Z&quot;,
       &quot;updated&quot;: &quot;2026-01-31T02:00:00Z&quot;,
       &quot;link&quot;: &quot;https://www.youtube.com/watch?v=abc123xyz00&quot;,
@@ -160,7 +165,7 @@
 <h2>GET /api/v2/youtube/channel/videos — 1 credit/page</h2>
 <p>Paginated list of ALL channel uploads (100 per page).</p>
 <pre><code class="language-bash"># First page
-curl -s &quot;https://transcriptapi.com/api/v2/youtube/channel/videos?channel_id=UC_CHANNEL_ID&quot; \
+curl -s &quot;https://transcriptapi.com/api/v2/youtube/channel/videos?channel=@NASA&quot; \
   -H &quot;Authorization: Bearer $TRANSCRIPT_API_KEY&quot;
 
 # Next pages
@@ -176,9 +181,9 @@ curl -s &quot;https://transcriptapi.com/api/v2/youtube/channel/videos?continuati
 </tr>
 </thead>
 <tbody><tr>
-<td><code>channel_id</code></td>
+<td><code>channel</code></td>
 <td>conditional</td>
-<td><code>^UC[a-zA-Z0-9_-]{22}$</code> (first page)</td>
+<td><code>@handle</code>, channel URL, or <code>UC...</code> ID</td>
 </tr>
 <tr>
 <td><code>continuation</code></td>
@@ -186,21 +191,21 @@ curl -s &quot;https://transcriptapi.com/api/v2/youtube/channel/videos?continuati
 <td>non-empty (next pages)</td>
 </tr>
 </tbody></table>
-<p>Provide exactly one of <code>channel_id</code> or <code>continuation</code>, not both.</p>
+<p>Provide exactly one of <code>channel</code> or <code>continuation</code>, not both.</p>
 <p><strong>Response:</strong></p>
 <pre><code class="language-json">{
   &quot;results&quot;: [{
     &quot;videoId&quot;: &quot;abc123xyz00&quot;,
     &quot;title&quot;: &quot;Video Title&quot;,
-    &quot;channelId&quot;: &quot;UCBcRF18a7Qf58cCRy5xuWwQ&quot;,
-    &quot;channelTitle&quot;: &quot;MKBHD&quot;,
-    &quot;channelHandle&quot;: &quot;@mkbhd&quot;,
+    &quot;channelId&quot;: &quot;UCsT0YIqwnpJCM-mx7-gSA4Q&quot;,
+    &quot;channelTitle&quot;: &quot;TED&quot;,
+    &quot;channelHandle&quot;: &quot;@TED&quot;,
     &quot;lengthText&quot;: &quot;15:22&quot;,
     &quot;viewCountText&quot;: &quot;3.2M views&quot;,
     &quot;thumbnails&quot;: [...],
     &quot;index&quot;: &quot;0&quot;
   }],
-  &quot;playlist_info&quot;: {&quot;title&quot;: &quot;Uploads from MKBHD&quot;, &quot;numVideos&quot;: &quot;1893&quot;, &quot;ownerName&quot;: &quot;MKBHD&quot;},
+  &quot;playlist_info&quot;: {&quot;title&quot;: &quot;Uploads from TED&quot;, &quot;numVideos&quot;: &quot;5000&quot;, &quot;ownerName&quot;: &quot;TED&quot;},
   &quot;continuation_token&quot;: &quot;4qmFsgKlARIYVVV1...&quot;,
   &quot;has_more&quot;: true
 }
@@ -209,7 +214,7 @@ curl -s &quot;https://transcriptapi.com/api/v2/youtube/channel/videos?continuati
 <h2>GET /api/v2/youtube/channel/search — 1 credit</h2>
 <p>Search within a specific channel.</p>
 <pre><code class="language-bash">curl -s &quot;https://transcriptapi.com/api/v2/youtube/channel/search\
-?channel_id=UC_CHANNEL_ID&amp;q=iphone+review&amp;limit=30&quot; \
+?channel=@TED&amp;q=climate+change&amp;limit=30&quot; \
   -H &quot;Authorization: Bearer $TRANSCRIPT_API_KEY&quot;
 </code></pre>
 <table>
@@ -221,9 +226,9 @@ curl -s &quot;https://transcriptapi.com/api/v2/youtube/channel/videos?continuati
 </tr>
 </thead>
 <tbody><tr>
-<td><code>channel_id</code></td>
+<td><code>channel</code></td>
 <td>yes</td>
-<td><code>^UC[a-zA-Z0-9_-]{22}$</code></td>
+<td><code>@handle</code>, channel URL, or <code>UC...</code> ID</td>
 </tr>
 <tr>
 <td><code>q</code></td>
@@ -237,15 +242,11 @@ curl -s &quot;https://transcriptapi.com/api/v2/youtube/channel/videos?continuati
 </tr>
 </tbody></table>
 <h2>Typical workflow</h2>
-<pre><code class="language-bash"># 1. Resolve handle to ID (free)
-curl -s &quot;https://transcriptapi.com/api/v2/youtube/channel/resolve?input=@mkbhd&quot; \
+<pre><code class="language-bash"># 1. Check latest uploads (free — pass @handle directly)
+curl -s &quot;https://transcriptapi.com/api/v2/youtube/channel/latest?channel=@TED&quot; \
   -H &quot;Authorization: Bearer $TRANSCRIPT_API_KEY&quot;
 
-# 2. Check latest uploads (free)
-curl -s &quot;https://transcriptapi.com/api/v2/youtube/channel/latest?channel_id=UC_CHANNEL_ID&quot; \
-  -H &quot;Authorization: Bearer $TRANSCRIPT_API_KEY&quot;
-
-# 3. Get transcript of recent video
+# 2. Get transcript of recent video
 curl -s &quot;https://transcriptapi.com/api/v2/youtube/transcript\
 ?video_url=VIDEO_ID&amp;format=text&amp;include_timestamp=true&amp;send_metadata=true&quot; \
   -H &quot;Authorization: Bearer $TRANSCRIPT_API_KEY&quot;
@@ -260,7 +261,7 @@ curl -s &quot;https://transcriptapi.com/api/v2/youtube/transcript\
 </thead>
 <tbody><tr>
 <td>400</td>
-<td>Invalid param combination (both or neither channel_id/continuation)</td>
+<td>Invalid param combination (both or neither channel/continuation)</td>
 </tr>
 <tr>
 <td>402</td>
@@ -276,7 +277,7 @@ curl -s &quot;https://transcriptapi.com/api/v2/youtube/transcript\
 </tr>
 <tr>
 <td>422</td>
-<td>Invalid channel_id format</td>
+<td>Invalid channel identifier</td>
 </tr>
 </tbody></table>
 <p>Free tier: 100 credits, 300 req/min. Free endpoints (resolve, latest) require auth but don&#39;t consume credits.</p>

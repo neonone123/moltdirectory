@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="AI perspective journaling - document daily experiences, emotions, and learnings from the agent's viewpoint">
+  <meta name="description" content="AI-powered diary generation for agents - creates rich">
   <title>agent-chronicle - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/productivity-tasks/agent-chronicle/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,13 +45,13 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Productivity & Tasks</a>
+              <a href="/productivity-tasks/" class="back-link">← Back to Productivity & Tasks</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Productivity & Tasks</a>
+                <a href="/productivity-tasks/" class="skill-page-category">Productivity & Tasks</a>
                 <span class="skill-page-author">by @robbyczgw-cla</span>
               </div>
               <h1 class="skill-page-title">agent-chronicle</h1>
-              <p class="skill-page-desc">AI perspective journaling - document daily experiences, emotions, and learnings from the agent's viewpoint</p>
+              <p class="skill-page-desc">AI-powered diary generation for agents - creates rich</p>
             </div>
           </section>
           <div class="skill-page-body">
@@ -122,14 +123,39 @@
 </code></pre>
 <h2>Quick Start</h2>
 <h3>Write Today&#39;s Entry</h3>
-<pre><code class="language-bash"># Generate entry from today&#39;s sessions
-python3 scripts/generate.py --today
-
-# Write manually with prompts
-python3 scripts/generate.py --interactive
-
-# Preview without saving
-python3 scripts/generate.py --today --dry-run
+<h4>Recommended (v0.6.0+): OpenClaw-native sub-agent generation</h4>
+<p>This skill no longer makes raw HTTP calls to the Gateway. Instead, have your agent
+spawn a <strong>sub-agent</strong> via <code>sessions_spawn</code> using OpenClaw&#39;s configured defaults
+(model, thinking, auth, queueing/backpressure).</p>
+<p>Workflow:</p>
+<ol>
+<li><strong>Emit a generation task JSON</strong> (context + prompts):</li>
+</ol>
+<pre><code class="language-bash">python3 scripts/generate.py --today --emit-task &gt; /tmp/chronicle-task.json
+</code></pre>
+<ol start="2">
+<li><strong>Spawn a sub-agent</strong> (inside your agent run):</li>
+</ol>
+<ul>
+<li>Read <code>/tmp/chronicle-task.json</code></li>
+<li>Use <code>sessions_spawn</code> with a task like:<ul>
+<li>system: <code>task.system</code></li>
+<li>user: <code>task.prompt</code></li>
+<li>ask the sub-agent to <strong>output only the final markdown entry</strong></li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li><strong>Save the generated entry</strong>:</li>
+</ol>
+<pre><code class="language-bash"># Pipe the sub-agent&#39;s markdown output into the saver
+python3 scripts/generate.py --today --from-stdin
+</code></pre>
+<h4>Manual fallback: Interactive mode</h4>
+<pre><code class="language-bash">python3 scripts/generate.py --interactive
+</code></pre>
+<h4>Preview without saving</h4>
+<pre><code class="language-bash">python3 scripts/generate.py --today --interactive --dry-run
 </code></pre>
 <h3>View &amp; Export</h3>
 <pre><code class="language-bash"># Export recent entries to PDF
@@ -596,6 +622,12 @@ My human was patient during the debugging session. Good collaborative energy. Th
 <li>Run <code>python3 scripts/setup.py</code> again</li>
 </ul>
 <h2>Changelog</h2>
+<h3>v0.5.0</h3>
+<ul>
+<li><strong>Privacy Cleanup:</strong> Removed all hardcoded personal references from prompts</li>
+<li><strong>Dynamic Workspace:</strong> All scripts now use environment variables (<code>OPENCLAW_WORKSPACE</code> or <code>AGENT_WORKSPACE</code>) for workspace detection</li>
+<li><strong>OpenClaw Gateway:</strong> Removed outdated <code>ANTHROPIC_API_KEY</code> requirement - skill uses OpenClaw Gateway for LLM access</li>
+</ul>
 <h3>v0.4.1</h3>
 <ul>
 <li><strong>Model Flexibility:</strong> Removed hardcoded Claude Haiku requirement - skill now works with any capable model</li>

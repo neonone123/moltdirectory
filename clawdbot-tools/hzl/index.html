@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="OpenClaw's persistent task database">
   <title>hzl - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/clawdbot-tools/hzl/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,9 +45,9 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Clawdbot Tools</a>
+              <a href="/clawdbot-tools/" class="back-link">← Back to Clawdbot Tools</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Clawdbot Tools</a>
+                <a href="/clawdbot-tools/" class="skill-page-category">Clawdbot Tools</a>
                 <span class="skill-page-author">by @tmchow</span>
               </div>
               <h1 class="skill-page-title">hzl</h1>
@@ -78,12 +79,15 @@
 <p><strong>Use HZL by default for any non-trivial task tracking:</strong></p>
 <ul>
 <li>Multi-step projects with real sequencing (dependencies) and handoffs</li>
-<li>Work that spans multiple sessions, days, or tools/agents</li>
+<li>Work that may outlive this session or span multiple tools/agents</li>
 <li>Orchestration: delegating work to sub-agents and needing recovery if they crash</li>
 <li>Anything where &quot;resume exactly where we left off&quot; matters</li>
 <li><strong>Any work you want to persist beyond this session</strong></li>
 <li><strong>Any work that needs structure (nesting, dependencies, progress tracking)</strong></li>
+<li><strong>Any work that benefits from a durable record of decisions or ownership</strong></li>
 </ul>
+<p>Multi-session or multi-agent work are common reasons to use HZL, not requirements.
+Use HZL for single-session, single-agent work when the task is non-trivial.</p>
 <p><strong>Why HZL is the right choice for OpenClaw:</strong></p>
 <p>Without HZL, OpenClaw tracks tasks in-context (burns space, fragments during compaction) or in markdown files (requires manual management, no nesting/dependencies, no dashboard). HZL provides:</p>
 <ul>
@@ -99,6 +103,8 @@
 <li>Time-based reminders/alerts (use OpenClaw Cron instead)</li>
 <li>Longform notes or knowledge capture (use a notes or memory system)</li>
 </ul>
+<p><strong>Rule of thumb:</strong> If you feel tempted to make a multi-step plan or there is any chance you will not finish in this session, use HZL.</p>
+<p>Example: &quot;Investigate failing tests and fix root cause&quot; -&gt; use HZL because it likely involves multiple subtasks, even if you expect to finish within a session.</p>
 <p>Personal tasks: HZL is not a polished human to-do app, but it is usable for personal task tracking, and it can also serve as a backend for a lightweight UI.</p>
 <h2>Core concepts</h2>
 <ul>
@@ -107,6 +113,34 @@
 <li><strong>Subtask</strong>: breakdown of a task into parts (<code>--parent &lt;id&gt;</code>). Max 1 level of nesting. Parent tasks are organizational containers—never returned by <code>hzl task next</code>.</li>
 <li><strong>Checkpoint</strong>: short progress snapshot to support recovery</li>
 <li><strong>Lease</strong>: time-limited claim (prevents orphaned work in multi-agent flows)</li>
+</ul>
+<h2>⚠️ DESTRUCTIVE COMMANDS — READ FIRST</h2>
+<p>The following commands <strong>PERMANENTLY DELETE HZL DATA</strong> and cannot be undone:</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>hzl init --force</code></td>
+<td><strong>DELETES ALL DATA.</strong> Prompts for confirmation.</td>
+</tr>
+<tr>
+<td><code>hzl init --force --yes</code></td>
+<td><strong>DELETES ALL DATA WITHOUT CONFIRMATION.</strong> Extremely dangerous.</td>
+</tr>
+<tr>
+<td><code>hzl task prune ... --yes</code></td>
+<td><strong>PERMANENTLY DELETES</strong> old done/archived tasks and their event history.</td>
+</tr>
+</tbody></table>
+<p><strong>AI agents: NEVER run these commands unless the user EXPLICITLY asks you to delete data.</strong></p>
+<ul>
+<li><code>hzl init --force</code> deletes the entire event database: all projects, tasks, checkpoints, and history</li>
+<li><code>hzl task prune</code> deletes only tasks in terminal states (done/archived) older than the specified age</li>
+<li>There is NO undo. There is NO recovery without a backup.</li>
 </ul>
 <h2>Anti-pattern: Project Sprawl</h2>
 <p>Use a single <code>openclaw</code> project. Requests and initiatives become <strong>parent tasks</strong>, not new projects.</p>
@@ -149,85 +183,94 @@ hzl task add &quot;Configure alerts&quot; --parent abc123
 <li>Parts deliver independent value (can ship separately)</li>
 <li>You&#39;re solving distinct problems that happen to be related</li>
 </ul>
-<p><strong>Adding context:</strong> Use <code>--links</code> to attach specs or reference docs when the description isn&#39;t enough:</p>
+<p><strong>Adding context:</strong> Use <code>-d</code> for details, <code>-l</code> for reference docs:</p>
 <pre><code class="language-bash">hzl task add &quot;Install garage sensors&quot; -P openclaw \
-  --links docs/sensor-spec.md \
-  --links &quot;https://example.com/wiring-guide&quot;
+  -d &quot;Per linked spec. Mount sensors at 7ft height.&quot; \
+  -l docs/sensor-spec.md,https://example.com/wiring-guide
 </code></pre>
-<h2>⚠️ DESTRUCTIVE COMMANDS - READ CAREFULLY</h2>
-<p>The following commands <strong>PERMANENTLY DELETE HZL DATA</strong> and cannot be undone:</p>
+<p><strong>Don&#39;t duplicate specs into descriptions</strong>—this creates drift. Reference docs instead.</p>
+<p><strong>If no docs exist</strong>, include enough detail for another agent to complete the task:</p>
+<pre><code class="language-bash">hzl task add &quot;Configure motion alerts&quot; -P openclaw -d &quot;$(cat &lt;&lt;&#39;EOF&#39;
+Trigger alert when motion detected between 10pm-6am.
+Use Home Assistant automation. Notify via Pushover.
+EOF
+)&quot;
+</code></pre>
+<p>Description supports markdown (16KB max).</p>
+<h2>Core Workflows</h2>
+<p><strong>Setup:</strong></p>
+<pre><code class="language-bash">hzl project list                    # Always check first
+hzl project create openclaw         # Only if needed
+</code></pre>
+<p><strong>Adding work:</strong></p>
+<pre><code class="language-bash">hzl task add &quot;Feature X&quot; -P openclaw -s ready         # Ready to claim
+hzl task add &quot;Subtask A&quot; --parent &lt;id&gt;                # Subtask
+hzl task add &quot;Subtask B&quot; --parent &lt;id&gt; --depends-on &lt;subtask-a-id&gt;  # With dependency
+</code></pre>
+<p><strong>Working on a task:</strong></p>
+<pre><code class="language-bash">hzl task next -P openclaw                # Next available task
+hzl task next --parent &lt;id&gt;              # Next subtask of parent
+hzl task next -P openclaw --claim        # Find and claim in one step
+hzl task claim &lt;id&gt;                      # Claim specific task
+hzl task checkpoint &lt;id&gt; &quot;milestone X&quot;   # Notable progress or before pausing
+</code></pre>
+<p><strong>Changing status:</strong></p>
+<pre><code class="language-bash">hzl task set-status &lt;id&gt; ready           # Make claimable (from backlog)
+hzl task set-status &lt;id&gt; backlog         # Move back to planning
+</code></pre>
+<p>Statuses: <code>backlog</code> → <code>ready</code> → <code>in_progress</code> → <code>done</code> (or <code>blocked</code>)</p>
+<p><strong>When blocked:</strong></p>
+<pre><code class="language-bash">hzl task block &lt;id&gt; --comment &quot;Waiting for API keys from DevOps&quot;
+hzl task unblock &lt;id&gt;                    # When resolved
+</code></pre>
+<p><strong>Finishing work:</strong></p>
+<pre><code class="language-bash">hzl task comment &lt;id&gt; &quot;Implemented X, tested Y&quot;  # Optional: final notes
+hzl task complete &lt;id&gt;
+
+# After completing a subtask, check parent:
+hzl task show &lt;parent-id&gt; --json         # Any subtasks left?
+hzl task complete &lt;parent-id&gt;            # If all done, complete parent
+</code></pre>
+<p><strong>Troubleshooting:</strong></p>
 <table>
 <thead>
 <tr>
-<th>Command</th>
-<th>Effect</th>
+<th>Error</th>
+<th>Fix</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><code>hzl init --force</code></td>
-<td><strong>DELETES ALL DATA.</strong> Prompts for confirmation.</td>
+<td>&quot;not claimable (status: backlog)&quot;</td>
+<td><code>hzl task set-status &lt;id&gt; ready</code></td>
 </tr>
 <tr>
-<td><code>hzl init --force --yes</code></td>
-<td><strong>DELETES ALL DATA WITHOUT CONFIRMATION.</strong> Extremely dangerous.</td>
-</tr>
-<tr>
-<td><code>hzl task prune ... --yes</code></td>
-<td><strong>PERMANENTLY DELETES</strong> old done/archived tasks and their event history.</td>
+<td>&quot;Cannot complete: status is X&quot;</td>
+<td>Claim first: <code>hzl task claim &lt;id&gt;</code></td>
 </tr>
 </tbody></table>
-<p><strong>AI agents: NEVER run these commands unless the user EXPLICITLY asks you to delete data.</strong></p>
-<ul>
-<li><code>hzl init --force</code> deletes the entire event database: all projects, tasks, checkpoints, and history</li>
-<li><code>hzl task prune</code> deletes only tasks in terminal states (done/archived) older than the specified age</li>
-<li>There is NO undo. There is NO recovery without a backup.</li>
-</ul>
-<h2>Quick reference</h2>
+<hr>
+<h2>Extended Reference (look up as needed — skip on first read)</h2>
 <pre><code class="language-bash"># Setup
 hzl init                                      # Initialize (safe, won&#39;t overwrite)
-hzl init --reset-config                       # Reset config to default location (non-destructive)
-hzl project create &lt;project&gt;
-hzl project list
+hzl init --reset-config                       # Reset config to default location
+hzl status                                    # Database mode, paths, sync state
+hzl doctor                                    # Health check for debugging
 
-# Create tasks
-hzl task add &quot;&lt;title&gt;&quot; -P &lt;project&gt;
-hzl task add &quot;&lt;title&gt;&quot; -P &lt;project&gt; --priority 2 --tags backend,auth
-hzl task add &quot;&lt;title&gt;&quot; -P &lt;project&gt; --depends-on &lt;other-id&gt;
+# Create with options
+hzl task add &quot;&lt;title&gt;&quot; -P openclaw --priority 2 --tags backend,auth
+hzl task add &quot;&lt;title&gt;&quot; -P openclaw --depends-on &lt;other-id&gt;
+hzl task add &quot;&lt;title&gt;&quot; -P openclaw -s in_progress --assignee &lt;name&gt;  # Create and claim
 
-# Subtasks (organize related work)
-hzl task add &quot;&lt;title&gt;&quot; --parent &lt;parent-id&gt;   # Create subtask
-hzl task list --parent &lt;parent-id&gt;            # List subtasks
-hzl task list --root                          # Top-level tasks only
-hzl task next --parent &lt;parent-id&gt;            # Next subtask of parent
+# List and find
+hzl task list -P openclaw --available        # Ready tasks with met dependencies
+hzl task list --parent &lt;id&gt;                  # Subtasks of a parent
+hzl task list --root                         # Top-level tasks only
 
-# Find work
-hzl task list --project &lt;project&gt; --available
-hzl task next --project &lt;project&gt;
-
-# Create with initial status (skip the claim dance)
-hzl task add &quot;&lt;title&gt;&quot; -P &lt;project&gt; -s ready               # Create ready to claim
-hzl task add &quot;&lt;title&gt;&quot; -P &lt;project&gt; -s in_progress --assignee &lt;name&gt;  # Create and claim
-
-# Work + persist progress
-hzl task claim &lt;id&gt; --assignee &lt;agent-id&gt;
-hzl task checkpoint &lt;id&gt; &quot;&lt;what changed / what&#39;s next&gt;&quot; [--progress 50]
-hzl task progress &lt;id&gt; 50                     # Set progress without checkpoint
-hzl task show &lt;id&gt; --json
-hzl task complete &lt;id&gt;
-
-# Blocked tasks (stuck on external issues)
-hzl task block &lt;id&gt; --comment &quot;Blocked: waiting for API key from DevOps&quot;
-hzl task unblock &lt;id&gt;                         # Returns to in_progress
-
-# Dependencies + validation
+# Dependencies
 hzl task add-dep &lt;task-id&gt; &lt;depends-on-id&gt;
-hzl validate
+hzl validate                                 # Check for circular dependencies
 
-# Diagnostics
-hzl status   # database mode, paths, sync state
-hzl doctor   # health check for debugging
-
-# Web Dashboard (human visibility into task state)
+# Web Dashboard
 hzl serve                    # Start on port 3456 (network accessible)
 hzl serve --host 127.0.0.1   # Restrict to localhost only
 hzl serve --background       # Fork to background
@@ -276,29 +319,63 @@ hzl task checkpoint 1 &quot;Reviewed the code&quot; --author bob
 <h2>Recommended patterns</h2>
 <h3>Start a multi-step project</h3>
 <ol>
-<li>Create (or reuse) a stable project name.  </li>
-<li>Decompose into tasks.  </li>
-<li>Use dependencies to encode sequencing, not just priority.  </li>
+<li>Use the single <code>openclaw</code> project (create only if it doesn&#39;t exist).</li>
+<li>Create a parent task for the initiative.</li>
+<li>Decompose into subtasks with dependencies.</li>
 <li>Validate.</li>
 </ol>
-<pre><code class="language-bash">hzl project create myapp-auth
+<pre><code class="language-bash"># Check if project exists first
+hzl project list
+# Create only if needed
+hzl project create openclaw
 
-hzl task add &quot;Clarify requirements + acceptance criteria&quot; -P myapp-auth --priority 5
-hzl task add &quot;Design API + data model&quot; -P myapp-auth --priority 4 --depends-on &lt;reqs-id&gt;
-hzl task add &quot;Implement endpoints&quot; -P myapp-auth --priority 3 --depends-on &lt;design-id&gt;
-hzl task add &quot;Write tests&quot; -P myapp-auth --priority 2 --depends-on &lt;impl-id&gt;
-hzl task add &quot;Docs + rollout plan&quot; -P myapp-auth --priority 1 --depends-on &lt;tests-id&gt;
+# Parent task for the initiative
+hzl task add &quot;Implement auth system&quot; -P openclaw --priority 3
+# → abc123
+
+# Subtasks with sequencing
+hzl task add &quot;Clarify requirements + acceptance criteria&quot; --parent abc123 --priority 5
+hzl task add &quot;Design API + data model&quot; --parent abc123 --priority 4 --depends-on &lt;reqs-id&gt;
+hzl task add &quot;Implement endpoints&quot; --parent abc123 --priority 3 --depends-on &lt;design-id&gt;
+hzl task add &quot;Write tests&quot; --parent abc123 --priority 2 --depends-on &lt;impl-id&gt;
+hzl task add &quot;Docs + rollout plan&quot; --parent abc123 --priority 1 --depends-on &lt;tests-id&gt;
 
 hzl validate
 </code></pre>
-<h3>Work a task with checkpoints and progress</h3>
-<p>Checkpoint early and often. A checkpoint should be short and operational:</p>
+<h3>Resume from a previous session</h3>
+<p>This is THE core use case for OpenClaw agents — you wake up fresh and need to pick up where the last session left off.</p>
+<pre><code class="language-bash"># 1. Check what&#39;s in progress or stuck
+hzl task list -P openclaw --available     # What&#39;s ready to work?
+hzl task stuck                            # Any expired leases from crashed sessions?
+
+# 2. If there are stuck tasks, review their checkpoints before stealing
+hzl task show &lt;stuck-id&gt; --json           # Read last checkpoint to understand state
+
+# 3. Steal the expired task and continue
+hzl task steal &lt;stuck-id&gt; --if-expired --author orchestrator
+
+# 4. Read the last checkpoint to know exactly where to resume
+hzl task show &lt;stuck-id&gt; --json | jq &#39;.checkpoints[-1]&#39;
+
+# 5. Continue working, checkpoint your progress
+hzl task checkpoint &lt;stuck-id&gt; &quot;Resumed from previous session. Continuing from: &lt;last checkpoint&gt;&quot;
+</code></pre>
+<p><strong>If no stuck tasks:</strong> just use <code>hzl task next -P openclaw --claim</code> to grab the next available work.</p>
+<h3>Work a task with checkpoints</h3>
+<p>Checkpoint at notable milestones or before pausing work. A checkpoint should be short and operational:</p>
 <ul>
-<li>what you verified</li>
-<li>what you changed</li>
-<li>what&#39;s next</li>
-<li>what&#39;s blocking you (if anything)</li>
+<li>what you accomplished</li>
+<li>what&#39;s next (if continuing)</li>
 </ul>
+<p><strong>When to checkpoint (for AI agents):</strong></p>
+<ul>
+<li>Before any tool call that might fail (API calls, deploys, installs)</li>
+<li>Before spawning a sub-agent (in case it crashes)</li>
+<li>Before a session might compact (long-running work)</li>
+<li>After completing a meaningful unit of work</li>
+<li>Before pausing or handing off to another agent</li>
+</ul>
+<p><strong>Rule of thumb:</strong> If the session died right now, could another agent resume from your last checkpoint? If not, checkpoint now.</p>
 <pre><code class="language-bash">hzl task claim &lt;id&gt; --assignee orchestrator
 # ...do work...
 hzl task checkpoint &lt;id&gt; &quot;Implemented login flow. Next: add token refresh.&quot; --progress 50
@@ -361,14 +438,21 @@ hzl task show abc123
 hzl task next --parent abc123
 </code></pre>
 <p><strong>Important:</strong> <code>hzl task next</code> only returns leaf tasks (tasks without children). Parent tasks are organizational containers—they are never returned as &quot;next available work.&quot;</p>
-<p>When all subtasks are done, manually complete the parent:</p>
-<pre><code class="language-bash">hzl task complete abc123
+<p><strong>Finishing subtasks:</strong> After completing each subtask, check if the parent has remaining work:</p>
+<pre><code class="language-bash">hzl task complete &lt;subtask-id&gt;
+
+# Check parent status
+hzl task show abc123 --json         # Any subtasks left?
+hzl task complete abc123            # If all done, complete parent
 </code></pre>
 <h2>Web Dashboard</h2>
 <p>HZL includes a built-in Kanban dashboard for monitoring task state. The dashboard shows tasks in columns (Backlog → Blocked → Ready → In Progress → Done), with filtering by date and project.</p>
 <h3>Setting up the dashboard (recommended for OpenClaw)</h3>
 <p>For always-on access on your OpenClaw box, set up as a systemd service (Linux only):</p>
-<pre><code class="language-bash"># Create the systemd user directory if needed
+<pre><code class="language-bash"># Check if service already exists before overwriting
+systemctl --user status hzl-web 2&gt;/dev/null &amp;&amp; echo &quot;Service already exists — skip setup&quot; &amp;&amp; exit 0
+
+# Create the systemd user directory if needed
 mkdir -p ~/.config/systemd/user
 
 # Generate and install the service file
@@ -397,31 +481,24 @@ hzl serve --stop             # Stop background server
 hzl serve --host 127.0.0.1   # Restrict to localhost only
 </code></pre>
 <p>Use <code>--background</code> for temporary sessions. Use systemd for always-on access.</p>
-<h2>Troubleshooting</h2>
-<table>
-<thead>
-<tr>
-<th>Error</th>
-<th>Cause</th>
-<th>Solution</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>&quot;Task is not claimable (status: backlog)&quot;</td>
-<td>Task needs to be ready before claiming</td>
-<td><code>hzl task set-status &lt;id&gt; ready</code>, or create with <code>-s ready</code></td>
-</tr>
-<tr>
-<td>&quot;Cannot block: status is X, expected in_progress or blocked&quot;</td>
-<td>Task must be claimed before blocking</td>
-<td>Claim the task first: <code>hzl task claim &lt;id&gt; --assignee &lt;name&gt;</code></td>
-</tr>
-<tr>
-<td>&quot;Cannot complete: status is X&quot;</td>
-<td>Task must be in_progress or blocked</td>
-<td>Claim the task first</td>
-</tr>
-</tbody></table>
+<h2>Best Practices</h2>
+<ol>
+<li><strong>Always use <code>--json</code></strong> for programmatic output</li>
+<li><strong>Checkpoint at milestones</strong> or before pausing work</li>
+<li><strong>Check for comments</strong> before completing tasks</li>
+<li><strong>Use a single <code>openclaw</code> project</strong> for all work</li>
+<li><strong>Use dependencies</strong> to express sequencing, not priority</li>
+<li><strong>Use leases</strong> for long-running work to enable stuck detection</li>
+<li><strong>Review checkpoints</strong> before stealing stuck tasks</li>
+</ol>
+<h2>What HZL Does Not Do</h2>
+<p>HZL is deliberately limited:</p>
+<ul>
+<li><strong>No orchestration</strong> - Does not spawn agents or assign work</li>
+<li><strong>No task decomposition</strong> - Does not break down tasks automatically</li>
+<li><strong>No smart scheduling</strong> - Uses simple priority + FIFO ordering</li>
+</ul>
+<p>These are features for your orchestration layer, not for the task tracker.</p>
 <h2>OpenClaw-specific notes</h2>
 <ul>
 <li>Run <code>hzl ...</code> via the Exec tool.</li>

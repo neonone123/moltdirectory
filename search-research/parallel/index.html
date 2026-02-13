@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="High-accuracy web search and research via Parallel.ai API">
   <title>parallel - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/search-research/parallel/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="/style.css">
   <script>
     // Apply saved theme before page renders to prevent flash
     (function() {
@@ -23,12 +24,12 @@
 <body>
   <header class="header">
     <div class="header-inner">
-      <a href="../../index.html" class="logo">
+      <a href="/" class="logo">
 
         <span class="logo-text">OpenClaw Directory</span>
       </a>
       <nav class="header-links">
-        <a href="../../start-here/index.html" class="header-link">Start Here</a>
+        <a href="/start-here/" class="header-link">Start Here</a>
         <a href="/security-auditor" class="header-link">Security Auditor</a>
         <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
         <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
@@ -44,9 +45,9 @@
   
           <section class="skill-page-header">
             <div class="skill-page-header-inner">
-              <a href="../index.html" class="back-link">← Back to Search & Research</a>
+              <a href="/search-research/" class="back-link">← Back to Search & Research</a>
               <div class="skill-page-meta">
-                <a href="../index.html" class="skill-page-category">Search & Research</a>
+                <a href="/search-research/" class="skill-page-category">Search & Research</a>
                 <span class="skill-page-author">by @mvanhorn</span>
               </div>
               <h1 class="skill-page-title">parallel</h1>
@@ -64,51 +65,303 @@
                   </button>
                 </div>
                 <div class="markdown-content">
-                  <h1>Parallel.ai 🔬</h1>
-<p>High-accuracy web search API built for AI agents. Outperforms Perplexity/Exa on research benchmarks.</p>
+                  <h1>Parallel.ai</h1>
+<p>High-accuracy web research API built for AI agents.</p>
 <h2>Setup</h2>
-<pre><code class="language-bash">pip install parallel-web
+<p>Install required Python packages:</p>
+<pre><code class="language-bash">pip install parallel-sdk requests
 </code></pre>
-<p>API key is configured. Uses Python SDK.</p>
-<pre><code class="language-python">from parallel import Parallel
-client = Parallel(api_key=&quot;YOUR_KEY&quot;)
-response = client.beta.search(
-    mode=&quot;one-shot&quot;,
-    max_results=10,
-    objective=&quot;your query&quot;
-)
+<p>Set your API key:</p>
+<pre><code class="language-bash">export PARALLEL_API_KEY=&quot;your-key&quot;
 </code></pre>
-<h2>Quick Usage</h2>
-<pre><code class="language-bash"># Search with Python SDK
-python3 {baseDir}/scripts/search.py &quot;Who is the CEO of Anthropic?&quot; --max-results 5
-
-# JSON output
+<p>Get your key at: <a href="https://platform.parallel.ai">https://platform.parallel.ai</a></p>
+<p>Optional — for authenticated source access (not required for basic usage):</p>
+<pre><code class="language-bash">export BROWSERUSE_API_KEY=&quot;your-key&quot;  # Only if using authenticated sources
+</code></pre>
+<h2>APIs Overview</h2>
+<table>
+<thead>
+<tr>
+<th>API</th>
+<th>Use Case</th>
+<th>Speed</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Search</strong></td>
+<td>Quick lookups, current events</td>
+<td>Fast</td>
+</tr>
+<tr>
+<td><strong>Task</strong></td>
+<td>Deep research, enrichment, reports</td>
+<td>Medium-Slow</td>
+</tr>
+<tr>
+<td><strong>FindAll</strong></td>
+<td>Entity discovery → structured datasets</td>
+<td>Slow (async)</td>
+</tr>
+<tr>
+<td><strong>Extract</strong></td>
+<td>Clean content from URLs/PDFs</td>
+<td>Fast</td>
+</tr>
+<tr>
+<td><strong>Monitor</strong></td>
+<td>Continuous tracking with alerts</td>
+<td>Recurring</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Search API - Quick web search</h2>
+<pre><code class="language-bash">python3 {baseDir}/scripts/search.py &quot;Who is the CEO of Anthropic?&quot; --max-results 5
 python3 {baseDir}/scripts/search.py &quot;latest AI news&quot; --json
 </code></pre>
-<h2>Response Format</h2>
-<p>Returns structured results with:</p>
+<hr>
+<h2>Task API - Deep research &amp; enrichment</h2>
+<pre><code class="language-bash"># Simple question → answer
+python3 {baseDir}/scripts/task.py &quot;What was France&#39;s GDP in 2023?&quot;
+
+# Structured enrichment (company research)
+python3 {baseDir}/scripts/task.py --enrich &quot;company_name=Stripe,website=stripe.com&quot; \
+  --output &quot;founding_year,employee_count,total_funding&quot;
+
+# Research report (markdown with citations)
+python3 {baseDir}/scripts/task.py --report &quot;Market analysis of the HVAC industry in USA&quot;
+
+# With authenticated sources (requires browser-use.com key)
+export BROWSERUSE_API_KEY=&quot;your-key&quot;
+python3 {baseDir}/scripts/task.py &quot;Extract specs from https://nxp.com/products/K66_180&quot;
+</code></pre>
+<h3>Processors</h3>
+<table>
+<thead>
+<tr>
+<th>Processor</th>
+<th>Speed</th>
+<th>Depth</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>base</code></td>
+<td>Fast</td>
+<td>Light</td>
+<td>Simple lookups, fact checks</td>
+</tr>
+<tr>
+<td><code>core</code></td>
+<td>Medium</td>
+<td>Standard</td>
+<td>Enrichment, structured data</td>
+</tr>
+<tr>
+<td><code>ultra</code></td>
+<td>Slow</td>
+<td>Deep</td>
+<td>Reports, multi-hop research</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>FindAll API - Entity discovery (NEW Feb 2026)</h2>
+<p>Turn natural language into structured datasets. &quot;Find all dental practices in Ohio with 4+ star reviews&quot; → enriched list with citations.</p>
+<pre><code class="language-bash"># Basic entity discovery
+python3 {baseDir}/scripts/findall.py &quot;Find all AI startups that raised Series A in 2025&quot;
+
+# With enrichment
+python3 {baseDir}/scripts/findall.py &quot;portfolio companies of Khosla Ventures&quot; \
+  --enrich &quot;funding,employee_count,founder_names&quot; --limit 50
+
+# Lead generation
+python3 {baseDir}/scripts/findall.py &quot;residential roofing companies in Charlotte, NC&quot; --generator pro
+
+# Check status of running job
+python3 {baseDir}/scripts/findall.py --status findall_abc123
+</code></pre>
+<h3>Generators</h3>
+<table>
+<thead>
+<tr>
+<th>Generator</th>
+<th>Coverage</th>
+<th>Cost</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>base</code></td>
+<td>Limited</td>
+<td>Low</td>
+<td>Quick discovery, prototyping</td>
+</tr>
+<tr>
+<td><code>core</code></td>
+<td>Balanced</td>
+<td>Medium</td>
+<td>Most use cases</td>
+</tr>
+<tr>
+<td><code>pro</code></td>
+<td>Comprehensive</td>
+<td>High</td>
+<td>Maximum recall (61% benchmark)</td>
+</tr>
+</tbody></table>
+<h3>How it works</h3>
+<ol>
+<li><strong>Ingest</strong>: Converts natural language → entity type + match conditions</li>
+<li><strong>Generate</strong>: Searches web for candidate entities</li>
+<li><strong>Evaluate</strong>: Validates each candidate against match conditions</li>
+<li><strong>Enrich</strong>: Extracts additional fields for matched entities</li>
+</ol>
+<hr>
+<h2>Extract API - Clean content extraction (NEW Feb 2026)</h2>
+<p>Convert any URL into clean markdown - handles JS-heavy pages, PDFs, paywalls.</p>
+<pre><code class="language-bash"># Basic extraction with excerpts
+python3 {baseDir}/scripts/extract.py https://stripe.com/docs/api
+
+# Full content (not just excerpts)
+python3 {baseDir}/scripts/extract.py https://arxiv.org/pdf/2301.00000.pdf --full
+
+# Focused extraction
+python3 {baseDir}/scripts/extract.py https://sec.gov/10-K.htm --objective &quot;Extract risk factors&quot;
+
+# Multiple URLs at once
+python3 {baseDir}/scripts/extract.py https://url1.com https://url2.com --json
+</code></pre>
+<h3>Use Cases</h3>
 <ul>
-<li><code>search_id</code> - unique search identifier</li>
-<li><code>results[]</code> - array of results with:<ul>
-<li><code>url</code> - source URL</li>
-<li><code>title</code> - page title</li>
-<li><code>excerpts[]</code> - relevant text excerpts</li>
-<li><code>publish_date</code> - when available</li>
+<li><strong>API documentation</strong> - Pull complete references and code examples</li>
+<li><strong>PDF research papers</strong> - Extract methodology, results, citations</li>
+<li><strong>SEC filings</strong> - Extract specific sections from 10-Ks, earnings reports</li>
+<li><strong>News articles</strong> - Get clean text without ads/nav/paywalls</li>
 </ul>
-</li>
-<li><code>usage</code> - API usage stats</li>
-</ul>
-<h2>When to Use</h2>
+<hr>
+<h2>Monitor API - Continuous tracking (NEW Feb 2026)</h2>
+<p>Set up recurring queries - get alerts when things change.</p>
+<pre><code class="language-bash"># Create a monitor
+python3 {baseDir}/scripts/monitor.py create &quot;Track AI funding news&quot; --cadence daily
+python3 {baseDir}/scripts/monitor.py create &quot;Alert when AirPods drop below $150&quot; --cadence hourly
+
+# With webhook notifications
+python3 {baseDir}/scripts/monitor.py create &quot;OpenAI product announcements&quot; \
+  --cadence daily --webhook https://your-endpoint.com/webhook
+
+# List all monitors
+python3 {baseDir}/scripts/monitor.py list
+
+# Get events (detected changes)
+python3 {baseDir}/scripts/monitor.py events monitor_abc123
+python3 {baseDir}/scripts/monitor.py events monitor_abc123 --lookback 10d
+
+# Delete a monitor
+python3 {baseDir}/scripts/monitor.py delete monitor_abc123
+</code></pre>
+<h3>Cadences</h3>
 <ul>
-<li><strong>Deep research</strong> requiring cross-referenced facts</li>
-<li><strong>Company/person research</strong> with citations</li>
-<li><strong>Fact-checking</strong> with evidence-based outputs</li>
-<li><strong>Complex queries</strong> that need multi-hop reasoning</li>
-<li>Higher accuracy than traditional search for research tasks</li>
+<li><code>hourly</code> - Fast-moving topics, stock/price tracking</li>
+<li><code>daily</code> - News, competitive intel (most common)</li>
+<li><code>weekly</code> - Slower changes, policy updates</li>
 </ul>
+<h3>Example queries</h3>
+<ul>
+<li><strong>News</strong>: &quot;Let me know when someone mentions Parallel Web Systems&quot;</li>
+<li><strong>Competitive</strong>: &quot;Alert me when Apple announces new MacBook models&quot;</li>
+<li><strong>Price</strong>: &quot;Notify me when PS5 Pro is back in stock at Best Buy&quot;</li>
+<li><strong>Policy</strong>: &quot;Track changes to OpenAI&#39;s terms of service&quot;</li>
+</ul>
+<hr>
+<h2>Authenticated Sources (Jan 2026)</h2>
+<p>Task API supports <strong>authentication-gated private data sources</strong> via MCP servers:</p>
+<ul>
+<li>Internal wikis &amp; dashboards</li>
+<li>Industry databases (NXP, IEEE, etc.)</li>
+<li>CRM systems &amp; subscription services</li>
+</ul>
+<p>Uses <a href="https://browser-use.com">browser-use.com</a> MCP integration:</p>
+<h3>Setup</h3>
+<ol>
+<li>Get API key from <a href="https://browser-use.com">browser-use.com</a></li>
+<li>Create a <strong>profile</strong> with saved login sessions</li>
+<li>Set <code>BROWSERUSE_API_KEY</code> env var</li>
+</ol>
+<h3>Usage</h3>
+<pre><code class="language-bash">export BROWSERUSE_API_KEY=&quot;your-key&quot;
+python3 {baseDir}/scripts/task.py &quot;Extract migration guide from NXP K66 docs&quot;
+</code></pre>
+<hr>
+<h2>When to Use Each API</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>API</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Quick fact lookup</td>
+<td>Search</td>
+<td>Fast, simple</td>
+</tr>
+<tr>
+<td>Company enrichment</td>
+<td>Task</td>
+<td>Structured output with citations</td>
+</tr>
+<tr>
+<td>Build a prospect list</td>
+<td>FindAll</td>
+<td>Discovers + validates + enriches</td>
+</tr>
+<tr>
+<td>Extract content from URL</td>
+<td>Extract</td>
+<td>Handles JS, PDFs, paywalls</td>
+</tr>
+<tr>
+<td>Ongoing tracking</td>
+<td>Monitor</td>
+<td>Set once, get alerts</td>
+</tr>
+<tr>
+<td>Deep research report</td>
+<td>Task (--report)</td>
+<td>Multi-hop with citations</td>
+</tr>
+<tr>
+<td>Access gated content</td>
+<td>Task + MCP</td>
+<td>Authenticated browsing</td>
+</tr>
+</tbody></table>
+<hr>
 <h2>API Reference</h2>
-<p>Docs: <a href="https://docs.parallel.ai">https://docs.parallel.ai</a>
-Platform: <a href="https://platform.parallel.ai">https://platform.parallel.ai</a></p>
+<ul>
+<li>Docs: <a href="https://docs.parallel.ai">https://docs.parallel.ai</a></li>
+<li>Platform: <a href="https://platform.parallel.ai">https://platform.parallel.ai</a></li>
+<li>Changelog: <a href="https://parallel.ai/blog">https://parallel.ai/blog</a></li>
+</ul>
+<hr>
+<h2>Security &amp; Permissions</h2>
+<p><strong>What this skill does:</strong></p>
+<ul>
+<li>Makes API calls to <code>api.parallel.ai</code> for web search, research, extraction, and monitoring</li>
+<li><code>monitor.py</code> uses the <code>requests</code> library; all other scripts use the <code>parallel-sdk</code> package</li>
+<li>All scripts are read-only research tools — they do not modify any local or remote data</li>
+<li>The <code>BROWSERUSE_API_KEY</code> (optional) is only used for authenticated source access via <code>api.browser-use.com</code></li>
+</ul>
+<p><strong>What this skill does NOT do:</strong></p>
+<ul>
+<li>Does not send your API keys to any endpoint other than <code>api.parallel.ai</code> and <code>api.browser-use.com</code></li>
+<li>Does not access local files, databases, or system resources</li>
+<li>Does not read config files or access the filesystem</li>
+<li>Does not write to disk (except JSON output when using <code>--json</code>)</li>
+<li>Cannot be invoked autonomously by the agent (<code>disable-model-invocation: true</code>)</li>
+</ul>
+<p><strong>Python dependencies:</strong> <code>parallel-sdk</code>, <code>requests</code> (install via <code>pip install parallel-sdk requests</code>)</p>
+<p>Review <code>scripts/</code> before first use to verify behavior.</p>
 
                 </div>
               </div>

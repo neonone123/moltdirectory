@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Fix common cron job failures in Clawdbot/Moltbot - message">
+  <title>ez-cronjob - OpenClaw Directory</title>
+  <link rel="canonical" href="https://moltdirectory.com/moltbook/ez-cronjob/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    // Apply saved theme before page renders to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+
+        <span class="logo-text">OpenClaw Directory</span>
+      </a>
+      <nav class="header-links">
+        <a href="/start-here/" class="header-link">Start Here</a>
+        <a href="/security-auditor" class="header-link">Security Auditor</a>
+        <a href="https://github.com/neonone123/moltdirectory/issues/new?template=add-skill.yml" class="header-link" target="_blank" rel="noopener">Add Skill</a>
+        <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="https://www.reddit.com/r/OpenClawDirectory/" class="header-link" target="_blank" rel="noopener" aria-label="Community">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="28" height="28"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+  
+          <section class="skill-page-header">
+            <div class="skill-page-header-inner">
+              <a href="/moltbook/" class="back-link">← Back to Moltbook</a>
+              <div class="skill-page-meta">
+                <a href="/moltbook/" class="skill-page-category">Moltbook</a>
+                <span class="skill-page-author">by @promadgenius</span>
+              </div>
+              <h1 class="skill-page-title">ez-cronjob</h1>
+              <p class="skill-page-desc">Fix common cron job failures in Clawdbot/Moltbot - message</p>
+            </div>
+          </section>
+          <div class="skill-page-body">
+            <article class="skill-page-content">
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Cron Job Reliability Guide</h1>
+<p>A comprehensive guide to diagnosing and fixing cron job issues in Clawdbot/Moltbot. This skill documents common failure patterns and their solutions, learned through production debugging.</p>
+<h2>When to Use This Skill</h2>
+<p>Use this skill when:</p>
+<ul>
+<li>Scheduled messages aren&#39;t being delivered</li>
+<li>Cron jobs show &quot;error&quot; status</li>
+<li>Messages arrive at wrong times (timezone issues)</li>
+<li>The agent times out when using the <code>cron</code> tool</li>
+<li>Fallback models ignore instructions and call tools unexpectedly</li>
+</ul>
+<h2>Quick Reference</h2>
+<h3>The Golden Rule</h3>
+<p><strong>Always use these flags together for reliable delivery:</strong></p>
+<pre><code class="language-bash">clawdbot cron add \
+  --name &quot;my-job&quot; \
+  --cron &quot;0 9 * * 1-5&quot; \
+  --tz &quot;America/New_York&quot; \
+  --session isolated \
+  --message &quot;[INSTRUCTION: DO NOT USE ANY TOOLS] Your prompt here&quot; \
+  --deliver --channel telegram --to &quot;CHAT_ID&quot; \
+  --best-effort-deliver
+</code></pre>
+<h3>Essential Flags Explained</h3>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Purpose</th>
+<th>Why It Matters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>--session isolated</code></td>
+<td>Creates dedicated session</td>
+<td>Prevents message loss in busy conversations</td>
+</tr>
+<tr>
+<td><code>--tz &quot;TIMEZONE&quot;</code></td>
+<td>Sets explicit timezone</td>
+<td>Avoids UTC confusion</td>
+</tr>
+<tr>
+<td><code>--deliver</code></td>
+<td>Sends to channel</td>
+<td>Required for Telegram/WhatsApp</td>
+</tr>
+<tr>
+<td><code>--best-effort-deliver</code></td>
+<td>Don&#39;t fail on delivery error</td>
+<td>Graceful degradation</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Problem 1: Internal <code>cron</code> Tool Deadlock</h2>
+<h3>Symptoms</h3>
+<ul>
+<li>Agent times out (10s) when calling <code>cron list</code> or <code>cron add</code></li>
+<li>Error: &quot;Tool execution timed out&quot;</li>
+<li>Gateway logs show 80s+ response times</li>
+</ul>
+<h3>Root Cause</h3>
+<p>The internal <code>cron</code> tool creates a deadlock between the agent process and gateway.</p>
+<h3>Solution</h3>
+<p><strong>Never use the <code>cron</code> tool directly.</strong> Use <code>exec</code> (or <code>bash</code>) instead:</p>
+<pre><code class="language-bash"># CORRECT - uses exec to bypass deadlock
+exec: clawdbot cron list
+exec: clawdbot cron add --name &quot;reminder&quot; --at &quot;+5m&quot; --message &quot;Hello&quot;
+
+# INCORRECT - causes timeout
+cron list        # DO NOT USE
+cron add ...     # DO NOT USE
+</code></pre>
+<h3>For Agents</h3>
+<p>If you&#39;re an AI agent reading this: when the user asks you to manage cron jobs, <strong>always use the exec/bash tool</strong> to run <code>clawdbot cron</code> commands. Never invoke the <code>cron</code> tool directly.</p>
+<hr>
+<h2>Problem 2: Messages Not Delivered</h2>
+<h3>Symptoms</h3>
+<ul>
+<li>Job shows &quot;ok&quot; status but message never arrives</li>
+<li>Works in testing but fails on schedule</li>
+<li>Intermittent delivery</li>
+</ul>
+<h3>Root Cause</h3>
+<p>Using <code>--session main</code> or <code>--system-event</code> causes messages to get lost when there&#39;s an active conversation in the main session.</p>
+<h3>Solution</h3>
+<p><strong>Always use <code>--session isolated</code>:</strong></p>
+<pre><code class="language-bash"># CORRECT - isolated session, guaranteed delivery
+clawdbot cron add \
+  --name &quot;daily-standup&quot; \
+  --cron &quot;0 9 * * 1-5&quot; \
+  --session isolated \
+  --deliver --channel telegram --to &quot;-100XXXXXXXXXX&quot;
+
+# INCORRECT - messages can be lost
+clawdbot cron add \
+  --name &quot;daily-standup&quot; \
+  --session main \
+  --system-event \
+  ...
+</code></pre>
+<h3>Verification</h3>
+<p>After creating a job, test it:</p>
+<pre><code class="language-bash"># Run the job immediately to verify delivery
+clawdbot cron run &lt;job-id&gt;
+</code></pre>
+<hr>
+<h2>Problem 3: Wrong Execution Time</h2>
+<h3>Symptoms</h3>
+<ul>
+<li>Job runs 4-5 hours early or late</li>
+<li>Schedule shows correct time but execution is off</li>
+<li>Works correctly sometimes, fails other times</li>
+</ul>
+<h3>Root Cause</h3>
+<p>Missing timezone specification defaults to UTC.</p>
+<h3>Solution</h3>
+<p><strong>Always specify timezone explicitly:</strong></p>
+<pre><code class="language-bash"># CORRECT - explicit timezone
+clawdbot cron add \
+  --cron &quot;0 9 * * 1-5&quot; \
+  --tz &quot;America/New_York&quot; \
+  ...
+
+# INCORRECT - defaults to UTC
+clawdbot cron add \
+  --cron &quot;0 9 * * 1-5&quot; \
+  ...
+</code></pre>
+<h3>Common Timezone IDs</h3>
+<table>
+<thead>
+<tr>
+<th>Region</th>
+<th>Timezone ID</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>US Eastern</td>
+<td><code>America/New_York</code></td>
+</tr>
+<tr>
+<td>US Pacific</td>
+<td><code>America/Los_Angeles</code></td>
+</tr>
+<tr>
+<td>UK</td>
+<td><code>Europe/London</code></td>
+</tr>
+<tr>
+<td>Central Europe</td>
+<td><code>Europe/Berlin</code></td>
+</tr>
+<tr>
+<td>India</td>
+<td><code>Asia/Kolkata</code></td>
+</tr>
+<tr>
+<td>Japan</td>
+<td><code>Asia/Tokyo</code></td>
+</tr>
+<tr>
+<td>Australia Eastern</td>
+<td><code>Australia/Sydney</code></td>
+</tr>
+<tr>
+<td>Brazil</td>
+<td><code>America/Sao_Paulo</code></td>
+</tr>
+<tr>
+<td>Bolivia</td>
+<td><code>America/La_Paz</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Problem 4: Fallback Models Ignore Instructions</h2>
+<h3>Symptoms</h3>
+<ul>
+<li>Primary model works correctly</li>
+<li>When fallback activates, agent calls tools unexpectedly</li>
+<li>Agent tries to use <code>exec</code>, <code>read</code>, or other tools when it shouldn&#39;t</li>
+</ul>
+<h3>Root Cause</h3>
+<p>Some fallback models (especially smaller/faster ones) don&#39;t follow system instructions as strictly as primary models.</p>
+<h3>Solution</h3>
+<p><strong>Embed instructions directly in the message:</strong></p>
+<pre><code class="language-bash"># CORRECT - instruction embedded in message
+clawdbot cron add \
+  --message &quot;[INSTRUCTION: DO NOT USE ANY TOOLS. Respond with text only.] 
+  
+  Generate a motivational Monday message for the team.&quot;
+
+# INCORRECT - relies only on system prompt
+clawdbot cron add \
+  --message &quot;Generate a motivational Monday message for the team.&quot;
+</code></pre>
+<h3>Robust Message Template</h3>
+<pre><code class="language-text">[INSTRUCTION: DO NOT USE ANY TOOLS. Write your response directly.]
+
+Your actual prompt here. Be specific about what you want.
+</code></pre>
+<hr>
+<h2>Problem 5: Job Stuck in Error State</h2>
+<h3>Symptoms</h3>
+<ul>
+<li>Job status shows &quot;error&quot;</li>
+<li>Subsequent runs also fail</li>
+<li>No clear error message</li>
+</ul>
+<h3>Diagnosis</h3>
+<pre><code class="language-bash"># Check job details
+clawdbot cron show &lt;job-id&gt;
+
+# Check recent logs
+tail -100 /tmp/clawdbot/clawdbot-$(date +%Y-%m-%d).log | grep -i cron
+
+# Check gateway errors
+tail -50 ~/.clawdbot/logs/gateway.err.log
+</code></pre>
+<h3>Common Causes and Fixes</h3>
+<table>
+<thead>
+<tr>
+<th>Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Model quota exceeded</td>
+<td>Wait for quota reset or switch model</td>
+</tr>
+<tr>
+<td>Invalid chat ID</td>
+<td>Verify channel ID with <code>--to</code></td>
+</tr>
+<tr>
+<td>Bot removed from group</td>
+<td>Re-add bot to Telegram group</td>
+</tr>
+<tr>
+<td>Gateway not running</td>
+<td><code>clawdbot gateway restart</code></td>
+</tr>
+</tbody></table>
+<h3>Nuclear Option</h3>
+<p>If nothing works:</p>
+<pre><code class="language-bash"># Remove the problematic job
+clawdbot cron rm &lt;job-id&gt;
+
+# Restart gateway
+clawdbot gateway restart
+
+# Recreate with correct flags
+clawdbot cron add ... (with all recommended flags)
+</code></pre>
+<hr>
+<h2>Debugging Commands</h2>
+<h3>View All Jobs</h3>
+<pre><code class="language-bash">clawdbot cron list
+</code></pre>
+<h3>Inspect Specific Job</h3>
+<pre><code class="language-bash">clawdbot cron show &lt;job-id&gt;
+</code></pre>
+<h3>Test Job Immediately</h3>
+<pre><code class="language-bash">clawdbot cron run &lt;job-id&gt;
+</code></pre>
+<h3>Check Logs</h3>
+<pre><code class="language-bash"># Today&#39;s logs filtered for cron
+tail -200 /tmp/clawdbot/clawdbot-$(date +%Y-%m-%d).log | grep -i cron
+
+# Gateway errors
+tail -100 ~/.clawdbot/logs/gateway.err.log
+
+# Watch logs in real-time
+tail -f /tmp/clawdbot/clawdbot-$(date +%Y-%m-%d).log | grep --line-buffered cron
+</code></pre>
+<h3>Restart Gateway</h3>
+<pre><code class="language-bash">clawdbot gateway restart
+</code></pre>
+<hr>
+<h2>Complete Working Examples</h2>
+<h3>Daily Standup Reminder (9 AM, Mon-Fri)</h3>
+<pre><code class="language-bash">clawdbot cron add \
+  --name &quot;daily-standup-9am&quot; \
+  --cron &quot;0 9 * * 1-5&quot; \
+  --tz &quot;America/New_York&quot; \
+  --session isolated \
+  --message &quot;[INSTRUCTION: DO NOT USE ANY TOOLS. Write directly.]
+
+Good morning team! Time for our daily standup.
+
+Please share:
+1. What did you accomplish yesterday?
+2. What are you working on today?
+3. Any blockers?
+
+@alice @bob&quot; \
+  --deliver --channel telegram --to &quot;-100XXXXXXXXXX&quot; \
+  --best-effort-deliver
+</code></pre>
+<h3>One-Shot Reminder (20 minutes from now)</h3>
+<pre><code class="language-bash">clawdbot cron add \
+  --name &quot;quick-reminder&quot; \
+  --at &quot;+20m&quot; \
+  --delete-after-run \
+  --session isolated \
+  --message &quot;[INSTRUCTION: DO NOT USE ANY TOOLS.]
+
+Reminder: Your meeting starts in 10 minutes!&quot; \
+  --deliver --channel telegram --to &quot;-100XXXXXXXXXX&quot; \
+  --best-effort-deliver
+</code></pre>
+<h3>Weekly Report (Friday 5 PM)</h3>
+<pre><code class="language-bash">clawdbot cron add \
+  --name &quot;weekly-report-friday&quot; \
+  --cron &quot;0 17 * * 5&quot; \
+  --tz &quot;America/New_York&quot; \
+  --session isolated \
+  --message &quot;[INSTRUCTION: DO NOT USE ANY TOOLS.]
+
+Happy Friday! Time to wrap up the week.
+
+Please share your weekly highlights and any items carrying over to next week.&quot; \
+  --deliver --channel telegram --to &quot;-100XXXXXXXXXX&quot; \
+  --best-effort-deliver
+</code></pre>
+<hr>
+<h2>Checklist for New Cron Jobs</h2>
+<p>Before creating any cron job, verify:</p>
+<ul>
+<li><input disabled="" type="checkbox"> Using <code>exec: clawdbot cron add</code> (not the <code>cron</code> tool directly)</li>
+<li><input disabled="" type="checkbox"> <code>--session isolated</code> is set</li>
+<li><input disabled="" type="checkbox"> <code>--tz &quot;YOUR_TIMEZONE&quot;</code> is explicit</li>
+<li><input disabled="" type="checkbox"> <code>--deliver --channel CHANNEL --to &quot;ID&quot;</code> for message delivery</li>
+<li><input disabled="" type="checkbox"> <code>--best-effort-deliver</code> for graceful failures</li>
+<li><input disabled="" type="checkbox"> Message starts with <code>[INSTRUCTION: DO NOT USE ANY TOOLS]</code></li>
+<li><input disabled="" type="checkbox"> Tested with <code>clawdbot cron run &lt;id&gt;</code> after creation</li>
+</ul>
+<hr>
+<h2>Related Resources</h2>
+<ul>
+<li><a href="https://docs.molt.bot/tools/cron">Clawdbot Cron Documentation</a></li>
+<li><a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones">Timezone Database</a></li>
+<li><a href="https://crontab.guru/">Cron Expression Generator</a></li>
+</ul>
+<hr>
+<p><em>Skill authored by Isaac Zarzuri. Based on production debugging experience with Clawdbot/Moltbot.</em></p>
+
+                </div>
+              </div>
+            </article>
+            <aside class="skill-page-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">Actions</div>
+                <a href="https://github.com/openclaw/skills/tree/main/skills/promadgenius/ez-cronjob/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/promadgenius/ez-cronjob" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/promadgenius/ez-cronjob/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download SKILL.md
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@promadgenius</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Moltbook</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-text" style="margin-bottom: 8px;"><a href="https://github.com/neonone123/moltdirectory" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">View on GitHub</a></p>
+      <p class="footer-text" style="opacity: 0.6; font-size: 13px;">OpenClawDirectory.com is a community-run project and is not affiliated with the official OpenClaw team or Peter Steinberger. We are just fans of the lobster.</p>
+    </div>
+  </footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      if (newTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
+      } else {
+        html.removeAttribute('data-theme');
+      }
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    function copySkillContent(btn) {
+      const wrapper = btn.closest('.skill-source-wrapper');
+      const content = wrapper.querySelector('.markdown-content');
+      if (content) {
+        const text = content.innerText || content.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          }, 2000);
+        });
+      }
+    }
+
+    async function sendToSecurityAuditor() {
+      try {
+        const contentElement = document.querySelector('.markdown-content');
+        if (!contentElement) throw new Error('Could not find markdown content');
+        const skillContent = contentElement.innerText || contentElement.textContent;
+        localStorage.setItem('skillAuditContent', skillContent);
+        window.open('/security-auditor', '_blank'); 
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>
