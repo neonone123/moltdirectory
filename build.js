@@ -187,6 +187,164 @@ const PAGE_TEMPLATE = (content, title, desc, canonicalPath = '/') => {
         alert('Error: ' + error.message);
       }
     }
+
+    function updateVoteWidget(widget, toolData) {
+      if (!widget || !toolData) return;
+      const upBtn = widget.querySelector('[data-vote="1"]');
+      const downBtn = widget.querySelector('[data-vote="-1"]');
+      const countNode = widget.querySelector('.vote-count');
+      widget.dataset.rankScore = String(toolData.rankScore ?? 0);
+      widget.dataset.viewerVote = String(toolData.viewerVote ?? 0);
+
+      if (countNode) {
+        countNode.textContent = toolData.displayCount || 'New';
+      }
+      if (upBtn) {
+        upBtn.classList.toggle('is-active', Number(toolData.viewerVote) === 1);
+      }
+      if (downBtn) {
+        downBtn.classList.toggle('is-active', Number(toolData.viewerVote) === -1);
+      }
+    }
+
+    function setWidgetBusy(widget, busy) {
+      widget.dataset.busy = busy ? '1' : '0';
+      widget.querySelectorAll('.vote-btn').forEach((btn) => {
+        btn.disabled = busy;
+      });
+    }
+
+    function applySortMode(grid, mode) {
+      const cards = [...grid.querySelectorAll('.skill-card[data-tool-id]')];
+      cards.sort((a, b) => {
+        if (mode === 'community') {
+          const scoreDiff = Number(b.dataset.rankScore || 0) - Number(a.dataset.rankScore || 0);
+          if (scoreDiff !== 0) return scoreDiff;
+        }
+        return Number(a.dataset.originalIndex || 0) - Number(b.dataset.originalIndex || 0);
+      });
+      cards.forEach((card) => grid.appendChild(card));
+    }
+
+    function bindSortToggle(toolbar, grid) {
+      const buttons = toolbar.querySelectorAll('.sort-toggle-btn');
+      const status = toolbar.querySelector('.sort-status');
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const mode = btn.dataset.sortMode;
+          buttons.forEach((b) => b.classList.toggle('is-active', b === btn));
+          applySortMode(grid, mode);
+          status.textContent = mode === 'community' ? 'Community ranking active' : 'Original order active';
+        });
+      });
+    }
+
+    async function fetchScores(categoryId, toolIds) {
+      const params = new URLSearchParams({
+        categoryId,
+        toolIds: toolIds.join(',')
+      });
+      const response = await fetch('/api/v1/scores?' + params.toString(), {
+        method: 'GET',
+        credentials: 'same-origin'
+      });
+      if (!response.ok) {
+        throw new Error('Unable to fetch vote scores');
+      }
+      return response.json();
+    }
+
+    async function submitVote(widget, voteValue) {
+      const categoryId = widget.dataset.categoryId;
+      const toolId = widget.dataset.toolId;
+      setWidgetBusy(widget, true);
+      try {
+        const response = await fetch('/api/v1/vote', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            categoryId,
+            toolId,
+            vote: voteValue
+          })
+        });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(payload.error || 'Vote request failed');
+        }
+        if (payload.tool) {
+          updateVoteWidget(widget, payload.tool);
+          const card = widget.closest('.skill-card[data-tool-id]');
+          if (card) {
+            card.dataset.rankScore = String(payload.tool.rankScore ?? 0);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setWidgetBusy(widget, false);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const widgets = [...document.querySelectorAll('.vote-widget[data-category-id][data-tool-id]')];
+      if (widgets.length === 0) return;
+
+      const grouped = new Map();
+      widgets.forEach((widget) => {
+        const key = widget.dataset.categoryId;
+        if (!grouped.has(key)) grouped.set(key, new Map());
+        grouped.get(key).set(widget.dataset.toolId, widget);
+      });
+
+      for (const [categoryId, widgetMap] of grouped.entries()) {
+        const toolIds = [...widgetMap.keys()];
+        try {
+          const data = await fetchScores(categoryId, toolIds);
+          const byTool = new Map((data.tools || []).map((tool) => [tool.toolId, tool]));
+          for (const [toolId, widget] of widgetMap.entries()) {
+            const toolData = byTool.get(toolId);
+            if (toolData) {
+              updateVoteWidget(widget, toolData);
+              const card = widget.closest('.skill-card[data-tool-id]');
+              if (card) {
+                card.dataset.rankScore = String(toolData.rankScore ?? 0);
+              }
+            }
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      widgets.forEach((widget) => {
+        widget.querySelectorAll('.vote-btn').forEach((btn) => {
+          btn.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            if (widget.dataset.busy === '1') return;
+            const voteValue = Number(btn.dataset.vote);
+            submitVote(widget, voteValue).then(() => {
+              const grid = widget.closest('.skills-grid[data-category-id]');
+              const toolbar = document.querySelector('.sort-toolbar[data-category-id="' + widget.dataset.categoryId + '"]');
+              const communityBtn = toolbar ? toolbar.querySelector('.sort-toggle-btn[data-sort-mode="community"]') : null;
+              if (grid && communityBtn && communityBtn.classList.contains('is-active')) {
+                applySortMode(grid, 'community');
+              }
+            });
+          });
+        });
+      });
+
+      document.querySelectorAll('.skills-grid[data-category-id]').forEach((grid) => {
+        const categoryId = grid.dataset.categoryId;
+        const toolbar = document.querySelector('.sort-toolbar[data-category-id="' + categoryId + '"]');
+        if (!toolbar) return;
+        bindSortToggle(toolbar, grid);
+        applySortMode(grid, 'community');
+      });
+    });
   </script>
 </body>
 </html>`;
@@ -318,6 +476,17 @@ async function build() {
   };
 
   console.log(`Found ${filteredCategories.length} categories and ${filteredSkills.length} skills.`);
+
+  const toolsManifest = {
+    generatedAt: new Date().toISOString(),
+    tools: filteredSkills.map((s) => ({
+      categoryId: s.catId,
+      toolId: s.id
+    }))
+  };
+  const dataDir = path.join(OUTPUT_DIR, 'data');
+  if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir);
+  fs.writeFileSync(path.join(dataDir, 'tools-manifest.json'), JSON.stringify(toolsManifest, null, 2));
 
   // 1. Generate Homepage
   const homeContent = `
@@ -453,7 +622,7 @@ async function build() {
 
   // 2. Generate Category Pages
   for (const cat of filteredCategories) {
-    const catSkills = skills.filter(s => s.catId === cat.id);
+    const catSkills = filteredSkills.filter(s => s.catId === cat.id);
     const catContent = `
       <section class="category-hero">
         <div class="category-hero-content">
@@ -468,15 +637,27 @@ async function build() {
         </div>
       </section>
       <section class="skills-section">
-        <div class="skills-grid">
-          ${catSkills.map(s => `
-            <a href="/${cat.id}/${s.id}/" class="skill-card" style="text-decoration: none; color: inherit;">
+        <div class="sort-toolbar" data-category-id="${cat.id}">
+          <div class="sort-toggle">
+            <button type="button" class="sort-toggle-btn is-active" data-sort-mode="community">Community</button>
+            <button type="button" class="sort-toggle-btn" data-sort-mode="original">Original</button>
+          </div>
+          <div class="sort-status">Community ranking active</div>
+        </div>
+        <div class="skills-grid" data-category-id="${cat.id}">
+          ${catSkills.map((s, index) => `
+            <a href="/${cat.id}/${s.id}/" class="skill-card" style="text-decoration: none; color: inherit;" data-category-id="${cat.id}" data-tool-id="${s.id}" data-original-index="${index}" data-rank-score="0">
               <div class="skill-header">
                 <div class="skill-name">${s.name}</div>
               </div>
               <div class="skill-desc">${s.desc}</div>
               <div class="skill-footer">
                 <div class="skill-author">by @${s.author}</div>
+                <div class="vote-widget skill-card-vote" data-category-id="${cat.id}" data-tool-id="${s.id}">
+                  <button type="button" class="vote-btn" data-vote="1" aria-label="Upvote ${s.name}">▲</button>
+                  <span class="vote-count">New</span>
+                  <button type="button" class="vote-btn" data-vote="-1" aria-label="Downvote ${s.name}">▼</button>
+                </div>
                 <div class="skill-link">View Details →</div>
               </div>
             </a>
@@ -517,6 +698,11 @@ async function build() {
               </div>
               <h1 class="skill-page-title">${s.name}</h1>
               <p class="skill-page-desc">${s.desc}</p>
+              <div class="vote-widget skill-page-vote" data-category-id="${cat.id}" data-tool-id="${s.id}">
+                <button type="button" class="vote-btn" data-vote="1" aria-label="Upvote ${s.name}">▲</button>
+                <span class="vote-count">New</span>
+                <button type="button" class="vote-btn" data-vote="-1" aria-label="Downvote ${s.name}">▼</button>
+              </div>
             </div>
           </section>
           <div class="skill-page-body">
@@ -583,6 +769,11 @@ async function build() {
               </div>
               <h1 class="skill-page-title">${s.name}</h1>
               <p class="skill-page-desc">${s.desc}</p>
+              <div class="vote-widget skill-page-vote" data-category-id="${cat.id}" data-tool-id="${s.id}">
+                <button type="button" class="vote-btn" data-vote="1" aria-label="Upvote ${s.name}">▲</button>
+                <span class="vote-count">New</span>
+                <button type="button" class="vote-btn" data-vote="-1" aria-label="Downvote ${s.name}">▼</button>
+              </div>
             </div>
           </section>
           <div class="skill-page-body">
