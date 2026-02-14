@@ -52,6 +52,11 @@
               </div>
               <h1 class="skill-page-title">plan2meal</h1>
               <p class="skill-page-desc">plan2meal</p>
+              <div class="vote-widget skill-page-vote" data-category-id="shopping-e-commerce" data-tool-id="plan2meal">
+                <button type="button" class="vote-btn" data-vote="1" aria-label="Upvote plan2meal">▲</button>
+                <span class="vote-count">New</span>
+                <button type="button" class="vote-btn" data-vote="-1" aria-label="Downvote plan2meal">▼</button>
+              </div>
             </div>
           </section>
           <div class="skill-page-body">
@@ -66,171 +71,74 @@
                 </div>
                 <div class="markdown-content">
                   <h1>Plan2Meal Skill</h1>
-<p>A ClawdHub skill for managing recipes and grocery lists via Plan2Meal, a React Native recipe app.</p>
-<p><strong>Data routing disclosure</strong></p>
+<p>A ClawdHub skill for managing recipes and grocery lists via Plan2Meal.</p>
+<h2>Data routing + security disclosure (mandatory)</h2>
 <ul>
-<li>By default, this skill sends authentication and recipe/grocery API traffic to:
-<code>https://gallant-bass-875.convex.cloud</code></li>
-<li>You can override <code>CONVEX_URL</code> to use your own/self-hosted backend.</li>
+<li>Shared backend/API target: <code>https://gallant-bass-875.convex.cloud</code></li>
+<li>Auth and recipe/grocery API traffic goes to configured <code>CONVEX_URL</code>.</li>
+<li>Shared backend usage is blocked unless <code>ALLOW_DEFAULT_BACKEND=true</code>.</li>
+<li>Never claim local-only processing when backend calls are involved.</li>
 </ul>
-<h2>Features</h2>
+<h2>Use when / don&#39;t use when (routing guardrails)</h2>
+<p>Use when:</p>
 <ul>
-<li><strong>Recipe Management</strong>: Add recipes from URLs, search, view, and delete your recipes</li>
-<li><strong>Grocery Lists</strong>: Create and manage shopping lists with recipes</li>
-<li><strong>Multi-Provider Auth</strong>: Login with GitHub, Google, or Apple</li>
-<li><strong>Recipe Extraction</strong>: Automatically fetch recipe metadata from URLs</li>
-<li><strong>Telegram Formatting</strong>: Pretty-printed output for Telegram</li>
+<li>User asks to add/list/search/show/delete Plan2Meal recipes.</li>
+<li>User asks to create/view/update Plan2Meal grocery lists.</li>
+<li>User asks to authenticate for Plan2Meal commands.</li>
+</ul>
+<p>Do NOT use when:</p>
+<ul>
+<li>User asks for general meal ideas (no Plan2Meal action requested).</li>
+<li>User asks for health/nutrition analysis outside stored Plan2Meal data.</li>
+<li>User asks to manage Apple Reminders/Notes/other systems.</li>
 </ul>
 <h2>Setup</h2>
 <ol>
-<li><p>Install via ClawdHub:</p>
+<li><p>Install:</p>
 <pre><code class="language-bash">clawdhub install plan2meal
 </code></pre>
 </li>
-<li><p>Configure environment variables:</p>
+<li><p>Configure environment:</p>
 <pre><code class="language-bash">cp .env.example .env
-# Edit .env with your credentials
 </code></pre>
 </li>
 <li><p>Environment variables:</p>
 <ul>
-<li><code>CONVEX_URL</code> (optional): backend URL for Plan2Meal API calls.<ul>
-<li>Default: <code>https://gallant-bass-875.convex.cloud</code></li>
-<li>Override this if you want to use your own/self-hosted backend.</li>
+<li><code>CONVEX_URL</code> (<strong>required</strong>, recommended self-hosted backend)</li>
+<li><code>ALLOW_DEFAULT_BACKEND=true</code> (only if intentionally using shared backend)</li>
+<li>OAuth provider creds:<ul>
+<li>GitHub (required): <code>AUTH_GITHUB_ID</code>, <code>AUTH_GITHUB_SECRET</code>, <code>GITHUB_CALLBACK_URL</code></li>
+<li>Google (optional): <code>AUTH_GOOGLE_ID</code>, <code>AUTH_GOOGLE_SECRET</code>, <code>GOOGLE_CALLBACK_URL</code></li>
+<li>Apple (optional): <code>AUTH_APPLE_ID</code>, <code>AUTH_APPLE_SECRET</code>, <code>APPLE_CALLBACK_URL</code></li>
 </ul>
 </li>
-<li><code>AUTH_GITHUB_ID</code> / <code>AUTH_GITHUB_SECRET</code> (or <code>GITHUB_CLIENT_ID</code> / <code>GITHUB_CLIENT_SECRET</code>)</li>
-<li><code>AUTH_GOOGLE_ID</code> / <code>AUTH_GOOGLE_SECRET</code> (or <code>GOOGLE_CLIENT_ID</code> / <code>GOOGLE_CLIENT_SECRET</code>)</li>
-<li><code>AUTH_APPLE_ID</code> / <code>AUTH_APPLE_SECRET</code> (or <code>APPLE_CLIENT_ID</code> / <code>APPLE_CLIENT_SECRET</code>)</li>
-<li><code>GITHUB_CALLBACK_URL</code>, <code>GOOGLE_CALLBACK_URL</code>, <code>APPLE_CALLBACK_URL</code></li>
-<li><code>CLAWDBOT_URL</code>: Your ClawdBot URL (for OAuth callback)</li>
+<li><code>CLAWDBOT_URL</code> (required, bot callback host)</li>
 </ul>
 </li>
 </ol>
 <h2>Commands</h2>
-<h3>Authentication</h3>
-<table>
-<thead>
-<tr>
-<th>Command</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>plan2meal login</code></td>
-<td>Show login options (GitHub, Google, Apple)</td>
-</tr>
-<tr>
-<td><code>plan2meal logout</code></td>
-<td>Logout and clear session</td>
-</tr>
-</tbody></table>
-<h3>Recipe Commands</h3>
-<table>
-<thead>
-<tr>
-<th>Command</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>plan2meal add &lt;url&gt;</code></td>
-<td>Fetch recipe metadata from URL and create recipe</td>
-</tr>
-<tr>
-<td><code>plan2meal list</code></td>
-<td>List your recent recipes</td>
-</tr>
-<tr>
-<td><code>plan2meal search &lt;term&gt;</code></td>
-<td>Search your recipes</td>
-</tr>
-<tr>
-<td><code>plan2meal show &lt;id&gt;</code></td>
-<td>Show detailed recipe information</td>
-</tr>
-<tr>
-<td><code>plan2meal delete &lt;id&gt;</code></td>
-<td>Delete a recipe</td>
-</tr>
-</tbody></table>
-<h3>Grocery List Commands</h3>
-<table>
-<thead>
-<tr>
-<th>Command</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>plan2meal lists</code></td>
-<td>List all your grocery lists</td>
-</tr>
-<tr>
-<td><code>plan2meal list-show &lt;id&gt;</code></td>
-<td>Show grocery list with items</td>
-</tr>
-<tr>
-<td><code>plan2meal list-create &lt;name&gt;</code></td>
-<td>Create a new grocery list</td>
-</tr>
-<tr>
-<td><code>plan2meal list-add &lt;listId&gt; &lt;recipeId&gt;</code></td>
-<td>Add recipe to grocery list</td>
-</tr>
-</tbody></table>
-<h3>Help</h3>
-<table>
-<thead>
-<tr>
-<th>Command</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>plan2meal help</code></td>
-<td>Show all available commands</td>
-</tr>
-</tbody></table>
-<h2>Usage Examples</h2>
-<h3>First Login</h3>
-<pre><code>plan2meal login
-</code></pre>
-<p>Shows login options for GitHub, Google, and Apple. Click the link to authenticate.</p>
-<h3>Adding a Recipe</h3>
-<pre><code>plan2meal add https://www.allrecipes.com/recipe/12345/pasta
-</code></pre>
-<p>Output:</p>
-<pre><code>✅ Recipe added successfully!
-
-📖 Classic Pasta
-🔗 Source: allrecipes.com
-⚡ Method: native-fetch-json (no credits used)
-⏰ Scraped at: 3:45 PM
-
-🥘 Ingredients (4)
-• 1 lb pasta
-• 2 cups marinara sauce
-• 1/2 cup parmesan
-</code></pre>
-<h3>Searching Recipes</h3>
-<pre><code>plan2meal search pasta
-</code></pre>
-<h3>Creating a Grocery List</h3>
-<pre><code>plan2meal list-create Weekly Shopping
-</code></pre>
-<h2>Authentication</h2>
-<p>First-time users need to authenticate. Choose:</p>
 <ul>
-<li><strong>GitHub</strong> - Requires GitHub OAuth app</li>
-<li><strong>Google</strong> - Requires Google OAuth client</li>
-<li><strong>Apple</strong> - Requires Apple Developer account</li>
+<li><code>plan2meal login</code></li>
+<li><code>plan2meal logout</code></li>
+<li><code>plan2meal add &lt;url&gt;</code></li>
+<li><code>plan2meal list</code></li>
+<li><code>plan2meal search &lt;term&gt;</code></li>
+<li><code>plan2meal show &lt;id&gt;</code></li>
+<li><code>plan2meal delete &lt;id&gt;</code></li>
+<li><code>plan2meal lists</code></li>
+<li><code>plan2meal list-show &lt;id&gt;</code></li>
+<li><code>plan2meal list-create &lt;name&gt;</code></li>
+<li><code>plan2meal list-add &lt;listId&gt; &lt;recipeId&gt;</code></li>
+<li><code>plan2meal help</code></li>
 </ul>
-<p>Authentication is OAuth-only via provider login links.</p>
-<h2>Recipe Limits</h2>
-<p>The free tier allows up to <strong>5 recipes</strong>. You&#39;ll receive a warning when approaching this limit.</p>
-<h2>License</h2>
-<p>MIT</p>
+<h2>Output templates</h2>
+<p>Use response formatting templates from <code>references/output-templates.md</code>.</p>
+<h2>Security checklist before replying</h2>
+<ul>
+<li>If command failed due to auth/config, provide exact next step.</li>
+<li>If backend is relevant, keep disclosure truthful (shared default vs override).</li>
+<li>Never expose secrets/tokens in output.</li>
+</ul>
 
                 </div>
               </div>
@@ -317,6 +225,164 @@
         alert('Error: ' + error.message);
       }
     }
+
+    function updateVoteWidget(widget, toolData) {
+      if (!widget || !toolData) return;
+      const upBtn = widget.querySelector('[data-vote="1"]');
+      const downBtn = widget.querySelector('[data-vote="-1"]');
+      const countNode = widget.querySelector('.vote-count');
+      widget.dataset.rankScore = String(toolData.rankScore ?? 0);
+      widget.dataset.viewerVote = String(toolData.viewerVote ?? 0);
+
+      if (countNode) {
+        countNode.textContent = toolData.displayCount || 'New';
+      }
+      if (upBtn) {
+        upBtn.classList.toggle('is-active', Number(toolData.viewerVote) === 1);
+      }
+      if (downBtn) {
+        downBtn.classList.toggle('is-active', Number(toolData.viewerVote) === -1);
+      }
+    }
+
+    function setWidgetBusy(widget, busy) {
+      widget.dataset.busy = busy ? '1' : '0';
+      widget.querySelectorAll('.vote-btn').forEach((btn) => {
+        btn.disabled = busy;
+      });
+    }
+
+    function applySortMode(grid, mode) {
+      const cards = [...grid.querySelectorAll('.skill-card[data-tool-id]')];
+      cards.sort((a, b) => {
+        if (mode === 'community') {
+          const scoreDiff = Number(b.dataset.rankScore || 0) - Number(a.dataset.rankScore || 0);
+          if (scoreDiff !== 0) return scoreDiff;
+        }
+        return Number(a.dataset.originalIndex || 0) - Number(b.dataset.originalIndex || 0);
+      });
+      cards.forEach((card) => grid.appendChild(card));
+    }
+
+    function bindSortToggle(toolbar, grid) {
+      const buttons = toolbar.querySelectorAll('.sort-toggle-btn');
+      const status = toolbar.querySelector('.sort-status');
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const mode = btn.dataset.sortMode;
+          buttons.forEach((b) => b.classList.toggle('is-active', b === btn));
+          applySortMode(grid, mode);
+          status.textContent = mode === 'community' ? 'Community ranking active' : 'Original order active';
+        });
+      });
+    }
+
+    async function fetchScores(categoryId, toolIds) {
+      const params = new URLSearchParams({
+        categoryId,
+        toolIds: toolIds.join(',')
+      });
+      const response = await fetch('/api/v1/scores?' + params.toString(), {
+        method: 'GET',
+        credentials: 'same-origin'
+      });
+      if (!response.ok) {
+        throw new Error('Unable to fetch vote scores');
+      }
+      return response.json();
+    }
+
+    async function submitVote(widget, voteValue) {
+      const categoryId = widget.dataset.categoryId;
+      const toolId = widget.dataset.toolId;
+      setWidgetBusy(widget, true);
+      try {
+        const response = await fetch('/api/v1/vote', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            categoryId,
+            toolId,
+            vote: voteValue
+          })
+        });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(payload.error || 'Vote request failed');
+        }
+        if (payload.tool) {
+          updateVoteWidget(widget, payload.tool);
+          const card = widget.closest('.skill-card[data-tool-id]');
+          if (card) {
+            card.dataset.rankScore = String(payload.tool.rankScore ?? 0);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setWidgetBusy(widget, false);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const widgets = [...document.querySelectorAll('.vote-widget[data-category-id][data-tool-id]')];
+      if (widgets.length === 0) return;
+
+      const grouped = new Map();
+      widgets.forEach((widget) => {
+        const key = widget.dataset.categoryId;
+        if (!grouped.has(key)) grouped.set(key, new Map());
+        grouped.get(key).set(widget.dataset.toolId, widget);
+      });
+
+      for (const [categoryId, widgetMap] of grouped.entries()) {
+        const toolIds = [...widgetMap.keys()];
+        try {
+          const data = await fetchScores(categoryId, toolIds);
+          const byTool = new Map((data.tools || []).map((tool) => [tool.toolId, tool]));
+          for (const [toolId, widget] of widgetMap.entries()) {
+            const toolData = byTool.get(toolId);
+            if (toolData) {
+              updateVoteWidget(widget, toolData);
+              const card = widget.closest('.skill-card[data-tool-id]');
+              if (card) {
+                card.dataset.rankScore = String(toolData.rankScore ?? 0);
+              }
+            }
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      widgets.forEach((widget) => {
+        widget.querySelectorAll('.vote-btn').forEach((btn) => {
+          btn.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            if (widget.dataset.busy === '1') return;
+            const voteValue = Number(btn.dataset.vote);
+            submitVote(widget, voteValue).then(() => {
+              const grid = widget.closest('.skills-grid[data-category-id]');
+              const toolbar = document.querySelector('.sort-toolbar[data-category-id="' + widget.dataset.categoryId + '"]');
+              const communityBtn = toolbar ? toolbar.querySelector('.sort-toggle-btn[data-sort-mode="community"]') : null;
+              if (grid && communityBtn && communityBtn.classList.contains('is-active')) {
+                applySortMode(grid, 'community');
+              }
+            });
+          });
+        });
+      });
+
+      document.querySelectorAll('.skills-grid[data-category-id]').forEach((grid) => {
+        const categoryId = grid.dataset.categoryId;
+        const toolbar = document.querySelector('.sort-toolbar[data-category-id="' + categoryId + '"]');
+        if (!toolbar) return;
+        bindSortToggle(toolbar, grid);
+        applySortMode(grid, 'community');
+      });
+    });
   </script>
 </body>
 </html>

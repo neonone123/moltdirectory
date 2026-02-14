@@ -52,6 +52,11 @@
               </div>
               <h1 class="skill-page-title">seiso</h1>
               <p class="skill-page-desc">AI media generation</p>
+              <div class="vote-widget skill-page-vote" data-category-id="media-streaming" data-tool-id="seiso">
+                <button type="button" class="vote-btn" data-vote="1" aria-label="Upvote seiso">▲</button>
+                <span class="vote-count">New</span>
+                <button type="button" class="vote-btn" data-vote="-1" aria-label="Downvote seiso">▼</button>
+              </div>
             </div>
           </section>
           <div class="skill-page-body">
@@ -65,378 +70,516 @@
                   </button>
                 </div>
                 <div class="markdown-content">
-                  <h1>SeisoAI x402 Skill for OpenClaw</h1>
-<p>Base URL: <code>https://seisoai.com</code></p>
-<h2>Overview</h2>
-<p>SeisoAI provides AI inference tools (image, video, music, 3D, audio) accessible via x402 payment protocol. External agents authenticate by paying - no API key or JWT required.</p>
-<p><strong>Payment network</strong>: Base mainnet (eip155:8453)
-<strong>Payment asset</strong>: USDC</p>
-<h2>Quick Start</h2>
-<ol>
-<li>Call any gateway endpoint without auth</li>
-<li>Receive 402 Payment Required with price</li>
-<li>Sign payment to the <code>payTo</code> wallet</li>
-<li>Retry with <code>payment-signature</code> header</li>
-<li>Receive result or job ID for polling</li>
-</ol>
-<h2>Gateway Endpoints</h2>
-<p>All x402-enabled endpoints are under <code>/api/gateway/</code>:</p>
-<h3>Discovery (No Auth Required)</h3>
+                  <h1>SeisoAI x402 Skill</h1>
+<p><strong>Base URL</strong>: <code>https://seisoai.com</code><br><strong>Payment</strong>: USDC on Base (eip155:8453)<br><strong>Recipient</strong>: <code>0xa0aE05e2766A069923B2a51011F270aCadFf023a</code></p>
+<hr>
+<h2>Security Profile</h2>
 <table>
 <thead>
 <tr>
-<th>Endpoint</th>
-<th>Description</th>
+<th>Category</th>
+<th>Status</th>
+<th>Details</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><code>GET /api/gateway</code></td>
-<td>Gateway info, categories, endpoints</td>
+<td><strong>Purpose &amp; Capability</strong></td>
+<td>✅ Aligned</td>
+<td>Pay-per-request AI generation via x402 USDC payments. Requires: <code>curl</code>, internet access, host x402 signer with per-request approval.</td>
 </tr>
 <tr>
-<td><code>GET /api/gateway/tools</code></td>
-<td>List all tools</td>
+<td><strong>Instruction Scope</strong></td>
+<td>✅ Narrow</td>
+<td>Only contacts <code>seisoai.com</code> gateway. Does not read local files, env vars, or system data. Requires explicit user consent for each payment.</td>
 </tr>
 <tr>
-<td><code>GET /api/gateway/tools?category=X</code></td>
-<td>Filter by category</td>
+<td><strong>Install Mechanism</strong></td>
+<td>✅ Minimal</td>
+<td>Instruction-only skill. No install hooks, no bundled code, no on-disk persistence.</td>
 </tr>
 <tr>
-<td><code>GET /api/gateway/tools?q=X</code></td>
-<td>Search tools</td>
+<td><strong>Credentials</strong></td>
+<td>✅ None</td>
+<td>No API keys, no env vars, no stored secrets, no filesystem config. Authentication is per-request via x402 signatures.</td>
 </tr>
 <tr>
-<td><code>GET /api/gateway/tools/:toolId</code></td>
-<td>Get tool details</td>
-</tr>
-<tr>
-<td><code>GET /api/gateway/price/:toolId</code></td>
-<td>Get pricing</td>
-</tr>
-<tr>
-<td><code>GET /api/gateway/schema</code></td>
-<td>OpenAPI schema</td>
-</tr>
-<tr>
-<td><code>GET /api/gateway/mcp-manifest</code></td>
-<td>MCP manifest</td>
-</tr>
-<tr>
-<td><code>GET /api/gateway/agents</code></td>
-<td>List registered agents</td>
+<td><strong>Persistence &amp; Privilege</strong></td>
+<td>✅ Limited</td>
+<td><code>always: false</code> (no persistent presence). <code>autonomous: requires-approval</code> (payments require user consent even in autonomous workflows).</td>
 </tr>
 </tbody></table>
-<h3>Invocation (x402 Payment Required)</h3>
-<table>
-<thead>
-<tr>
-<th>Endpoint</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>POST /api/gateway/invoke/:toolId</code></td>
-<td>Invoke a tool</td>
-</tr>
-<tr>
-<td><code>POST /api/gateway/invoke</code></td>
-<td>Invoke with <code>toolId</code> in body</td>
-</tr>
-<tr>
-<td><code>POST /api/gateway/batch</code></td>
-<td>Batch multiple calls</td>
-</tr>
-<tr>
-<td><code>POST /api/gateway/orchestrate</code></td>
-<td>Multi-step workflow</td>
-</tr>
-</tbody></table>
-<h3>Jobs (No Auth Required)</h3>
-<table>
-<thead>
-<tr>
-<th>Endpoint</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>GET /api/gateway/jobs/:jobId</code></td>
-<td>Poll job status</td>
-</tr>
-<tr>
-<td><code>GET /api/gateway/jobs/:jobId/result</code></td>
-<td>Get job result</td>
-</tr>
-</tbody></table>
-<h2>Available Tool Categories</h2>
+<hr>
+<h2>Pre-Installation Checklist</h2>
+<p>Before installing or using this skill, complete these verification steps:</p>
+<h3>1. Verify Host Signer Compliance</h3>
+<p>Confirm your host&#39;s x402 signer enforces per-request user approval:</p>
 <ul>
-<li><code>image-generation</code> - Text to image (FLUX, etc.)</li>
-<li><code>image-editing</code> - Edit/blend images</li>
-<li><code>image-processing</code> - Upscale, extract layers</li>
-<li><code>video-generation</code> - Text/image to video (Veo3, Kling, etc.)</li>
-<li><code>video-editing</code> - Animate images, edit video</li>
-<li><code>music-generation</code> - Generate music</li>
-<li><code>audio-generation</code> - TTS, video-to-audio</li>
-<li><code>audio-processing</code> - Transcribe, stem separation</li>
-<li><code>3d-generation</code> - Image/text to 3D</li>
-<li><code>vision</code> - Image description</li>
-<li><code>training</code> - Train LoRA models</li>
+<li><input disabled="" type="checkbox"> Signer prompts user before each payment (no auto-signing)</li>
+<li><input disabled="" type="checkbox"> Signer displays human-readable USDC amount (e.g., &quot;0.0325 USDC&quot;)</li>
+<li><input disabled="" type="checkbox"> Signer displays recipient address and network (Base)</li>
+<li><input disabled="" type="checkbox"> Signer has no &quot;approve all&quot; or &quot;trust this skill&quot; mode enabled</li>
+<li><input disabled="" type="checkbox"> Signer requires explicit user action (button/confirmation) to proceed</li>
 </ul>
-<h2>x402 Payment Flow</h2>
-<h3>Step 1: Initial Request (No Auth)</h3>
-<pre><code class="language-http">POST /api/gateway/invoke/image.generate.flux-2
-Host: seisoai.com
+<h3>2. Verify Domain &amp; TLS</h3>
+<p>Before approving any payment, confirm the gateway domain:</p>
+<ul>
+<li><input disabled="" type="checkbox"> Verify <code>https://seisoai.com</code> presents a valid TLS certificate</li>
+<li><input disabled="" type="checkbox"> Confirm the domain resolves to the expected service (not a phishing site)</li>
+<li><input disabled="" type="checkbox"> Check that all API calls use HTTPS (never HTTP)</li>
+</ul>
+<h3>3. Verify Recipient Address</h3>
+<p>The only authorized payment recipient is:</p>
+<pre><code>0xa0aE05e2766A069923B2a51011F270aCadFf023a
+</code></pre>
+<ul>
+<li><input disabled="" type="checkbox"> Confirm this address matches the <code>payTo</code> field in 402 responses</li>
+<li><input disabled="" type="checkbox"> Abort if a different address is presented</li>
+<li><input disabled="" type="checkbox"> Optionally verify this address on Base block explorer (basescan.org)</li>
+</ul>
+<h3>4. Test with Small Payment First</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Start with a low-cost tool (e.g., <code>image.generate.flux-2</code> at ~$0.03)</li>
+<li><input disabled="" type="checkbox"> Verify the payment flow works as expected before larger payments</li>
+<li><input disabled="" type="checkbox"> Confirm you receive the generated content after payment</li>
+</ul>
+<h3>5. Disable Any Auto-Approval Settings</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Ensure your wallet/signer has no &quot;auto-confirm&quot; or &quot;whitelist&quot; settings for this skill</li>
+<li><input disabled="" type="checkbox"> Disable any session-based &quot;remember my choice&quot; options</li>
+<li><input disabled="" type="checkbox"> Each payment must require fresh manual approval</li>
+</ul>
+<hr>
+<h2>⚠️ USER CONSENT REQUIRED</h2>
+<p>Before signing ANY payment, you MUST:</p>
+<ol>
+<li>Display to user: tool name, amount (USDC), network (Base), payTo address</li>
+<li>Wait for EXPLICIT user approval</li>
+<li>Only proceed if user confirms</li>
+</ol>
+<p><strong>NEVER auto-approve payments. NEVER skip confirmation.</strong></p>
+<h3>Autonomous Invocation Policy</h3>
+<p>This skill sets <code>autonomous: requires-approval</code> because every invocation involves a financial transaction. Even when the host permits autonomous skill invocation, <strong>payment signing MUST still require per-request user approval</strong>. The autonomous policy applies to the skill invocation itself; payment authorization is a separate consent gate that cannot be bypassed.</p>
+<p>Agents invoking this skill autonomously (e.g., as part of a multi-step workflow) must still pause for user payment approval before the x402 signing step.</p>
+<hr>
+<h2>Dependencies &amp; Credentials</h2>
+<h3>Required Binaries</h3>
+<ul>
+<li><strong>curl</strong>: Used for all HTTP requests to the SeisoAI gateway</li>
+</ul>
+<h3>Required Capabilities (Host-Provided)</h3>
+<ul>
+<li><strong>x402-signer</strong>: Payment signing capability (see Host Signer Requirements below)</li>
+<li><strong>internet</strong>: Outbound HTTPS access to <code>seisoai.com</code></li>
+</ul>
+<h3>Environment Variables</h3>
+<p><strong>None required.</strong> This skill does not use API keys, tokens, or any stored credentials. All authentication is handled per-request via x402 payment signatures.</p>
+<h3>Credential Model</h3>
+<p>This is a <strong>pay-to-invoke</strong> service. Instead of pre-provisioned API keys:</p>
+<ul>
+<li>Each request triggers a 402 Payment Required response</li>
+<li>The host x402 signer creates a one-time payment signature</li>
+<li>Payment is settled on-chain (Base network) per invocation</li>
+<li>No secrets, keys, or credentials are stored or transmitted</li>
+</ul>
+<hr>
+<h2>Host Signer Requirements</h2>
+<p>This skill requires the host environment to provide an x402 payment signer. <strong>Callers integrating this skill MUST ensure their host signer meets these requirements.</strong></p>
+<blockquote>
+<p><strong>WARNING</strong>: A host signer that auto-signs payments without user approval renders this skill&#39;s consent requirements ineffective and creates disproportionate financial risk. Such implementations are non-compliant.</p>
+</blockquote>
+<h3>CRITICAL: No Auto-Signing</h3>
+<ol>
+<li><strong>User prompting REQUIRED</strong>: The host signer <strong>MUST</strong> prompt the user before signing any payment. It <strong>MUST NOT</strong> auto-sign, batch-approve, or silently authorize payments.</li>
+<li><strong>Amount display</strong>: The signer must display the exact USDC amount (human-readable, not micro-units) and recipient address to the user before signing.</li>
+<li><strong>Explicit approval</strong>: The signer must require an affirmative user action (e.g., clicking &quot;Approve&quot; or typing &quot;yes&quot;) before creating the signature.</li>
+<li><strong>Per-request consent</strong>: Each payment requires fresh user approval. &quot;Remember my choice&quot; or session-based auto-approval patterns are <strong>NOT compliant</strong>.</li>
+</ol>
+<h3>Compliant vs Non-Compliant Host Signer Implementations</h3>
+<table>
+<thead>
+<tr>
+<th>Behavior</th>
+<th>Compliant</th>
+<th>Non-Compliant</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Prompt user with amount/recipient before each signature</td>
+<td>✅</td>
+<td></td>
+</tr>
+<tr>
+<td>Require explicit approve/cancel action per request</td>
+<td>✅</td>
+<td></td>
+</tr>
+<tr>
+<td>Verify payTo matches expected address</td>
+<td>✅</td>
+<td></td>
+</tr>
+<tr>
+<td>Auto-sign without user interaction</td>
+<td></td>
+<td>❌</td>
+</tr>
+<tr>
+<td>&quot;Trust this skill&quot; or &quot;approve all&quot; session settings</td>
+<td></td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Batch approval for multiple payments</td>
+<td></td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Sign without displaying amount to user</td>
+<td></td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Skip verification of payTo address</td>
+<td></td>
+<td>❌</td>
+</tr>
+</tbody></table>
+<h3>Recipient Address Verification</h3>
+<p><strong>Expected recipient address</strong>: <code>0xa0aE05e2766A069923B2a51011F270aCadFf023a</code></p>
+<p>This is the <strong>only authorized payment recipient</strong> for SeisoAI. The host signer <strong>MUST</strong>:</p>
+<ul>
+<li>Verify that <code>accepts[0].payTo</code> in the 402 response matches this address exactly</li>
+<li>Display a warning or block signing if the address differs from the expected value</li>
+<li>Allow the user to abort if the recipient address is unexpected</li>
+</ul>
+<p><strong>Why this matters</strong>: If the gateway were compromised or the agent were tricked into calling a malicious endpoint, an incorrect <code>payTo</code> address would redirect funds. Verifying the recipient protects users from payment misdirection.</p>
+<h3>Host Implementer Checklist</h3>
+<p>Before deploying a host signer for use with this skill, verify:</p>
+<ul>
+<li><input disabled="" type="checkbox"> Signer prompts user with human-readable amount (e.g., &quot;0.0325 USDC&quot;, not &quot;32500&quot;)</li>
+<li><input disabled="" type="checkbox"> Signer displays recipient address before signing</li>
+<li><input disabled="" type="checkbox"> Signer displays network (Base / eip155:8453)</li>
+<li><input disabled="" type="checkbox"> Signer requires explicit user action (button click, &quot;yes&quot; input) to proceed</li>
+<li><input disabled="" type="checkbox"> Signer has no &quot;auto-approve&quot; or &quot;trust once&quot; mode</li>
+<li><input disabled="" type="checkbox"> Signer validates payTo against expected address (<code>0xa0aE05e2766A069923B2a51011F270aCadFf023a</code>)</li>
+<li><input disabled="" type="checkbox"> Signer allows user to cancel/abort at any point</li>
+<li><input disabled="" type="checkbox"> Each invocation requires fresh approval (no session caching)</li>
+</ul>
+<h3>No Credential Storage</h3>
+<p>This skill does not use API keys, environment variables, or any stored secrets. All authentication is per-request via x402 payment signatures. The host signer handles wallet access; this skill never touches private keys.</p>
+<hr>
+<h2>Supported Gateway Routes (x402 Boundary)</h2>
+<p>x402 payment is <strong>only supported</strong> on gateway endpoints. Do not attempt x402 on other routes.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>/api/gateway/invoke/:toolId</code></td>
+<td>POST</td>
+<td>Invoke single tool</td>
+</tr>
+<tr>
+<td><code>/api/gateway/invoke</code></td>
+<td>POST</td>
+<td>Invoke with toolId in body</td>
+</tr>
+<tr>
+<td><code>/api/gateway/batch</code></td>
+<td>POST</td>
+<td>Batch invocation</td>
+</tr>
+<tr>
+<td><code>/api/gateway/orchestrate</code></td>
+<td>POST</td>
+<td>Multi-tool orchestration</td>
+</tr>
+<tr>
+<td><code>/api/gateway/orchestrate/plan</code></td>
+<td>POST</td>
+<td>Generate execution plan</td>
+</tr>
+<tr>
+<td><code>/api/gateway/orchestrate/execute</code></td>
+<td>POST</td>
+<td>Execute plan</td>
+</tr>
+<tr>
+<td><code>/api/gateway/workflows/:workflowId</code></td>
+<td>POST</td>
+<td>Execute workflow</td>
+</tr>
+<tr>
+<td><code>/api/gateway/agent/:agentId/invoke</code></td>
+<td>POST</td>
+<td>Agent-scoped invocation</td>
+</tr>
+<tr>
+<td><code>/api/gateway/agent/:agentId/orchestrate</code></td>
+<td>POST</td>
+<td>Agent orchestration</td>
+</tr>
+<tr>
+<td><code>/api/gateway/jobs/:jobId</code></td>
+<td>GET</td>
+<td>Job status polling</td>
+</tr>
+<tr>
+<td><code>/api/gateway/jobs/:jobId/result</code></td>
+<td>GET</td>
+<td>Job result retrieval</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Payment Signing Boundary (OpenClaw)</h2>
+<ol>
+<li><strong>Use host signer only</strong>: Use only the runtime-managed payment signer provided by the OpenClaw host</li>
+<li><strong>No raw keys</strong>: Never request, store, or derive raw private keys/seed phrases</li>
+<li><strong>Challenge-bound signing</strong>: Only sign x402 payment payloads tied to the current 402 challenge</li>
+<li><strong>Fail closed</strong>: If no authorized signer capability is available, return <code>payment signer unavailable</code></li>
+<li><strong>No auto-approval</strong>: Require a fresh sign operation for each new challenge</li>
+</ol>
+<hr>
+<h2>Invariants (Do Not Violate)</h2>
+<ol>
+<li>Keep request intent identical between 402 challenge and paid retry</li>
+<li>Do not mutate method/path semantics between retries</li>
+<li>Do not reuse stale or previously consumed payment signatures</li>
+<li>Treat successful queue submission as billable success</li>
+<li>Enforce destination wallet integrity: signed payment must target challenge <code>payTo</code></li>
+</ol>
+<hr>
+<h2>Agent Execution Flow</h2>
+<h3>Step 1: List tools</h3>
+<pre><code class="language-bash">curl -s &quot;https://seisoai.com/api/gateway/tools&quot;
+</code></pre>
+<h3>Step 2: Get price</h3>
+<pre><code class="language-bash">curl -s &quot;https://seisoai.com/api/gateway/price/{toolId}&quot;
+</code></pre>
+<h3>Step 3: Initial invoke (triggers 402)</h3>
+<pre><code class="language-bash">curl -s -X POST &quot;https://seisoai.com/api/gateway/invoke/{toolId}&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;prompt&quot;: &quot;...&quot;}&#39;
+</code></pre>
+<h3>Step 4: ⚠️ MANDATORY - Display payment to user, get approval</h3>
+<p>Parse <code>accepts[0]</code> from 402 response. Show user:</p>
+<ul>
+<li>Tool name</li>
+<li>Amount: <code>maxAmountRequired</code> (in USDC micro-units, divide by 1000000)</li>
+<li>Recipient: <code>payTo</code></li>
+<li>Network: Base</li>
+</ul>
+<p><strong>Wait for explicit &quot;yes&quot; before proceeding.</strong></p>
+<h3>Step 5: Sign x402 payment</h3>
+<p>Use host x402 signer with: <code>amount</code>, <code>payTo</code>, <code>network</code> from 402 response.</p>
+<h3>Step 6: Paid invoke</h3>
+<pre><code class="language-bash">curl -s -X POST &quot;https://seisoai.com/api/gateway/invoke/{toolId}&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;payment-signature: {signed_x402_payload}&quot; \
+  -d &#39;{&quot;prompt&quot;: &quot;...&quot;}&#39;
+</code></pre>
+<h3>Step 7: Poll if queued</h3>
+<p>If <code>executionMode=&quot;queue&quot;</code>, poll until complete:</p>
+<pre><code class="language-bash">curl -s &quot;https://seisoai.com/api/gateway/jobs/{jobId}?model={model}&quot;
+</code></pre>
+<p>Then fetch result:</p>
+<pre><code class="language-bash">curl -s &quot;https://seisoai.com/api/gateway/jobs/{jobId}/result?model={model}&quot;
+</code></pre>
+<h3>Step 8: Return result URL to user</h3>
+<hr>
+<h2>API Endpoints</h2>
+<h3>Discovery</h3>
+<pre><code>GET  /api/gateway                         → Gateway info, protocols, tool count
+GET  /api/gateway/tools                   → All tools (63 available)
+GET  /api/gateway/tools?category={cat}    → Filter by category
+GET  /api/gateway/tools/{toolId}          → Tool details, input schema
+GET  /api/gateway/price/{toolId}          → Pricing (USD, USDC units)
+</code></pre>
+<h3>Invocation (x402 payment required)</h3>
+<pre><code>POST /api/gateway/invoke/{toolId}         → Invoke single tool
+POST /api/gateway/invoke                  → Invoke with toolId in body
+POST /api/gateway/batch                   → Multiple tools in one request
+</code></pre>
+<h3>Job Polling</h3>
+<pre><code>GET  /api/gateway/jobs/{jobId}?model={m}        → Check status
+GET  /api/gateway/jobs/{jobId}/result?model={m} → Get completed result
+</code></pre>
+<hr>
+<h2>Tool Categories</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Tools</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>image-generation</td>
+<td><code>image.generate.flux-2</code>, <code>image.generate.flux-pro-kontext</code>, <code>image.generate.nano-banana-pro</code></td>
+</tr>
+<tr>
+<td>video-generation</td>
+<td><code>video.generate.veo3</code>, <code>video.generate.kling-2</code>, <code>video.generate.minimax</code></td>
+</tr>
+<tr>
+<td>music-generation</td>
+<td><code>music.generate</code></td>
+</tr>
+<tr>
+<td>audio-generation</td>
+<td><code>audio.tts</code>, <code>audio.tts.minimax-hd</code>, <code>video.video-to-audio</code></td>
+</tr>
+<tr>
+<td>3d-generation</td>
+<td><code>3d.image-to-3d</code>, <code>3d.text-to-3d.hunyuan-pro</code></td>
+</tr>
+<tr>
+<td>image-editing</td>
+<td><code>image.generate.flux-2-edit</code>, <code>image.generate.flux-pro-kontext-edit</code></td>
+</tr>
+<tr>
+<td>video-editing</td>
+<td><code>video.animate.wan</code></td>
+</tr>
+<tr>
+<td>image-processing</td>
+<td><code>image.upscale</code>, <code>image.extract-layer</code></td>
+</tr>
+<tr>
+<td>audio-processing</td>
+<td><code>audio.transcribe</code>, <code>audio.stem-separation</code></td>
+</tr>
+<tr>
+<td>vision</td>
+<td><code>vision.describe</code></td>
+</tr>
+<tr>
+<td>training</td>
+<td><code>training.flux-lora</code>, <code>training.flux-2</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>x402 Payment Protocol</h2>
+<h3>Step 1: Initial Request</h3>
+<pre><code class="language-http">POST https://seisoai.com/api/gateway/invoke/image.generate.flux-2
 Content-Type: application/json
 
-{&quot;prompt&quot;: &quot;a cyberpunk cityscape at sunset&quot;, &quot;aspect_ratio&quot;: &quot;16:9&quot;}
+{&quot;prompt&quot;: &quot;cyberpunk city at sunset&quot;, &quot;aspect_ratio&quot;: &quot;16:9&quot;}
 </code></pre>
-<h3>Step 2: Receive 402 Challenge</h3>
+<h3>Step 2: 402 Payment Challenge</h3>
+<p>Server returns HTTP 402 with:</p>
+<ul>
+<li><strong>Response body</strong>: JSON with payment requirements</li>
+<li><strong><code>PAYMENT-REQUIRED</code> header</strong>: Base64-encoded JSON (same content)</li>
+</ul>
 <pre><code class="language-http">HTTP/1.1 402 Payment Required
+PAYMENT-REQUIRED: eyJ4NDAyVmVyc2lvbiI6Miw...
 Content-Type: application/json
 
 {
   &quot;x402Version&quot;: 2,
   &quot;error&quot;: &quot;Payment required&quot;,
-  &quot;resource&quot;: {
-    &quot;url&quot;: &quot;https://seisoai.com/api/gateway/invoke/image.generate.flux-2&quot;,
-    &quot;description&quot;: &quot;Invoke any AI tool via the gateway&quot;,
-    &quot;mimeType&quot;: &quot;application/json&quot;
-  },
-  &quot;accepts&quot;: [
-    {
-      &quot;scheme&quot;: &quot;exact&quot;,
-      &quot;network&quot;: &quot;eip155:8453&quot;,
-      &quot;maxAmountRequired&quot;: &quot;32500&quot;,
-      &quot;asset&quot;: &quot;USDC&quot;,
-      &quot;payTo&quot;: &quot;0xa0aE05e2766A069923B2a51011F270aCadFf023a&quot;,
-      &quot;extra&quot;: {
-        &quot;priceUsd&quot;: &quot;$0.0325&quot;
-      }
-    }
-  ]
-}
-</code></pre>
-<h3>Step 3: Sign Payment</h3>
-<p>Sign an x402 payment payload using the OpenClaw host&#39;s payment signer:</p>
-<ul>
-<li>Amount: <code>accepts[0].maxAmountRequired</code> (USDC in smallest units, 6 decimals)</li>
-<li>Recipient: <code>accepts[0].payTo</code> (exact wallet from challenge)</li>
-<li>Network: <code>eip155:8453</code> (Base mainnet)</li>
-</ul>
-<h3>Step 4: Retry with Payment</h3>
-<pre><code class="language-http">POST /api/gateway/invoke/image.generate.flux-2
-Host: seisoai.com
-Content-Type: application/json
-payment-signature: &lt;signed-x402-payload&gt;
-
-{&quot;prompt&quot;: &quot;a cyberpunk cityscape at sunset&quot;, &quot;aspect_ratio&quot;: &quot;16:9&quot;}
-</code></pre>
-<h3>Step 5: Receive Result</h3>
-<p>For synchronous tools:</p>
-<pre><code class="language-json">{
-  &quot;success&quot;: true,
-  &quot;toolId&quot;: &quot;image.generate.flux-2&quot;,
-  &quot;result&quot;: {
-    &quot;images&quot;: [{&quot;url&quot;: &quot;https://...&quot;}]
-  },
-  &quot;x402&quot;: {
-    &quot;settled&quot;: true,
-    &quot;amount&quot;: &quot;32500&quot;,
-    &quot;transactionHash&quot;: &quot;0x...&quot;
-  }
-}
-</code></pre>
-<p>For async/queued tools:</p>
-<pre><code class="language-json">{
-  &quot;success&quot;: true,
-  &quot;jobId&quot;: &quot;abc123&quot;,
-  &quot;status&quot;: &quot;QUEUED&quot;,
-  &quot;pollUrl&quot;: &quot;/api/gateway/jobs/abc123&quot;
-}
-</code></pre>
-<h2>Polling Queued Jobs</h2>
-<pre><code class="language-http">GET /api/gateway/jobs/{jobId}
-Host: seisoai.com
-</code></pre>
-<p>Response:</p>
-<pre><code class="language-json">{
-  &quot;success&quot;: true,
-  &quot;jobId&quot;: &quot;abc123&quot;,
-  &quot;status&quot;: &quot;COMPLETED&quot;,
-  &quot;result&quot;: { ... }
-}
-</code></pre>
-<p>Status values: <code>QUEUED</code>, <code>IN_PROGRESS</code>, <code>COMPLETED</code>, <code>FAILED</code></p>
-<h2>Example Tool Invocations</h2>
-<h3>Image Generation</h3>
-<pre><code class="language-json">POST /api/gateway/invoke/image.generate.flux-2
-{
-  &quot;prompt&quot;: &quot;a serene japanese garden with cherry blossoms&quot;,
-  &quot;aspect_ratio&quot;: &quot;16:9&quot;,
-  &quot;num_images&quot;: 1
-}
-</code></pre>
-<h3>Video Generation</h3>
-<pre><code class="language-json">POST /api/gateway/invoke/video.generate.veo3
-{
-  &quot;prompt&quot;: &quot;a timelapse of clouds moving over mountains&quot;,
-  &quot;duration&quot;: 5
-}
-</code></pre>
-<h3>Music Generation</h3>
-<pre><code class="language-json">POST /api/gateway/invoke/music.generate
-{
-  &quot;prompt&quot;: &quot;upbeat electronic music for a tech demo&quot;,
-  &quot;duration&quot;: 30
-}
-</code></pre>
-<h3>Text to Speech</h3>
-<pre><code class="language-json">POST /api/gateway/invoke/audio.tts
-{
-  &quot;text&quot;: &quot;Hello, this is a test of the text to speech system.&quot;,
-  &quot;voice&quot;: &quot;alloy&quot;
-}
-</code></pre>
-<h3>Image to 3D</h3>
-<pre><code class="language-json">POST /api/gateway/invoke/3d.image-to-3d
-{
-  &quot;image_url&quot;: &quot;https://example.com/object.png&quot;
-}
-</code></pre>
-<h2>Pricing</h2>
-<p>Check pricing before invocation:</p>
-<pre><code class="language-http">GET /api/gateway/price/image.generate.flux-2
-</code></pre>
-<pre><code class="language-json">{
-  &quot;success&quot;: true,
-  &quot;toolId&quot;: &quot;image.generate.flux-2&quot;,
-  &quot;pricing&quot;: {
-    &quot;usd&quot;: 0.0325,
-    &quot;usdcUnits&quot;: &quot;32500&quot;
-  },
-  &quot;x402&quot;: {
+  &quot;accepts&quot;: [{
+    &quot;scheme&quot;: &quot;exact&quot;,
     &quot;network&quot;: &quot;eip155:8453&quot;,
+    &quot;maxAmountRequired&quot;: &quot;32500&quot;,
     &quot;asset&quot;: &quot;USDC&quot;,
-    &quot;amount&quot;: &quot;32500&quot;
-  }
+    &quot;payTo&quot;: &quot;0xa0aE05e2766A069923B2a51011F270aCadFf023a&quot;,
+    &quot;extra&quot;: {&quot;priceUsd&quot;: &quot;$0.0325&quot;}
+  }]
 }
 </code></pre>
-<h2>Security</h2>
-<h3>Server-Side Protections (Enforced)</h3>
-<p>The gateway enforces these protections - violations will be rejected:</p>
+<p>Parse payment requirements from either body or decode <code>PAYMENT-REQUIRED</code> header (base64).</p>
+<h3>Step 3: User Confirmation (MANDATORY)</h3>
+<p>Display to user before signing:</p>
+<pre><code>Payment Required
+Tool: image.generate.flux-2
+Amount: 0.0325 USDC (~$0.03)
+Recipient: 0xa0aE...023a (SeisoAI)
+Network: Base
+[Approve] [Cancel]
+</code></pre>
+<p><strong>Do not proceed without explicit user approval.</strong></p>
+<h3>Step 4: Paid Request</h3>
+<pre><code class="language-http">POST https://seisoai.com/api/gateway/invoke/image.generate.flux-2
+Content-Type: application/json
+payment-signature: &lt;signed_x402_payload&gt;
+
+{&quot;prompt&quot;: &quot;cyberpunk city at sunset&quot;, &quot;aspect_ratio&quot;: &quot;16:9&quot;}
+</code></pre>
+<hr>
+<h2>Response Handling</h2>
+<h3>Synchronous (<code>executionMode: &quot;sync&quot;</code>)</h3>
+<p>Result is immediate. Extract URL from <code>result</code> field (see Result Field Reference).</p>
+<h3>Queued (<code>executionMode: &quot;queue&quot;</code>)</h3>
+<p>Poll <code>job.statusUrl</code> every 5s until <code>status</code> is <code>COMPLETED</code> or <code>FAILED</code>, then fetch <code>job.resultUrl</code>.</p>
 <table>
 <thead>
 <tr>
-<th>Protection</th>
-<th>Description</th>
+<th>Status</th>
+<th>Action</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><strong>Replay prevention</strong></td>
-<td>Payment signatures are one-time use. Resubmitting a used signature returns 402 &quot;Payment signature already used&quot;</td>
+<td><code>QUEUED</code> / <code>IN_PROGRESS</code></td>
+<td>Poll again after 5s delay</td>
 </tr>
 <tr>
-<td><strong>Signature deduplication</strong></td>
-<td>Redis-backed (or in-memory fallback) cache prevents double-submission across requests</td>
+<td><code>COMPLETED</code></td>
+<td>Fetch result from <code>job.resultUrl</code></td>
 </tr>
 <tr>
-<td><strong>Wallet verification</strong></td>
-<td>CDP facilitator verifies payment was sent to the correct <code>payTo</code> address</td>
-</tr>
-<tr>
-<td><strong>Amount verification</strong></td>
-<td>Payment amount must match or exceed the <code>maxAmountRequired</code> from challenge</td>
-</tr>
-<tr>
-<td><strong>Network verification</strong></td>
-<td>Payment must be on Base mainnet (eip155:8453)</td>
-</tr>
-<tr>
-<td><strong>Route boundary</strong></td>
-<td>x402 only works on <code>/api/gateway/*</code> routes - other routes reject payment headers</td>
-</tr>
-<tr>
-<td><strong>Symbol-based auth</strong></td>
-<td>Verified payments set an unforgeable Symbol flag - cannot be spoofed via headers</td>
+<td><code>FAILED</code></td>
+<td>Return error to user</td>
 </tr>
 </tbody></table>
-<h3>Payment Signing Rules (MANDATORY)</h3>
-<ol>
-<li><strong>Use host signer only</strong>: Use the OpenClaw host&#39;s payment signer capability</li>
-<li><strong>No raw keys</strong>: Never request, store, or derive private keys</li>
-<li><strong>Sign only x402 payloads</strong>: Only sign the payment payload from 402 challenges</li>
-<li><strong>Exact recipient</strong>: Always pay to the exact <code>payTo</code> address from the challenge</li>
-<li><strong>Fresh signatures</strong>: Do not reuse payment signatures across requests</li>
-<li><strong>Fail closed</strong>: If no signer available, return error instead of skipping payment</li>
-</ol>
-<h3>Request Invariants (DO NOT VIOLATE)</h3>
-<ol>
-<li><strong>Identical intent</strong>: Keep request body identical between challenge and paid retry</li>
-<li><strong>Same method/path</strong>: Do not change HTTP method or path between retries</li>
-<li><strong>Fresh signatures</strong>: Never reuse stale or previously consumed signatures</li>
-<li><strong>Queued = billed</strong>: Treat successful queue submission as billable</li>
-<li><strong>Wallet integrity</strong>: Signed payment MUST target the challenge <code>payTo</code> address</li>
-</ol>
-<h3>What Happens on Violation</h3>
+<hr>
+<h2>Result Field Reference</h2>
 <table>
 <thead>
 <tr>
-<th>Violation</th>
-<th>Server Response</th>
+<th>Tool Type</th>
+<th>Primary Field</th>
+<th>Fallback Fields</th>
+<th>Example Payload</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>Replay signature</td>
-<td>402 &quot;Payment signature already used&quot;</td>
+<td>Image</td>
+<td><code>result.images[0].url</code></td>
+<td><code>result.images[0]</code></td>
+<td><code>{&quot;prompt&quot;: &quot;...&quot;, &quot;aspect_ratio&quot;: &quot;16:9&quot;}</code></td>
 </tr>
 <tr>
-<td>Wrong recipient</td>
-<td>402 &quot;Payment verification failed&quot;</td>
+<td>Video</td>
+<td><code>result.video.url</code></td>
+<td><code>result.video_url</code></td>
+<td><code>{&quot;prompt&quot;: &quot;...&quot;, &quot;duration&quot;: 5}</code></td>
 </tr>
 <tr>
-<td>Insufficient amount</td>
-<td>402 &quot;Payment amount insufficient&quot;</td>
+<td>Audio/TTS</td>
+<td><code>result.audio.url</code></td>
+<td><code>result.audio_url</code></td>
+<td><code>{&quot;text&quot;: &quot;...&quot;, &quot;voice&quot;: &quot;alloy&quot;}</code></td>
 </tr>
 <tr>
-<td>Wrong network</td>
-<td>402 &quot;Invalid payment network&quot;</td>
+<td>Music</td>
+<td><code>result.audio.url</code></td>
+<td><code>result.audio_url</code></td>
+<td><code>{&quot;prompt&quot;: &quot;...&quot;, &quot;duration&quot;: 30}</code></td>
 </tr>
 <tr>
-<td>Non-gateway route</td>
-<td>401 &quot;Authentication required&quot;</td>
-</tr>
-<tr>
-<td>Spoofed headers</td>
-<td>401 (Symbol flag not set)</td>
+<td>3D Model</td>
+<td><code>result.model_glb.url</code></td>
+<td><code>result.model_mesh.url</code></td>
+<td><code>{&quot;image_url&quot;: &quot;https://...&quot;}</code></td>
 </tr>
 </tbody></table>
-<h2>Rate Limits</h2>
-<table>
-<thead>
-<tr>
-<th>Scope</th>
-<th>Limit</th>
-<th>Window</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>General API</td>
-<td>500 requests</td>
-<td>15 minutes</td>
-</tr>
-<tr>
-<td>Payment operations</td>
-<td>10 requests</td>
-<td>5 minutes</td>
-</tr>
-</tbody></table>
-<p>Rate limit headers are included in responses:</p>
-<ul>
-<li><code>X-RateLimit-Limit</code>: Maximum requests allowed</li>
-<li><code>X-RateLimit-Remaining</code>: Requests remaining in window</li>
-<li><code>X-RateLimit-Reset</code>: Window reset time (ISO-8601)</li>
-<li><code>Retry-After</code>: Seconds until retry allowed (on 429)</li>
-</ul>
+<hr>
 <h2>Error Handling</h2>
 <table>
 <thead>
@@ -449,88 +592,142 @@ Host: seisoai.com
 <tbody><tr>
 <td>402</td>
 <td>Payment required</td>
-<td>Sign payment, retry</td>
+<td>Parse accepts[], sign payment, retry</td>
+</tr>
+<tr>
+<td>402 + &quot;already used&quot;</td>
+<td>Signature replay</td>
+<td>Generate fresh signature, retry</td>
 </tr>
 <tr>
 <td>400</td>
-<td>Invalid input</td>
-<td>Fix request payload</td>
+<td>Invalid request</td>
+<td>Check payload against tool schema</td>
 </tr>
 <tr>
 <td>401</td>
-<td>Auth required (not x402 route)</td>
-<td>Use correct gateway endpoint</td>
+<td>Wrong endpoint</td>
+<td>Use /api/gateway/* routes only</td>
 </tr>
 <tr>
 <td>404</td>
-<td>Tool/route not found</td>
-<td>Check tool ID spelling</td>
+<td>Tool not found</td>
+<td>Check toolId spelling</td>
 </tr>
 <tr>
 <td>429</td>
 <td>Rate limited</td>
-<td>Read <code>Retry-After</code> header, backoff with jitter</td>
+<td>Wait <code>Retry-After</code> seconds</td>
 </tr>
 <tr>
 <td>500</td>
 <td>Server error</td>
-<td>Retry with exponential backoff (max 3 attempts)</td>
+<td>Retry with exponential backoff</td>
 </tr>
 </tbody></table>
-<h2>Common Mistakes</h2>
-<ol>
-<li><strong>Reusing payment signatures</strong> - Each request needs a fresh signature</li>
-<li><strong>Changing payload on retry</strong> - Must be identical to challenged request</li>
-<li><strong>Wrong poll endpoint</strong> - Use the <code>pollUrl</code> from queue response</li>
-<li><strong>Treating 402 as error</strong> - It&#39;s the payment handshake, not a failure</li>
-<li><strong>Non-gateway endpoints</strong> - Only <code>/api/gateway/*</code> routes support x402</li>
-</ol>
-<h2>Response Schema</h2>
-<p>Successful responses include:</p>
+<hr>
+<h2>Security</h2>
+<h3>Agent MUST</h3>
+<ul>
+<li>Display payment amount to user before signing</li>
+<li>Wait for explicit user approval (&quot;yes&quot;/&quot;approve&quot;)</li>
+<li>Use host x402 signer (never handle private keys)</li>
+<li>Verify <code>payTo</code> matches 402 challenge exactly</li>
+<li>Use identical request body for retry after payment</li>
+</ul>
+<h3>Agent MUST NEVER</h3>
+<ul>
+<li>Auto-approve any payment</li>
+<li>Skip user confirmation step</li>
+<li>Reuse a payment signature (one-time use only)</li>
+<li>Request or store user private keys</li>
+<li>Modify request body between 402 and paid retry</li>
+</ul>
+<h3>Server Protections</h3>
+<ul>
+<li>Replay prevention (Redis-backed signature dedup)</li>
+<li>Wallet/amount/network verification via CDP</li>
+<li>Rate limiting: 500 req/15min, 10 payments/5min</li>
+</ul>
+<hr>
+<h2>ClawBot/OpenClaw Response Schema</h2>
+<p>All gateway endpoints return normalized responses for ClawBot/OpenClaw compatibility.</p>
+<h3>Success Response</h3>
 <pre><code class="language-json">{
-  &quot;success&quot;: true,
-  &quot;toolId&quot;: &quot;string&quot;,
-  &quot;result&quot;: { ... },
+  &quot;status&quot;: &quot;success&quot;,
+  &quot;generation_id&quot;: &quot;req_abc123&quot;,
+  &quot;confirmation_id&quot;: &quot;0x...&quot;,
+  &quot;data&quot;: { /* tool-specific result */ },
+  &quot;error&quot;: null
+}
+</code></pre>
+<h3>Error Response</h3>
+<pre><code class="language-json">{
+  &quot;status&quot;: &quot;error&quot;,
+  &quot;generation_id&quot;: &quot;req_abc123&quot;,
+  &quot;confirmation_id&quot;: &quot;&quot;,
+  &quot;data&quot;: {},
+  &quot;error&quot;: &quot;Error description&quot;
+}
+</code></pre>
+<h3>x402 Tracking Fields (SkillMD-required)</h3>
+<p>When x402 payment is used, responses include:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>x402_amount</code></td>
+<td>string</td>
+<td>USDC amount in micro-units</td>
+</tr>
+<tr>
+<td><code>x402_status</code></td>
+<td>string</td>
+<td><code>verified</code> | <code>settled</code> | <code>settlement_failed</code></td>
+</tr>
+<tr>
+<td><code>x402_confirmation_id</code></td>
+<td>string</td>
+<td>Transaction hash or signature hash</td>
+</tr>
+<tr>
+<td><code>x402_timestamp</code></td>
+<td>string</td>
+<td>ISO-8601 timestamp</td>
+</tr>
+<tr>
+<td><code>x402_recipient</code></td>
+<td>string</td>
+<td>Payment recipient address</td>
+</tr>
+</tbody></table>
+<p>Plus nested <code>x402</code> object:</p>
+<pre><code class="language-json">{
   &quot;x402&quot;: {
     &quot;settled&quot;: true,
-    &quot;amount&quot;: &quot;string&quot;,
-    &quot;transactionHash&quot;: &quot;string | null&quot;
+    &quot;transactionHash&quot;: &quot;0x...&quot;,
+    &quot;amount&quot;: &quot;32500&quot;,
+    &quot;recipient&quot;: &quot;0xa0aE05e2766A069923B2a51011F270aCadFf023a&quot;,
+    &quot;confirmationId&quot;: &quot;0x...&quot;,
+    &quot;status&quot;: &quot;settled&quot;
   }
 }
 </code></pre>
-<p>Failed responses:</p>
-<pre><code class="language-json">{
-  &quot;success&quot;: false,
-  &quot;error&quot;: &quot;string&quot;,
-  &quot;code&quot;: &quot;string (optional)&quot;
-}
+<hr>
+<h2>Quick Reference</h2>
+<pre><code>Base URL:    https://seisoai.com
+Tools:       GET /api/gateway/tools
+Price:       GET /api/gateway/price/{toolId}
+Invoke:      POST /api/gateway/invoke/{toolId}
+Job Status:  GET /api/gateway/jobs/{id}?model={m}
+Job Result:  GET /api/gateway/jobs/{id}/result?model={m}
+Payment:     USDC on Base to 0xa0aE05e2766A069923B2a51011F270aCadFf023a
 </code></pre>
-<h2>Discovery</h2>
-<h3>Gateway Info</h3>
-<pre><code class="language-http">GET /api/gateway
-</code></pre>
-<p>Returns gateway metadata, available categories, tool count, and supported protocols.</p>
-<h3>List Tools</h3>
-<pre><code class="language-http">GET /api/gateway/tools
-GET /api/gateway/tools?category=image-generation
-GET /api/gateway/tools?q=video
-</code></pre>
-<h3>Tool Details</h3>
-<pre><code class="language-http">GET /api/gateway/tools/:toolId
-</code></pre>
-<h3>Pricing</h3>
-<pre><code class="language-http">GET /api/gateway/price/:toolId
-</code></pre>
-<h2>Alternative: API Key Auth</h2>
-<p>Registered agents can also use API keys instead of x402:</p>
-<pre><code class="language-http">POST /api/gateway/invoke/image.generate.flux-2
-Host: seisoai.com
-Content-Type: application/json
-X-API-Key: sk_live_your_api_key
-
-{&quot;prompt&quot;: &quot;test&quot;}
-</code></pre>
-<p>API keys must start with <code>sk_live_</code> and be registered with SeisoAI.</p>
 
                 </div>
               </div>
@@ -617,6 +814,164 @@ X-API-Key: sk_live_your_api_key
         alert('Error: ' + error.message);
       }
     }
+
+    function updateVoteWidget(widget, toolData) {
+      if (!widget || !toolData) return;
+      const upBtn = widget.querySelector('[data-vote="1"]');
+      const downBtn = widget.querySelector('[data-vote="-1"]');
+      const countNode = widget.querySelector('.vote-count');
+      widget.dataset.rankScore = String(toolData.rankScore ?? 0);
+      widget.dataset.viewerVote = String(toolData.viewerVote ?? 0);
+
+      if (countNode) {
+        countNode.textContent = toolData.displayCount || 'New';
+      }
+      if (upBtn) {
+        upBtn.classList.toggle('is-active', Number(toolData.viewerVote) === 1);
+      }
+      if (downBtn) {
+        downBtn.classList.toggle('is-active', Number(toolData.viewerVote) === -1);
+      }
+    }
+
+    function setWidgetBusy(widget, busy) {
+      widget.dataset.busy = busy ? '1' : '0';
+      widget.querySelectorAll('.vote-btn').forEach((btn) => {
+        btn.disabled = busy;
+      });
+    }
+
+    function applySortMode(grid, mode) {
+      const cards = [...grid.querySelectorAll('.skill-card[data-tool-id]')];
+      cards.sort((a, b) => {
+        if (mode === 'community') {
+          const scoreDiff = Number(b.dataset.rankScore || 0) - Number(a.dataset.rankScore || 0);
+          if (scoreDiff !== 0) return scoreDiff;
+        }
+        return Number(a.dataset.originalIndex || 0) - Number(b.dataset.originalIndex || 0);
+      });
+      cards.forEach((card) => grid.appendChild(card));
+    }
+
+    function bindSortToggle(toolbar, grid) {
+      const buttons = toolbar.querySelectorAll('.sort-toggle-btn');
+      const status = toolbar.querySelector('.sort-status');
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const mode = btn.dataset.sortMode;
+          buttons.forEach((b) => b.classList.toggle('is-active', b === btn));
+          applySortMode(grid, mode);
+          status.textContent = mode === 'community' ? 'Community ranking active' : 'Original order active';
+        });
+      });
+    }
+
+    async function fetchScores(categoryId, toolIds) {
+      const params = new URLSearchParams({
+        categoryId,
+        toolIds: toolIds.join(',')
+      });
+      const response = await fetch('/api/v1/scores?' + params.toString(), {
+        method: 'GET',
+        credentials: 'same-origin'
+      });
+      if (!response.ok) {
+        throw new Error('Unable to fetch vote scores');
+      }
+      return response.json();
+    }
+
+    async function submitVote(widget, voteValue) {
+      const categoryId = widget.dataset.categoryId;
+      const toolId = widget.dataset.toolId;
+      setWidgetBusy(widget, true);
+      try {
+        const response = await fetch('/api/v1/vote', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            categoryId,
+            toolId,
+            vote: voteValue
+          })
+        });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(payload.error || 'Vote request failed');
+        }
+        if (payload.tool) {
+          updateVoteWidget(widget, payload.tool);
+          const card = widget.closest('.skill-card[data-tool-id]');
+          if (card) {
+            card.dataset.rankScore = String(payload.tool.rankScore ?? 0);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setWidgetBusy(widget, false);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const widgets = [...document.querySelectorAll('.vote-widget[data-category-id][data-tool-id]')];
+      if (widgets.length === 0) return;
+
+      const grouped = new Map();
+      widgets.forEach((widget) => {
+        const key = widget.dataset.categoryId;
+        if (!grouped.has(key)) grouped.set(key, new Map());
+        grouped.get(key).set(widget.dataset.toolId, widget);
+      });
+
+      for (const [categoryId, widgetMap] of grouped.entries()) {
+        const toolIds = [...widgetMap.keys()];
+        try {
+          const data = await fetchScores(categoryId, toolIds);
+          const byTool = new Map((data.tools || []).map((tool) => [tool.toolId, tool]));
+          for (const [toolId, widget] of widgetMap.entries()) {
+            const toolData = byTool.get(toolId);
+            if (toolData) {
+              updateVoteWidget(widget, toolData);
+              const card = widget.closest('.skill-card[data-tool-id]');
+              if (card) {
+                card.dataset.rankScore = String(toolData.rankScore ?? 0);
+              }
+            }
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      widgets.forEach((widget) => {
+        widget.querySelectorAll('.vote-btn').forEach((btn) => {
+          btn.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            if (widget.dataset.busy === '1') return;
+            const voteValue = Number(btn.dataset.vote);
+            submitVote(widget, voteValue).then(() => {
+              const grid = widget.closest('.skills-grid[data-category-id]');
+              const toolbar = document.querySelector('.sort-toolbar[data-category-id="' + widget.dataset.categoryId + '"]');
+              const communityBtn = toolbar ? toolbar.querySelector('.sort-toggle-btn[data-sort-mode="community"]') : null;
+              if (grid && communityBtn && communityBtn.classList.contains('is-active')) {
+                applySortMode(grid, 'community');
+              }
+            });
+          });
+        });
+      });
+
+      document.querySelectorAll('.skills-grid[data-category-id]').forEach((grid) => {
+        const categoryId = grid.dataset.categoryId;
+        const toolbar = document.querySelector('.sort-toolbar[data-category-id="' + categoryId + '"]');
+        if (!toolbar) return;
+        bindSortToggle(toolbar, grid);
+        applySortMode(grid, 'community');
+      });
+    });
   </script>
 </body>
 </html>

@@ -52,6 +52,11 @@
               </div>
               <h1 class="skill-page-title">endurance-coach</h1>
               <p class="skill-page-desc">Create personalized triathlon, marathon, and ultra-endurance</p>
+              <div class="vote-widget skill-page-vote" data-category-id="health-fitness" data-tool-id="endurance-coach">
+                <button type="button" class="vote-btn" data-vote="1" aria-label="Upvote endurance-coach">▲</button>
+                <span class="vote-count">New</span>
+                <button type="button" class="vote-btn" data-vote="-1" aria-label="Downvote endurance-coach">▼</button>
+              </div>
             </div>
           </section>
           <div class="skill-page-body">
@@ -69,7 +74,81 @@
 <p>You are an expert endurance coach specializing in triathlon, marathon, and ultra-endurance events. Your role is to create personalized, progressive training plans that rival those from professional coaches on TrainingPeaks or similar platforms.</p>
 <h2>Progressive Discovery</h2>
 <p>Keep this skill lean. When you need specifics, read the single-source references below and apply them to the current athlete. Prefer linking out instead of duplicating procedures here.</p>
+<h2>Athlete Context (Token-Optimized Coaching)</h2>
+<p><strong>CRITICAL: Check for existing athlete context BEFORE gathering any data.</strong></p>
+<h3>Decision Tree</h3>
+<pre><code>1. Check: `ls ~/.endurance-coach/Athlete_Context.md`
+   ├─ EXISTS → Read it, use as primary coaching context
+   └─ NOT FOUND → Initiate context-building workflow
+</code></pre>
+<h3>If Athlete_Context.md Exists</h3>
+<p><strong>Read it immediately.</strong> This file contains:</p>
+<ul>
+<li>Athletic foundation (proven capacity, race history, training peaks)</li>
+<li>Current life context (work, family, constraints)</li>
+<li>Training patterns from interviews (strengths, tendencies, red flags)</li>
+<li>Goals and timeframes (immediate vs ultimate)</li>
+<li>Coaching framework (how to interpret requests, what this athlete needs)</li>
+<li>Prompt engineering guidance (language patterns, framing approaches)</li>
+</ul>
+<p><strong>Use this context to inform all coaching decisions.</strong> Do not re-gather information already documented unless you suspect it&#39;s outdated.</p>
+<p><strong>Token Efficiency</strong>: Reading a curated 2-3k token context document is vastly more efficient than:</p>
+<ul>
+<li>Re-running multiple foundation queries (stats, foundation, training-load, hr-zones)</li>
+<li>Re-conducting context interviews</li>
+<li>Re-analyzing interview patterns</li>
+<li>Re-establishing coaching frameworks</li>
+</ul>
+<p>This single document provides ~10-20k tokens worth of context in 2-3k tokens.</p>
+<h3>If Athlete_Context.md Does NOT Exist</h3>
+<p>Initiate the context-building workflow:</p>
+<h4>For Strava Users (Preferred)</h4>
+<ol>
+<li><strong>Setup &amp; Sync</strong>: Check for <code>~/.endurance-coach/coach.db</code>, run <code>auth</code> then <code>sync</code> if needed</li>
+<li><strong>Foundation Assessment</strong>: Run these commands in parallel to establish baseline<ul>
+<li><code>npx endurance-coach stats</code> - Lifetime peaks, training history depth</li>
+<li><code>npx endurance-coach foundation</code> - Race history, peak weeks, capabilities</li>
+<li><code>npx endurance-coach training-load</code> - Recent load progression (12 weeks)</li>
+<li><code>npx endurance-coach hr-zones</code> - HR distribution, fitness markers</li>
+</ul>
+</li>
+<li><strong>Interview Count Check</strong>: Query <code>SELECT COUNT(*) FROM workout_interviews</code> to see if patterns exist</li>
+<li><strong>Context Interview</strong>: Conduct targeted interview covering:<ul>
+<li>Current life situation (work, family, time constraints)</li>
+<li>Recent changes that affected training (injuries, life events, breaks)</li>
+<li>Goals and timeframes (immediate vs long-term)</li>
+<li>Training philosophy and past approaches (self-coached, structured, intuitive)</li>
+<li>Physical status (injuries, niggles, recovery capacity)</li>
+<li>Success definition for current training phase</li>
+</ul>
+</li>
+<li><strong>Generate Athlete_Context.md</strong>: Write comprehensive context document at <code>~/.endurance-coach/Athlete_Context.md</code></li>
+</ol>
+<h4>For Manual (Non-Strava) Users</h4>
+<ol>
+<li><strong>Context Interview</strong>: Conduct comprehensive interview covering:<ul>
+<li>Training history (years active, peak volumes, race results)</li>
+<li>Current life situation and constraints</li>
+<li>Goals and timeframes</li>
+<li>Training philosophy and preferences</li>
+<li>Physical status and injury history</li>
+</ul>
+</li>
+<li><strong>Generate Athlete_Context.md</strong>: Write context document with clear notation that foundation data is self-reported</li>
+</ol>
+<h3>When to Update Athlete_Context.md</h3>
+<p><strong>Update the context document when:</strong></p>
+<ul>
+<li>Interview count reaches milestones (5, 10, 15+ interviews completed)</li>
+<li>Life circumstances change significantly (job change, injury, family situation)</li>
+<li>Training phase shifts (rebuild → base → structured → peak)</li>
+<li>Goals are revised or achieved</li>
+<li>Major breakthrough or setback occurs</li>
+</ul>
+<p><strong>Do NOT regenerate from scratch</strong> - edit the existing document to update specific sections while preserving historical context.</p>
+<hr>
 <h2>Initial Setup (First-Time Users)</h2>
+<p><strong>Note:</strong> Before following these steps, ensure you&#39;ve completed the Athlete Context workflow above. These steps are for data setup only, not coaching context.</p>
 <ol>
 <li>Check for existing Strava data: <code>ls ~/.endurance-coach/coach.db</code>.</li>
 <li>If no database, ask the athlete how they want to provide data (Strava or manual).</li>
@@ -146,13 +225,19 @@
 </tbody></table>
 <hr>
 <h2>Workflow Overview</h2>
-<h3>Phase 0: Setup</h3>
+<h3>Phase 0: Athlete Context (Do This First)</h3>
+<ol>
+<li>Check for <code>~/.endurance-coach/Athlete_Context.md</code></li>
+<li><strong>If exists:</strong> Read it, use as primary coaching context</li>
+<li><strong>If not:</strong> Follow context-building workflow (see &quot;Athlete Context&quot; section above)</li>
+</ol>
+<h3>Phase 1: Setup</h3>
 <ol>
 <li>Ask how athlete wants to provide data (Strava or manual)</li>
 <li><strong>If Strava:</strong> Check for existing database, gather credentials if needed, run sync</li>
 <li><strong>If Manual:</strong> Gather fitness information through conversation</li>
 </ol>
-<h3>Phase 1: Data Gathering</h3>
+<h3>Phase 2: Data Gathering</h3>
 <p><strong>If using Strava:</strong></p>
 <ol>
 <li>Read @reference/queries.md and run the assessment commands</li>
@@ -164,28 +249,211 @@
 <li>Build the assessment object from their responses</li>
 <li>Use the interpretation guidance in @reference/assessment.md</li>
 </ol>
-<h3>Phase 2: Athlete Validation</h3>
-<ol start="3">
-<li>Present your assessment to the athlete</li>
+<h3>Phase 3: Athlete Validation</h3>
+<ol>
+<li>Present your assessment to the athlete (cross-reference with Athlete_Context.md if available)</li>
 <li>Ask validation questions (injuries, constraints, goals)</li>
 <li>Adjust based on their feedback</li>
 </ol>
-<h3>Phase 3: Zone &amp; Load Setup</h3>
-<ol start="6">
+<h3>Phase 4: Zone &amp; Load Setup</h3>
+<ol>
 <li>Read @reference/zones.md to establish training zones</li>
 <li>Read @reference/load-management.md for TSS/CTL targets</li>
 </ol>
-<h3>Phase 4: Plan Design</h3>
-<ol start="8">
+<h3>Phase 5: Plan Design</h3>
+<ol>
 <li>Read @reference/periodization.md for phase structure</li>
 <li>Read @reference/workouts.md to build weekly sessions</li>
 <li>Calculate weeks until event, design phases</li>
 </ol>
-<h3>Phase 5: Plan Delivery</h3>
-<ol start="11">
+<h3>Phase 6: Plan Delivery</h3>
+<ol>
 <li>Read @reference/race-day.md for race execution section</li>
 <li>Write the plan as YAML v2.0, then render to HTML</li>
 </ol>
+<hr>
+<h2>Post-Workout Interview</h2>
+<p>Conduct post-workout interviews when athletes explicitly request them. Supports both Strava and non-Strava workflows.</p>
+<p><strong>Before starting:</strong> If <code>Athlete_Context.md</code> exists, read the &quot;Training patterns from interviews&quot; and &quot;Coaching framework&quot; sections to:</p>
+<ul>
+<li>Frame questions appropriately given athlete&#39;s tendencies</li>
+<li>Notice patterns they may be missing</li>
+<li>Use their documented language and terminology</li>
+<li>Apply appropriate coaching tone (challenging vs supportive)</li>
+</ul>
+<h3>Entry Point</h3>
+<p>Athlete explicitly requests: &quot;Can we review my workout?&quot; or &quot;I want to do a post-workout interview.&quot;</p>
+<h3>Strava-Enabled Flow</h3>
+<ol>
+<li><p>List recent workouts: <code>npx endurance-coach interview --list</code></p>
+<ul>
+<li>Auto-syncs if data is stale (no manual <code>sync</code> needed)</li>
+<li>CLI handles freshness automatically</li>
+</ul>
+</li>
+<li><p>Present options: &quot;Which workout would you like to review?&quot;</p>
+</li>
+<li><p>Get workout context: <code>npx endurance-coach interview &lt;selected_id&gt;</code></p>
+<p><strong>OR</strong> for quick access: <code>npx endurance-coach interview --latest</code> (also auto-syncs)</p>
+</li>
+</ol>
+<h3>Tiered Context Loading (Token Optimization)</h3>
+<ul>
+<li><p><strong>Default</strong> (no flags): metadata + triggers + history</p>
+<ul>
+<li>Use for: easy runs, recovery sessions, basic reviews</li>
+</ul>
+</li>
+<li><p><strong>With <code>--laps</code></strong>: adds full lap data</p>
+<ul>
+<li>Use for: workouts with intervals, tempo runs, races, structured efforts</li>
+<li>Rule: If workout type suggests structured effort, include <code>--laps</code></li>
+</ul>
+</li>
+</ul>
+<h3>Non-Strava Flow</h3>
+<ol>
+<li>Start manual capture: <code>npx endurance-coach interview --manual</code></li>
+<li>Establish workout details through conversation first</li>
+<li>Persist minimal activity: <code>npx endurance-coach activity-record</code></li>
+<li>Proceed to interview persistence</li>
+</ol>
+<h3>Interview Flow</h3>
+<ul>
+<li>Conduct 5-7 turn conversational interview</li>
+<li>Hard cap at 10 turns total</li>
+<li>If unresolved at cap, summarize and stop</li>
+</ul>
+<h3>Baseline Questions</h3>
+<ol>
+<li>How did the workout feel overall?</li>
+<li>What were the key challenges or highlights?</li>
+<li>Did you stick to the planned structure?</li>
+<li>How were energy, hydration, and mental focus?</li>
+<li>What would you change or improve next time?</li>
+</ol>
+<h3>Data-Aware Trigger Interpretation</h3>
+<p><strong>Strava mode only:</strong> Triggers are evaluated from lap data to generate context-aware questions. Check triggers with <code>npx endurance-coach triggers list</code> and configure with <code>triggers set</code>.</p>
+<h3>Artifact Generation</h3>
+<p>Generate three artifacts:</p>
+<ol>
+<li><strong>Athlete Reflection Summary</strong>: Neutral, what athlete reported</li>
+<li><strong>Coach Notes</strong>: Opinionated, may challenge perception</li>
+<li><strong>Coach Confidence</strong>: Low/Medium/High based on signal quality</li>
+</ol>
+<h3>Persistence</h3>
+<p>Save interview using the following syntax:</p>
+<pre><code class="language-bash">npx endurance-coach interview-save &lt;workout-id&gt; \
+  --reflection=&quot;&lt;athlete reflection summary&gt;&quot; \
+  --notes=&quot;&lt;coach notes&gt;&quot; \
+  --confidence=&lt;Low|Medium|High&gt;
+</code></pre>
+<ul>
+<li><code>--reflection</code>: What the athlete reported (neutral summary)</li>
+<li><code>--notes</code>: Coach&#39;s interpretation (may challenge perception)</li>
+<li><code>--confidence</code>: Signal quality assessment (default: Medium)</li>
+</ul>
+<p>Run <code>interview-save --help</code> for full usage.</p>
+<h3>Preliminary Coach Notes (After 5 Interviews)</h3>
+<p>Generate preliminary coach note only when interview_count ≥ 5. This rule exists because coaches need baseline data before forming opinions—early interviews establish patterns (e.g., athlete typically underreports effort) and confidence in patterns is too low without 5+ interviews.</p>
+<p>The preliminary note is:</p>
+<ul>
+<li>Generated silently (not shown to athlete)</li>
+<li>Used only to shape question emphasis</li>
+<li>Stored separately via:</li>
+</ul>
+<pre><code class="language-bash">npx endurance-coach preliminary-note-save &lt;workout-id&gt; \
+  --note=&quot;&lt;preliminary coach note&gt;&quot;
+</code></pre>
+<p>Run <code>preliminary-note-save --help</code> for full usage.</p>
+<p>The preliminary note is generated from the first 4 interviews to give context for the 5th interview. It helps the agent:</p>
+<ul>
+<li>Frame questions more precisely</li>
+<li>Notice patterns the athlete may be missing</li>
+<li>Avoid repeating topics already covered</li>
+</ul>
+<p><strong>Example:</strong></p>
+<p><em>Preliminary note (agent&#39;s internal view):</em>
+&quot;Based on your first 4 interviews, I notice you consistently report feeling &#39;fine&#39; on easy runs even when HR drift is elevated. This suggests you may be pushing harder than you think on recovery days.&quot;</p>
+<p><em>Shaped question for interview 5 (what athlete sees):</em>
+&quot;Your HR has been trending upward on the last few easy runs. How do you feel about the effort level on those days?&quot;</p>
+<p><em>Premature conclusion (what to avoid):</em>
+&quot;You&#39;re definitely overtraining your easy runs. Stop pushing so hard.&quot; (This would be confrontational without sufficient data)</p>
+<hr>
+<h2>Trigger Configuration</h2>
+<p>Configure data-aware question triggers collaboratively with athletes. Triggers flag workouts that need deeper review based on lap metrics.</p>
+<p><strong>Important:</strong> Triggers are optional and user-controlled. Defaults are seeded disabled and never fire unless explicitly enabled.</p>
+<h3>When to Configure</h3>
+<ul>
+<li>After first few interviews (once you&#39;ve observed patterns)</li>
+<li>When athlete explicitly requests trigger setup</li>
+<li>Periodically when training patterns change significantly</li>
+</ul>
+<h3>When to Revisit Triggers</h3>
+<p>Revisit trigger configuration when:</p>
+<ul>
+<li>Significant changes in training occur (e.g., new training block, event prep)</li>
+<li>Athlete&#39;s fitness level changes (e.g., post-injury return, performance gains)</li>
+<li>Training focus shifts (e.g., endurance to speed, base to build phase)</li>
+</ul>
+<h3>Configuration Flow</h3>
+<ol>
+<li>Check current state: <code>npx endurance-coach triggers list</code></li>
+<li>Propose candidate triggers based on observed patterns</li>
+<li>Explain each trigger concept in coaching terms</li>
+<li>Discuss and refine thresholds together</li>
+<li>Persist agreed triggers: <code>npx endurance-coach triggers set &lt;trigger_name&gt; --enabled --threshold=&lt;value&gt; --unit=&lt;unit&gt;</code></li>
+</ol>
+<h3>Trigger Types</h3>
+<p><strong>HR Drift</strong>: Heart rate rises over time at constant effort</p>
+<ul>
+<li>Indicates: fatigue, dehydration, fueling issues</li>
+<li>Example: &quot;Your HR climbed from 145 to 165 bpm during the last 30 minutes&quot;</li>
+</ul>
+<p><strong>Pace Deviation</strong>: Actual pace differs from planned target</p>
+<ul>
+<li>Indicates: pacing execution, fitness level assessment</li>
+<li>Example: &quot;You averaged 6:15/km vs the 5:45/km target&quot;</li>
+</ul>
+<p><strong>Lap Variability</strong>: Inconsistency across interval repetitions</p>
+<ul>
+<li>Indicates: fatigue accumulation, pacing discipline</li>
+<li>Example: &quot;Your 5th interval was 18 seconds slower than the 1st&quot;</li>
+</ul>
+<p><strong>Early Fade</strong>: Second half slower than first half</p>
+<ul>
+<li>Indicates: going out too hard, endurance limit</li>
+<li>Example: &quot;Your average pace dropped from 5:30/km to 5:55/km halfway through&quot;</li>
+</ul>
+<h3>Commands</h3>
+<pre><code class="language-bash"># View all configured triggers
+npx endurance-coach triggers list
+
+# Configure a trigger with threshold and unit
+npx endurance-coach triggers set &lt;type&gt; --threshold=&lt;value&gt; --unit=&lt;unit&gt; [--enabled]
+
+# Disable a trigger
+npx endurance-coach triggers disable &lt;type&gt;
+</code></pre>
+<p><strong>Available trigger types:</strong> <code>hr_drift</code>, <code>pace_deviation</code>, <code>lap_variability</code>, <code>early_fade</code></p>
+<p><strong>Available units:</strong> <code>percent</code>, <code>bpm</code>, <code>seconds</code></p>
+<h3>Default Seeds</h3>
+<p>CLI seeds four default triggers (disabled by default):</p>
+<ul>
+<li><code>hr_drift</code>: threshold 10, unit percent</li>
+<li><code>pace_deviation</code>: threshold 15, unit percent</li>
+<li><code>lap_variability</code>: threshold 20, unit percent</li>
+<li><code>early_fade</code>: threshold 10, unit percent</li>
+</ul>
+<p>Use these as starting points for discussion, not as recommendations.</p>
+<h3>Guidance</h3>
+<ul>
+<li>Explain triggers in coaching terms (what they detect and why it matters)</li>
+<li>Use examples from the athlete&#39;s recent workouts</li>
+<li>Recommend conservative thresholds initially</li>
+<li>Note that thresholds can be refined over time</li>
+<li>Emphasize this is a collaborative process, not automatic configuration</li>
+</ul>
 <hr>
 <h2>Plan Output Format (v2.0)</h2>
 <p><strong>IMPORTANT: Output training plans in the compact YAML v2.0 format, then render to HTML.</strong></p>
@@ -213,9 +481,11 @@
 <hr>
 <h2>Critical Reminders</h2>
 <ul>
+<li><strong>Check Athlete_Context.md FIRST</strong> - Read existing context before gathering any data (token optimization + coaching continuity)</li>
 <li><strong>Never skip athlete validation</strong> - Present your assessment and get confirmation before writing the plan</li>
-<li><strong>Lap-by-Lap Analysis</strong> - For interval sessions, use <code>activity &lt;id&gt; --laps</code> to check target adherence and recovery quality.</li>
+<li><strong>Lap-by-Lap Analysis</strong> - For interval sessions, use <code>activity &lt;id&gt; --laps</code> to check target adherence and recovery quality</li>
 <li><strong>Distinguish foundation from form</strong> - Recent breaks matter more than historical races</li>
+<li><strong>Use athlete&#39;s language</strong> - If Athlete_Context.md exists, use documented terminology and framing patterns</li>
 <li><strong>Zones + paces are required</strong> for the templates you use</li>
 <li><strong>Output YAML, then render HTML</strong> using <code>npx -y endurance-coach@latest render</code></li>
 <li><strong>Use <code>npx -y endurance-coach@latest schema</code></strong> when unsure about structure</li>
@@ -307,6 +577,164 @@
         alert('Error: ' + error.message);
       }
     }
+
+    function updateVoteWidget(widget, toolData) {
+      if (!widget || !toolData) return;
+      const upBtn = widget.querySelector('[data-vote="1"]');
+      const downBtn = widget.querySelector('[data-vote="-1"]');
+      const countNode = widget.querySelector('.vote-count');
+      widget.dataset.rankScore = String(toolData.rankScore ?? 0);
+      widget.dataset.viewerVote = String(toolData.viewerVote ?? 0);
+
+      if (countNode) {
+        countNode.textContent = toolData.displayCount || 'New';
+      }
+      if (upBtn) {
+        upBtn.classList.toggle('is-active', Number(toolData.viewerVote) === 1);
+      }
+      if (downBtn) {
+        downBtn.classList.toggle('is-active', Number(toolData.viewerVote) === -1);
+      }
+    }
+
+    function setWidgetBusy(widget, busy) {
+      widget.dataset.busy = busy ? '1' : '0';
+      widget.querySelectorAll('.vote-btn').forEach((btn) => {
+        btn.disabled = busy;
+      });
+    }
+
+    function applySortMode(grid, mode) {
+      const cards = [...grid.querySelectorAll('.skill-card[data-tool-id]')];
+      cards.sort((a, b) => {
+        if (mode === 'community') {
+          const scoreDiff = Number(b.dataset.rankScore || 0) - Number(a.dataset.rankScore || 0);
+          if (scoreDiff !== 0) return scoreDiff;
+        }
+        return Number(a.dataset.originalIndex || 0) - Number(b.dataset.originalIndex || 0);
+      });
+      cards.forEach((card) => grid.appendChild(card));
+    }
+
+    function bindSortToggle(toolbar, grid) {
+      const buttons = toolbar.querySelectorAll('.sort-toggle-btn');
+      const status = toolbar.querySelector('.sort-status');
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const mode = btn.dataset.sortMode;
+          buttons.forEach((b) => b.classList.toggle('is-active', b === btn));
+          applySortMode(grid, mode);
+          status.textContent = mode === 'community' ? 'Community ranking active' : 'Original order active';
+        });
+      });
+    }
+
+    async function fetchScores(categoryId, toolIds) {
+      const params = new URLSearchParams({
+        categoryId,
+        toolIds: toolIds.join(',')
+      });
+      const response = await fetch('/api/v1/scores?' + params.toString(), {
+        method: 'GET',
+        credentials: 'same-origin'
+      });
+      if (!response.ok) {
+        throw new Error('Unable to fetch vote scores');
+      }
+      return response.json();
+    }
+
+    async function submitVote(widget, voteValue) {
+      const categoryId = widget.dataset.categoryId;
+      const toolId = widget.dataset.toolId;
+      setWidgetBusy(widget, true);
+      try {
+        const response = await fetch('/api/v1/vote', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            categoryId,
+            toolId,
+            vote: voteValue
+          })
+        });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(payload.error || 'Vote request failed');
+        }
+        if (payload.tool) {
+          updateVoteWidget(widget, payload.tool);
+          const card = widget.closest('.skill-card[data-tool-id]');
+          if (card) {
+            card.dataset.rankScore = String(payload.tool.rankScore ?? 0);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setWidgetBusy(widget, false);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const widgets = [...document.querySelectorAll('.vote-widget[data-category-id][data-tool-id]')];
+      if (widgets.length === 0) return;
+
+      const grouped = new Map();
+      widgets.forEach((widget) => {
+        const key = widget.dataset.categoryId;
+        if (!grouped.has(key)) grouped.set(key, new Map());
+        grouped.get(key).set(widget.dataset.toolId, widget);
+      });
+
+      for (const [categoryId, widgetMap] of grouped.entries()) {
+        const toolIds = [...widgetMap.keys()];
+        try {
+          const data = await fetchScores(categoryId, toolIds);
+          const byTool = new Map((data.tools || []).map((tool) => [tool.toolId, tool]));
+          for (const [toolId, widget] of widgetMap.entries()) {
+            const toolData = byTool.get(toolId);
+            if (toolData) {
+              updateVoteWidget(widget, toolData);
+              const card = widget.closest('.skill-card[data-tool-id]');
+              if (card) {
+                card.dataset.rankScore = String(toolData.rankScore ?? 0);
+              }
+            }
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      widgets.forEach((widget) => {
+        widget.querySelectorAll('.vote-btn').forEach((btn) => {
+          btn.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            if (widget.dataset.busy === '1') return;
+            const voteValue = Number(btn.dataset.vote);
+            submitVote(widget, voteValue).then(() => {
+              const grid = widget.closest('.skills-grid[data-category-id]');
+              const toolbar = document.querySelector('.sort-toolbar[data-category-id="' + widget.dataset.categoryId + '"]');
+              const communityBtn = toolbar ? toolbar.querySelector('.sort-toggle-btn[data-sort-mode="community"]') : null;
+              if (grid && communityBtn && communityBtn.classList.contains('is-active')) {
+                applySortMode(grid, 'community');
+              }
+            });
+          });
+        });
+      });
+
+      document.querySelectorAll('.skills-grid[data-category-id]').forEach((grid) => {
+        const categoryId = grid.dataset.categoryId;
+        const toolbar = document.querySelector('.sort-toolbar[data-category-id="' + categoryId + '"]');
+        if (!toolbar) return;
+        bindSortToggle(toolbar, grid);
+        applySortMode(grid, 'community');
+      });
+    });
   </script>
 </body>
 </html>

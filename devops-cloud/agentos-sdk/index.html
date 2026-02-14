@@ -52,6 +52,11 @@
               </div>
               <h1 class="skill-page-title">agentos-sdk</h1>
               <p class="skill-page-desc">AgentOS is a complete accountability infrastructure for AI</p>
+              <div class="vote-widget skill-page-vote" data-category-id="devops-cloud" data-tool-id="agentos-sdk">
+                <button type="button" class="vote-btn" data-vote="1" aria-label="Upvote agentos-sdk">▲</button>
+                <span class="vote-count">New</span>
+                <button type="button" class="vote-btn" data-vote="-1" aria-label="Downvote agentos-sdk">▼</button>
+              </div>
             </div>
           </section>
           <div class="skill-page-body">
@@ -109,49 +114,107 @@ aos mesh send &lt;agent&gt; &quot;Topic&quot; &quot;Message body&quot;
 </code></pre>
 <p>This syncs memory AND upserts per-project markdown cards:
 <code>TASKS.md</code>, <code>IDEAS.md</code>, <code>CHANGELOG.md</code>, <code>CHALLENGES.md</code> → DB → Brain Dashboard.</p>
-<h2>Quick Start</h2>
-<pre><code class="language-bash"># Set environment variables
-export AGENTOS_API_KEY=&quot;your-api-key&quot;
-export AGENTOS_BASE_URL=&quot;http://178.156.216.106:3100&quot;  # or https://api.agentos.software
-export AGENTOS_AGENT_ID=&quot;your-agent-id&quot;
-
-# Source the SDK
-source /path/to/agentos.sh
-
-# Store a memory
-aos_put &quot;/memories/today&quot; &#39;{&quot;learned&quot;: &quot;something important&quot;}&#39;
-
-# Retrieve it
-aos_get &quot;/memories/today&quot;
-
-# Search semantically
-aos_search &quot;what did I learn today&quot;
-</code></pre>
-<h2>Configuration</h2>
+<h2>🏷️ Memory Categorization (REQUIRED)</h2>
+<p><strong>Every memory MUST be properly categorized.</strong> Use these 8 standard categories:</p>
 <table>
 <thead>
 <tr>
-<th>Variable</th>
-<th>Required</th>
-<th>Description</th>
+<th>Category</th>
+<th>Color</th>
+<th>Use For</th>
+<th>Path Prefix</th>
+<th>Primary Tag</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><code>AGENTOS_API_KEY</code></td>
-<td>Yes</td>
-<td>Your API key from agentos.software dashboard</td>
+<td><strong>Identity</strong></td>
+<td>🔴 Red</td>
+<td>Who you are, user profiles, team structure</td>
+<td><code>identity/</code></td>
+<td><code>[&quot;identity&quot;, ...]</code></td>
 </tr>
 <tr>
-<td><code>AGENTOS_BASE_URL</code></td>
-<td>Yes</td>
-<td>API endpoint (default: <code>http://178.156.216.106:3100</code>)</td>
+<td><strong>Knowledge</strong></td>
+<td>🟠 Orange</td>
+<td>Facts, research, documentation</td>
+<td><code>knowledge/</code></td>
+<td><code>[&quot;knowledge&quot;, ...]</code></td>
 </tr>
 <tr>
-<td><code>AGENTOS_AGENT_ID</code></td>
-<td>Yes</td>
-<td>Unique identifier for this agent instance</td>
+<td><strong>Memory</strong></td>
+<td>🟣 Purple</td>
+<td>Long-term memories, learnings, decisions</td>
+<td><code>memory/</code></td>
+<td><code>[&quot;memory&quot;, ...]</code></td>
+</tr>
+<tr>
+<td><strong>Preferences</strong></td>
+<td>🔵 Blue</td>
+<td>User preferences, settings, style</td>
+<td><code>preferences/</code></td>
+<td><code>[&quot;preferences&quot;, ...]</code></td>
+</tr>
+<tr>
+<td><strong>Projects</strong></td>
+<td>🟢 Green</td>
+<td>Active work, tasks, code context</td>
+<td><code>projects/</code></td>
+<td><code>[&quot;project&quot;, &quot;&lt;name&gt;&quot;]</code></td>
+</tr>
+<tr>
+<td><strong>Operations</strong></td>
+<td>🟤 Brown</td>
+<td>Daily logs, status, heartbeat state</td>
+<td><code>operations/</code></td>
+<td><code>[&quot;operations&quot;, ...]</code></td>
+</tr>
+<tr>
+<td><strong>Secrets</strong></td>
+<td>⚪ Gray</td>
+<td>Access info, server locations (NOT actual keys!)</td>
+<td><code>secrets/</code></td>
+<td><code>[&quot;secrets&quot;, ...]</code></td>
+</tr>
+<tr>
+<td><strong>Protocols</strong></td>
+<td>🔵 Cyan</td>
+<td>SOPs, checklists, procedures</td>
+<td><code>protocols/</code></td>
+<td><code>[&quot;protocols&quot;, ...]</code></td>
 </tr>
 </tbody></table>
+<h3>Path Structure</h3>
+<pre><code>&lt;category&gt;/&lt;subcategory&gt;/&lt;item&gt;
+
+Examples:
+identity/user/ben-profile
+knowledge/research/ai-agents-market
+memory/learnings/2026-02-mistakes
+preferences/user/communication-style
+projects/agentos/tasks
+operations/daily/2026-02-13
+secrets/access/hetzner-server
+protocols/deploy/agentos-checklist
+</code></pre>
+<h3>Tagging Rules</h3>
+<p>Every memory MUST have:</p>
+<ol>
+<li><strong>Primary category tag</strong> — one of the 8 categories</li>
+<li><strong>Subcategory tag</strong> — more specific classification</li>
+<li><strong>Optional project tag</strong> — if project-related</li>
+</ol>
+<pre><code class="language-bash"># Example: Store a learning with proper tags
+AOS_TAGS=&#39;[&quot;memory&quot;, &quot;learnings&quot;]&#39; AOS_SEARCHABLE=true \
+  aos_put &quot;/memory/learnings/2026-02-13&quot; &#39;{&quot;lesson&quot;: &quot;Always categorize memories&quot;}&#39;
+
+# Example: Store user preference
+AOS_TAGS=&#39;[&quot;preferences&quot;, &quot;user&quot;]&#39; \
+  aos_put &quot;/preferences/user/communication&quot; &#39;{&quot;style&quot;: &quot;direct, no fluff&quot;}&#39;
+</code></pre>
+<p>-------|----------|-------------|
+| <code>AGENTOS_API_KEY</code> | Yes | Your API key from agentos.software dashboard |
+| <code>AGENTOS_BASE_URL</code> | Yes | API endpoint (default: <code>http://178.156.216.106:3100</code>) |
+| <code>AGENTOS_AGENT_ID</code> | Yes | Unique identifier for this agent instance |</p>
 <h2>Core API Functions</h2>
 <h3>aos_put - Store Memory</h3>
 <pre><code class="language-bash">aos_put &lt;path&gt; &lt;value_json&gt; [options]
@@ -550,9 +613,130 @@ aos_put &quot;/context/current&quot; &quot;$(cat CONTEXT.md)&quot;
 aos_put &quot;/daily/$(date +%Y-%m-%d)&quot; &quot;$(cat memory/daily/$(date +%Y-%m-%d).md)&quot;
 </code></pre>
 <p>This ensures your context is backed up both locally AND to the AgentOS cloud.</p>
-<p>----|---------|-------------|
-| <code>mesh:message</code> | <code>{fromAgent, toAgent, topic, body, messageId}</code> | New message received |
-| <code>mesh:task_update</code> | <code>{taskId, assignedTo, title, status}</code> | Task status changed |</p>
+<hr>
+<h2>Best Practices</h2>
+<h3>1. Use Meaningful Paths</h3>
+<pre><code class="language-bash"># Good - hierarchical, descriptive
+aos_put &quot;/projects/raptor/decisions/2026-02-04-architecture&quot; &#39;...&#39;
+
+# Bad - flat, ambiguous
+aos_put &quot;/data123&quot; &#39;...&#39;
+</code></pre>
+<h3>2. Tag Everything Important</h3>
+<pre><code class="language-bash">AOS_TAGS=&#39;[&quot;decision&quot;,&quot;architecture&quot;,&quot;raptor&quot;]&#39; \
+AOS_SEARCHABLE=true \
+aos_put &quot;/projects/raptor/decisions/...&quot; &#39;...&#39;
+</code></pre>
+<h3>3. Use TTL for Ephemeral Data</h3>
+<pre><code class="language-bash"># Cache that expires in 1 hour
+AOS_TTL=3600 aos_put &quot;/cache/api-response&quot; &#39;...&#39;
+</code></pre>
+<h3>4. Search Before Asking</h3>
+<pre><code class="language-bash"># Before asking user for info, check memory
+result=$(aos_search &quot;user preferences for $TOPIC&quot; 3)
+</code></pre>
+<h3>5. Version Important Changes</h3>
+<pre><code class="language-bash"># Check history before overwriting
+aos_history &quot;/config/critical-setting&quot; 5
+# Then update
+aos_put &quot;/config/critical-setting&quot; &#39;...&#39;
+</code></pre>
+<h2>Troubleshooting</h2>
+<h3>&quot;Unauthorized&quot; errors</h3>
+<ul>
+<li>Check <code>AGENTOS_API_KEY</code> is set correctly</li>
+<li>Verify key has required scopes (<code>memory:read</code>, <code>memory:write</code>, <code>search:read</code>)</li>
+</ul>
+<h3>Empty search results</h3>
+<ul>
+<li>Ensure memories were stored with <code>searchable=true</code></li>
+<li>Check if the embedding was generated (may take a few seconds)</li>
+</ul>
+<h3>Rate limit errors</h3>
+<ul>
+<li>Implement exponential backoff</li>
+<li>Batch operations where possible</li>
+<li>Check <code>X-PreAuth-RateLimit-Remaining</code> header</li>
+</ul>
+<h2>Mesh Communication (Agent-to-Agent)</h2>
+<p>AgentOS Mesh enables real-time communication between AI agents.</p>
+<h3>Mesh Functions</h3>
+<pre><code class="language-bash"># Send a message to another agent
+aos_mesh_send &lt;to_agent&gt; &lt;topic&gt; &lt;body&gt;
+
+# Get inbox messages (sent to you)
+aos_mesh_inbox [limit]
+
+# Get outbox messages (sent by you)
+aos_mesh_outbox [limit]
+
+# Check for locally queued messages (from daemon)
+aos_mesh_pending
+
+# Process queued messages (returns JSON, clears queue)
+aos_mesh_process
+
+# List all agents on the mesh
+aos_mesh_agents
+
+# Create a task for another agent
+aos_mesh_task &lt;assigned_to&gt; &lt;title&gt; [description]
+
+# List tasks assigned to you
+aos_mesh_tasks [status]
+
+# Get mesh overview stats
+aos_mesh_stats
+
+# Get recent activity feed
+aos_mesh_activity [limit]
+
+# Check mesh connection status
+aos_mesh_status
+</code></pre>
+<h3>Example: Sending Messages</h3>
+<pre><code class="language-bash"># Send a message to another agent
+aos_mesh_send &quot;kai&quot; &quot;Project Update&quot; &quot;Finished the API integration, ready for review&quot;
+
+# Send with context
+aos_mesh_send &quot;icarus&quot; &quot;Research Request&quot; &quot;Please analyze the latest DeFi trends on Solana&quot;
+</code></pre>
+<h3>Example: Processing Incoming Messages</h3>
+<pre><code class="language-bash"># Check if there are pending messages
+aos_mesh_pending
+
+# Process and respond to messages
+messages=$(aos_mesh_process)
+echo &quot;$messages&quot; | jq -r &#39;.[] | &quot;From: \(.from) - \(.topic)&quot;&#39;
+
+# Respond to each message
+aos_mesh_send &quot;kai&quot; &quot;Re: Project Update&quot; &quot;Thanks for the update, looks good!&quot;
+</code></pre>
+<h3>Real-Time Mesh Daemon</h3>
+<p>For real-time message reception, run the mesh daemon:</p>
+<pre><code class="language-bash">node ~/clawd/bin/mesh-daemon.mjs
+</code></pre>
+<p>The daemon connects via WebSocket and queues incoming messages for processing.</p>
+<h3>Mesh Events (WebSocket)</h3>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>Payload</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>mesh:message</code></td>
+<td><code>{fromAgent, toAgent, topic, body, messageId}</code></td>
+<td>New message received</td>
+</tr>
+<tr>
+<td><code>mesh:task_update</code></td>
+<td><code>{taskId, assignedTo, title, status}</code></td>
+<td>Task status changed</td>
+</tr>
+</tbody></table>
 <h3>CLI Shortcut</h3>
 <p>A standalone CLI is also available:</p>
 <pre><code class="language-bash">~/clawd/bin/mesh status    # Connection status
@@ -650,6 +834,164 @@ aos_put &quot;/daily/$(date +%Y-%m-%d)&quot; &quot;$(cat memory/daily/$(date +%Y
         alert('Error: ' + error.message);
       }
     }
+
+    function updateVoteWidget(widget, toolData) {
+      if (!widget || !toolData) return;
+      const upBtn = widget.querySelector('[data-vote="1"]');
+      const downBtn = widget.querySelector('[data-vote="-1"]');
+      const countNode = widget.querySelector('.vote-count');
+      widget.dataset.rankScore = String(toolData.rankScore ?? 0);
+      widget.dataset.viewerVote = String(toolData.viewerVote ?? 0);
+
+      if (countNode) {
+        countNode.textContent = toolData.displayCount || 'New';
+      }
+      if (upBtn) {
+        upBtn.classList.toggle('is-active', Number(toolData.viewerVote) === 1);
+      }
+      if (downBtn) {
+        downBtn.classList.toggle('is-active', Number(toolData.viewerVote) === -1);
+      }
+    }
+
+    function setWidgetBusy(widget, busy) {
+      widget.dataset.busy = busy ? '1' : '0';
+      widget.querySelectorAll('.vote-btn').forEach((btn) => {
+        btn.disabled = busy;
+      });
+    }
+
+    function applySortMode(grid, mode) {
+      const cards = [...grid.querySelectorAll('.skill-card[data-tool-id]')];
+      cards.sort((a, b) => {
+        if (mode === 'community') {
+          const scoreDiff = Number(b.dataset.rankScore || 0) - Number(a.dataset.rankScore || 0);
+          if (scoreDiff !== 0) return scoreDiff;
+        }
+        return Number(a.dataset.originalIndex || 0) - Number(b.dataset.originalIndex || 0);
+      });
+      cards.forEach((card) => grid.appendChild(card));
+    }
+
+    function bindSortToggle(toolbar, grid) {
+      const buttons = toolbar.querySelectorAll('.sort-toggle-btn');
+      const status = toolbar.querySelector('.sort-status');
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const mode = btn.dataset.sortMode;
+          buttons.forEach((b) => b.classList.toggle('is-active', b === btn));
+          applySortMode(grid, mode);
+          status.textContent = mode === 'community' ? 'Community ranking active' : 'Original order active';
+        });
+      });
+    }
+
+    async function fetchScores(categoryId, toolIds) {
+      const params = new URLSearchParams({
+        categoryId,
+        toolIds: toolIds.join(',')
+      });
+      const response = await fetch('/api/v1/scores?' + params.toString(), {
+        method: 'GET',
+        credentials: 'same-origin'
+      });
+      if (!response.ok) {
+        throw new Error('Unable to fetch vote scores');
+      }
+      return response.json();
+    }
+
+    async function submitVote(widget, voteValue) {
+      const categoryId = widget.dataset.categoryId;
+      const toolId = widget.dataset.toolId;
+      setWidgetBusy(widget, true);
+      try {
+        const response = await fetch('/api/v1/vote', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            categoryId,
+            toolId,
+            vote: voteValue
+          })
+        });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(payload.error || 'Vote request failed');
+        }
+        if (payload.tool) {
+          updateVoteWidget(widget, payload.tool);
+          const card = widget.closest('.skill-card[data-tool-id]');
+          if (card) {
+            card.dataset.rankScore = String(payload.tool.rankScore ?? 0);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setWidgetBusy(widget, false);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const widgets = [...document.querySelectorAll('.vote-widget[data-category-id][data-tool-id]')];
+      if (widgets.length === 0) return;
+
+      const grouped = new Map();
+      widgets.forEach((widget) => {
+        const key = widget.dataset.categoryId;
+        if (!grouped.has(key)) grouped.set(key, new Map());
+        grouped.get(key).set(widget.dataset.toolId, widget);
+      });
+
+      for (const [categoryId, widgetMap] of grouped.entries()) {
+        const toolIds = [...widgetMap.keys()];
+        try {
+          const data = await fetchScores(categoryId, toolIds);
+          const byTool = new Map((data.tools || []).map((tool) => [tool.toolId, tool]));
+          for (const [toolId, widget] of widgetMap.entries()) {
+            const toolData = byTool.get(toolId);
+            if (toolData) {
+              updateVoteWidget(widget, toolData);
+              const card = widget.closest('.skill-card[data-tool-id]');
+              if (card) {
+                card.dataset.rankScore = String(toolData.rankScore ?? 0);
+              }
+            }
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      widgets.forEach((widget) => {
+        widget.querySelectorAll('.vote-btn').forEach((btn) => {
+          btn.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            if (widget.dataset.busy === '1') return;
+            const voteValue = Number(btn.dataset.vote);
+            submitVote(widget, voteValue).then(() => {
+              const grid = widget.closest('.skills-grid[data-category-id]');
+              const toolbar = document.querySelector('.sort-toolbar[data-category-id="' + widget.dataset.categoryId + '"]');
+              const communityBtn = toolbar ? toolbar.querySelector('.sort-toggle-btn[data-sort-mode="community"]') : null;
+              if (grid && communityBtn && communityBtn.classList.contains('is-active')) {
+                applySortMode(grid, 'community');
+              }
+            });
+          });
+        });
+      });
+
+      document.querySelectorAll('.skills-grid[data-category-id]').forEach((grid) => {
+        const categoryId = grid.dataset.categoryId;
+        const toolbar = document.querySelector('.sort-toolbar[data-category-id="' + categoryId + '"]');
+        if (!toolbar) return;
+        bindSortToggle(toolbar, grid);
+        applySortMode(grid, 'community');
+      });
+    });
   </script>
 </body>
 </html>

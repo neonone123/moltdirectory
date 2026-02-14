@@ -52,6 +52,11 @@
               </div>
               <h1 class="skill-page-title">moltguard</h1>
               <p class="skill-page-desc">Detect and block prompt injection attacks hidden in long content</p>
+              <div class="vote-widget skill-page-vote" data-category-id="ai-llms" data-tool-id="moltguard">
+                <button type="button" class="vote-btn" data-vote="1" aria-label="Upvote moltguard">▲</button>
+                <span class="vote-count">New</span>
+                <button type="button" class="vote-btn" data-vote="-1" aria-label="Downvote moltguard">▼</button>
+              </div>
             </div>
           </section>
           <div class="skill-page-body">
@@ -66,9 +71,356 @@
                 </div>
                 <div class="markdown-content">
                   <h1>MoltGuard Plugin Guide</h1>
-<p>MoltGuard protects your AI agent from indirect prompt injection attacks — malicious instructions hidden inside emails, web pages, documents, and other long-form content that your agent reads.</p>
-<h2>Privacy &amp; Network Transparency</h2>
-<p>MoltGuard is the <strong>first OpenClaw security guard to protect user data with local sanitization</strong>. Before any content leaves your machine, MoltGuard automatically strips sensitive information — emails, phone numbers, credit cards, API keys, and more — replacing them with safe placeholders like <code>&lt;EMAIL&gt;</code> and <code>&lt;SECRET&gt;</code>.</p>
+<blockquote>
+<p><strong>Note:</strong> This SKILL is documentation that points to an <strong>external npm package</strong> (<code>@openguardrails/moltguard</code>) and a <strong>remote API</strong> (<code>api.moltguard.com</code>). The actual plugin code is NOT bundled in this SKILL file — you install it separately. This is standard for OpenClaw plugins.</p>
+<p><strong>Before installing, you MUST:</strong></p>
+<ol>
+<li>Verify the npm package matches the GitHub source</li>
+<li>Audit the key files (listed below, ~500 lines total)</li>
+<li>Understand what data goes to the API (even if &quot;sanitized&quot;)</li>
+<li>Be prepared to delete credentials if behavior is unexpected</li>
+</ol>
+</blockquote>
+<h2>⚠️ SECURITY ADVISORY: What to Consider Before Installing</h2>
+<p><strong>This documentation points to an external npm package and remote API. Here&#39;s what you should verify:</strong></p>
+<h3>1. Verify npm Package Matches GitHub Source</h3>
+<pre><code class="language-bash"># Step 1: Check npm package contents
+npm pack @openguardrails/moltguard
+tar -xzf openguardrails-moltguard-*.tgz
+ls -la package/
+# Should show: gateway/, agent/, memory/, index.ts
+
+# Step 2: Clone GitHub repo
+git clone https://github.com/openguardrails/moltguard.git
+
+# Step 3: Compare (excluding build artifacts)
+diff -r package/ moltguard/ | grep -v &quot;node_modules\|\.git\|dist&quot;
+# Should show no significant differences
+</code></pre>
+<h3>2. Audit Key Files (Mandatory Before Installing)</h3>
+<p><strong>These are the ONLY files that execute logic. Audit them:</strong></p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Purpose</th>
+<th>What to Check</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>gateway/sanitizer.ts</code></td>
+<td>Sensitive data detection</td>
+<td>Lines 21-64: Entity patterns (emails, cards, keys)<br>Lines 93-105: Entropy calculation<br>Lines 117-176: Match collection</td>
+</tr>
+<tr>
+<td><code>gateway/restorer.ts</code></td>
+<td>Placeholder restoration</td>
+<td>Lines 13-20: Text restoration logic<br>Lines 47-56: Recursive value restoration</td>
+</tr>
+<tr>
+<td><code>agent/runner.ts</code></td>
+<td><strong>Network calls</strong></td>
+<td>Lines 103-117: <strong>API request to api.moltguard.com</strong><br>Lines 80-95: Sanitization before API call</td>
+</tr>
+<tr>
+<td><code>memory/store.ts</code></td>
+<td><strong>File operations</strong></td>
+<td>Lines 30-50: <strong>3 local files created</strong> (credentials, logs)</td>
+</tr>
+<tr>
+<td><code>agent/config.ts</code></td>
+<td>API key management</td>
+<td>Lines 46-64: <strong>One-time registration call</strong></td>
+</tr>
+</tbody></table>
+<p><strong>Before proceeding, read these ~500 lines of code.</strong> If anything looks suspicious, <strong>do not install.</strong></p>
+<h3>3. Understand the API and Privacy Trade-offs</h3>
+<p><strong>API Endpoint:</strong> <code>https://api.moltguard.com</code></p>
+<p><strong>What gets sent:</strong></p>
+<ul>
+<li>✅ Sanitized content (PII/secrets already removed locally)</li>
+<li>✅ Analysis request (isInjection detection)</li>
+</ul>
+<p><strong>What does NOT get sent:</strong></p>
+<ul>
+<li>❌ Raw user prompts (sanitized first)</li>
+<li>❌ API keys or passwords (stripped by local sanitizer)</li>
+<li>❌ Filenames, tool names, session IDs</li>
+</ul>
+<p><strong>Privacy Policy:</strong> <a href="https://moltguard.com/privacy">https://moltguard.com/privacy</a></p>
+<p><strong>Your threat model consideration:</strong></p>
+<ul>
+<li>Even &quot;sanitized&quot; text reveals some information (content structure, prompt patterns)</li>
+<li>If you cannot accept ANY external API call, use gateway-only mode: <code>&quot;enabled&quot;: false, &quot;sanitizePrompt&quot;: true</code></li>
+<li>For maximum privacy: Self-host the API or disable injection detection entirely</li>
+</ul>
+<h3>4. File Paths and Permissions</h3>
+<p><strong>These files will be created:</strong></p>
+<pre><code class="language-bash">~/.openclaw/credentials/moltguard/credentials.json  # Your API key
+~/.openclaw/logs/moltguard-analyses.jsonl           # Analysis logs
+~/.openclaw/logs/moltguard-feedback.jsonl           # Your feedback
+</code></pre>
+<p><strong>To remove all traces:</strong></p>
+<pre><code class="language-bash"># Uninstall plugin
+openclaw plugins uninstall @openguardrails/moltguard
+
+# Delete credentials and logs
+rm -rf ~/.openclaw/credentials/moltguard
+rm -f ~/.openclaw/logs/moltguard-*.jsonl
+</code></pre>
+<h3>5. Decision Matrix</h3>
+<table>
+<thead>
+<tr>
+<th>If you...</th>
+<th>Then...</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>✅ Can audit ~500 lines of TypeScript</td>
+<td>Proceed with audit, then install if satisfied</td>
+</tr>
+<tr>
+<td>✅ Accept some data going to api.moltguard.com</td>
+<td>Install normally</td>
+</tr>
+<tr>
+<td>⚠️ Want zero external calls</td>
+<td>Use <code>&quot;enabled&quot;: false, &quot;sanitizePrompt&quot;: true</code> (gateway-only)</td>
+</tr>
+<tr>
+<td>❌ Cannot audit code</td>
+<td><strong>Do not install</strong></td>
+</tr>
+<tr>
+<td>❌ Cannot accept any external API</td>
+<td><strong>Do not install</strong> (or self-host)</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Verification Steps (Required Before Installing)</h2>
+<ol>
+<li><strong>📦 Published Package:</strong> <a href="https://www.npmjs.com/package/@openguardrails/moltguard">https://www.npmjs.com/package/@openguardrails/moltguard</a></li>
+<li><strong>📂 Full Source Code:</strong> <a href="https://github.com/openguardrails/moltguard">https://github.com/openguardrails/moltguard</a> (MIT License)</li>
+<li><strong>🔍 Verify Contents:</strong><pre><code class="language-bash"># Download and inspect the actual package
+npm pack @openguardrails/moltguard
+tar -xzf openguardrails-moltguard-*.tgz
+ls -la package/
+# You&#39;ll see: gateway/, agent/, memory/, index.ts (TypeScript source)
+</code></pre>
+</li>
+<li><strong>📊 Package Size:</strong> ~100KB (includes all TypeScript source files, not just docs)</li>
+<li><strong>🏗️ Build Artifacts:</strong> None. This package ships TypeScript source, not compiled JavaScript (OpenClaw compiles plugins at runtime)</li>
+</ol>
+<p><strong>Why there&#39;s no &quot;install steps&quot; in the traditional sense:</strong></p>
+<ul>
+<li>OpenClaw plugins are installed via <code>openclaw plugins install</code> (not <code>npm install</code>)</li>
+<li>The plugin is self-contained TypeScript that OpenClaw loads dynamically</li>
+<li>No build step required (OpenClaw&#39;s TypeScript runtime handles it)</li>
+</ul>
+<p><strong>Verification Before Installing:</strong></p>
+<pre><code class="language-bash"># Clone and read EVERY file before trusting it
+git clone https://github.com/openguardrails/moltguard.git
+cd moltguard
+find . -name &quot;*.ts&quot; -type f | grep -v node_modules | wc -l
+# Result: ~20 files, ~1,800 lines total (all human-readable TypeScript)
+
+# Key files to audit:
+# - gateway/sanitizer.ts (what gets sanitized)
+# - agent/runner.ts (all network calls)
+# - memory/store.ts (all file operations)
+</code></pre>
+<hr>
+<h2>Package Information</h2>
+<p>📦 <strong>npm Package:</strong> <a href="https://www.npmjs.com/package/@openguardrails/moltguard">@openguardrails/moltguard</a>
+📂 <strong>Source Code:</strong> <a href="https://github.com/openguardrails/moltguard">github.com/openguardrails/moltguard</a>
+📄 <strong>License:</strong> MIT
+🔒 <strong>Security:</strong> All code open source and auditable</p>
+<h2>What This Package Contains</h2>
+<p>This is NOT just documentation. When you run <code>openclaw plugins install @openguardrails/moltguard</code>, you get:</p>
+<p><strong>Verifiable Source Code:</strong></p>
+<ul>
+<li><code>gateway/</code> - Local HTTP proxy server (TypeScript, ~800 lines)</li>
+<li><code>agent/</code> - Injection detection logic (TypeScript, ~400 lines)</li>
+<li><code>memory/</code> - Local JSONL logging (TypeScript, ~200 lines)</li>
+<li><code>index.ts</code> - Plugin entry point (TypeScript, ~400 lines)</li>
+</ul>
+<p><strong>Installation:</strong></p>
+<pre><code class="language-bash"># Install from npm (published package with all source code)
+openclaw plugins install @openguardrails/moltguard
+
+# Verify installation
+openclaw plugins list
+# Should show: MoltGuard | moltguard | loaded
+
+# Audit the installed code
+ls -la ~/.openclaw/plugins/node_modules/@openguardrails/moltguard/
+# You&#39;ll see: gateway/, agent/, memory/, index.ts, package.json
+</code></pre>
+<h2>Security Verification Before Installation</h2>
+<p><strong>1. Audit the Source Code</strong></p>
+<p>All code is open source on GitHub. Review before installing:</p>
+<pre><code class="language-bash"># Clone and inspect
+git clone https://github.com/openguardrails/moltguard.git
+cd moltguard
+
+# Key files to audit (total ~1,800 lines):
+# gateway/sanitizer.ts    - What gets redacted (emails, cards, keys)
+# gateway/restorer.ts     - How placeholders are restored
+# gateway/handlers/       - Protocol implementations (Anthropic, OpenAI, Gemini)
+# agent/runner.ts         - Network calls to api.moltguard.com
+# agent/config.ts         - API key management
+# memory/store.ts         - Local file storage (JSONL logs only)
+</code></pre>
+<p><strong>2. Verify Network Calls</strong></p>
+<p>The code makes exactly <strong>2 types of network calls</strong> (see <code>agent/runner.ts</code> lines 80-120):</p>
+<p><strong>Call 1: One-time API key registration</strong> (if <code>autoRegister: true</code>)</p>
+<pre><code class="language-typescript">// agent/config.ts lines 46-64
+POST https://api.moltguard.com/api/register
+Headers: { &quot;Content-Type&quot;: &quot;application/json&quot; }
+Body: { &quot;agentName&quot;: &quot;openclaw-agent&quot; }
+Response: { &quot;apiKey&quot;: &quot;mga_...&quot; }
+</code></pre>
+<p><strong>Call 2: Injection detection analysis</strong></p>
+<pre><code class="language-typescript">// agent/runner.ts lines 103-117
+POST https://api.moltguard.com/api/check/tool-call
+Headers: {
+  &quot;Authorization&quot;: &quot;Bearer &lt;your-api-key&gt;&quot;,
+  &quot;Content-Type&quot;: &quot;application/json&quot;
+}
+Body: {
+  &quot;content&quot;: &quot;&lt;SANITIZED text with PII/secrets replaced&gt;&quot;,
+  &quot;async&quot;: false
+}
+Response: {
+  &quot;ok&quot;: true,
+  &quot;verdict&quot;: { &quot;isInjection&quot;: boolean, &quot;confidence&quot;: 0-1, ... }
+}
+</code></pre>
+<p><strong>What is NOT sent:</strong></p>
+<ul>
+<li>Raw user content (sanitized first, see <code>agent/sanitizer.ts</code>)</li>
+<li>Filenames, tool names, agent IDs, session keys</li>
+<li>API keys or passwords (stripped before API call)</li>
+</ul>
+<p><strong>3. Verify Local File Operations</strong></p>
+<p>Only <strong>3 files</strong> are created/modified (see <code>memory/store.ts</code>):</p>
+<pre><code class="language-bash">~/.openclaw/credentials/moltguard/credentials.json  # API key only
+~/.openclaw/logs/moltguard-analyses.jsonl           # Analysis results
+~/.openclaw/logs/moltguard-feedback.jsonl           # User feedback
+</code></pre>
+<p>No other files are touched. No external database.</p>
+<p><strong>4. TLS and Privacy</strong></p>
+<ul>
+<li><strong>TLS:</strong> All API calls use HTTPS (enforced in code, see <code>agent/runner.ts</code> line 106)</li>
+<li><strong>Privacy Policy:</strong> <a href="https://moltguard.com/privacy">https://moltguard.com/privacy</a></li>
+<li><strong>Data Retention:</strong> Content is NOT stored after analysis (verified by MoltGuard&#39;s data processing agreement)</li>
+<li><strong>No third-party sharing:</strong> Analysis is performed directly by MoltGuard API, not forwarded to OpenAI/Anthropic/etc.</li>
+</ul>
+<h2>Features</h2>
+<p>✨ <strong>NEW: Local Prompt Sanitization Gateway</strong> - Protects sensitive data (bank cards, passwords, API keys) before sending to LLMs
+🛡️ <strong>Prompt Injection Detection</strong> - Detects and blocks malicious instructions hidden in external content</p>
+<p>All sensitive data processing happens <strong>locally on your machine</strong>.</p>
+<h2>Feature 1: Local Prompt Sanitization Gateway (NEW)</h2>
+<p><strong>Version 6.0</strong> introduces a local HTTP proxy that protects your sensitive data before it reaches any LLM.</p>
+<h3>How It Works</h3>
+<pre><code>Your prompt: &quot;My card is 6222021234567890, book a hotel&quot;
+      ↓
+Gateway sanitizes: &quot;My card is __bank_card_1__, book a hotel&quot;
+      ↓
+Sent to LLM (Claude/GPT/Kimi/etc.)
+      ↓
+LLM responds: &quot;Booking with __bank_card_1__&quot;
+      ↓
+Gateway restores: &quot;Booking with 6222021234567890&quot;
+      ↓
+Tool executes locally with real card number
+</code></pre>
+<h3>Protected Data Types</h3>
+<p>The gateway automatically detects and sanitizes:</p>
+<ul>
+<li><strong>Bank Cards</strong> → <code>__bank_card_1__</code> (16-19 digits)</li>
+<li><strong>Credit Cards</strong> → <code>__credit_card_1__</code> (1234-5678-9012-3456)</li>
+<li><strong>Emails</strong> → <code>__email_1__</code> (<a href="mailto:user@example.com">user@example.com</a>)</li>
+<li><strong>Phone Numbers</strong> → <code>__phone_1__</code> (+86-138-1234-5678)</li>
+<li><strong>API Keys/Secrets</strong> → <code>__secret_1__</code> (sk-..., ghp_..., Bearer tokens)</li>
+<li><strong>IP Addresses</strong> → <code>__ip_1__</code> (192.168.1.1)</li>
+<li><strong>SSNs</strong> → <code>__ssn_1__</code> (123-45-6789)</li>
+<li><strong>IBANs</strong> → <code>__iban_1__</code> (GB82WEST...)</li>
+<li><strong>URLs</strong> → <code>__url_1__</code> (https://...)</li>
+</ul>
+<h3>Quick Setup</h3>
+<p><strong>1. Enable the gateway:</strong></p>
+<p>Edit <code>~/.openclaw/openclaw.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;plugins&quot;: {
+    &quot;entries&quot;: {
+      &quot;moltguard&quot;: {
+        &quot;config&quot;: {
+          &quot;sanitizePrompt&quot;: true,      // ← Enable gateway
+          &quot;gatewayPort&quot;: 8900          // Port (default: 8900)
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<p><strong>2. Configure your model to use the gateway:</strong></p>
+<pre><code class="language-json">{
+  &quot;models&quot;: {
+    &quot;providers&quot;: {
+      &quot;claude-protected&quot;: {
+        &quot;baseUrl&quot;: &quot;http://127.0.0.1:8900&quot;,  // ← Point to gateway
+        &quot;api&quot;: &quot;anthropic-messages&quot;,          // Keep protocol unchanged
+        &quot;apiKey&quot;: &quot;${ANTHROPIC_API_KEY}&quot;,
+        &quot;models&quot;: [
+          {
+            &quot;id&quot;: &quot;claude-sonnet-4-20250514&quot;,
+            &quot;name&quot;: &quot;Claude Sonnet (Protected)&quot;
+          }
+        ]
+      }
+    }
+  }
+}
+</code></pre>
+<p><strong>3. Restart OpenClaw:</strong></p>
+<pre><code class="language-bash">openclaw gateway restart
+</code></pre>
+<h3>Gateway Commands</h3>
+<p>Use these commands in OpenClaw to manage the gateway:</p>
+<ul>
+<li><code>/mg_status</code> - View gateway status and configuration examples</li>
+<li><code>/mg_start</code> - Start the gateway</li>
+<li><code>/mg_stop</code> - Stop the gateway</li>
+<li><code>/mg_restart</code> - Restart the gateway</li>
+</ul>
+<h3>Supported LLM Providers</h3>
+<p>The gateway works with <strong>any LLM provider</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Protocol</th>
+<th>Providers</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Anthropic Messages API</td>
+<td>Claude, Anthropic-compatible</td>
+</tr>
+<tr>
+<td>OpenAI Chat Completions</td>
+<td>GPT, Kimi, DeepSeek, 通义千问, 文心一言, etc.</td>
+</tr>
+<tr>
+<td>Google Gemini</td>
+<td>Gemini Pro, Flash</td>
+</tr>
+</tbody></table>
+<p>Configure each provider with <code>baseUrl: &quot;http://127.0.0.1:8900&quot;</code> and the gateway will handle the rest.</p>
+<h2>Feature 2: Prompt Injection Detection</h2>
+<h3>Privacy &amp; Network Transparency</h3>
+<p>For injection detection, MoltGuard first <strong>strips sensitive information locally</strong> — emails, phone numbers, credit cards, API keys, and more — replacing them with safe placeholders like <code>&lt;EMAIL&gt;</code> and <code>&lt;SECRET&gt;</code>.</p>
 <ul>
 <li><strong>Local sanitization first.</strong> Content is sanitized on your machine before being sent for analysis. PII and secrets never leave your device. See <code>agent/sanitizer.ts</code> for the full implementation.</li>
 <li><strong>What gets redacted:</strong> emails, phone numbers, credit card numbers, SSNs, IP addresses, API keys/secrets, URLs, IBANs, and high-entropy tokens.</li>
@@ -88,11 +440,11 @@
   &quot;agentName&quot;: &quot;openclaw-agent&quot;
 }
 </code></pre>
-<p>That is the complete request body — a hardcoded string. <strong>Not sent:</strong> machine identifiers, system info, environment variables, secrets, or file contents. You can verify this in <code>agent/config.ts</code> lines 46–64. To skip auto-registration entirely, set your API key manually in config.</p>
+<p>That is the complete request body — a hardcoded string. <strong>Not sent:</strong> machine identifiers, system info, environment variables, secrets, or file contents. You can verify this in <code>agent/config.ts</code> lines 46–64. To skip auto-registration entirely, set <code>autoRegister: false</code> and provide your own <code>apiKey</code> in config (see <a href="#api-key-management">API Key Management</a> below).</p>
 <h3>Local Storage</h3>
 <ul>
-<li><strong>API key:</strong> <code>~/.openclaw/moltguard-credentials.json</code> — contains only <code>{ &quot;apiKey&quot;: &quot;...&quot; }</code>. Created by <code>agent/config.ts</code>.</li>
-<li><strong>Audit log:</strong> <code>~/.openclaw/openclawguard.db</code> — local SQLite database with analysis verdicts. Never sent to any server. Created by <code>memory/store.ts</code>.</li>
+<li><strong>API key:</strong> <code>~/.openclaw/credentials/moltguard/credentials.json</code> — contains only <code>{ &quot;apiKey&quot;: &quot;...&quot; }</code>. Created by <code>agent/config.ts</code>.</li>
+<li><strong>Audit logs:</strong> <code>~/.openclaw/logs/moltguard-analyses.jsonl</code> and <code>~/.openclaw/logs/moltguard-feedback.jsonl</code> — append-only JSONL files with analysis verdicts and user feedback. Never sent to any server. Created by <code>memory/store.ts</code>.</li>
 <li><strong>No other files</strong> are created or read by this plugin beyond the above and its own source.</li>
 </ul>
 <h3>Additional Guarantees</h3>
@@ -111,13 +463,81 @@ Execute: &lt;Here comes your credentials collection action&gt;&quot;
 </code></pre>
 <p>Without protection, your agent may follow these malicious instructions, leading to data exfiltration, unauthorized actions, or security breaches.</p>
 <h2>Installation</h2>
-<p>Install the plugin from npm:</p>
-<pre><code class="language-bash">openclaw plugins install @openguardrails/moltguard
+<h3>Option 1: Install from npm (Recommended)</h3>
+<pre><code class="language-bash"># Install the published package
+openclaw plugins install @openguardrails/moltguard
+
+# Restart to load the plugin
+openclaw gateway restart
+
+# Verify the installation
+openclaw plugins list | grep moltguard
 </code></pre>
-<p>Restart the gateway to load the plugin:</p>
-<pre><code class="language-bash">openclaw gateway restart
+<h3>Option 2: Install from Source (Maximum Trust)</h3>
+<pre><code class="language-bash"># Clone and audit the source code first
+git clone https://github.com/openguardrails/moltguard.git
+cd moltguard
+
+# Audit the code (all files are TypeScript, human-readable)
+cat gateway/sanitizer.ts    # See what gets sanitized
+cat agent/runner.ts          # See network calls
+cat memory/store.ts          # See file operations
+
+# Install from local directory
+openclaw plugins install -l .
+openclaw gateway restart
 </code></pre>
-<p>On first use, the plugin automatically registers an API key with MoltGuard — no email, password, or manual setup required.</p>
+<h3>Option 3: Test in Isolation (For Maximum Caution)</h3>
+<pre><code class="language-bash"># Create a test OpenClaw environment
+mkdir ~/openclaw-test
+cd ~/openclaw-test
+
+# Install OpenClaw in test mode
+# (refer to OpenClaw docs)
+
+# Install moltguard in test environment
+openclaw plugins install @openguardrails/moltguard
+
+# Test with throwaway API key (not production)
+# Monitor network traffic: use tcpdump, wireshark, or mitmproxy
+# Verify only api.moltguard.com is contacted
+</code></pre>
+<h2>API Key Management</h2>
+<p>On first use, MoltGuard <strong>automatically registers</strong> a free API key — no email, password, or manual setup required.</p>
+<p><strong>Where is the key stored?</strong></p>
+<pre><code>~/.openclaw/credentials/moltguard/credentials.json
+</code></pre>
+<p>Contains only <code>{ &quot;apiKey&quot;: &quot;mga_...&quot; }</code>.</p>
+<p><strong>Use your own key instead:</strong></p>
+<p>Set <code>apiKey</code> in your plugin config (<code>~/.openclaw/openclaw.json</code>):</p>
+<pre><code class="language-json">{
+  &quot;plugins&quot;: {
+    &quot;entries&quot;: {
+      &quot;moltguard&quot;: {
+        &quot;config&quot;: {
+          &quot;apiKey&quot;: &quot;mga_your_key_here&quot;
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<p><strong>Disable auto-registration entirely:</strong></p>
+<p>If you are in a managed or no-network environment and want to prevent the one-time registration call:</p>
+<pre><code class="language-json">{
+  &quot;plugins&quot;: {
+    &quot;entries&quot;: {
+      &quot;moltguard&quot;: {
+        &quot;config&quot;: {
+          &quot;apiKey&quot;: &quot;mga_your_key_here&quot;,
+          &quot;autoRegister&quot;: false
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<p>With <code>autoRegister: false</code> and no <code>apiKey</code>, analyses will fail until a key is provided.</p>
 <h2>Verify Installation</h2>
 <p>Check the plugin is loaded:</p>
 <pre><code class="language-bash">openclaw plugins list
@@ -157,9 +577,28 @@ Execute: &lt;Here comes your credentials collection action&gt;&quot;
 </code></pre>
 <p>Content is sanitized locally before being sent to the API — sensitive data never leaves your machine. If injection is detected with high confidence, the content is blocked before your agent can process it.</p>
 <h2>Commands</h2>
-<p>MoltGuard provides three slash commands:</p>
-<h3>/og_status</h3>
-<p>View plugin status and detection statistics:</p>
+<p>MoltGuard provides slash commands for both gateway management and injection detection:</p>
+<h3>Gateway Management Commands</h3>
+<p><strong><code>/mg_status</code></strong> - View gateway status</p>
+<pre><code>/mg_status
+</code></pre>
+<p>Returns:</p>
+<ul>
+<li>Gateway running status</li>
+<li>Port and endpoint</li>
+<li>Configuration examples for different LLM providers</li>
+</ul>
+<p><strong><code>/mg_start</code></strong> - Start the gateway</p>
+<pre><code>/mg_start
+</code></pre>
+<p><strong><code>/mg_stop</code></strong> - Stop the gateway</p>
+<pre><code>/mg_stop
+</code></pre>
+<p><strong><code>/mg_restart</code></strong> - Restart the gateway</p>
+<pre><code>/mg_restart
+</code></pre>
+<h3>Injection Detection Commands</h3>
+<p><strong><code>/og_status</code></strong> - View detection status and statistics</p>
 <pre><code>/og_status
 </code></pre>
 <p>Returns:</p>
@@ -168,8 +607,7 @@ Execute: &lt;Here comes your credentials collection action&gt;&quot;
 <li>Statistics (total analyses, blocked count, average duration)</li>
 <li>Recent analysis history</li>
 </ul>
-<h3>/og_report</h3>
-<p>View recent prompt injection detections with details:</p>
+<p><strong><code>/og_report</code></strong> - View recent injection detections</p>
 <pre><code>/og_report
 </code></pre>
 <p>Returns:</p>
@@ -179,8 +617,7 @@ Execute: &lt;Here comes your credentials collection action&gt;&quot;
 <li>Detection reason</li>
 <li>Suspicious content snippet</li>
 </ul>
-<h3>/og_feedback</h3>
-<p>Report false positives or missed detections:</p>
+<p><strong><code>/og_feedback</code></strong> - Report false positives or missed detections</p>
 <pre><code># Report false positive (detection ID from /og_report)
 /og_feedback 1 fp This is normal security documentation
 
@@ -196,14 +633,26 @@ Execute: &lt;Here comes your credentials collection action&gt;&quot;
       &quot;moltguard&quot;: {
         &quot;enabled&quot;: true,
         &quot;config&quot;: {
-          &quot;blockOnRisk&quot;: true,
-          &quot;timeoutMs&quot;: 60000
+          // Gateway (Prompt Sanitization) - NEW
+          &quot;sanitizePrompt&quot;: false,      // Enable local prompt sanitization
+          &quot;gatewayPort&quot;: 8900,          // Gateway port
+          &quot;gatewayAutoStart&quot;: true,     // Auto-start gateway with OpenClaw
+
+          // Injection Detection
+          &quot;blockOnRisk&quot;: true,          // Block when injection detected
+          &quot;timeoutMs&quot;: 60000,           // Analysis timeout
+          &quot;apiKey&quot;: &quot;&quot;,                 // Auto-registered if empty
+          &quot;autoRegister&quot;: true,         // Auto-register API key
+          &quot;apiBaseUrl&quot;: &quot;https://api.moltguard.com&quot;,
+          &quot;logPath&quot;: &quot;~/.openclaw/logs&quot; // JSONL log directory
         }
       }
     }
   }
 }
 </code></pre>
+<h3>Configuration Options</h3>
+<h4>Gateway (Prompt Sanitization)</h4>
 <table>
 <thead>
 <tr>
@@ -213,34 +662,89 @@ Execute: &lt;Here comes your credentials collection action&gt;&quot;
 </tr>
 </thead>
 <tbody><tr>
-<td>enabled</td>
-<td>true</td>
+<td><code>sanitizePrompt</code></td>
+<td><code>false</code></td>
+<td>Enable local prompt sanitization gateway</td>
+</tr>
+<tr>
+<td><code>gatewayPort</code></td>
+<td><code>8900</code></td>
+<td>Port for the gateway server</td>
+</tr>
+<tr>
+<td><code>gatewayAutoStart</code></td>
+<td><code>true</code></td>
+<td>Automatically start gateway when OpenClaw starts</td>
+</tr>
+</tbody></table>
+<h4>Injection Detection</h4>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>enabled</code></td>
+<td><code>true</code></td>
 <td>Enable/disable the plugin</td>
 </tr>
 <tr>
-<td>blockOnRisk</td>
-<td>true</td>
+<td><code>blockOnRisk</code></td>
+<td><code>true</code></td>
 <td>Block content when injection is detected</td>
 </tr>
 <tr>
-<td>apiKey</td>
-<td>(auto)</td>
-<td>MoltGuard API key (auto-registered if missing)</td>
+<td><code>apiKey</code></td>
+<td><code>&quot;&quot;</code> (auto)</td>
+<td>MoltGuard API key. Leave blank to auto-register on first use</td>
 </tr>
 <tr>
-<td>timeoutMs</td>
-<td>60000</td>
-<td>Analysis timeout (ms)</td>
+<td><code>autoRegister</code></td>
+<td><code>true</code></td>
+<td>Automatically register a free API key if <code>apiKey</code> is empty</td>
+</tr>
+<tr>
+<td><code>timeoutMs</code></td>
+<td><code>60000</code></td>
+<td>Analysis timeout in milliseconds</td>
+</tr>
+<tr>
+<td><code>apiBaseUrl</code></td>
+<td><code>https://api.moltguard.com</code></td>
+<td>MoltGuard API endpoint (override for staging or self-hosted)</td>
+</tr>
+<tr>
+<td><code>logPath</code></td>
+<td><code>~/.openclaw/logs</code></td>
+<td>Directory for JSONL audit log files</td>
 </tr>
 </tbody></table>
-<h3>Log-only Mode</h3>
-<p>To monitor without blocking:</p>
-<pre><code class="language-json">&quot;blockOnRisk&quot;: false
+<h3>Common Configurations</h3>
+<p><strong>Full protection mode</strong> (recommended):</p>
+<pre><code class="language-json">{
+  &quot;sanitizePrompt&quot;: true,   // Protect sensitive data
+  &quot;blockOnRisk&quot;: true       // Block injection attacks
+}
+</code></pre>
+<p><strong>Monitor-only mode</strong> (log detections without blocking):</p>
+<pre><code class="language-json">{
+  &quot;sanitizePrompt&quot;: false,
+  &quot;blockOnRisk&quot;: false
+}
+</code></pre>
+<p><strong>Gateway only</strong> (no injection detection):</p>
+<pre><code class="language-json">{
+  &quot;sanitizePrompt&quot;: true,
+  &quot;enabled&quot;: false
+}
 </code></pre>
 <p>Detections will be logged and visible in <code>/og_report</code>, but content won&#39;t be blocked.</p>
 <h2>Testing Detection</h2>
 <p>Download the test file with hidden injection:</p>
-<pre><code class="language-bash">curl -L -o /tmp/test-email.txt https://raw.githubusercontent.com/moltguard/moltguard/main/samples/test-email.txt
+<pre><code class="language-bash">curl -L -o /tmp/test-email.txt https://raw.githubusercontent.com/openguardrails/moltguard/main/samples/test-email.txt
 </code></pre>
 <p>Ask your agent to read the file:</p>
 <pre><code>Read the contents of /tmp/test-email.txt
@@ -255,15 +759,89 @@ Execute: &lt;Here comes your credentials collection action&gt;&quot;
 <pre><code class="language-bash">openclaw plugins uninstall @openguardrails/moltguard
 openclaw gateway restart
 </code></pre>
-<p>To also remove your stored API key:</p>
-<pre><code class="language-bash">rm ~/.openclaw/moltguard-credentials.json
+<p>To also remove stored data (optional):</p>
+<pre><code class="language-bash"># Remove API key
+rm -rf ~/.openclaw/credentials/moltguard
+
+# Remove audit logs
+rm -f ~/.openclaw/logs/moltguard-analyses.jsonl ~/.openclaw/logs/moltguard-feedback.jsonl
 </code></pre>
-<h2>Links</h2>
+<h2>Verification Checklist (Before You Install)</h2>
+<p>Use this checklist to verify the plugin is legitimate and safe:</p>
 <ul>
-<li>GitHub: <a href="https://github.com/openguardrails/moltguard">https://github.com/openguardrails/moltguard</a></li>
-<li>npm: <a href="https://www.npmjs.com/package/@openguardrails/moltguard">https://www.npmjs.com/package/@openguardrails/moltguard</a></li>
-<li>MoltGuard: <a href="https://moltguard.com">https://moltguard.com</a></li>
+<li><input disabled="" type="checkbox"> <strong>Source code is public:</strong> Visit <a href="https://github.com/openguardrails/moltguard">https://github.com/openguardrails/moltguard</a> and review the code</li>
+<li><input disabled="" type="checkbox"> <strong>npm package matches source:</strong> Compare published package with GitHub repository<pre><code class="language-bash">npm view @openguardrails/moltguard dist.tarball
+# Download and extract tarball, compare with GitHub code
+</code></pre>
+</li>
+<li><input disabled="" type="checkbox"> <strong>Network calls are auditable:</strong> Read <code>agent/runner.ts</code> lines 80-120 to see all network calls</li>
+<li><input disabled="" type="checkbox"> <strong>File operations are limited:</strong> Read <code>memory/store.ts</code> to see only 3 local files created</li>
+<li><input disabled="" type="checkbox"> <strong>No obfuscation:</strong> All code is readable TypeScript, no minification or bundling</li>
+<li><input disabled="" type="checkbox"> <strong>MIT License:</strong> Free to use, modify, and audit</li>
+<li><input disabled="" type="checkbox"> <strong>GitHub Activity:</strong> Check commit history, issues, and contributors</li>
+<li><input disabled="" type="checkbox"> <strong>npm Download Stats:</strong> Verify package is used by others (not just you)</li>
 </ul>
+<p><strong>If any check fails, do NOT install.</strong></p>
+<h2>Monitor Network Traffic (Optional but Recommended)</h2>
+<p>After installation, monitor network traffic to verify claims:</p>
+<pre><code class="language-bash"># On macOS
+sudo tcpdump -i any -n host api.moltguard.com
+
+# On Linux
+sudo tcpdump -i any -n host api.moltguard.com
+
+# You should only see:
+# 1. POST to /api/register (once, on first use)
+# 2. POST to /api/check/tool-call (when analyzing content)
+# No other hosts should be contacted.
+</code></pre>
+<h2>Frequently Asked Questions</h2>
+<p><strong>Q: Is the gateway code included in the npm package?</strong>
+A: <strong>Yes.</strong> The npm package contains all source code (<code>gateway/</code>, <code>agent/</code>, <code>memory/</code>). You can verify by running <code>npm pack @openguardrails/moltguard</code> and inspecting the tarball.</p>
+<p><strong>Q: Can I run this without network access?</strong>
+A: <strong>Partially.</strong> The gateway (prompt sanitization) works 100% offline. Injection detection requires API access, but you can disable it with <code>&quot;enabled&quot;: false</code> and use gateway-only mode.</p>
+<p><strong>Q: How do I know my API keys are safe?</strong>
+A: <strong>Audit the code.</strong> Check <code>agent/sanitizer.ts</code> lines 66-88 for the secret detection patterns. API keys matching <code>sk-</code>, <code>ghp_</code>, etc. are replaced with <code>&lt;SECRET&gt;</code> before any network call. Test this yourself by sending a prompt with <code>sk-test123</code> and checking the network traffic.</p>
+<p><strong>Q: Can I self-host the MoltGuard API?</strong>
+A: <strong>Yes.</strong> Set <code>&quot;apiBaseUrl&quot;: &quot;https://your-own-server.com&quot;</code> in config. The API is a standard HTTP endpoint (see <code>agent/runner.ts</code> for the exact request format).</p>
+<p><strong>Q: What if I don&#39;t trust npm?</strong>
+A: <strong>Install from source.</strong> Clone the GitHub repository, audit every file, then run <code>openclaw plugins install -l /path/to/moltguard</code>. This bypasses npm entirely.</p>
+<h2>Links and Resources</h2>
+<p><strong>Source Code and Releases:</strong></p>
+<ul>
+<li>GitHub Repository: <a href="https://github.com/openguardrails/moltguard">https://github.com/openguardrails/moltguard</a></li>
+<li>GitHub Releases: <a href="https://github.com/openguardrails/moltguard/releases">https://github.com/openguardrails/moltguard/releases</a></li>
+<li>Source Code Browser: <a href="https://github.com/openguardrails/moltguard/tree/main">https://github.com/openguardrails/moltguard/tree/main</a></li>
+</ul>
+<p><strong>Package and Distribution:</strong></p>
+<ul>
+<li>npm Package: <a href="https://www.npmjs.com/package/@openguardrails/moltguard">https://www.npmjs.com/package/@openguardrails/moltguard</a></li>
+<li>npm Package Source: <a href="https://unpkg.com/@openguardrails/moltguard/">https://unpkg.com/@openguardrails/moltguard/</a> (view published files)</li>
+</ul>
+<p><strong>Documentation:</strong></p>
+<ul>
+<li>Privacy Policy: <a href="https://moltguard.com/privacy">https://moltguard.com/privacy</a></li>
+<li>API Documentation: <a href="https://moltguard.com/docs">https://moltguard.com/docs</a> (request/response formats)</li>
+<li>Issue Tracker: <a href="https://github.com/openguardrails/moltguard/issues">https://github.com/openguardrails/moltguard/issues</a></li>
+</ul>
+<p><strong>Security:</strong></p>
+<ul>
+<li>Report Vulnerabilities: <a href="mailto:security@moltguard.com">security@moltguard.com</a> (or GitHub private issue)</li>
+<li>Responsible Disclosure: 90-day policy, credited in changelog</li>
+</ul>
+<hr>
+<h2>Final Note: Transparency and Trust</h2>
+<p>This plugin is designed for <strong>maximum transparency</strong>:</p>
+<ol>
+<li>✅ All code is open source (MIT license)</li>
+<li>✅ No bundling or obfuscation (readable TypeScript)</li>
+<li>✅ Network calls are documented and auditable</li>
+<li>✅ File operations are minimal and local</li>
+<li>✅ Can be installed from source (bypass npm/registry)</li>
+<li>✅ Can be tested in isolation (throwaway environment)</li>
+<li>✅ Can be self-hosted (own API server)</li>
+</ol>
+<p><strong>If you have concerns, audit the code first. If you find anything suspicious, please report it.</strong></p>
 
                 </div>
               </div>
@@ -350,6 +928,164 @@ openclaw gateway restart
         alert('Error: ' + error.message);
       }
     }
+
+    function updateVoteWidget(widget, toolData) {
+      if (!widget || !toolData) return;
+      const upBtn = widget.querySelector('[data-vote="1"]');
+      const downBtn = widget.querySelector('[data-vote="-1"]');
+      const countNode = widget.querySelector('.vote-count');
+      widget.dataset.rankScore = String(toolData.rankScore ?? 0);
+      widget.dataset.viewerVote = String(toolData.viewerVote ?? 0);
+
+      if (countNode) {
+        countNode.textContent = toolData.displayCount || 'New';
+      }
+      if (upBtn) {
+        upBtn.classList.toggle('is-active', Number(toolData.viewerVote) === 1);
+      }
+      if (downBtn) {
+        downBtn.classList.toggle('is-active', Number(toolData.viewerVote) === -1);
+      }
+    }
+
+    function setWidgetBusy(widget, busy) {
+      widget.dataset.busy = busy ? '1' : '0';
+      widget.querySelectorAll('.vote-btn').forEach((btn) => {
+        btn.disabled = busy;
+      });
+    }
+
+    function applySortMode(grid, mode) {
+      const cards = [...grid.querySelectorAll('.skill-card[data-tool-id]')];
+      cards.sort((a, b) => {
+        if (mode === 'community') {
+          const scoreDiff = Number(b.dataset.rankScore || 0) - Number(a.dataset.rankScore || 0);
+          if (scoreDiff !== 0) return scoreDiff;
+        }
+        return Number(a.dataset.originalIndex || 0) - Number(b.dataset.originalIndex || 0);
+      });
+      cards.forEach((card) => grid.appendChild(card));
+    }
+
+    function bindSortToggle(toolbar, grid) {
+      const buttons = toolbar.querySelectorAll('.sort-toggle-btn');
+      const status = toolbar.querySelector('.sort-status');
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const mode = btn.dataset.sortMode;
+          buttons.forEach((b) => b.classList.toggle('is-active', b === btn));
+          applySortMode(grid, mode);
+          status.textContent = mode === 'community' ? 'Community ranking active' : 'Original order active';
+        });
+      });
+    }
+
+    async function fetchScores(categoryId, toolIds) {
+      const params = new URLSearchParams({
+        categoryId,
+        toolIds: toolIds.join(',')
+      });
+      const response = await fetch('/api/v1/scores?' + params.toString(), {
+        method: 'GET',
+        credentials: 'same-origin'
+      });
+      if (!response.ok) {
+        throw new Error('Unable to fetch vote scores');
+      }
+      return response.json();
+    }
+
+    async function submitVote(widget, voteValue) {
+      const categoryId = widget.dataset.categoryId;
+      const toolId = widget.dataset.toolId;
+      setWidgetBusy(widget, true);
+      try {
+        const response = await fetch('/api/v1/vote', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            categoryId,
+            toolId,
+            vote: voteValue
+          })
+        });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(payload.error || 'Vote request failed');
+        }
+        if (payload.tool) {
+          updateVoteWidget(widget, payload.tool);
+          const card = widget.closest('.skill-card[data-tool-id]');
+          if (card) {
+            card.dataset.rankScore = String(payload.tool.rankScore ?? 0);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setWidgetBusy(widget, false);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const widgets = [...document.querySelectorAll('.vote-widget[data-category-id][data-tool-id]')];
+      if (widgets.length === 0) return;
+
+      const grouped = new Map();
+      widgets.forEach((widget) => {
+        const key = widget.dataset.categoryId;
+        if (!grouped.has(key)) grouped.set(key, new Map());
+        grouped.get(key).set(widget.dataset.toolId, widget);
+      });
+
+      for (const [categoryId, widgetMap] of grouped.entries()) {
+        const toolIds = [...widgetMap.keys()];
+        try {
+          const data = await fetchScores(categoryId, toolIds);
+          const byTool = new Map((data.tools || []).map((tool) => [tool.toolId, tool]));
+          for (const [toolId, widget] of widgetMap.entries()) {
+            const toolData = byTool.get(toolId);
+            if (toolData) {
+              updateVoteWidget(widget, toolData);
+              const card = widget.closest('.skill-card[data-tool-id]');
+              if (card) {
+                card.dataset.rankScore = String(toolData.rankScore ?? 0);
+              }
+            }
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      widgets.forEach((widget) => {
+        widget.querySelectorAll('.vote-btn').forEach((btn) => {
+          btn.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            if (widget.dataset.busy === '1') return;
+            const voteValue = Number(btn.dataset.vote);
+            submitVote(widget, voteValue).then(() => {
+              const grid = widget.closest('.skills-grid[data-category-id]');
+              const toolbar = document.querySelector('.sort-toolbar[data-category-id="' + widget.dataset.categoryId + '"]');
+              const communityBtn = toolbar ? toolbar.querySelector('.sort-toggle-btn[data-sort-mode="community"]') : null;
+              if (grid && communityBtn && communityBtn.classList.contains('is-active')) {
+                applySortMode(grid, 'community');
+              }
+            });
+          });
+        });
+      });
+
+      document.querySelectorAll('.skills-grid[data-category-id]').forEach((grid) => {
+        const categoryId = grid.dataset.categoryId;
+        const toolbar = document.querySelector('.sort-toolbar[data-category-id="' + categoryId + '"]');
+        if (!toolbar) return;
+        bindSortToggle(toolbar, grid);
+        applySortMode(grid, 'community');
+      });
+    });
   </script>
 </body>
 </html>

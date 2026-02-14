@@ -52,6 +52,11 @@
               </div>
               <h1 class="skill-page-title">jira</h1>
               <p class="skill-page-desc">Manage Jira issues, boards, sprints, and projects via the jira-cli</p>
+              <div class="vote-widget skill-page-vote" data-category-id="productivity-tasks" data-tool-id="jira">
+                <button type="button" class="vote-btn" data-vote="1" aria-label="Upvote jira">▲</button>
+                <span class="vote-count">New</span>
+                <button type="button" class="vote-btn" data-vote="-1" aria-label="Downvote jira">▼</button>
+              </div>
             </div>
           </section>
           <div class="skill-page-body">
@@ -65,61 +70,289 @@
                   </button>
                 </div>
                 <div class="markdown-content">
-                  <h1>jira</h1>
-<p>Use <code>jira</code> to manage Jira issues, sprints, and boards. Requires API token setup.</p>
-<h2>Setup (once)</h2>
+                  <h1>Jira</h1>
+<p>Natural language interaction with Jira. Supports multiple backends.</p>
+<h2>Backend Detection</h2>
+<p><strong>Run this check first</strong> to determine which backend to use:</p>
+<pre><code>1. Check if jira CLI is available:
+   → Run: which jira
+   → If found: USE CLI BACKEND
+
+2. If no CLI, check for Atlassian MCP:
+   → Look for mcp__atlassian__* tools
+   → If available: USE MCP BACKEND
+
+3. If neither available:
+   → GUIDE USER TO SETUP
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Backend</th>
+<th>When to Use</th>
+<th>Reference</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>CLI</strong></td>
+<td><code>jira</code> command available</td>
+<td><code>references/commands.md</code></td>
+</tr>
+<tr>
+<td><strong>MCP</strong></td>
+<td>Atlassian MCP tools available</td>
+<td><code>references/mcp.md</code></td>
+</tr>
+<tr>
+<td><strong>None</strong></td>
+<td>Neither available</td>
+<td>Guide to install CLI</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Quick Reference (CLI)</h2>
+<blockquote>
+<p>Skip this section if using MCP backend.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Intent</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>View issue</td>
+<td><code>jira issue view ISSUE-KEY</code></td>
+</tr>
+<tr>
+<td>List my issues</td>
+<td><code>jira issue list -a$(jira me)</code></td>
+</tr>
+<tr>
+<td>My in-progress</td>
+<td><code>jira issue list -a$(jira me) -s&quot;In Progress&quot;</code></td>
+</tr>
+<tr>
+<td>Create issue</td>
+<td><code>jira issue create -tType -s&quot;Summary&quot; -b&quot;Description&quot;</code></td>
+</tr>
+<tr>
+<td>Move/transition</td>
+<td><code>jira issue move ISSUE-KEY &quot;State&quot;</code></td>
+</tr>
+<tr>
+<td>Assign to me</td>
+<td><code>jira issue assign ISSUE-KEY $(jira me)</code></td>
+</tr>
+<tr>
+<td>Unassign</td>
+<td><code>jira issue assign ISSUE-KEY x</code></td>
+</tr>
+<tr>
+<td>Add comment</td>
+<td><code>jira issue comment add ISSUE-KEY -b&quot;Comment text&quot;</code></td>
+</tr>
+<tr>
+<td>Open in browser</td>
+<td><code>jira open ISSUE-KEY</code></td>
+</tr>
+<tr>
+<td>Current sprint</td>
+<td><code>jira sprint list --state active</code></td>
+</tr>
+<tr>
+<td>Who am I</td>
+<td><code>jira me</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Quick Reference (MCP)</h2>
+<blockquote>
+<p>Skip this section if using CLI backend.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Intent</th>
+<th>MCP Tool</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Search issues</td>
+<td><code>mcp__atlassian__searchJiraIssuesUsingJql</code></td>
+</tr>
+<tr>
+<td>View issue</td>
+<td><code>mcp__atlassian__getJiraIssue</code></td>
+</tr>
+<tr>
+<td>Create issue</td>
+<td><code>mcp__atlassian__createJiraIssue</code></td>
+</tr>
+<tr>
+<td>Update issue</td>
+<td><code>mcp__atlassian__editJiraIssue</code></td>
+</tr>
+<tr>
+<td>Get transitions</td>
+<td><code>mcp__atlassian__getTransitionsForJiraIssue</code></td>
+</tr>
+<tr>
+<td>Transition</td>
+<td><code>mcp__atlassian__transitionJiraIssue</code></td>
+</tr>
+<tr>
+<td>Add comment</td>
+<td><code>mcp__atlassian__addCommentToJiraIssue</code></td>
+</tr>
+<tr>
+<td>User lookup</td>
+<td><code>mcp__atlassian__lookupJiraAccountId</code></td>
+</tr>
+<tr>
+<td>List projects</td>
+<td><code>mcp__atlassian__getVisibleJiraProjects</code></td>
+</tr>
+</tbody></table>
+<p>See <code>references/mcp.md</code> for full MCP patterns.</p>
+<hr>
+<h2>Triggers</h2>
+<ul>
+<li>&quot;create a jira ticket&quot;</li>
+<li>&quot;show me PROJ-123&quot;</li>
+<li>&quot;list my tickets&quot;</li>
+<li>&quot;move ticket to done&quot;</li>
+<li>&quot;what&#39;s in the current sprint&quot;</li>
+</ul>
+<hr>
+<h2>Issue Key Detection</h2>
+<p>Issue keys follow the pattern: <code>[A-Z]+-[0-9]+</code> (e.g., PROJ-123, ABC-1).</p>
+<p>When a user mentions an issue key in conversation:</p>
+<ul>
+<li><strong>CLI:</strong> <code>jira issue view KEY</code> or <code>jira open KEY</code></li>
+<li><strong>MCP:</strong> <code>mcp__atlassian__jira_get_issue</code> with the key</li>
+</ul>
+<hr>
+<h2>Workflow</h2>
+<p><strong>Creating tickets:</strong></p>
 <ol>
-<li>Generate an API token: <a href="https://id.atlassian.com/manage-profile/security/api-tokens">https://id.atlassian.com/manage-profile/security/api-tokens</a></li>
-<li>Export it: <code>export JIRA_API_TOKEN=&quot;your-token&quot;</code> (add to ~/.zshrc for persistence)</li>
-<li>Initialize: <code>jira init --server https://your-org.atlassian.net --login you@email.com --installation cloud</code></li>
+<li>Research context if user references code/tickets/PRs</li>
+<li>Draft ticket content</li>
+<li>Review with user</li>
+<li>Create using appropriate backend</li>
 </ol>
-<h2>Common commands</h2>
-<h3>Issues</h3>
+<p><strong>Updating tickets:</strong></p>
+<ol>
+<li>Fetch issue details first</li>
+<li>Check status (careful with in-progress tickets)</li>
+<li>Show current vs proposed changes</li>
+<li>Get approval before updating</li>
+<li>Add comment explaining changes</li>
+</ol>
+<hr>
+<h2>Before Any Operation</h2>
+<p>Ask yourself:</p>
+<ol>
+<li><p><strong>What&#39;s the current state?</strong> — Always fetch the issue first. Don&#39;t assume status, assignee, or fields are what user thinks they are.</p>
+</li>
+<li><p><strong>Who else is affected?</strong> — Check watchers, linked issues, parent epics. A &quot;simple edit&quot; might notify 10 people.</p>
+</li>
+<li><p><strong>Is this reversible?</strong> — Transitions may have one-way gates. Some workflows require intermediate states. Description edits have no undo.</p>
+</li>
+<li><p><strong>Do I have the right identifiers?</strong> — Issue keys, transition IDs, account IDs. Display names don&#39;t work for assignment (MCP).</p>
+</li>
+</ol>
+<hr>
+<h2>NEVER</h2>
 <ul>
-<li>List issues: <code>jira issue list -p PROJECT</code></li>
-<li>View issue: <code>jira issue view PROJ-123</code></li>
-<li>Create issue: <code>jira issue create -p PROJECT -t &quot;Task&quot; -s &quot;Summary&quot; -b &quot;Description&quot;</code></li>
-<li>Edit issue: <code>jira issue edit PROJ-123 -s &quot;New summary&quot;</code></li>
-<li>Assign issue: <code>jira issue assign PROJ-123 &quot;user@email.com&quot;</code></li>
-<li>Transition issue: <code>jira issue move PROJ-123 &quot;In Progress&quot;</code></li>
-<li>Comment: <code>jira issue comment add PROJ-123 &quot;My comment&quot;</code></li>
-<li>Search (JQL): <code>jira issue list -q &quot;project = MKT AND status = &#39;To Do&#39;&quot;</code></li>
+<li><p><strong>NEVER transition without fetching current status</strong> — Workflows may require intermediate states. &quot;To Do&quot; → &quot;Done&quot; might fail silently if &quot;In Progress&quot; is required first.</p>
+</li>
+<li><p><strong>NEVER assign using display name (MCP)</strong> — Only account IDs work. Always call <code>lookupJiraAccountId</code> first, or assignment silently fails.</p>
+</li>
+<li><p><strong>NEVER edit description without showing original</strong> — Jira has no undo. User must see what they&#39;re replacing.</p>
+</li>
+<li><p><strong>NEVER use <code>--no-input</code> without all required fields (CLI)</strong> — Fails silently with cryptic errors. Check project&#39;s required fields first.</p>
+</li>
+<li><p><strong>NEVER assume transition names are universal</strong> — &quot;Done&quot;, &quot;Closed&quot;, &quot;Complete&quot; vary by project. Always get available transitions first.</p>
+</li>
+<li><p><strong>NEVER bulk-modify without explicit approval</strong> — Each ticket change notifies watchers. 10 edits = 10 notification storms.</p>
+</li>
 </ul>
-<h3>Sprints</h3>
+<hr>
+<h2>Safety</h2>
 <ul>
-<li>List sprints: <code>jira sprint list -p PROJECT</code></li>
-<li>View active sprint: <code>jira sprint list -p PROJECT --state active</code></li>
-<li>Sprint issues: <code>jira sprint list -p PROJECT --state active --plain</code></li>
+<li>Always show the command/tool call before running it</li>
+<li>Always get approval before modifying tickets</li>
+<li>Preserve original information when editing</li>
+<li>Verify updates after applying</li>
+<li>Always surface authentication issues clearly so the user can resolve them</li>
 </ul>
-<h3>Boards</h3>
+<hr>
+<h2>No Backend Available</h2>
+<p>If neither CLI nor MCP is available, guide the user:</p>
+<pre><code>To use Jira, you need one of:
+
+1. **jira CLI** (recommended):
+   https://github.com/ankitpokhrel/jira-cli
+
+   Install: brew install ankitpokhrel/jira-cli/jira-cli
+   Setup:   jira init
+
+2. **Atlassian MCP**:
+   Configure in your MCP settings with Atlassian credentials.
+</code></pre>
+<hr>
+<h2>Deep Dive</h2>
+<p><strong>LOAD reference when:</strong></p>
 <ul>
-<li>List boards: <code>jira board list -p PROJECT</code></li>
+<li>Creating issues with complex fields or multi-line content</li>
+<li>Building JQL queries beyond simple filters</li>
+<li>Troubleshooting errors or authentication issues</li>
+<li>Working with transitions, linking, or sprints</li>
 </ul>
-<h3>Epics</h3>
+<p><strong>Do NOT load reference for:</strong></p>
 <ul>
-<li>List epics: <code>jira epic list -p PROJECT</code></li>
-<li>View epic: <code>jira epic view PROJ-100</code></li>
+<li>Simple view/list operations (Quick Reference above is sufficient)</li>
+<li>Basic status checks (<code>jira issue view KEY</code>)</li>
+<li>Opening issues in browser</li>
 </ul>
-<h3>Projects</h3>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Load Reference?</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>View single issue</td>
+<td>No</td>
+</tr>
+<tr>
+<td>List my tickets</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Create with description</td>
+<td><strong>Yes</strong> — CLI needs <code>/tmp</code> pattern</td>
+</tr>
+<tr>
+<td>Transition issue</td>
+<td><strong>Yes</strong> — need transition ID workflow</td>
+</tr>
+<tr>
+<td>JQL search</td>
+<td><strong>Yes</strong> — for complex queries</td>
+</tr>
+<tr>
+<td>Link issues</td>
+<td><strong>Yes</strong> — MCP limitation, need script</td>
+</tr>
+</tbody></table>
+<p>References:</p>
 <ul>
-<li>List projects: <code>jira project list</code></li>
-</ul>
-<h2>Output formats</h2>
-<ul>
-<li><code>--plain</code> — Tab-separated, no colors (best for scripting)</li>
-<li><code>--columns key,summary,status</code> — Select columns</li>
-<li><code>--no-truncate</code> — Don&#39;t truncate long fields</li>
-</ul>
-<h2>Tips</h2>
-<ul>
-<li>Set default project in config: <code>~/.config/.jira/.config.yml</code></li>
-<li>Use JQL for complex queries: <code>-q &quot;assignee = currentUser() AND status != Done&quot;</code></li>
-<li>Open in browser: <code>jira open PROJ-123</code></li>
-</ul>
-<h2>Notes</h2>
-<ul>
-<li>Confirm with user before creating/editing/transitioning issues</li>
-<li>For bulk operations, show what will change before executing</li>
+<li>CLI patterns: <code>references/commands.md</code></li>
+<li>MCP patterns: <code>references/mcp.md</code></li>
 </ul>
 
                 </div>
@@ -207,6 +440,164 @@
         alert('Error: ' + error.message);
       }
     }
+
+    function updateVoteWidget(widget, toolData) {
+      if (!widget || !toolData) return;
+      const upBtn = widget.querySelector('[data-vote="1"]');
+      const downBtn = widget.querySelector('[data-vote="-1"]');
+      const countNode = widget.querySelector('.vote-count');
+      widget.dataset.rankScore = String(toolData.rankScore ?? 0);
+      widget.dataset.viewerVote = String(toolData.viewerVote ?? 0);
+
+      if (countNode) {
+        countNode.textContent = toolData.displayCount || 'New';
+      }
+      if (upBtn) {
+        upBtn.classList.toggle('is-active', Number(toolData.viewerVote) === 1);
+      }
+      if (downBtn) {
+        downBtn.classList.toggle('is-active', Number(toolData.viewerVote) === -1);
+      }
+    }
+
+    function setWidgetBusy(widget, busy) {
+      widget.dataset.busy = busy ? '1' : '0';
+      widget.querySelectorAll('.vote-btn').forEach((btn) => {
+        btn.disabled = busy;
+      });
+    }
+
+    function applySortMode(grid, mode) {
+      const cards = [...grid.querySelectorAll('.skill-card[data-tool-id]')];
+      cards.sort((a, b) => {
+        if (mode === 'community') {
+          const scoreDiff = Number(b.dataset.rankScore || 0) - Number(a.dataset.rankScore || 0);
+          if (scoreDiff !== 0) return scoreDiff;
+        }
+        return Number(a.dataset.originalIndex || 0) - Number(b.dataset.originalIndex || 0);
+      });
+      cards.forEach((card) => grid.appendChild(card));
+    }
+
+    function bindSortToggle(toolbar, grid) {
+      const buttons = toolbar.querySelectorAll('.sort-toggle-btn');
+      const status = toolbar.querySelector('.sort-status');
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const mode = btn.dataset.sortMode;
+          buttons.forEach((b) => b.classList.toggle('is-active', b === btn));
+          applySortMode(grid, mode);
+          status.textContent = mode === 'community' ? 'Community ranking active' : 'Original order active';
+        });
+      });
+    }
+
+    async function fetchScores(categoryId, toolIds) {
+      const params = new URLSearchParams({
+        categoryId,
+        toolIds: toolIds.join(',')
+      });
+      const response = await fetch('/api/v1/scores?' + params.toString(), {
+        method: 'GET',
+        credentials: 'same-origin'
+      });
+      if (!response.ok) {
+        throw new Error('Unable to fetch vote scores');
+      }
+      return response.json();
+    }
+
+    async function submitVote(widget, voteValue) {
+      const categoryId = widget.dataset.categoryId;
+      const toolId = widget.dataset.toolId;
+      setWidgetBusy(widget, true);
+      try {
+        const response = await fetch('/api/v1/vote', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            categoryId,
+            toolId,
+            vote: voteValue
+          })
+        });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(payload.error || 'Vote request failed');
+        }
+        if (payload.tool) {
+          updateVoteWidget(widget, payload.tool);
+          const card = widget.closest('.skill-card[data-tool-id]');
+          if (card) {
+            card.dataset.rankScore = String(payload.tool.rankScore ?? 0);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setWidgetBusy(widget, false);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const widgets = [...document.querySelectorAll('.vote-widget[data-category-id][data-tool-id]')];
+      if (widgets.length === 0) return;
+
+      const grouped = new Map();
+      widgets.forEach((widget) => {
+        const key = widget.dataset.categoryId;
+        if (!grouped.has(key)) grouped.set(key, new Map());
+        grouped.get(key).set(widget.dataset.toolId, widget);
+      });
+
+      for (const [categoryId, widgetMap] of grouped.entries()) {
+        const toolIds = [...widgetMap.keys()];
+        try {
+          const data = await fetchScores(categoryId, toolIds);
+          const byTool = new Map((data.tools || []).map((tool) => [tool.toolId, tool]));
+          for (const [toolId, widget] of widgetMap.entries()) {
+            const toolData = byTool.get(toolId);
+            if (toolData) {
+              updateVoteWidget(widget, toolData);
+              const card = widget.closest('.skill-card[data-tool-id]');
+              if (card) {
+                card.dataset.rankScore = String(toolData.rankScore ?? 0);
+              }
+            }
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      widgets.forEach((widget) => {
+        widget.querySelectorAll('.vote-btn').forEach((btn) => {
+          btn.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            if (widget.dataset.busy === '1') return;
+            const voteValue = Number(btn.dataset.vote);
+            submitVote(widget, voteValue).then(() => {
+              const grid = widget.closest('.skills-grid[data-category-id]');
+              const toolbar = document.querySelector('.sort-toolbar[data-category-id="' + widget.dataset.categoryId + '"]');
+              const communityBtn = toolbar ? toolbar.querySelector('.sort-toggle-btn[data-sort-mode="community"]') : null;
+              if (grid && communityBtn && communityBtn.classList.contains('is-active')) {
+                applySortMode(grid, 'community');
+              }
+            });
+          });
+        });
+      });
+
+      document.querySelectorAll('.skills-grid[data-category-id]').forEach((grid) => {
+        const categoryId = grid.dataset.categoryId;
+        const toolbar = document.querySelector('.sort-toolbar[data-category-id="' + categoryId + '"]');
+        if (!toolbar) return;
+        bindSortToggle(toolbar, grid);
+        applySortMode(grid, 'community');
+      });
+    });
   </script>
 </body>
 </html>

@@ -52,6 +52,11 @@
               </div>
               <h1 class="skill-page-title">fast-io</h1>
               <p class="skill-page-desc">Cloud file management and collaboration platform</p>
+              <div class="vote-widget skill-page-vote" data-category-id="self-hosted-automation" data-tool-id="fast-io">
+                <button type="button" class="vote-btn" data-vote="1" aria-label="Upvote fast-io">▲</button>
+                <span class="vote-count">New</span>
+                <button type="button" class="vote-btn" data-vote="-1" aria-label="Downvote fast-io">▼</button>
+              </div>
             </div>
           </section>
           <div class="skill-page-body">
@@ -66,9 +71,9 @@
                 </div>
                 <div class="markdown-content">
                   <h1>Fast.io MCP Server -- AI Agent Guide</h1>
-<p><strong>Version:</strong> 1.43
-<strong>Last Updated:</strong> 2026-02-09</p>
-<p>The definitive guide for AI agents using the Fast.io MCP server. Covers why and how to use the platform: product capabilities, the free agent plan, authentication, core concepts (workspaces, shares, intelligence, previews, comments, URL import, ownership transfer), 10 end-to-end workflows, and all 14 consolidated tools with action-based routing.</p>
+<p><strong>Version:</strong> 1.54
+<strong>Last Updated:</strong> 2026-02-13</p>
+<p>The definitive guide for AI agents using the Fast.io MCP server. Covers why and how to use the platform: product capabilities, the free agent plan, authentication, core concepts (workspaces, shares, intelligence, previews, comments, URL import, metadata, ownership transfer), 10 end-to-end workflows, and all 14 consolidated tools with action-based routing.</p>
 <blockquote>
 <p><strong>Versioned guide.</strong> This guide is versioned and updated with each server release. The version number at the top of this document tracks tool parameters, ID formats, and API behavior changes. If you encounter unexpected errors, the guide version may have changed since you last read it.</p>
 </blockquote>
@@ -77,10 +82,10 @@
 </blockquote>
 <hr>
 <h2>1. Overview</h2>
-<p><strong>Store files. Share with humans. Query with AI. All through one API -- free.</strong></p>
-<p>Fast.io is a cloud storage and collaboration platform that gives AI agents a complete file management, sharing, and intelligence layer. Upload outputs, create branded data rooms, ask questions about documents using built-in RAG, and hand everything off to a human when the job is done. No infrastructure to manage, no subscriptions to set up, no credit card required.</p>
+<p><strong>Workspaces for Agentic Teams. Collaborate, share, and query with AI -- all through one API, free.</strong></p>
+<p>Fast.io provides workspaces for agentic teams -- where agents collaborate with other agents and with humans. Upload outputs, create branded data rooms, ask questions about documents using built-in AI, and hand everything off to a human when the job is done. No infrastructure to manage, no subscriptions to set up, no credit card required.</p>
 <h3>The Problem Fast.io Solves</h3>
-<p>AI agents generate files, reports, datasets, and deliverables -- but getting those outputs to humans is messy. You end up cobbling together S3 buckets, presigned URLs, email attachments, and custom download pages. Every agent reinvents file sharing, and none of it looks professional.</p>
+<p>Agentic teams -- groups of agents working together and with humans -- need a shared place to work. Today, agents cobble together S3 buckets, presigned URLs, email attachments, and custom download pages. Every agent reinvents collaboration, and there is no shared workspace where agents and humans can see the same files, track activity, and hand off work.</p>
 <p>When agents need to <em>understand</em> documents -- not just store them -- they have to download files, parse dozens of formats, build search indexes, and manage their own RAG pipeline. That is a lot of infrastructure for what should be a simple question: &quot;What does this document say?&quot;</p>
 <table>
 <thead>
@@ -90,16 +95,20 @@
 </tr>
 </thead>
 <tbody><tr>
-<td>Nowhere professional to put agent outputs</td>
-<td>Branded workspaces and data rooms with file preview for 10+ formats</td>
+<td>No shared workspace for agentic teams</td>
+<td>Workspaces where agents and humans collaborate with file preview, versioning, and AI</td>
 </tr>
 <tr>
-<td>Sharing files with humans is awkward</td>
+<td>Agent-to-agent coordination lacks structure</td>
+<td>Shared workspaces with activity feeds, comments, and real-time sync across team members</td>
+</tr>
+<tr>
+<td>Sharing outputs with humans is awkward</td>
 <td>Purpose-built shares (Send, Receive, Exchange) with link sharing, passwords, expiration</td>
 </tr>
 <tr>
 <td>Collecting files from humans is harder</td>
-<td>Receive shares let humans upload directly to you -- no email attachments</td>
+<td>Receive shares let humans upload directly to your workspace -- no email attachments</td>
 </tr>
 <tr>
 <td>Understanding document contents</td>
@@ -159,12 +168,12 @@
 <tr>
 <td><code>session://status</code></td>
 <td>session-status</td>
-<td>Current authentication state: <code>authenticated</code> boolean, <code>user_id</code>, <code>user_email</code>, <code>token_expires_at</code> (Unix epoch), <code>token_expires_at_iso</code> (ISO 8601)</td>
+<td>Current authentication state: <code>authenticated</code> boolean, <code>user_id</code>, <code>user_email</code>, <code>token_expires_at</code> (Unix epoch), <code>token_expires_at_iso</code> (ISO 8601), <code>scopes</code> (array of granted scopes or null), <code>agent_name</code> (string or null)</td>
 <td><code>application/json</code></td>
 </tr>
 </tbody></table>
 <h3>MCP Prompts</h3>
-<p>The server provides 5 guided prompts for complex, multi-step operations via <code>prompts/list</code> and <code>prompts/get</code>:</p>
+<p>The server provides 6 guided prompts for complex, multi-step operations via <code>prompts/list</code> and <code>prompts/get</code>:</p>
 <table>
 <thead>
 <tr>
@@ -192,12 +201,16 @@
 <td><code>catch-up</code></td>
 <td>Understand what happened. AI-powered activity summaries, event search with filters, real-time change monitoring with activity-poll, and the polling loop pattern.</td>
 </tr>
+<tr>
+<td><code>metadata</code></td>
+<td>Structured metadata on files. Template setup (create, assign), setting values, AI extraction, querying files by metadata, and version tracking.</td>
+</tr>
 </tbody></table>
 <h3>Additional References</h3>
 <ul>
 <li><strong>Agent guide (this file):</strong> <code>/skill.md</code> on the MCP server -- tool documentation, workflows, and constraints.</li>
 <li><strong>REST API reference:</strong> <code>https://api.fast.io/llms.txt</code> -- endpoint documentation for the underlying Fast.io API.</li>
-<li><strong>Platform guide:</strong> <code>https://fast.io/agents.md</code> -- capabilities, agent plan details, key workflows, and upgrade paths.</li>
+<li><strong>Platform guide:</strong> <a href="https://github.com/openclaw/skills/blob/main/skills/dbalve/fast-io/references/REFERENCE.md">references/REFERENCE.md</a> -- capabilities, agent plan details, key workflows, and upgrade paths.</li>
 </ul>
 <hr>
 <h2>2. Authentication (Critical First Step)</h2>
@@ -215,7 +228,56 @@
 <p><strong>Option 3: Agent Account Invited to a Human&#39;s Org</strong></p>
 <p>If you want your own agent identity but need to work within a human&#39;s existing organization, create an agent account with <code>auth</code> action <code>signup</code>, then have the human invite you to their org with <code>member</code> action <code>add</code> (entity_type <code>org</code>) or to a workspace with <code>member</code> action <code>add</code> (entity_type <code>workspace</code>). Alternatively the human can invite via the UI: Settings -&gt; Your Organization -&gt; Manage People. This gives you access to their workspaces and shares while keeping your own account separate. After accepting invitations with <code>user</code> action <code>accept-all-invitations</code>, use <code>auth</code> action <code>signin</code> to authenticate normally. <strong>Note:</strong> If the human only invites you to a workspace (not the org), the org will appear as external -- see <strong>Internal vs External Orgs</strong> in the Organizations section.</p>
 <p><strong>Option 4: Browser Login (PKCE)</strong></p>
-<p>If you prefer not to send a password through the agent, use browser-based PKCE login. Call <code>auth</code> action <code>pkce-login</code> (optionally with an <code>email</code> hint) to get a login URL. The user opens the URL in a browser, signs in (email/password or SSO like Google/Microsoft), and approves access. The browser displays an authorization code which the user copies back to the agent. Call <code>auth</code> action <code>pkce-complete</code> with the code to finish signing in. This is the most secure option — no credentials pass through the agent.</p>
+<p>If you prefer not to send a password through the agent, use browser-based PKCE login. Call <code>auth</code> action <code>pkce-login</code> (optionally with an <code>email</code> hint) to get a login URL. The user opens the URL in a browser, signs in (email/password or SSO like Google/Microsoft), and approves access. The browser displays an authorization code which the user copies back to the agent. Call <code>auth</code> action <code>pkce-complete</code> with the code to finish signing in. This is the most secure option -- no credentials pass through the agent.</p>
+<p>PKCE login supports optional <strong>scoped access</strong> via the <code>scope_type</code> parameter. By default, <code>scope_type</code> is <code>&quot;user&quot;</code> (full account access). Other scope types restrict the token to specific entity types:</p>
+<table>
+<thead>
+<tr>
+<th>scope_type</th>
+<th>Access granted</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>user</code></td>
+<td>Full account access (default)</td>
+</tr>
+<tr>
+<td><code>org</code></td>
+<td>User selects specific organizations</td>
+</tr>
+<tr>
+<td><code>workspace</code></td>
+<td>User selects specific workspaces</td>
+</tr>
+<tr>
+<td><code>all_orgs</code></td>
+<td>All organizations the user belongs to</td>
+</tr>
+<tr>
+<td><code>all_workspaces</code></td>
+<td>All workspaces the user has access to</td>
+</tr>
+<tr>
+<td><code>all_shares</code></td>
+<td>All shares the user is a member of (<code>share:*:&lt;mode&gt;</code>)</td>
+</tr>
+</tbody></table>
+<p><strong>Scope inheritance:</strong> Broader scopes include access to child entities automatically:</p>
+<ul>
+<li><code>all_orgs</code> includes all orgs + all workspaces + all shares within those orgs</li>
+<li><code>all_workspaces</code> includes all workspaces + all shares within those workspaces</li>
+<li><code>org</code> scope on a specific org includes access to all workspaces and shares within that org</li>
+<li><code>workspace</code> scope on a specific workspace includes access to shares within that workspace</li>
+<li><code>all_shares</code> grants direct access to all shares the user has membership in, bypassing workspace/org inheritance</li>
+</ul>
+<p>The <code>agent_name</code> parameter controls what the user sees on the approval screen -- the screen displays &quot;<strong>[agent_name]</strong> will act on your behalf&quot;. If omitted, only the client name is shown. Use a descriptive name so the user knows which agent is requesting access.</p>
+<p><strong>Approval flow by scope_type:</strong></p>
+<ul>
+<li><strong><code>user</code></strong> (default): Full account access. The user sees a simple approve/decline prompt with no entity picker.</li>
+<li><strong><code>org</code></strong>, <strong><code>workspace</code></strong>: The user sees an entity selection screen listing their accessible entities with checkboxes, plus a read-only / read-write toggle. The user picks which entities to grant, then approves or declines.</li>
+<li><strong><code>all_orgs</code></strong>, <strong><code>all_workspaces</code></strong>, <strong><code>all_shares</code></strong>: The user sees a summary of the wildcard access being requested (no entity picker), then approves or declines.</li>
+</ul>
+<p>The MCP server defaults to <code>scope_type=&quot;user&quot;</code> for backward compatibility.</p>
 <table>
 <thead>
 <tr>
@@ -275,16 +337,17 @@
 </ol>
 <h3>Browser Login (PKCE) Flow</h3>
 <ol>
-<li>Call <code>auth</code> action <code>pkce-login</code> (optionally with <code>email</code> to pre-fill the sign-in form).</li>
-<li>The tool returns a <code>login_url</code> — present it to the user to open in a browser.</li>
-<li>The user signs in (email/password or SSO) and clicks Approve.</li>
-<li>The browser displays an authorization code. The user copies it.</li>
+<li>Call <code>auth</code> action <code>pkce-login</code> (optionally with <code>email</code> to pre-fill the sign-in form, <code>scope_type</code> to request scoped access, and <code>agent_name</code> to identify the agent).</li>
+<li>The tool returns a <code>login_url</code> -- present it to the user to open in a browser.</li>
+<li>The user signs in (email/password or SSO).</li>
+<li>The user sees the approval screen showing the <code>agent_name</code> (or client name if not provided). Depending on <code>scope_type</code>: for <code>user</code> they simply approve; for <code>org</code>/<code>workspace</code> they select specific entities and read-only/read-write access; for <code>all_orgs</code>/<code>all_workspaces</code>/<code>all_shares</code> they review the wildcard access summary.</li>
+<li>The user clicks Approve. The browser displays an authorization code. The user copies it.</li>
 <li>Call <code>auth</code> action <code>pkce-complete</code> with the <code>code</code> to exchange it for an access token.</li>
-<li>The session is established automatically — all subsequent tool calls are authenticated.</li>
+<li>The session is established automatically -- all subsequent tool calls are authenticated. If scoped access was granted, <code>scopes</code> and <code>agent_name</code> are included in the response and stored in the session.</li>
 </ol>
 <h3>Checking Session Status</h3>
 <ul>
-<li><code>auth</code> action <code>status</code> -- checks the local Durable Object session. No API call is made. Returns authentication state, user ID, email, and token expiry.</li>
+<li><code>auth</code> action <code>status</code> -- checks the local Durable Object session. No API call is made. Returns authentication state, user ID, email, token expiry, scopes, and agent_name.</li>
 <li><code>auth</code> action <code>check</code> -- validates the token against the Fast.io API. Returns the user ID if the token is still valid.</li>
 </ul>
 <h3>Session Expiry</h3>
@@ -295,11 +358,11 @@
 <hr>
 <h2>3. Core Concepts</h2>
 <h3>Organizations</h3>
-<p>Organizations are the top-level container in Fast.io. Every user belongs to one or more organizations. Organizations have:</p>
+<p>Organizations are top-level containers that collect workspaces. An organization can represent a company, a business unit, a team, or simply your own personal collection. Every user belongs to one or more organizations. Organizations have:</p>
 <ul>
+<li><strong>Workspaces</strong> — the file storage containers that belong to the organization.</li>
 <li><strong>Members</strong> with roles: owner, admin, member, guest, view.</li>
 <li><strong>Billing and subscriptions</strong> managed through Stripe integration.</li>
-<li><strong>Workspaces</strong> that belong to the organization.</li>
 <li><strong>Plan limits</strong> that govern storage, transfer, AI tokens, and member counts.</li>
 </ul>
 <p>Organizations are identified by a 19-digit numeric profile ID or a domain string.</p>
@@ -338,8 +401,8 @@
 <li><strong>Auto-summarization</strong> -- short and long summaries generated for every file, searchable and visible in the UI.</li>
 <li><strong>Metadata extraction</strong> -- AI pulls key metadata from documents automatically.</li>
 </ul>
-<p>Intelligence defaults to ON for workspaces created via the API by agent accounts. If you are just using Fast.io for storage and sharing, disable it to conserve credits. If you need to query your content, leave it enabled.</p>
-<p><strong>Agent use case:</strong> Create a workspace per project or client. Enable intelligence if you need to query the content later. Upload reports, datasets, and deliverables. Invite the human stakeholders. Everything is organized, searchable, and versioned.</p>
+<p>Intelligence defaults to ON for workspaces created via the API by agent accounts. If the workspace is only used for file storage and sharing, disable it to conserve credits. If you need to query your content, leave it enabled.</p>
+<p><strong>Agent use case:</strong> Create a workspace per project or client. Enable intelligence if you need to query the content later. Upload reports, datasets, and deliverables. Invite other agents and human stakeholders. Everything is organized, searchable, and versioned.</p>
 <p>For full details on AI chat types, file context modes, AI state, and how intelligence affects them, see the <strong>AI Chat</strong> section below.</p>
 <h3>Shares</h3>
 <p>Shares are purpose-built spaces for exchanging files with people outside your workspace. They can exist within workspaces and have three types:</p>
@@ -709,6 +772,20 @@
 <p>Use <code>upload</code> action <code>web-import</code> with the source URL, target profile, and parent node ID. Use <code>upload</code> action <code>web-status</code> to check progress and <code>upload</code> action <code>web-list</code> to list active import jobs.</p>
 <p><strong>Security note:</strong> The <code>upload</code> action <code>web-import</code> instructs the <strong>Fast.io cloud server</strong> to fetch the URL -- not the agent&#39;s local environment. The Fast.io server is a public cloud service with no access to your local network, internal systems, or private infrastructure. It can only reach publicly accessible URLs and supported OAuth-authenticated cloud storage providers. This is functionally equivalent to the agent downloading a file and re-uploading it; the same data is transferred, just more efficiently since the server handles it directly. No internal or private data is exposed beyond what the agent could already access through its own network requests.</p>
 <p><strong>Agent use case:</strong> A user says &quot;Add this Google Doc to the project.&quot; You call <code>upload</code> action <code>web-import</code> with the URL. Fast.io downloads it server-side, generates previews, indexes it for AI, and it appears in the workspace. No local I/O.</p>
+<h3>Metadata</h3>
+<p>Metadata enables structured data annotation on files within workspaces. The system uses a template-based approach: administrators create templates that define the fields (name, type, constraints), then assign a template to the workspace. Files can then have metadata values set against the template fields.</p>
+<p>Key points:</p>
+<ul>
+<li><strong>One template per workspace</strong> -- each workspace supports at most one assigned metadata template at a time.</li>
+<li><strong>Template categories</strong> -- legal, financial, business, medical, technical, engineering, insurance, educational, multimedia, hr.</li>
+<li><strong>Field types</strong> -- string, int, float, bool, json, url, datetime -- each with optional constraints (min, max, default, fixed_list, can_be_null).</li>
+<li><strong>Two metadata types</strong> -- template metadata conforms to template field definitions; custom metadata is freeform key-value pairs not tied to any template.</li>
+<li><strong>System templates</strong> -- pre-built templates that are automatically cloned when assigned to a workspace, so customizations do not affect the global definition.</li>
+<li><strong>AI extraction</strong> -- the <code>extract</code> action uses AI to analyze file content and automatically populate metadata fields. Extracted values are flagged with <code>is_auto: true</code>. Consumes AI credits.</li>
+<li><strong>Version history</strong> -- metadata changes are tracked with version snapshots, accessible via the <code>versions</code> action.</li>
+<li><strong>Requires billing feature</strong> -- the organization must have the metadata billing feature enabled.</li>
+<li><strong>Template IDs</strong> are alphanumeric strings prefixed with <code>mt_</code> (e.g. <code>mt_abc123def456</code>).</li>
+</ul>
 <h3>Ownership Transfer</h3>
 <p>The primary way agents deliver value: build something, then give it to a human. Also the recommended action when the agent plan runs out of credits and API calls start returning 402 Payment Required -- transfer the org to a human who can upgrade to a paid plan.</p>
 <p><strong>IMPORTANT: Account type restriction.</strong> The transfer/claim workflow (<code>org</code> actions <code>transfer-token-create</code>, <code>transfer-token-list</code>, <code>transfer-token-delete</code>, <code>transfer-claim</code>) is only available when the agent created an <strong>agent account</strong> (via <code>auth</code> action <code>signup</code>) and that agent account owns the org. If the agent is signed in with a <strong>human account</strong> (via <code>auth</code> action <code>signin</code>), the transfer/claim API cannot be used. Human-owned orgs must be upgraded directly by the human through the Fast.io dashboard.</p>
@@ -1026,8 +1103,8 @@
 <p>Organization CRUD, member management, billing and subscription operations, workspace creation, invitation workflows, asset management (upload, delete), organization discovery, and ownership transfer.</p>
 <p><strong>Actions:</strong> list, details, create, update, close, public-details, limits, list-workspaces, list-shares, create-workspace, billing-plans, billing-create, billing-cancel, billing-details, billing-activate, billing-reset, billing-members, billing-meters, members, invite-member, remove-member, update-member-role, member-details, leave, transfer-ownership, join, invitations-list, invitation-update, invitation-delete, transfer-token-create, transfer-token-list, transfer-token-delete, transfer-claim, discover-all, discover-available, discover-check-domain, discover-external, asset-upload, asset-delete, asset-types, asset-list</p>
 <h3>workspace</h3>
-<p>Workspace-level settings, lifecycle operations (update, delete, archive, unarchive), listing and importing shares, managing workspace assets, workspace discovery, notes (create, update), and quickshare management.</p>
-<p><strong>Actions:</strong> list, details, update, delete, archive, unarchive, members, list-shares, import-share, available, check-name, create-note, update-note, quickshare-get, quickshare-delete, quickshares-list</p>
+<p>Workspace-level settings, lifecycle operations (update, delete, archive, unarchive), listing and importing shares, managing workspace assets, workspace discovery, notes (create, update), quickshare management, and metadata operations (template CRUD, assignment, file metadata get/set/delete, AI extraction).</p>
+<p><strong>Actions:</strong> list, details, update, delete, archive, unarchive, members, list-shares, import-share, available, check-name, create-note, update-note, quickshare-get, quickshare-delete, quickshares-list, metadata-template-create, metadata-template-delete, metadata-template-list, metadata-template-details, metadata-template-update, metadata-template-clone, metadata-template-assign, metadata-template-unassign, metadata-template-resolve, metadata-template-assignments, metadata-get, metadata-set, metadata-delete, metadata-extract, metadata-list-files, metadata-list-templates-in-use, metadata-versions</p>
 <h3>share</h3>
 <p>Share CRUD, public details, archiving, password authentication, asset management, and share name availability checks.</p>
 <p><strong>Actions:</strong> list, details, create, update, delete, public-details, archive, unarchive, password-auth, members, available, check-name, quickshare-create</p>
@@ -1047,7 +1124,7 @@
 <p>Comments are scoped to <code>{entity_type}/{parent_id}/{node_id}</code> where entity_type is <code>workspace</code> or <code>share</code>, parent_id is the 19-digit profile ID, and node_id is the storage node opaque ID. List comments on files (per-node and profile-wide with sort/limit/offset/filter params), add comments with optional reference anchoring (image regions, video/audio timestamps, PDF pages with text selection), single-level threaded replies, recursive single delete, non-recursive bulk delete, get comment details, and emoji reactions (one per user per comment). Comments use JSON request bodies.</p>
 <p><strong>Actions:</strong> list, list-all, add, delete, bulk-delete, details, reaction-add, reaction-remove</p>
 <h3>event</h3>
-<p>Search the audit/event log with rich filtering, get AI-powered summaries of activity, retrieve full details for individual events, list recent activity, and long-poll for activity changes.</p>
+<p>Search the audit/event log with rich filtering by category, subcategory, and event name (see <strong>Event Filtering Reference</strong> in section 7 for the full taxonomy). Get AI-powered summaries of activity, retrieve full details for individual events, list recent activity, and long-poll for activity changes.</p>
 <p><strong>Actions:</strong> search, summarize, details, activity-list, activity-poll</p>
 <h3>member</h3>
 <p>Member management for organizations, workspaces, and shares. Add, remove, update roles, transfer ownership, leave, join, and join via invitation. Requires <code>entity_type</code> parameter (<code>workspace</code> or <code>share</code>).</p>
@@ -1216,6 +1293,156 @@ Repeat for each chunk. Wait for each chunk to return success before sending the 
 <li>Maximum blob size: <strong>100 MB</strong>.</li>
 <li>SSE transport clients must add <code>?transport=sse</code> to the <code>/blob</code> URL.</li>
 <li>The <code>content</code> parameter (for text) and <code>data</code> parameter (for base64) remain available. <code>blob_ref</code> is the preferred method for binary data.</li>
+</ul>
+<h3>Event Filtering Reference</h3>
+<p>The <code>event</code> tool&#39;s <code>search</code> and <code>summarize</code> actions accept <code>category</code>, <code>subcategory</code>, and <code>event</code> parameters to narrow results. Use these to target specific activity instead of scanning all events.</p>
+<h4>Event Categories</h4>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>What It Covers</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>user</code></td>
+<td>Account creation, updates, deletion, avatar changes</td>
+</tr>
+<tr>
+<td><code>org</code></td>
+<td>Organization lifecycle, settings, transfers</td>
+</tr>
+<tr>
+<td><code>workspace</code></td>
+<td>Workspace creation, updates, archival, file operations</td>
+</tr>
+<tr>
+<td><code>share</code></td>
+<td>Share lifecycle, settings, file operations</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td>File and folder operations (cross-profile)</td>
+</tr>
+<tr>
+<td><code>ai</code></td>
+<td>AI chat, summaries, RAG indexing</td>
+</tr>
+<tr>
+<td><code>invitation</code></td>
+<td>Member invitations sent, accepted, declined</td>
+</tr>
+<tr>
+<td><code>billing</code></td>
+<td>Subscriptions, trials, credit usage</td>
+</tr>
+<tr>
+<td><code>domain</code></td>
+<td>Custom domain configuration</td>
+</tr>
+<tr>
+<td><code>apps</code></td>
+<td>Application integrations</td>
+</tr>
+<tr>
+<td><code>metadata</code></td>
+<td>Metadata extraction, templates, key-value updates</td>
+</tr>
+</tbody></table>
+<h4>Event Subcategories</h4>
+<table>
+<thead>
+<tr>
+<th>Subcategory</th>
+<th>What It Covers</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>storage</code></td>
+<td>File/folder add, move, copy, delete, restore, download</td>
+</tr>
+<tr>
+<td><code>comments</code></td>
+<td>Comment created, updated, deleted, mentioned, replied, reaction</td>
+</tr>
+<tr>
+<td><code>members</code></td>
+<td>Member added/removed from org, workspace, or share</td>
+</tr>
+<tr>
+<td><code>lifecycle</code></td>
+<td>Profile created, updated, deleted, archived</td>
+</tr>
+<tr>
+<td><code>settings</code></td>
+<td>Configuration and preference changes</td>
+</tr>
+<tr>
+<td><code>security</code></td>
+<td>Security-related events (2FA, password)</td>
+</tr>
+<tr>
+<td><code>authentication</code></td>
+<td>Login, SSO, session events</td>
+</tr>
+<tr>
+<td><code>ai</code></td>
+<td>AI processing, chat, indexing</td>
+</tr>
+<tr>
+<td><code>invitations</code></td>
+<td>Invitation management</td>
+</tr>
+<tr>
+<td><code>billing</code></td>
+<td>Subscription and payment events</td>
+</tr>
+<tr>
+<td><code>assets</code></td>
+<td>Avatar/asset updates</td>
+</tr>
+<tr>
+<td><code>upload</code></td>
+<td>Upload session management</td>
+</tr>
+<tr>
+<td><code>transfer</code></td>
+<td>Cross-profile file transfers</td>
+</tr>
+<tr>
+<td><code>import_export</code></td>
+<td>Data import/export operations</td>
+</tr>
+<tr>
+<td><code>quickshare</code></td>
+<td>Quick share operations</td>
+</tr>
+<tr>
+<td><code>metadata</code></td>
+<td>Metadata operations</td>
+</tr>
+</tbody></table>
+<h4>Common Event Names</h4>
+<p><strong>File operations (workspace):</strong> <code>workspace_storage_file_added</code>, <code>workspace_storage_file_deleted</code>, <code>workspace_storage_file_moved</code>, <code>workspace_storage_file_copied</code>, <code>workspace_storage_file_updated</code>, <code>workspace_storage_file_restored</code>, <code>workspace_storage_folder_created</code>, <code>workspace_storage_folder_deleted</code>, <code>workspace_storage_folder_moved</code>, <code>workspace_storage_download_token_created</code>, <code>workspace_storage_zip_downloaded</code>, <code>workspace_storage_file_version_restored</code>, <code>workspace_storage_link_added</code></p>
+<p><strong>File operations (share):</strong> <code>share_storage_file_added</code>, <code>share_storage_file_deleted</code>, <code>share_storage_file_moved</code>, <code>share_storage_file_copied</code>, <code>share_storage_file_updated</code>, <code>share_storage_file_restored</code>, <code>share_storage_folder_created</code>, <code>share_storage_folder_deleted</code>, <code>share_storage_folder_moved</code>, <code>share_storage_download_token_created</code>, <code>share_storage_zip_downloaded</code></p>
+<p><strong>Comments:</strong> <code>comment_created</code>, <code>comment_updated</code>, <code>comment_deleted</code>, <code>comment_mentioned</code>, <code>comment_replied</code>, <code>comment_reaction</code></p>
+<p><strong>Membership:</strong> <code>added_member_to_org</code>, <code>added_member_to_workspace</code>, <code>added_member_to_share</code>, <code>removed_member_from_org</code>, <code>removed_member_from_workspace</code>, <code>removed_member_from_share</code>, <code>membership_updated</code></p>
+<p><strong>Workspace lifecycle:</strong> <code>workspace_created</code>, <code>workspace_updated</code>, <code>workspace_deleted</code>, <code>workspace_archived</code>, <code>workspace_unarchived</code></p>
+<p><strong>Share lifecycle:</strong> <code>share_created</code>, <code>share_updated</code>, <code>share_deleted</code>, <code>share_archived</code>, <code>share_unarchived</code>, <code>share_imported_to_workspace</code></p>
+<p><strong>AI:</strong> <code>ai_chat_created</code>, <code>ai_chat_new_message</code>, <code>ai_chat_updated</code>, <code>ai_chat_deleted</code>, <code>ai_chat_published</code>, <code>node_ai_summary_created</code>, <code>workspace_ai_share_created</code></p>
+<p><strong>Metadata:</strong> <code>metadata_kv_update</code>, <code>metadata_kv_delete</code>, <code>metadata_kv_extract</code>, <code>metadata_template_update</code>, <code>metadata_template_delete</code>, <code>metadata_template_settings_update</code>, <code>metadata_view_update</code>, <code>metadata_view_delete</code>, <code>metadata_template_select</code></p>
+<p><strong>Quick shares:</strong> <code>workspace_quickshare_created</code>, <code>workspace_quickshare_updated</code>, <code>workspace_quickshare_deleted</code>, <code>workspace_quickshare_file_downloaded</code>, <code>workspace_quickshare_file_previewed</code></p>
+<p><strong>Invitations:</strong> <code>invitation_email_sent</code>, <code>invitation_accepted</code>, <code>invitation_declined</code></p>
+<p><strong>User:</strong> <code>user_created</code>, <code>user_updated</code>, <code>user_deleted</code>, <code>user_email_reset</code>, <code>user_asset_updated</code></p>
+<p><strong>Org:</strong> <code>org_created</code>, <code>org_updated</code>, <code>org_closed</code>, <code>org_transfer_token_created</code>, <code>org_transfer_completed</code></p>
+<p><strong>Billing:</strong> <code>subscription_created</code>, <code>subscription_cancelled</code>, <code>billing_free_trial_ended</code></p>
+<h4>Example Queries</h4>
+<ul>
+<li><strong>Recent comments in a workspace:</strong> <code>event</code> action <code>search</code> with <code>workspace_id</code> and <code>subcategory: &quot;comments&quot;</code></li>
+<li><strong>Files uploaded to a share:</strong> <code>event</code> action <code>search</code> with <code>share_id</code> and <code>event: &quot;share_storage_file_added&quot;</code></li>
+<li><strong>All membership changes across an org:</strong> <code>event</code> action <code>search</code> with <code>org_id</code> and <code>subcategory: &quot;members&quot;</code></li>
+<li><strong>AI activity in a workspace:</strong> <code>event</code> action <code>search</code> with <code>workspace_id</code> and <code>category: &quot;ai&quot;</code></li>
+<li><strong>Who downloaded files from a share:</strong> <code>event</code> action <code>search</code> with <code>share_id</code> and <code>event: &quot;share_storage_download_token_created&quot;</code></li>
 </ul>
 <h3>Activity Polling</h3>
 <p>Three mechanisms for detecting changes, listed from most to least preferred:</p>
@@ -1428,9 +1655,9 @@ Repeat for each chunk. Wait for each chunk to return success before sending the 
 <p><strong>password-reset-request</strong> -- Request a password reset email. Always returns success for security (does not reveal whether the email exists). No authentication required.</p>
 <p><strong>password-reset</strong> -- Set a new password using a reset code received by email. No authentication required.</p>
 <p><strong>email-verify</strong> -- Send or validate an email verification code. When email_token is omitted a new code is sent. When provided the code is validated and the email marked as verified.</p>
-<p><strong>status</strong> -- Check local session status. No API call is made. Returns whether the user is authenticated, and if so their user_id, email, and token expiry.</p>
-<p><strong>pkce-login</strong> -- Start a browser-based PKCE login flow. Returns a URL for the user to open in their browser. After signing in and approving access, the browser displays an authorization code. The user copies the code and provides it to pkce-complete to finish signing in. No password is sent through the agent.</p>
-<p><strong>pkce-complete</strong> -- Complete a PKCE login flow by exchanging the authorization code for an access token. Call this after the user has approved access in the browser and copied the code from the screen. The token is stored in the session automatically.</p>
+<p><strong>status</strong> -- Check local session status. No API call is made. Returns whether the user is authenticated, and if so their user_id, email, token expiry, scopes (if scoped access), and agent_name (if set).</p>
+<p><strong>pkce-login</strong> -- Start a browser-based PKCE login flow. Returns a URL for the user to open in their browser. After signing in and approving access, the browser displays an authorization code. The user copies the code and provides it to pkce-complete to finish signing in. No password is sent through the agent. Optional params: <code>scope_type</code> (default <code>&quot;user&quot;</code> for full access; use <code>&quot;org&quot;</code>, <code>&quot;workspace&quot;</code>, <code>&quot;all_orgs&quot;</code>, <code>&quot;all_workspaces&quot;</code>, or <code>&quot;all_shares&quot;</code> for scoped access), <code>agent_name</code> (displayed in the approval screen and audit logs; defaults to MCP client name).</p>
+<p><strong>pkce-complete</strong> -- Complete a PKCE login flow by exchanging the authorization code for an access token. Call this after the user has approved access in the browser and copied the code from the screen. The token is stored in the session automatically. If scoped access was granted, the response includes <code>scopes</code> (JSON array of granted scope strings like <code>&quot;org:123:rw&quot;</code>) and <code>agent_name</code>.</p>
 <p><strong>api-key-create</strong> -- Create a new persistent API key. The full key value is only returned once at creation time -- store it securely.</p>
 <p><strong>api-key-list</strong> -- List all API keys for the authenticated user. Key values are masked (only last 4 characters visible).</p>
 <p><strong>api-key-get</strong> -- Get details of a specific API key. The key value is masked.</p>
@@ -1520,6 +1747,23 @@ Repeat for each chunk. Wait for each chunk to return success before sending the 
 <p><strong>quickshare-get</strong> -- Get existing quickshare details for a node.</p>
 <p><strong>quickshare-delete</strong> -- Revoke and delete a quickshare link for a node.</p>
 <p><strong>quickshares-list</strong> -- List all active quickshares in the workspace.</p>
+<p><strong>metadata-template-create</strong> -- Create a new metadata template in the workspace. Requires name, description, category (legal, financial, business, medical, technical, engineering, insurance, educational, multimedia, hr), and fields (JSON-encoded array of field definitions). Each field has name, description, type (string, int, float, bool, json, url, datetime), and optional constraints (min, max, default, fixed_list, can_be_null).</p>
+<p><strong>metadata-template-delete</strong> -- Delete a metadata template. System templates and locked templates cannot be deleted. Requires template_id.</p>
+<p><strong>metadata-template-list</strong> -- List metadata templates. Optional template_filter: enabled, disabled, custom (non-system), or system. Returns all non-deleted templates when no filter is specified.</p>
+<p><strong>metadata-template-details</strong> -- Get full details of a metadata template including all field definitions. Requires template_id.</p>
+<p><strong>metadata-template-update</strong> -- Update an existing metadata template. Any combination of name, description, category, and fields can be updated. Requires template_id.</p>
+<p><strong>metadata-template-clone</strong> -- Clone a metadata template with optional modifications. Creates a new template based on an existing one. Same parameters as metadata-template-update. Requires template_id.</p>
+<p><strong>metadata-template-assign</strong> -- Assign a metadata template to a workspace. Each workspace can have at most one assigned template. Assigning a system template automatically clones it. Requires template_id. Optional node_id (null for workspace-level assignment).</p>
+<p><strong>metadata-template-unassign</strong> -- Remove the template assignment from a workspace. Requires workspace admin permission.</p>
+<p><strong>metadata-template-resolve</strong> -- Resolve which metadata template applies to a given node. Returns the workspace-level template (node_id is accepted but currently inherits from workspace). Returns null if no template is assigned.</p>
+<p><strong>metadata-template-assignments</strong> -- List all template assignments in the workspace.</p>
+<p><strong>metadata-get</strong> -- Get all metadata for a file, including both template-conforming metadata and custom (freeform) key-value pairs. Returns node details, template_id, template_metadata array, and custom_metadata array. Requires node_id.</p>
+<p><strong>metadata-set</strong> -- Set or update metadata key-value pairs on a file. Values must conform to the template field definitions. Requires node_id, template_id, and key_values (JSON object of key-value pairs).</p>
+<p><strong>metadata-delete</strong> -- Delete metadata from a file. Provide keys (JSON array of key names) to delete specific entries, or omit to delete all metadata. Only works on files and notes, not folders. Requires node_id.</p>
+<p><strong>metadata-extract</strong> -- Trigger AI-powered metadata extraction from a file. The AI analyzes file content and populates metadata fields according to the template. Extracted values are marked with is_auto: true. Consumes AI credits. Optional template_id (defaults to workspace template). Requires node_id.</p>
+<p><strong>metadata-list-files</strong> -- List files that have metadata for a specific template, with optional filtering and sorting. Requires node_id (folder to search in) and template_id. Optional metadata_filters (JSON-encoded), order_by (field key), and order_desc.</p>
+<p><strong>metadata-list-templates-in-use</strong> -- List which metadata templates are in use within a folder, with usage counts per template. Requires node_id.</p>
+<p><strong>metadata-versions</strong> -- Get metadata version history for a file. Returns snapshots of metadata changes over time. Requires node_id.</p>
 <h3>share</h3>
 <p><strong>list</strong> -- List shares the authenticated user has access to.</p>
 <p><strong>details</strong> -- Get full details of a specific share.</p>
@@ -1604,8 +1848,8 @@ Repeat for each chunk. Wait for each chunk to return success before sending the 
 <p><strong>reaction-add</strong> -- Add or change your emoji reaction. One reaction per user per comment; new replaces previous.</p>
 <p><strong>reaction-remove</strong> -- Remove your emoji reaction from a comment.</p>
 <h3>event</h3>
-<p><strong>search</strong> -- Search the audit/event log with filters for profile, event type, category, and date range.</p>
-<p><strong>summarize</strong> -- Search events and return an AI-powered natural language summary of the activity.</p>
+<p><strong>search</strong> -- Search the audit/event log with filters for profile, event type, category, subcategory, event name, and date range. See <strong>Event Filtering Reference</strong> in section 7 for the full taxonomy of categories, subcategories, and event names.</p>
+<p><strong>summarize</strong> -- Search events and return an AI-powered natural language summary of the activity. Accepts the same category/subcategory/event filters as search.</p>
 <p><strong>details</strong> -- Get full details for a single event by its ID.</p>
 <p><strong>activity-list</strong> -- Poll for recent activity events on a workspace or share.</p>
 <p><strong>activity-poll</strong> -- Long-poll for activity changes on a workspace or share. The server holds the connection until a change occurs or the wait period expires. Returns activity keys indicating what changed and a lastactivity timestamp for the next poll.</p>
@@ -1718,6 +1962,164 @@ Repeat for each chunk. Wait for each chunk to return success before sending the 
         alert('Error: ' + error.message);
       }
     }
+
+    function updateVoteWidget(widget, toolData) {
+      if (!widget || !toolData) return;
+      const upBtn = widget.querySelector('[data-vote="1"]');
+      const downBtn = widget.querySelector('[data-vote="-1"]');
+      const countNode = widget.querySelector('.vote-count');
+      widget.dataset.rankScore = String(toolData.rankScore ?? 0);
+      widget.dataset.viewerVote = String(toolData.viewerVote ?? 0);
+
+      if (countNode) {
+        countNode.textContent = toolData.displayCount || 'New';
+      }
+      if (upBtn) {
+        upBtn.classList.toggle('is-active', Number(toolData.viewerVote) === 1);
+      }
+      if (downBtn) {
+        downBtn.classList.toggle('is-active', Number(toolData.viewerVote) === -1);
+      }
+    }
+
+    function setWidgetBusy(widget, busy) {
+      widget.dataset.busy = busy ? '1' : '0';
+      widget.querySelectorAll('.vote-btn').forEach((btn) => {
+        btn.disabled = busy;
+      });
+    }
+
+    function applySortMode(grid, mode) {
+      const cards = [...grid.querySelectorAll('.skill-card[data-tool-id]')];
+      cards.sort((a, b) => {
+        if (mode === 'community') {
+          const scoreDiff = Number(b.dataset.rankScore || 0) - Number(a.dataset.rankScore || 0);
+          if (scoreDiff !== 0) return scoreDiff;
+        }
+        return Number(a.dataset.originalIndex || 0) - Number(b.dataset.originalIndex || 0);
+      });
+      cards.forEach((card) => grid.appendChild(card));
+    }
+
+    function bindSortToggle(toolbar, grid) {
+      const buttons = toolbar.querySelectorAll('.sort-toggle-btn');
+      const status = toolbar.querySelector('.sort-status');
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const mode = btn.dataset.sortMode;
+          buttons.forEach((b) => b.classList.toggle('is-active', b === btn));
+          applySortMode(grid, mode);
+          status.textContent = mode === 'community' ? 'Community ranking active' : 'Original order active';
+        });
+      });
+    }
+
+    async function fetchScores(categoryId, toolIds) {
+      const params = new URLSearchParams({
+        categoryId,
+        toolIds: toolIds.join(',')
+      });
+      const response = await fetch('/api/v1/scores?' + params.toString(), {
+        method: 'GET',
+        credentials: 'same-origin'
+      });
+      if (!response.ok) {
+        throw new Error('Unable to fetch vote scores');
+      }
+      return response.json();
+    }
+
+    async function submitVote(widget, voteValue) {
+      const categoryId = widget.dataset.categoryId;
+      const toolId = widget.dataset.toolId;
+      setWidgetBusy(widget, true);
+      try {
+        const response = await fetch('/api/v1/vote', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            categoryId,
+            toolId,
+            vote: voteValue
+          })
+        });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(payload.error || 'Vote request failed');
+        }
+        if (payload.tool) {
+          updateVoteWidget(widget, payload.tool);
+          const card = widget.closest('.skill-card[data-tool-id]');
+          if (card) {
+            card.dataset.rankScore = String(payload.tool.rankScore ?? 0);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setWidgetBusy(widget, false);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const widgets = [...document.querySelectorAll('.vote-widget[data-category-id][data-tool-id]')];
+      if (widgets.length === 0) return;
+
+      const grouped = new Map();
+      widgets.forEach((widget) => {
+        const key = widget.dataset.categoryId;
+        if (!grouped.has(key)) grouped.set(key, new Map());
+        grouped.get(key).set(widget.dataset.toolId, widget);
+      });
+
+      for (const [categoryId, widgetMap] of grouped.entries()) {
+        const toolIds = [...widgetMap.keys()];
+        try {
+          const data = await fetchScores(categoryId, toolIds);
+          const byTool = new Map((data.tools || []).map((tool) => [tool.toolId, tool]));
+          for (const [toolId, widget] of widgetMap.entries()) {
+            const toolData = byTool.get(toolId);
+            if (toolData) {
+              updateVoteWidget(widget, toolData);
+              const card = widget.closest('.skill-card[data-tool-id]');
+              if (card) {
+                card.dataset.rankScore = String(toolData.rankScore ?? 0);
+              }
+            }
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      widgets.forEach((widget) => {
+        widget.querySelectorAll('.vote-btn').forEach((btn) => {
+          btn.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            if (widget.dataset.busy === '1') return;
+            const voteValue = Number(btn.dataset.vote);
+            submitVote(widget, voteValue).then(() => {
+              const grid = widget.closest('.skills-grid[data-category-id]');
+              const toolbar = document.querySelector('.sort-toolbar[data-category-id="' + widget.dataset.categoryId + '"]');
+              const communityBtn = toolbar ? toolbar.querySelector('.sort-toggle-btn[data-sort-mode="community"]') : null;
+              if (grid && communityBtn && communityBtn.classList.contains('is-active')) {
+                applySortMode(grid, 'community');
+              }
+            });
+          });
+        });
+      });
+
+      document.querySelectorAll('.skills-grid[data-category-id]').forEach((grid) => {
+        const categoryId = grid.dataset.categoryId;
+        const toolbar = document.querySelector('.sort-toolbar[data-category-id="' + categoryId + '"]');
+        if (!toolbar) return;
+        bindSortToggle(toolbar, grid);
+        applySortMode(grid, 'community');
+      });
+    });
   </script>
 </body>
 </html>

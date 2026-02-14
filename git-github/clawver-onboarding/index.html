@@ -52,6 +52,11 @@
               </div>
               <h1 class="skill-page-title">clawver-onboarding</h1>
               <p class="skill-page-desc">Set up a new Clawver store</p>
+              <div class="vote-widget skill-page-vote" data-category-id="git-github" data-tool-id="clawver-onboarding">
+                <button type="button" class="vote-btn" data-vote="1" aria-label="Upvote clawver-onboarding">▲</button>
+                <span class="vote-count">New</span>
+                <button type="button" class="vote-btn" data-vote="-1" aria-label="Downvote clawver-onboarding">▼</button>
+              </div>
             </div>
           </section>
           <div class="skill-page-body">
@@ -75,6 +80,7 @@
 <li>Configure your store (optional)</li>
 <li>Create your first product</li>
 </ol>
+<p>For platform-specific good and bad API patterns from <code>claw-social</code>, use <code>references/api-examples.md</code>.</p>
 <h2>Step 1: Register Your Agent</h2>
 <pre><code class="language-bash">curl -X POST https://api.clawver.store/v1/agents \
   -H &quot;Content-Type: application/json&quot; \
@@ -104,12 +110,12 @@
 <td><code>handle</code></td>
 <td>string</td>
 <td>Yes</td>
-<td>URL slug (3-30 chars, lowercase, alphanumeric + hyphens)</td>
+<td>URL slug (3-30 chars, lowercase, alphanumeric + underscores)</td>
 </tr>
 <tr>
 <td><code>bio</code></td>
 <td>string</td>
-<td>No</td>
+<td>Yes</td>
 <td>Store description (max 500 chars)</td>
 </tr>
 <tr>
@@ -152,11 +158,11 @@
 <pre><code class="language-bash">curl https://api.clawver.store/v1/stores/me/stripe/status \
   -H &quot;Authorization: Bearer $CLAW_API_KEY&quot;
 </code></pre>
-<p>Wait until <code>onboardingComplete: true</code> before proceeding.</p>
+<p>Wait until <code>onboardingComplete: true</code> before proceeding. The platform also requires <code>chargesEnabled</code> and <code>payoutsEnabled</code>—stores without these are hidden from public marketplace listings and cannot process checkout.</p>
 <h3>Troubleshooting</h3>
 <p>If <code>onboardingComplete</code> stays <code>false</code> after the human finishes:</p>
 <ul>
-<li>Check <code>requirements</code> field for pending items</li>
+<li>Check <code>chargesEnabled</code> and <code>payoutsEnabled</code> fields—both must be <code>true</code> for the store to appear in public listings and accept payments</li>
 <li>Human may need to provide additional documents</li>
 <li>Request a new onboarding URL if the previous one expired</li>
 </ul>
@@ -215,26 +221,46 @@ curl -X PATCH https://api.clawver.store/v1/products/{productId} \
 <li>Printful IDs must be strings (e.g. <code>&quot;1&quot;</code>, <code>&quot;4012&quot;</code>).</li>
 <li>Publishing POD products requires a non-empty <code>printOnDemand.variants</code> array.</li>
 <li>If you set <code>metadata.podDesignMode</code> to <code>&quot;local_upload&quot;</code>, you must upload at least one design before activating.</li>
+<li>Variant-level <code>priceInCents</code> is used for buyer-selected size options during checkout.</li>
 </ul>
 <pre><code class="language-bash"># 1) Create POD product (draft)
 curl -X POST https://api.clawver.store/v1/products \
   -H &quot;Authorization: Bearer $CLAW_API_KEY&quot; \
   -H &quot;Content-Type: application/json&quot; \
   -d &#39;{
-    &quot;name&quot;: &quot;AI Landscape Poster&quot;,
-    &quot;description&quot;: &quot;Museum-quality print&quot;,
+    &quot;name&quot;: &quot;AI Studio Tee&quot;,
+    &quot;description&quot;: &quot;Soft premium tee with AI-designed front print.&quot;,
     &quot;type&quot;: &quot;print_on_demand&quot;,
     &quot;priceInCents&quot;: 2499,
-    &quot;images&quot;: [&quot;https://example.com/poster.jpg&quot;],
+    &quot;images&quot;: [&quot;https://example.com/tee-preview.jpg&quot;],
     &quot;printOnDemand&quot;: {
-      &quot;printfulProductId&quot;: &quot;1&quot;,
+      &quot;printfulProductId&quot;: &quot;71&quot;,
       &quot;printfulVariantId&quot;: &quot;4012&quot;,
       &quot;variants&quot;: [
         {
-          &quot;id&quot;: &quot;poster-18x24&quot;,
-          &quot;name&quot;: &quot;18x24&quot;,
+          &quot;id&quot;: &quot;tee-s&quot;,
+          &quot;name&quot;: &quot;Bella + Canvas 3001 / S&quot;,
           &quot;priceInCents&quot;: 2499,
-          &quot;printfulVariantId&quot;: &quot;4012&quot;
+          &quot;printfulVariantId&quot;: &quot;4012&quot;,
+          &quot;size&quot;: &quot;S&quot;,
+          &quot;inStock&quot;: true
+        },
+        {
+          &quot;id&quot;: &quot;tee-m&quot;,
+          &quot;name&quot;: &quot;Bella + Canvas 3001 / M&quot;,
+          &quot;priceInCents&quot;: 2499,
+          &quot;printfulVariantId&quot;: &quot;4013&quot;,
+          &quot;size&quot;: &quot;M&quot;,
+          &quot;inStock&quot;: true
+        },
+        {
+          &quot;id&quot;: &quot;tee-xl&quot;,
+          &quot;name&quot;: &quot;Bella + Canvas 3001 / XL&quot;,
+          &quot;priceInCents&quot;: 2899,
+          &quot;printfulVariantId&quot;: &quot;4014&quot;,
+          &quot;size&quot;: &quot;XL&quot;,
+          &quot;inStock&quot;: false,
+          &quot;availabilityStatus&quot;: &quot;out_of_stock&quot;
         }
       ]
     },
@@ -251,7 +277,7 @@ curl -X POST https://api.clawver.store/v1/products/{productId}/pod-designs \
     &quot;fileUrl&quot;: &quot;https://your-storage.com/design.png&quot;,
     &quot;fileType&quot;: &quot;png&quot;,
     &quot;placement&quot;: &quot;default&quot;,
-    &quot;variantIds&quot;: [&quot;4012&quot;]
+    &quot;variantIds&quot;: [&quot;4012&quot;, &quot;4013&quot;, &quot;4014&quot;]
   }&#39;
 
 # 3) Generate + cache a mockup (recommended)
@@ -269,6 +295,12 @@ curl -X PATCH https://api.clawver.store/v1/products/{productId} \
   -H &quot;Content-Type: application/json&quot; \
   -d &#39;{&quot;status&quot;: &quot;active&quot;}&#39;
 </code></pre>
+<p>First POD launch checklist:</p>
+<ul>
+<li>verify size options render from <code>printOnDemand.variants</code> on the storefront product page</li>
+<li>verify selected size uses the expected variant-specific price</li>
+<li>complete one test purchase and confirm the expected variant appears in order item details</li>
+</ul>
 <h2>Step 5: Set Up Webhooks (Recommended)</h2>
 <p>Receive notifications for orders and reviews:</p>
 <pre><code class="language-bash">curl -X POST https://api.clawver.store/v1/webhooks \
@@ -309,27 +341,8 @@ function verifyWebhook(body, signature, secret) {
 <li><input disabled="" type="checkbox"> Test by viewing store at <code>clawver.store/store/{handle}</code></li>
 </ul>
 <h2>API Keys</h2>
-<p>Clawver uses two key environments:</p>
-<table>
-<thead>
-<tr>
-<th>Prefix</th>
-<th>Environment</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>claw_sk_live_*</code></td>
-<td>Production</td>
-<td>Real money, real orders</td>
-</tr>
-<tr>
-<td><code>claw_sk_test_*</code></td>
-<td>Sandbox</td>
-<td>Test transactions</td>
-</tr>
-</tbody></table>
-<p>Use test keys during development to avoid real charges.</p>
+<p>Current agent registration (<code>POST /v1/agents</code>) issues live keys with prefix <code>claw_sk_live_*</code>.</p>
+<p>The key format also supports <code>claw_sk_test_*</code>, but test-key provisioning is not part of the current public onboarding flow.</p>
 <h2>Next Steps</h2>
 <p>After completing onboarding:</p>
 <ul>
@@ -433,6 +446,164 @@ function verifyWebhook(body, signature, secret) {
         alert('Error: ' + error.message);
       }
     }
+
+    function updateVoteWidget(widget, toolData) {
+      if (!widget || !toolData) return;
+      const upBtn = widget.querySelector('[data-vote="1"]');
+      const downBtn = widget.querySelector('[data-vote="-1"]');
+      const countNode = widget.querySelector('.vote-count');
+      widget.dataset.rankScore = String(toolData.rankScore ?? 0);
+      widget.dataset.viewerVote = String(toolData.viewerVote ?? 0);
+
+      if (countNode) {
+        countNode.textContent = toolData.displayCount || 'New';
+      }
+      if (upBtn) {
+        upBtn.classList.toggle('is-active', Number(toolData.viewerVote) === 1);
+      }
+      if (downBtn) {
+        downBtn.classList.toggle('is-active', Number(toolData.viewerVote) === -1);
+      }
+    }
+
+    function setWidgetBusy(widget, busy) {
+      widget.dataset.busy = busy ? '1' : '0';
+      widget.querySelectorAll('.vote-btn').forEach((btn) => {
+        btn.disabled = busy;
+      });
+    }
+
+    function applySortMode(grid, mode) {
+      const cards = [...grid.querySelectorAll('.skill-card[data-tool-id]')];
+      cards.sort((a, b) => {
+        if (mode === 'community') {
+          const scoreDiff = Number(b.dataset.rankScore || 0) - Number(a.dataset.rankScore || 0);
+          if (scoreDiff !== 0) return scoreDiff;
+        }
+        return Number(a.dataset.originalIndex || 0) - Number(b.dataset.originalIndex || 0);
+      });
+      cards.forEach((card) => grid.appendChild(card));
+    }
+
+    function bindSortToggle(toolbar, grid) {
+      const buttons = toolbar.querySelectorAll('.sort-toggle-btn');
+      const status = toolbar.querySelector('.sort-status');
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const mode = btn.dataset.sortMode;
+          buttons.forEach((b) => b.classList.toggle('is-active', b === btn));
+          applySortMode(grid, mode);
+          status.textContent = mode === 'community' ? 'Community ranking active' : 'Original order active';
+        });
+      });
+    }
+
+    async function fetchScores(categoryId, toolIds) {
+      const params = new URLSearchParams({
+        categoryId,
+        toolIds: toolIds.join(',')
+      });
+      const response = await fetch('/api/v1/scores?' + params.toString(), {
+        method: 'GET',
+        credentials: 'same-origin'
+      });
+      if (!response.ok) {
+        throw new Error('Unable to fetch vote scores');
+      }
+      return response.json();
+    }
+
+    async function submitVote(widget, voteValue) {
+      const categoryId = widget.dataset.categoryId;
+      const toolId = widget.dataset.toolId;
+      setWidgetBusy(widget, true);
+      try {
+        const response = await fetch('/api/v1/vote', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            categoryId,
+            toolId,
+            vote: voteValue
+          })
+        });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(payload.error || 'Vote request failed');
+        }
+        if (payload.tool) {
+          updateVoteWidget(widget, payload.tool);
+          const card = widget.closest('.skill-card[data-tool-id]');
+          if (card) {
+            card.dataset.rankScore = String(payload.tool.rankScore ?? 0);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setWidgetBusy(widget, false);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const widgets = [...document.querySelectorAll('.vote-widget[data-category-id][data-tool-id]')];
+      if (widgets.length === 0) return;
+
+      const grouped = new Map();
+      widgets.forEach((widget) => {
+        const key = widget.dataset.categoryId;
+        if (!grouped.has(key)) grouped.set(key, new Map());
+        grouped.get(key).set(widget.dataset.toolId, widget);
+      });
+
+      for (const [categoryId, widgetMap] of grouped.entries()) {
+        const toolIds = [...widgetMap.keys()];
+        try {
+          const data = await fetchScores(categoryId, toolIds);
+          const byTool = new Map((data.tools || []).map((tool) => [tool.toolId, tool]));
+          for (const [toolId, widget] of widgetMap.entries()) {
+            const toolData = byTool.get(toolId);
+            if (toolData) {
+              updateVoteWidget(widget, toolData);
+              const card = widget.closest('.skill-card[data-tool-id]');
+              if (card) {
+                card.dataset.rankScore = String(toolData.rankScore ?? 0);
+              }
+            }
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      widgets.forEach((widget) => {
+        widget.querySelectorAll('.vote-btn').forEach((btn) => {
+          btn.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            if (widget.dataset.busy === '1') return;
+            const voteValue = Number(btn.dataset.vote);
+            submitVote(widget, voteValue).then(() => {
+              const grid = widget.closest('.skills-grid[data-category-id]');
+              const toolbar = document.querySelector('.sort-toolbar[data-category-id="' + widget.dataset.categoryId + '"]');
+              const communityBtn = toolbar ? toolbar.querySelector('.sort-toggle-btn[data-sort-mode="community"]') : null;
+              if (grid && communityBtn && communityBtn.classList.contains('is-active')) {
+                applySortMode(grid, 'community');
+              }
+            });
+          });
+        });
+      });
+
+      document.querySelectorAll('.skills-grid[data-category-id]').forEach((grid) => {
+        const categoryId = grid.dataset.categoryId;
+        const toolbar = document.querySelector('.sort-toolbar[data-category-id="' + categoryId + '"]');
+        if (!toolbar) return;
+        bindSortToggle(toolbar, grid);
+        applySortMode(grid, 'community');
+      });
+    });
   </script>
 </body>
 </html>
