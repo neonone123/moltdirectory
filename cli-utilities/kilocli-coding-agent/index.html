@@ -70,9 +70,11 @@
                   </button>
                 </div>
                 <div class="markdown-content">
-                  <p>IMPORTANT: You need to have Kilo CLI installed and configured so OpenClaw can use it without any issue.</p>
+                  <hr>
+<p>IMPORTANT: You need to have Kilo CLI installed and configured so OpenClaw can use it without any issue.</p>
 <pre><code class="language-sh">npm install -g @kilocode/cli
 </code></pre>
+<p>If you want to automate pull requests to Github, then you also need to authenticate Github CLI in your project: <a href="https://github.com/cli/cli#installation">https://github.com/cli/cli#installation</a></p>
 <h1>Coding Agent (background-first)</h1>
 <p>Use <strong>bash background mode</strong> for non-interactive coding work. For interactive coding sessions, use the <strong>tmux</strong> skill (always, except very simple one-shot prompts).</p>
 <h2>The Pattern: workdir + background</h2>
@@ -100,21 +102,21 @@ process action:kill sessionId:XXX
 <p><strong>Why workdir matters:</strong> Agent wakes up in a focused directory, doesn&#39;t wander off reading unrelated files (like your soul.md 😅).</p>
 <hr>
 <h2>Kilo CLI</h2>
-<h3>Building/Creating (use --full-auto or --yolo)</h3>
-<pre><code class="language-bash">bash workdir:~/project background:true command:&quot;kilo run \&quot;Build a snake game with dark theme\&quot;&quot;
+<h3>Building/Creating (Use Autonomous mode)</h3>
+<pre><code class="language-bash">bash workdir:~/project background:true command:&quot;kilo run --auto \&quot;Build a snake game with dark theme\&quot;&quot;
 </code></pre>
 <h3>Reviewing PRs (vanilla, no flags)</h3>
-<p><strong>⚠️ CRITICAL: Never review PRs in Clawdbot&#39;s own project folder!</strong></p>
+<p><strong>⚠️ CRITICAL: Never review PRs in OpenClaw&#39;s own project folder!</strong></p>
 <ul>
-<li>Either use the project where the PR is submitted (if it&#39;s NOT ~/Projects/clawdbot)</li>
+<li>Either use the project where the PR is submitted (if it&#39;s NOT ~/Projects/openclaw)</li>
 <li>Or clone to a temp folder first</li>
 </ul>
-<pre><code class="language-bash"># Option 1: Review in the actual project (if NOT clawdbot)
+<pre><code class="language-bash"># Option 1: Review in the actual project (if NOT OpenClaw)
 bash workdir:~/Projects/some-other-repo background:true command:&quot;kilo run \&quot;Review current branch against main branch\&quot;&quot;
 
-# Option 2: Clone to temp folder for safe review (REQUIRED for clawdbot PRs!)
+# Option 2: Clone to temp folder for safe review (REQUIRED for OpenClaw PRs!)
 REVIEW_DIR=$(mktemp -d)
-git clone https://github.com/clawdbot/clawdbot.git $REVIEW_DIR
+git clone https://github.com/openclaw/openclaw.git $REVIEW_DIR
 cd $REVIEW_DIR &amp;&amp; gh pr checkout 130
 bash workdir:$REVIEW_DIR background:true command:&quot;kilo run \&quot;Review current branch against main branch\&quot;&quot;
 # Clean up after: rm -rf $REVIEW_DIR
@@ -123,7 +125,7 @@ bash workdir:$REVIEW_DIR background:true command:&quot;kilo run \&quot;Review cu
 git worktree add /tmp/pr-130-review pr-130-branch
 bash workdir:/tmp/pr-130-review background:true command:&quot;kilo run \&quot;Review current branch against main branch\&quot;&quot;
 </code></pre>
-<p><strong>Why?</strong> Checking out branches in the running Clawdbot repo can break the live instance!</p>
+<p><strong>Why?</strong> Checking out branches in the running OpenClaw repo can break the live instance!</p>
 <h3>Batch PR Reviews (parallel army!)</h3>
 <pre><code class="language-bash"># Fetch all PR refs first
 git fetch origin &#39;+refs/pull/*/head:refs/remotes/origin/pr/*&#39;
@@ -198,8 +200,8 @@ git worktree remove /tmp/issue-99
 <li><strong>--full-auto for building</strong> — auto-approves changes</li>
 <li><strong>vanilla for reviewing</strong> — no special flags needed</li>
 <li><strong>Parallel is OK</strong> — run many Kilo CLI processes at once for batch work</li>
-<li><strong>NEVER start Kilo CLI in ~/clawd/</strong> — it&#39;ll read your soul docs and get weird ideas about the org chart! Use the target project dir or /tmp for blank slate chats</li>
-<li><strong>NEVER checkout branches in ~/Projects/clawdbot/</strong> — that&#39;s the LIVE Clawdbot instance! Clone to /tmp or use git worktree for PR reviews</li>
+<li><strong>NEVER start Kilo CLI in ~/openclaw/</strong> — it&#39;ll read your soul docs and get weird ideas about the org chart! Use the target project dir or /tmp for blank slate chats</li>
+<li><strong>NEVER checkout branches in ~/Projects/openclaw/</strong> — that&#39;s the LIVE OpenClaw instance! Clone to /tmp or use git worktree for PR reviews</li>
 </ol>
 <hr>
 <h2>PR Template (The Razor Standard)</h2>
@@ -268,7 +270,7 @@ command example
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/codewithnathan97/kilocli-coding-agent/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/blob/main/skills/codewithnathan97/kilocli-coding-agent/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
@@ -276,9 +278,9 @@ command example
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/codewithnathan97/kilocli-coding-agent/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/codewithnathan97/kilocli-coding-agent/SKILL.md" download class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  Download SKILL.md
+                  Download Source
                 </a>
                 <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>

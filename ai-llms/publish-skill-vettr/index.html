@@ -70,8 +70,47 @@
                   </button>
                 </div>
                 <div class="markdown-content">
-                  <h1>skill-vettr v2.0.1</h1>
+                  <h1>skill-vettr v2.0.3</h1>
 <p>Security scanner for third-party OpenClaw skills. Analyses source code, dependencies, and metadata before installation using tree-sitter AST parsing and regex pattern matching.</p>
+<h2>Installation</h2>
+<pre><code class="language-bash">npm install
+</code></pre>
+<p>This installs all Node.js dependencies, including tree-sitter <code>.wasm</code> grammar files required at runtime for AST-based analysis. The <code>.wasm</code> files are located in <code>node_modules</code> and must be present for the skill to function.</p>
+<blockquote>
+<p>⚠️ <strong>Install safety:</strong> <code>npm install</code> runs dependency lifecycle scripts, which can execute arbitrary code. For stronger isolation, run <code>npm ci --ignore-scripts</code> — but note that tree-sitter native/WASM artifacts may not build, breaking AST analysis. Prefer installing inside a container or VM when possible.</p>
+</blockquote>
+<h2>External Binaries</h2>
+<p>The <code>vet-url</code> and <code>vet-clawhub</code> commands invoke external binaries via <code>execSafe</code> (which uses <code>execFile</code> — no shell is spawned). Only the following commands are permitted:</p>
+<table>
+<thead>
+<tr>
+<th>Binary</th>
+<th>Used By</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>git</code></td>
+<td><code>vet-url</code></td>
+<td>Clone <code>.git</code> URLs (with hooks disabled)</td>
+</tr>
+<tr>
+<td><code>curl</code></td>
+<td><code>vet-url</code></td>
+<td>Download archive URLs</td>
+</tr>
+<tr>
+<td><code>tar</code></td>
+<td><code>vet-url</code></td>
+<td>Extract downloaded archives</td>
+</tr>
+<tr>
+<td><code>clawhub</code></td>
+<td><code>vet-clawhub</code></td>
+<td>Fetch skills from ClawHub registry</td>
+</tr>
+</tbody></table>
+<p>The <code>/skill:vet</code> command (local path vetting) requires only <code>node</code> and no external binaries.</p>
 <h2>Commands</h2>
 <ul>
 <li><code>/skill:vet --path &lt;directory&gt;</code> — Vet a local skill directory</li>
@@ -110,7 +149,7 @@
 <tr>
 <td>Prompt injection</td>
 <td>Regex</td>
-<td>Instruction overrides, control tokens (in string literals)</td>
+<td>Instruction override patterns, control tokens (in string literals)</td>
 </tr>
 <tr>
 <td>Homoglyph attacks</td>
@@ -125,7 +164,7 @@
 <tr>
 <td>Credential paths</td>
 <td>Regex</td>
-<td>.ssh/, .aws/, keychain path references</td>
+<td>Cloud and SSH credential directory references, system credential store access</td>
 </tr>
 <tr>
 <td>Network calls</td>
@@ -159,8 +198,47 @@
 <li><strong>Limited network detection</strong> — Only detects <code>fetch()</code> with literal URL strings; misses axios, http module, dynamic URLs</li>
 <li><strong>No sandboxing</strong> — Does not execute or isolate target code</li>
 <li><strong>Comment scanning</strong> — Prompt injection detection scans string literals, not comments</li>
+<li><strong>Filesystem scope</strong> — <code>vet-url</code> downloads and extracts remote archives into a temp directory; <code>vet</code> accepts paths under <code>os.tmpdir()</code>, <code>~/.openclaw</code>, and <code>~/Downloads</code> by default. Set <code>allowCwd: true</code> in config to also permit <code>process.cwd()</code> (see Configuration below)</li>
+<li><strong>External binary trust</strong> — <code>vet-url</code> and <code>vet-clawhub</code> invoke <code>git</code>, <code>curl</code>, <code>tar</code>, and <code>clawhub</code> via <code>execFile</code>. These binaries must be trusted and present on <code>PATH</code></li>
 </ul>
-<p>For high-security environments, combine with sandboxing and manual source review.</p>
+<p>For high-security environments, combine with sandboxing, network isolation, and manual source review. Run inside a disposable container when vetting untrusted URLs.</p>
+<h2>Configuration</h2>
+<h3><code>allowCwd</code></h3>
+<p>By default, <code>process.cwd()</code> is <strong>not</strong> included in the set of allowed vetting roots. The default allowed roots are:</p>
+<ul>
+<li><code>os.tmpdir()</code></li>
+<li><code>~/.openclaw</code></li>
+<li><code>~/Downloads</code></li>
+</ul>
+<p>To allow vetting paths under the current working directory, set <code>allowCwd: true</code> in your vetting config:</p>
+<pre><code class="language-json">{
+  &quot;allowCwd&quot;: true
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Security implication:</strong> Enabling <code>allowCwd</code> means the scanner will accept any path under the directory you launched it from. If you run from <code>/</code> or <code>$HOME</code>, this effectively grants access to your entire filesystem. Only enable this when running from a scoped project directory or inside a container.</p>
+</blockquote>
+<h2><code>.vettrignore</code></h2>
+<p>Place a <code>.vettrignore</code> file in the root of the skill directory being scanned to exclude files or directories from analysis. This is useful for excluding test fixtures that contain deliberate malicious patterns.</p>
+<h3>Format</h3>
+<ul>
+<li>One glob pattern per line</li>
+<li>Lines starting with <code>#</code> are comments</li>
+<li>Empty lines are ignored</li>
+<li>Patterns ending with <code>/</code> match entire directories</li>
+<li><code>*</code> matches any sequence of non-separator characters</li>
+<li><code>**</code> matches any sequence including path separators (recursive)</li>
+<li><code>?</code> matches a single non-separator character</li>
+</ul>
+<h3>Example</h3>
+<pre><code># Exclude test fixtures containing deliberate prompt injection vectors
+test/fixtures/
+
+# Exclude generated files
+dist/
+*.min.js
+</code></pre>
+<p>If the <code>.vettrignore</code> file is unreadable or contains invalid UTF-8, the engine logs an INFO-level warning and proceeds with a full scan.</p>
 
                 </div>
               </div>
@@ -168,7 +246,7 @@
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/britrik/publish-skill-vettr/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/blob/main/skills/britrik/publish-skill-vettr/skill.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
@@ -176,9 +254,9 @@
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/britrik/publish-skill-vettr/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/britrik/publish-skill-vettr/skill.md" download class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  Download SKILL.md
+                  Download Source
                 </a>
                 <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>

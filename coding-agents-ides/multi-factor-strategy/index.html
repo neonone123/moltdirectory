@@ -48,6 +48,7 @@
               <a href="/coding-agents-ides/" class="back-link">← Back to Coding Agents & IDEs</a>
               <div class="skill-page-meta">
                 <a href="/coding-agents-ides/" class="skill-page-category">Coding Agents & IDEs</a>
+                <span class="skill-page-author">by @wumu2013</span>
               </div>
               <h1 class="skill-page-title">multi-factor-strategy</h1>
               <p class="skill-page-desc">Guide users to create multi-factor stock</p>
@@ -60,15 +61,525 @@
           </section>
           <div class="skill-page-body">
             <article class="skill-page-content">
-              <div class="markdown-content">
-                <p>Skill documentation is available on GitHub.</p>
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <p>{&quot;homepage&quot;:&quot;<a href="https://gitcode.com/datavoid/quantcli%22,%22user-invocable%22:true%7D">https://gitcode.com/datavoid/quantcli&quot;,&quot;user-invocable&quot;:true}</a></p>
+<h1>Multi-Factor Strategy Assistant</h1>
+<p>Guide you to create multi-factor stock selection strategies and generate independent YAML configuration files.</p>
+<h2>Install quantcli</h2>
+<pre><code class="language-bash"># Install from PyPI (recommended)
+pip install quantcli
+
+# Or install from source
+git clone https://gitcode.com/datavoid/quantcli.git
+cd quantcli
+pip install -e .
+</code></pre>
+<p>Verify installation:</p>
+<pre><code class="language-bash">quantcli --help
+</code></pre>
+<h2>Quick Start</h2>
+<p>A complete multi-factor stock selection strategy YAML example:</p>
+<pre><code class="language-yaml">name: Value-Growth Hybrid Strategy
+version: 1.0.0
+description: ROE + Momentum factor stock selection
+
+screening:
+  fundamental_conditions:    # Stage 1: Financial condition screening
+    - &quot;roe &gt; 0.10&quot;           # ROE &gt; 10%
+    - &quot;pe_ttm &lt; 30&quot;          # P/E &lt; 30
+    - &quot;pe_ttm &gt; 0&quot;           # Exclude losses
+  daily_conditions:          # Stage 2: Price condition screening
+    - &quot;close &gt; ma10&quot;         # Above 10-day MA
+  limit: 100                 # Keep at most 100 stocks
+
+# Factor configuration (supports two methods, factors at top level)
+factors:
+  # Method 1: Inline factor definition
+  - name: ma10_deviation
+    expr: &quot;(close - ma(close, 10)) / ma(close, 10)&quot;
+    direction: negative
+    description: &quot;10-day MA deviation&quot;
+
+  # Method 2: External reference (reference factor files in factors/ directory, include .yaml suffix)
+  - factors/alpha_001.yaml
+  - factors/alpha_008.yaml
+
+ranking:
+  weights:                   # Weight fusion
+    ma10_deviation: 0.20     # Inline factor
+    factors/alpha_001.yaml: 0.40  # External reference factor
+    factors/alpha_008.yaml: 0.40
+  normalize: zscore          # Normalization method
+
+output:
+  limit: 30                  # Output top 30 stocks
+  columns: [symbol, name, score, roe, pe_ttm, close, ma10_deviation]
+</code></pre>
+<h3>Factor Configuration Methods</h3>
+<p><strong>Factor configuration supports two methods (can be mixed):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Type</th>
+<th>Example</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Inline</strong></td>
+<td><code>dict</code></td>
+<td><code>{name: xxx, expr: &quot;...&quot;}</code></td>
+<td>Define expression directly in YAML</td>
+</tr>
+<tr>
+<td><strong>External</strong></td>
+<td><code>str</code></td>
+<td><code>factors/alpha_001.yaml</code></td>
+<td>Load factor file from <code>factors/</code> directory</td>
+</tr>
+</tbody></table>
+<p><strong>Example: Mixed usage</strong></p>
+<pre><code class="language-yaml">factors:
+  # Inline: Custom factor
+  - name: custom_momentum
+    expr: &quot;close / delay(close, 20) - 1&quot;
+    direction: positive
+
+  # External: Alpha101 factor library (include .yaml suffix)
+  - factors/alpha_001.yaml
+  - factors/alpha_005.yaml
+  - factors/alpha_009.yaml
+
+ranking:
+  weights:
+    custom_momentum: 0.3
+    factors/alpha_001.yaml: 0.3
+    factors/alpha_005.yaml: 0.2
+    factors/alpha_009.yaml: 0.2
+</code></pre>
+<p>Run strategy:</p>
+<pre><code class="language-bash">quantcli filter run -f your_strategy.yaml
+</code></pre>
+<h2>Invocation</h2>
+<pre><code>/multi-factor-strategy
+</code></pre>
+<h2>Available Expression Functions</h2>
+<h3>Data Processing Functions</h3>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Usage</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>delay</td>
+<td><code>delay(x, n)</code></td>
+<td>Lag n periods</td>
+</tr>
+<tr>
+<td>ma</td>
+<td><code>ma(x, n)</code></td>
+<td>Simple moving average</td>
+</tr>
+<tr>
+<td>ema</td>
+<td><code>ema(x, n)</code></td>
+<td>Exponential moving average</td>
+</tr>
+<tr>
+<td>rolling_sum</td>
+<td><code>rolling_sum(x, n)</code></td>
+<td>Rolling sum</td>
+</tr>
+<tr>
+<td>rolling_std</td>
+<td><code>rolling_std(x, n)</code></td>
+<td>Rolling standard deviation</td>
+</tr>
+</tbody></table>
+<h3>Technical Indicator Functions</h3>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Usage</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>rsi</td>
+<td><code>rsi(x, n=14)</code></td>
+<td>Relative strength index</td>
+</tr>
+<tr>
+<td>correlation</td>
+<td><code>correlation(x, y, n)</code></td>
+<td>Correlation coefficient</td>
+</tr>
+<tr>
+<td>cross_up</td>
+<td><code>cross_up(a, b)</code></td>
+<td>Golden cross (a crosses above b)</td>
+</tr>
+<tr>
+<td>cross_down</td>
+<td><code>cross_down(a, b)</code></td>
+<td>Death cross (a crosses below b)</td>
+</tr>
+</tbody></table>
+<h3>Ranking &amp; Normalization Functions</h3>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Usage</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>rank</td>
+<td><code>rank(x)</code></td>
+<td>Cross-sectional ranking (0-1)</td>
+</tr>
+<tr>
+<td>zscore</td>
+<td><code>zscore(x)</code></td>
+<td>Standardization</td>
+</tr>
+<tr>
+<td>sign</td>
+<td><code>sign(x)</code></td>
+<td>Sign function</td>
+</tr>
+<tr>
+<td>clamp</td>
+<td><code>clamp(x, min, max)</code></td>
+<td>Clipping function</td>
+</tr>
+</tbody></table>
+<h3>Conditional Functions</h3>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Usage</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>where</td>
+<td><code>where(cond, t, f)</code></td>
+<td>Conditional selection</td>
+</tr>
+<tr>
+<td>if</td>
+<td><code>if(cond, t, f)</code></td>
+<td>Conditional selection (alias)</td>
+</tr>
+</tbody></table>
+<h3>Base Fields</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>open, high, low, close</td>
+<td>OHLC prices</td>
+</tr>
+<tr>
+<td>volume</td>
+<td>Trading volume</td>
+</tr>
+<tr>
+<td>pe, pb</td>
+<td>P/E ratio, P/B ratio</td>
+</tr>
+<tr>
+<td>roe</td>
+<td>Return on equity</td>
+</tr>
+<tr>
+<td>netprofitmargin</td>
+<td>Net profit margin</td>
+</tr>
+</tbody></table>
+<h2>Guided Workflow</h2>
+<h3>Step 1: Strategy Goal定位</h3>
+<p>I will first understand your strategy needs:</p>
+<ul>
+<li><strong>Strategy Type</strong>: Value, Growth, Momentum, Volatility, Hybrid</li>
+<li><strong>Selection Count</strong>: Concentrated(10-30), Medium(50-100), Diversified(200+)</li>
+<li><strong>Holding Period</strong>: Intraday, Short-term(week), Medium-term(month), Long-term(quarter)</li>
+</ul>
+<h3>Step 2: Factor Selection</h3>
+<p>Based on your strategy goals, recommend suitable factor combinations:</p>
+<p><strong>Common Fundamental Factors</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Factor</th>
+<th>Expression</th>
+<th>Direction</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>roe</td>
+<td><code>roe</code></td>
+<td>positive</td>
+<td>Return on equity</td>
+</tr>
+<tr>
+<td>pe</td>
+<td><code>pe</code></td>
+<td>negative</td>
+<td>Lower P/E is better</td>
+</tr>
+<tr>
+<td>pb</td>
+<td><code>pb</code></td>
+<td>negative</td>
+<td>Price-to-book ratio</td>
+</tr>
+<tr>
+<td>netprofitmargin</td>
+<td><code>netprofitmargin</code></td>
+<td>positive</td>
+<td>Net profit margin</td>
+</tr>
+<tr>
+<td>revenue_growth</td>
+<td><code>revenue_yoy</code></td>
+<td>positive</td>
+<td>Revenue growth rate</td>
+</tr>
+</tbody></table>
+<p><strong>Common Technical Factors</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Factor</th>
+<th>Expression</th>
+<th>Direction</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>momentum</td>
+<td><code>(close/delay(close,20))-1</code></td>
+<td>positive</td>
+<td>N-day momentum</td>
+</tr>
+<tr>
+<td>ma_deviation</td>
+<td><code>(close-ma(close,10))/ma(close,10)</code></td>
+<td>negative</td>
+<td>MA deviation</td>
+</tr>
+<tr>
+<td>ma_slope</td>
+<td><code>(ma(close,10)-delay(ma(close,10),5))/delay(ma(close,10),5)</code></td>
+<td>positive</td>
+<td>MA slope</td>
+</tr>
+<tr>
+<td>volume_ratio</td>
+<td><code>volume/ma(volume,5)</code></td>
+<td>negative</td>
+<td>Volume ratio</td>
+</tr>
+</tbody></table>
+<p><strong>Alpha101 Built-in Factors</strong> (can reference <code>{baseDir}/alpha101/alpha_XXX</code>):</p>
+<p>QuantCLI includes 40 WorldQuant Alpha101 factors that can be directly referenced:</p>
+<table>
+<thead>
+<tr>
+<th>Factor</th>
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>alpha101/alpha_001</code></td>
+<td>Reversal</td>
+<td>20-day new high then decline</td>
+</tr>
+<tr>
+<td><code>alpha101/alpha_002</code></td>
+<td>Reversal</td>
+<td>Down volume bottom</td>
+</tr>
+<tr>
+<td><code>alpha101/alpha_003</code></td>
+<td>Volatility</td>
+<td>Low volatility stability</td>
+</tr>
+<tr>
+<td><code>alpha101/alpha_004</code></td>
+<td>Capital Flow</td>
+<td>Net capital inflow</td>
+</tr>
+<tr>
+<td><code>alpha101/alpha_005</code></td>
+<td>Trend</td>
+<td>Uptrend</td>
+</tr>
+<tr>
+<td><code>alpha101/alpha_008</code></td>
+<td>Capital Flow</td>
+<td>Capital inflow</td>
+</tr>
+<tr>
+<td><code>alpha101/alpha_009</code></td>
+<td>Momentum</td>
+<td>Long-term momentum</td>
+</tr>
+<tr>
+<td><code>alpha101/alpha_010</code></td>
+<td>Reversal</td>
+<td>MA deviation reversal</td>
+</tr>
+<tr>
+<td><code>alpha101/alpha_011</code> ~ <code>alpha_020</code></td>
+<td>Extended</td>
+<td>Volatility, momentum, price-volume factors</td>
+</tr>
+<tr>
+<td><code>alpha101/alpha_021</code> ~ <code>alpha_030</code></td>
+<td>Extended</td>
+<td>Price-volume, trend, strength factors</td>
+</tr>
+<tr>
+<td><code>alpha101/alpha_031</code> ~ <code>alpha_040</code></td>
+<td>Extended</td>
+<td>Position, volatility, capital factors</td>
+</tr>
+</tbody></table>
+<p><strong>View all built-in factors:</strong></p>
+<pre><code class="language-bash">quantcli factors list
+</code></pre>
+<p><strong>Usage Example:</strong></p>
+<pre><code class="language-yaml">factors:
+  - alpha101/alpha_001   # Reversal factor
+  - alpha101/alpha_008   # Capital inflow
+  - alpha101/alpha_029   # 5-day momentum
+ranking:
+  weights:
+    alpha101/alpha_001: 0.4
+    alpha101/alpha_008: 0.3
+    alpha101/alpha_029: 0.3
+</code></pre>
+<p><strong>Screening Conditions Example</strong>:</p>
+<pre><code class="language-yaml">screening:
+  conditions:
+    - &quot;roe &gt; 0.10&quot;              # ROE &gt; 10%
+    - &quot;netprofitmargin &gt; 0.05&quot;  # Net profit margin &gt; 5%
+</code></pre>
+<h3>Step 3: Weight Configuration</h3>
+<p>Allocate weights based on factor importance, 0 means only for screening, not scoring:</p>
+<pre><code class="language-yaml">ranking:
+  weights:
+    # Fundamental factors
+    roe: 0.30
+    pe: 0.20
+    # Technical factors
+    ma_deviation: 0.30
+    momentum: 0.20
+  normalize: zscore
+</code></pre>
+<h3>Step 4: Generate Strategy File</h3>
+<p>I will generate a complete strategy YAML file for you:</p>
+<pre><code class="language-yaml">name: Your Strategy Name
+version: 1.0.0
+description: Strategy description
+
+# Stage 1: Fundamental screening
+screening:
+  conditions:
+    - &quot;roe &gt; 0.10&quot;
+    - &quot;pe &lt; 30&quot;
+  limit: 200
+
+# Stage 2: Technical ranking
+ranking:
+  weights:
+    roe: 0.30
+    pe: 0.20
+    ma_deviation: 0.30
+    momentum: 0.20
+  normalize: zscore
+
+output:
+  columns: [symbol, score, rank, roe, pe, momentum]
+  limit: 30
+</code></pre>
+<h3>Step 5: Run &amp; Evaluate</h3>
+<p><strong>Run strategy</strong>:</p>
+<pre><code class="language-bash">quantcli filter run -f your_strategy.yaml --top 30
+</code></pre>
+<p><strong>Evaluation points</strong>:</p>
+<ol>
+<li><strong>Selected stock count</strong>: Check if screening conditions are reasonable</li>
+<li><strong>Factor distribution</strong>: Distribution of factor scores</li>
+<li><strong>Industry diversification</strong>: Avoid over-concentration</li>
+</ol>
+<h2>FAQ</h2>
+<p><strong>Q: How to allocate factor weights?</strong>
+A: Core factors 0.3-0.4, auxiliary factors 0.1-0.2, ensure weights sum close to 1</p>
+<p><strong>Q: Screening conditions too strict resulting in empty results?</strong>
+A: Gradually relax conditions, first see how many stocks meet each condition</p>
+<p><strong>Q: What expression syntax is supported?</strong>
+A: Supports 40+ built-in functions: <code>ma()</code>, <code>ema()</code>, <code>delay()</code>, <code>rolling_sum()</code>, <code>rsi()</code>, <code>rank()</code>, <code>zscore()</code>, etc.</p>
+
+                </div>
               </div>
             </article>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/wumu2013/multi-factor-strategy/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">View on GitHub</a>
-                <a href="https://clawdhub.com/wumu2013/multi-factor-strategy" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">View on ClawdHub</a>
+                <a href="https://github.com/openclaw/skills/blob/main/skills/wumu2013/multi-factor-strategy/skill.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/wumu2013/multi-factor-strategy" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/wumu2013/multi-factor-strategy/skill.md" download class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download Source
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@wumu2013</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Coding Agents & IDEs</span>
+                  </div>
+                </div>
               </div>
             </aside>
           </div>

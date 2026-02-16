@@ -88,13 +88,17 @@ Full project: <a href="https://github.com/openclaw/openclaw">https://github.com/
 <ol>
 <li><strong>Attach browser</strong> - User clicks OpenClaw toolbar icon on chatgpt.com tab</li>
 <li><strong>Inject script</strong> - Agent injects background export script</li>
-<li><strong>Fetch all</strong> - Script fetches all conversations via internal API</li>
+<li><strong>List conversations</strong> - Script fetches all conversations from the main listing API</li>
+<li><strong>Discover Project conversations</strong> - Script searches with broad terms to find conversations hidden inside ChatGPT Projects/folders (these are invisible to the main listing endpoint)</li>
+<li><strong>Fetch all</strong> - Script fetches full content for every conversation found</li>
 <li><strong>Download</strong> - JSON file auto-downloads to user&#39;s Downloads folder</li>
 </ol>
+<h3>Why Search-Based Discovery?</h3>
+<p>ChatGPT&#39;s <code>/backend-api/conversations</code> endpoint only returns conversations that are NOT inside Projects. Conversations created within Projects (e.g., &quot;Feina&quot;, &quot;Receptes&quot;) are invisible to this endpoint. The <code>/backend-api/conversations/search</code> endpoint searches across ALL conversations including those in Projects, so we use broad search terms to discover them.</p>
 <h2>Technical Details</h2>
 <h3>Authentication</h3>
 <p>ChatGPT&#39;s internal API requires a Bearer token from <code>/api/auth/session</code>:</p>
-<pre><code class="language-javascript">const session = await fetch(&#39;/api/auth/session&#39;, { credentials: &#39;include&#39; });
+<pre><code class="language-javascript">const session = await fetch(&quot;/api/auth/session&quot;, { credentials: &quot;include&quot; });
 const { accessToken } = await session.json();
 </code></pre>
 <h3>API Endpoints</h3>
@@ -128,16 +132,25 @@ const { accessToken } = await session.json();
 <li>Creates JSON blob and triggers download</li>
 </ol>
 <h3>Progress Tracking</h3>
-<pre><code class="language-javascript">window.__exportStatus = { phase: &#39;fetching&#39;, progress: N, total: M }
+<pre><code class="language-javascript">// Check progress in console — the script logs each conversation as it&#39;s fetched
+// Phase 1: listing (fast), Phase 2: search discovery (~30s), Phase 3: fetching (100ms/conv)
 </code></pre>
 <h2>Output Format</h2>
 <pre><code class="language-json">{
-  &quot;exported&quot;: &quot;2026-02-06T11:10:09.699Z&quot;,
+  &quot;exported&quot;: &quot;2026-02-15T16:30:00.000Z&quot;,
+  &quot;exporter_version&quot;: &quot;2.0&quot;,
+  &quot;total&quot;: 264,
+  &quot;listed&quot;: 189,
+  &quot;from_projects&quot;: 75,
+  &quot;successful&quot;: 264,
+  &quot;errors&quot;: 0,
   &quot;conversations&quot;: [
     {
       &quot;id&quot;: &quot;abc123&quot;,
       &quot;title&quot;: &quot;Conversation Title&quot;,
-      &quot;created&quot;: 1770273234.966738,
+      &quot;created&quot;: &quot;2025-09-19T12:34:00.901734Z&quot;,
+      &quot;updated&quot;: &quot;2025-09-22T15:12:11.617018Z&quot;,
+      &quot;gizmo_id&quot;: &quot;g-p-690b268fc9f8819191a7742fce2700fb&quot;,
       &quot;messages&quot;: [
         { &quot;role&quot;: &quot;user&quot;, &quot;text&quot;: &quot;...&quot;, &quot;time&quot;: 1770273234 },
         { &quot;role&quot;: &quot;assistant&quot;, &quot;text&quot;: &quot;...&quot;, &quot;time&quot;: 1770273240 }
@@ -148,9 +161,11 @@ const { accessToken } = await session.json();
 </code></pre>
 <h2>Rate Limits</h2>
 <ul>
-<li>100ms delay between conversation fetches</li>
-<li>~3 minutes for 200 conversations</li>
-<li>ChatGPT allows ~100 requests/minute</li>
+<li>100ms delay between conversation fetches and search queries</li>
+<li>Phase 1 (listing): ~2 seconds</li>
+<li>Phase 2 (search discovery): ~30 seconds (searches ~50 terms)</li>
+<li>Phase 3 (fetching): ~100ms per conversation</li>
+<li>Total for ~250 conversations: ~3-4 minutes</li>
 </ul>
 <h2>Troubleshooting</h2>
 <table>
@@ -226,7 +241,7 @@ const { accessToken } = await session.json();
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/globalcaos/chatgpt-exporter-ultimate/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/blob/main/skills/globalcaos/chatgpt-exporter-ultimate/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
@@ -234,9 +249,9 @@ const { accessToken } = await session.json();
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/globalcaos/chatgpt-exporter-ultimate/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/globalcaos/chatgpt-exporter-ultimate/SKILL.md" download class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  Download SKILL.md
+                  Download Source
                 </a>
                 <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>

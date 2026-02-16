@@ -72,46 +72,123 @@
                 <div class="markdown-content">
                   <h1>read-no-evil-mcp</h1>
 <p>Secure email gateway that scans emails for prompt injection attacks before you see them.</p>
+<p>This skill is a zero-dependency HTTP client that talks to a <a href="https://github.com/thekie/read-no-evil-mcp">read-no-evil-mcp</a> server. Credentials and email servers are managed entirely by the MCP server — this skill never has direct access to them.</p>
 <h2>Prerequisites</h2>
-<p>Install the read-no-evil-mcp package (version must match skill version):</p>
-<pre><code class="language-bash">pip install read-no-evil-mcp==0.2.0
+<p>A running read-no-evil-mcp server with HTTP transport enabled. Three connection modes:</p>
+<ol>
+<li><strong>Remote server</strong> — An existing server on another machine. You need the URL (e.g. <code>http://server:8000</code>).</li>
+<li><strong>Local server</strong> — An existing server on localhost. Uses default <code>http://localhost:8000</code>.</li>
+<li><strong>New Docker setup</strong> — Use <code>scripts/setup-server.sh</code> to pull the official Docker image and start a container.</li>
+</ol>
+<p>No <code>pip install</code> is required. The script uses only Python stdlib.</p>
+<h2>Setup Flow (AI Agent Instructions)</h2>
+<p><strong>Before first use, always ask the user how they want to connect:</strong></p>
+<blockquote>
+<p>How would you like to connect to the read-no-evil-mcp server?</p>
+<ol>
+<li>Connect to an existing remote server (you&#39;ll provide the URL)</li>
+<li>Connect to an existing local server (localhost:8000)</li>
+<li>Set up a new local server via Docker</li>
+</ol>
+</blockquote>
+<ul>
+<li>For option 1: Ask for the server URL, then use <code>--server URL</code> with all commands.</li>
+<li>For option 2: No extra configuration needed, commands use the default URL.</li>
+<li>For option 3: Follow the Docker setup steps below.</li>
+</ul>
+<p><strong>Never auto-setup Docker without explicit user confirmation.</strong></p>
+<h3>Docker Setup Steps</h3>
+<ol>
+<li>Check if a config exists: <code>setup-config.py list</code></li>
+<li>If no config, create one and add an account:<pre><code class="language-bash">setup-config.py create
+setup-config.py add --email user@example.com --host imap.example.com --create-env
 </code></pre>
-<h2>Configuration</h2>
-<h3>Config File</h3>
-<p>Create <code>~/.config/read-no-evil-mcp/config.yaml</code>:</p>
-<pre><code class="language-yaml">accounts:
-  - id: &quot;default&quot;
-    type: &quot;imap&quot;
-    host: &quot;mail.example.com&quot;
-    port: 993
-    username: &quot;you@example.com&quot;
-    ssl: true
-    permissions:
-      read: true
-      send: false
-      delete: false
-      move: false
-    smtp_host: &quot;mail.example.com&quot;
-    smtp_port: 587
-    from_address: &quot;you@example.com&quot;
-    from_name: &quot;Your Name&quot;
+</li>
+<li>Ask the user to fill in the password in the <code>.env</code> file.</li>
+<li>Start the server:<pre><code class="language-bash">scripts/setup-server.sh --config ~/.config/read-no-evil-mcp/config.yaml \
+  --env-file ~/.config/read-no-evil-mcp/.env
 </code></pre>
-<h3>Credentials</h3>
-<p>Create <code>~/.config/read-no-evil-mcp/.env</code>:</p>
-<pre><code class="language-bash">RNOE_ACCOUNT_DEFAULT_PASSWORD=your-password
-</code></pre>
-<p>Environment variable format: <code>RNOE_ACCOUNT_{ACCOUNT_ID}_PASSWORD</code> (uppercase).</p>
-<h2>CLI Commands</h2>
-<pre><code class="language-bash"># List recent emails (last 30 days)
-rnoe-mail.py list
+</li>
+</ol>
+<h3>Config Management (AI Agent Instructions)</h3>
+<p>Use <code>scripts/setup-config.py</code> to manage the server config file. All commands are flag-driven with no interactive prompts.</p>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Create config skeleton</td>
+<td><code>setup-config.py create [--threshold 0.5] [--force]</code></td>
+</tr>
+<tr>
+<td>Add a read-only account</td>
+<td><code>setup-config.py add --email user@example.com --host imap.example.com [--id myaccount] [--create-env]</code></td>
+</tr>
+<tr>
+<td>Add a send-enabled account</td>
+<td><code>setup-config.py add --email user@example.com --host imap.example.com --smtp-host smtp.example.com --send [--delete] [--move] [--create-env]</code></td>
+</tr>
+<tr>
+<td>Check what accounts are configured</td>
+<td><code>setup-config.py list</code></td>
+</tr>
+<tr>
+<td>Remove an account</td>
+<td><code>setup-config.py remove &lt;id&gt;</code></td>
+</tr>
+</tbody></table>
+<p><strong>Do NOT</strong> run <code>setup-config.py show</code> — it displays config details the user may not intend to share with the agent. If debugging is needed, tell the user to run it themselves.</p>
+<p><strong>Do NOT</strong> run <code>setup-config.py create --force</code> if config already exists without asking the user first.</p>
+<h2>Config Commands</h2>
+<p>Manage the server config file (<code>~/.config/read-no-evil-mcp/config.yaml</code>). No pip install required — stdlib only.</p>
+<pre><code class="language-bash"># Create a new config skeleton
+setup-config.py create
+setup-config.py create --threshold 0.3 --force
 
-# List with options
+# Add a read-only account (no SMTP needed)
+setup-config.py add --email user@example.com --host imap.example.com --create-env
+
+# Add an account with send permission (--smtp-host required for --send)
+setup-config.py add --email user@example.com --id myaccount \
+  --host imap.example.com --smtp-host smtp.example.com --send --delete --move
+
+# Remove an account
+setup-config.py remove &lt;account-id&gt;
+
+# List configured accounts
+setup-config.py list
+
+# Show full config file
+setup-config.py show
+
+# Use a custom config path
+setup-config.py --config /path/to/config.yaml create
+</code></pre>
+<h2>Server Setup</h2>
+<pre><code class="language-bash"># Start a Docker container (all flags required, no prompts)
+scripts/setup-server.sh --config ~/.config/read-no-evil-mcp/config.yaml \
+  --env-file ~/.config/read-no-evil-mcp/.env
+
+# Custom port and container name
+scripts/setup-server.sh --config /path/to/config.yaml \
+  --env-file /path/to/.env --port 9000 --name my-rnoe
+</code></pre>
+<h2>CLI Commands</h2>
+<p>All commands accept <code>--server URL</code> to specify the MCP server (default: <code>http://localhost:8000</code>). Can also be set via <code>RNOE_SERVER_URL</code> env var.</p>
+<pre><code class="language-bash"># List configured accounts
+rnoe-mail.py accounts
+
+# List recent emails (last 30 days)
+rnoe-mail.py list
 rnoe-mail.py list --limit 10 --days 7 --account myaccount
 
 # Read email (scanned for prompt injection!)
 rnoe-mail.py read &lt;uid&gt;
 
-# Send email (requires send permission)
+# Send email
 rnoe-mail.py send --to &quot;user@example.com&quot; --subject &quot;Hello&quot; --body &quot;Message&quot;
 
 # List folders
@@ -119,50 +196,55 @@ rnoe-mail.py folders
 
 # Move email to folder
 rnoe-mail.py move &lt;uid&gt; --to &quot;Archive&quot;
+
+# Delete email
+rnoe-mail.py delete &lt;uid&gt;
+
+# Use a specific server
+rnoe-mail.py --server http://myserver:8000 list
 </code></pre>
-<h2>Prompt Injection Detection</h2>
-<p>All emails are automatically scanned:</p>
-<ul>
-<li><strong>Safe</strong>: Content displayed normally</li>
-<li><strong>Injection detected</strong>: Exit code 2, shows score + patterns</li>
-</ul>
-<p>Uses ProtectAI&#39;s DeBERTa model (local inference, no external APIs).</p>
-<h2>Permissions</h2>
+<h2>Common Options</h2>
 <table>
 <thead>
 <tr>
-<th>Permission</th>
+<th>Option</th>
 <th>Description</th>
 <th>Default</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><code>read</code></td>
-<td>List and read emails</td>
-<td><code>true</code></td>
+<td><code>--server URL</code></td>
+<td>MCP server URL</td>
+<td><code>http://localhost:8000</code></td>
 </tr>
 <tr>
-<td><code>send</code></td>
-<td>Send emails via SMTP</td>
-<td><code>false</code></td>
+<td><code>--account ID</code> / <code>-a</code></td>
+<td>Account ID</td>
+<td><code>default</code></td>
 </tr>
 <tr>
-<td><code>delete</code></td>
-<td>Delete emails</td>
-<td><code>false</code></td>
-</tr>
-<tr>
-<td><code>move</code></td>
-<td>Move emails between folders</td>
-<td><code>false</code></td>
+<td><code>--folder NAME</code> / <code>-f</code></td>
+<td>Email folder</td>
+<td><code>INBOX</code></td>
 </tr>
 </tbody></table>
+<h2>Prompt Injection Detection</h2>
+<p>All emails are automatically scanned by the MCP server:</p>
+<ul>
+<li><strong>Safe</strong>: Content displayed normally</li>
+<li><strong>Injection detected</strong>: Exit code 2, warning on stderr</li>
+</ul>
+<h2>Exit Codes</h2>
+<ul>
+<li><code>0</code> — success</li>
+<li><code>1</code> — general error (connection failed, invalid account, etc.)</li>
+<li><code>2</code> — prompt injection detected</li>
+</ul>
 <h2>Security Notes</h2>
 <ul>
-<li>Emails are scanned for prompt injection before content is returned</li>
-<li>ML model runs locally — no data sent to external APIs</li>
-<li>Enable write permissions only when needed</li>
-<li>Consider using app-specific passwords</li>
+<li>Credentials are managed by the MCP server, never by this skill or the AI agent</li>
+<li>The skill communicates with the server over HTTP — use HTTPS for non-localhost connections</li>
+<li>Prompt injection scanning happens server-side using ML models</li>
 </ul>
 
                 </div>
@@ -171,7 +253,7 @@ rnoe-mail.py move &lt;uid&gt; --to &quot;Archive&quot;
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/thekie/read-no-evil-mcp/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/blob/main/skills/thekie/read-no-evil-mcp/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
@@ -179,9 +261,9 @@ rnoe-mail.py move &lt;uid&gt; --to &quot;Archive&quot;
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/thekie/read-no-evil-mcp/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/thekie/read-no-evil-mcp/SKILL.md" download class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  Download SKILL.md
+                  Download Source
                 </a>
                 <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>

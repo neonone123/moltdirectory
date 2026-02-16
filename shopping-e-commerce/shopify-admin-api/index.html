@@ -48,6 +48,7 @@
               <a href="/shopping-e-commerce/" class="back-link">← Back to Shopping & E-commerce</a>
               <div class="skill-page-meta">
                 <a href="/shopping-e-commerce/" class="skill-page-category">Shopping & E-commerce</a>
+                <span class="skill-page-author">by @zachgodsell93</span>
               </div>
               <h1 class="skill-page-title">shopify-admin-api</h1>
               <p class="skill-page-desc">Full read/write access to Shopify Admin REST API</p>
@@ -60,15 +61,621 @@
           </section>
           <div class="skill-page-body">
             <article class="skill-page-content">
-              <div class="markdown-content">
-                <p>Skill documentation is available on GitHub.</p>
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Shopify Admin API</h1>
+<h2>Description</h2>
+<p>Full read/write access to Shopify Admin REST API for managing orders, products, customers, inventory, fulfillments, refunds, returns, and transactions.</p>
+<h2>Setup</h2>
+<h3>Environment Variables</h3>
+<ul>
+<li><code>SHOPIFY_STORE_DOMAIN</code> - Your store&#39;s myshopify.com domain (e.g., <code>my-store.myshopify.com</code>)</li>
+<li><code>SHOPIFY_ACCESS_TOKEN</code> - Admin API access token from custom app</li>
+</ul>
+<h3>Required API Scopes</h3>
+<table>
+<thead>
+<tr>
+<th>Scope</th>
+<th>Access</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>read_orders</code> / <code>write_orders</code></td>
+<td>Orders, Fulfillments, Abandoned Checkouts</td>
+</tr>
+<tr>
+<td><code>read_products</code> / <code>write_products</code></td>
+<td>Products, Variants, Collections</td>
+</tr>
+<tr>
+<td><code>read_customers</code> / <code>write_customers</code></td>
+<td>Customers, Segments</td>
+</tr>
+<tr>
+<td><code>read_inventory</code> / <code>write_inventory</code></td>
+<td>Inventory Levels, Items</td>
+</tr>
+<tr>
+<td><code>read_returns</code> / <code>write_returns</code></td>
+<td>Returns</td>
+</tr>
+<tr>
+<td><code>read_all_orders</code></td>
+<td>Orders older than 60 days (requires approval)</td>
+</tr>
+</tbody></table>
+<h3>Authentication</h3>
+<p>All requests require this header:</p>
+<pre><code>X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN
+</code></pre>
+<h3>Getting an Access Token</h3>
+<ol>
+<li>Go to your Shopify Admin &gt; Settings &gt; Apps and sales channels</li>
+<li>Click &quot;Develop apps&quot; &gt; &quot;Create an app&quot;</li>
+<li>Configure Admin API scopes based on what you need</li>
+<li>Install the app to your store</li>
+<li>Copy the Admin API access token</li>
+</ol>
+<h2>API Reference</h2>
+<p>Base URL: <code>https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10</code></p>
+<h3>Orders</h3>
+<h4>List Orders</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/orders.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<p>Query parameters: <code>ids</code>, <code>limit</code>, <code>since_id</code>, <code>created_at_min</code>, <code>created_at_max</code>, <code>updated_at_min</code>, <code>updated_at_max</code>, <code>processed_at_min</code>, <code>processed_at_max</code>, <code>status</code> (open, closed, cancelled, any), <code>financial_status</code>, <code>fulfillment_status</code>, <code>fields</code></p>
+<h4>Get Order</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/orders/{ORDER_ID}.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Get Order Count</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/orders/count.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Update Order</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/orders/{ORDER_ID}.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X PUT \
+  -d &#39;{&quot;order&quot;:{&quot;id&quot;:{ORDER_ID},&quot;note&quot;:&quot;Updated note&quot;,&quot;tags&quot;:&quot;priority,vip&quot;}}&#39;
+</code></pre>
+<h4>Close Order</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/orders/{ORDER_ID}/close.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -X POST
+</code></pre>
+<h4>Re-open Order</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/orders/{ORDER_ID}/open.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -X POST
+</code></pre>
+<h4>Cancel Order</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/orders/{ORDER_ID}/cancel.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;reason&quot;:&quot;customer&quot;,&quot;email&quot;:true,&quot;restock&quot;:true}&#39;
+</code></pre>
+<p>Cancel reasons: <code>customer</code>, <code>fraud</code>, <code>inventory</code>, <code>declined</code>, <code>other</code></p>
+<h3>Products</h3>
+<h4>List Products</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/products.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<p>Query parameters: <code>ids</code>, <code>limit</code>, <code>since_id</code>, <code>title</code>, <code>vendor</code>, <code>handle</code>, <code>product_type</code>, <code>collection_id</code>, <code>created_at_min</code>, <code>created_at_max</code>, <code>updated_at_min</code>, <code>updated_at_max</code>, <code>published_at_min</code>, <code>published_at_max</code>, <code>published_status</code> (published, unpublished, any), <code>fields</code>, <code>status</code> (active, archived, draft)</p>
+<h4>Get Product</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/products/{PRODUCT_ID}.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Get Product Count</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/products/count.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Create Product</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/products.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;product&quot;:{&quot;title&quot;:&quot;Burton Custom Freestyle&quot;,&quot;body_html&quot;:&quot;&lt;strong&gt;Good snowboard!&lt;/strong&gt;&quot;,&quot;vendor&quot;:&quot;Burton&quot;,&quot;product_type&quot;:&quot;Snowboard&quot;,&quot;status&quot;:&quot;draft&quot;,&quot;variants&quot;:[{&quot;price&quot;:&quot;99.99&quot;,&quot;sku&quot;:&quot;BOARD-001&quot;}]}}&#39;
+</code></pre>
+<h4>Update Product</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/products/{PRODUCT_ID}.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X PUT \
+  -d &#39;{&quot;product&quot;:{&quot;id&quot;:{PRODUCT_ID},&quot;title&quot;:&quot;Updated Product Title&quot;,&quot;status&quot;:&quot;active&quot;}}&#39;
+</code></pre>
+<h4>Delete Product</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/products/{PRODUCT_ID}.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -X DELETE
+</code></pre>
+<h3>Product Variants</h3>
+<h4>List Variants for Product</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/products/{PRODUCT_ID}/variants.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Get Variant</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/variants/{VARIANT_ID}.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Create Variant</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/products/{PRODUCT_ID}/variants.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;variant&quot;:{&quot;option1&quot;:&quot;Blue&quot;,&quot;price&quot;:&quot;19.99&quot;,&quot;sku&quot;:&quot;BLUE-001&quot;,&quot;inventory_management&quot;:&quot;shopify&quot;}}&#39;
+</code></pre>
+<h4>Update Variant</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/variants/{VARIANT_ID}.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X PUT \
+  -d &#39;{&quot;variant&quot;:{&quot;id&quot;:{VARIANT_ID},&quot;price&quot;:&quot;24.99&quot;,&quot;compare_at_price&quot;:&quot;29.99&quot;}}&#39;
+</code></pre>
+<h4>Delete Variant</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/products/{PRODUCT_ID}/variants/{VARIANT_ID}.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -X DELETE
+</code></pre>
+<h3>Customers</h3>
+<h4>List Customers</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/customers.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<p>Query parameters: <code>ids</code>, <code>limit</code>, <code>since_id</code>, <code>created_at_min</code>, <code>created_at_max</code>, <code>updated_at_min</code>, <code>updated_at_max</code>, <code>fields</code></p>
+<h4>Search Customers</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/customers/search.json?query=email:customer@example.com&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<p>Search fields: <code>email</code>, <code>phone</code>, <code>first_name</code>, <code>last_name</code>, <code>company</code>, <code>orders_count</code>, <code>total_spent</code>, <code>country</code>, <code>state</code></p>
+<h4>Get Customer</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/customers/{CUSTOMER_ID}.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Get Customer Count</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/customers/count.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Create Customer</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/customers.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;customer&quot;:{&quot;first_name&quot;:&quot;John&quot;,&quot;last_name&quot;:&quot;Doe&quot;,&quot;email&quot;:&quot;john.doe@example.com&quot;,&quot;phone&quot;:&quot;+15551234567&quot;,&quot;addresses&quot;:[{&quot;address1&quot;:&quot;123 Main St&quot;,&quot;city&quot;:&quot;Ottawa&quot;,&quot;province&quot;:&quot;ON&quot;,&quot;country&quot;:&quot;CA&quot;,&quot;zip&quot;:&quot;K1A 0B1&quot;}]}}&#39;
+</code></pre>
+<h4>Update Customer</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/customers/{CUSTOMER_ID}.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X PUT \
+  -d &#39;{&quot;customer&quot;:{&quot;id&quot;:{CUSTOMER_ID},&quot;tags&quot;:&quot;vip,wholesale&quot;,&quot;note&quot;:&quot;Important customer&quot;}}&#39;
+</code></pre>
+<h4>Delete Customer</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/customers/{CUSTOMER_ID}.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -X DELETE
+</code></pre>
+<h4>Get Customer Orders</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/customers/{CUSTOMER_ID}/orders.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h3>Inventory</h3>
+<h4>List Inventory Levels</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/inventory_levels.json?inventory_item_ids={ITEM_ID}&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<p>Query parameters: <code>inventory_item_ids</code> (required), <code>location_ids</code>, <code>limit</code>, <code>updated_at_min</code></p>
+<h4>Adjust Inventory Level</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/inventory_levels/adjust.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;location_id&quot;:{LOCATION_ID},&quot;inventory_item_id&quot;:{ITEM_ID},&quot;available_adjustment&quot;:5}&#39;
+</code></pre>
+<h4>Set Inventory Level</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/inventory_levels/set.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;location_id&quot;:{LOCATION_ID},&quot;inventory_item_id&quot;:{ITEM_ID},&quot;available&quot;:100}&#39;
+</code></pre>
+<h4>Connect Inventory to Location</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/inventory_levels/connect.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;location_id&quot;:{LOCATION_ID},&quot;inventory_item_id&quot;:{ITEM_ID}}&#39;
+</code></pre>
+<h3>Inventory Items</h3>
+<h4>List Inventory Items</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/inventory_items.json?ids={ITEM_IDS}&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Get Inventory Item</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/inventory_items/{ITEM_ID}.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Update Inventory Item</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/inventory_items/{ITEM_ID}.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X PUT \
+  -d &#39;{&quot;inventory_item&quot;:{&quot;id&quot;:{ITEM_ID},&quot;cost&quot;:&quot;25.00&quot;,&quot;tracked&quot;:true}}&#39;
+</code></pre>
+<h3>Locations</h3>
+<h4>List Locations</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/locations.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Get Location</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/locations/{LOCATION_ID}.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Get Location Count</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/locations/count.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Get Inventory Levels for Location</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/locations/{LOCATION_ID}/inventory_levels.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h3>Fulfillments</h3>
+<h4>List Fulfillments for Order</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/orders/{ORDER_ID}/fulfillments.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Get Fulfillment</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/orders/{ORDER_ID}/fulfillments/{FULFILLMENT_ID}.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Get Fulfillment Count</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/orders/{ORDER_ID}/fulfillments/count.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Create Fulfillment</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/fulfillments.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;fulfillment&quot;:{&quot;line_items_by_fulfillment_order&quot;:[{&quot;fulfillment_order_id&quot;:{FULFILLMENT_ORDER_ID}}],&quot;tracking_info&quot;:{&quot;number&quot;:&quot;1Z999AA10123456784&quot;,&quot;url&quot;:&quot;https://www.ups.com/track?tracknum=1Z999AA10123456784&quot;,&quot;company&quot;:&quot;UPS&quot;}}}&#39;
+</code></pre>
+<h4>Update Tracking</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/fulfillments/{FULFILLMENT_ID}/update_tracking.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;fulfillment&quot;:{&quot;tracking_info&quot;:{&quot;number&quot;:&quot;1Z999AA10123456784&quot;,&quot;url&quot;:&quot;https://www.ups.com/track?tracknum=1Z999AA10123456784&quot;,&quot;company&quot;:&quot;UPS&quot;},&quot;notify_customer&quot;:true}}&#39;
+</code></pre>
+<h4>Cancel Fulfillment</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/fulfillments/{FULFILLMENT_ID}/cancel.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -X POST
+</code></pre>
+<h3>Fulfillment Orders</h3>
+<h4>List Fulfillment Orders for Order</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/orders/{ORDER_ID}/fulfillment_orders.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Get Fulfillment Order</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/fulfillment_orders/{FULFILLMENT_ORDER_ID}.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h3>Refunds</h3>
+<h4>List Refunds for Order</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/orders/{ORDER_ID}/refunds.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Get Refund</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/orders/{ORDER_ID}/refunds/{REFUND_ID}.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Calculate Refund</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/orders/{ORDER_ID}/refunds/calculate.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;refund&quot;:{&quot;shipping&quot;:{&quot;full_refund&quot;:true},&quot;refund_line_items&quot;:[{&quot;line_item_id&quot;:{LINE_ITEM_ID},&quot;quantity&quot;:1,&quot;restock_type&quot;:&quot;return&quot;}]}}&#39;
+</code></pre>
+<p>Restock types: <code>no_restock</code>, <code>cancel</code>, <code>return</code>, <code>legacy_restock</code></p>
+<h4>Create Refund</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/orders/{ORDER_ID}/refunds.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;refund&quot;:{&quot;currency&quot;:&quot;USD&quot;,&quot;notify&quot;:true,&quot;note&quot;:&quot;Customer returned item&quot;,&quot;shipping&quot;:{&quot;full_refund&quot;:true},&quot;refund_line_items&quot;:[{&quot;line_item_id&quot;:{LINE_ITEM_ID},&quot;quantity&quot;:1,&quot;restock_type&quot;:&quot;return&quot;}],&quot;transactions&quot;:[{&quot;parent_id&quot;:{TRANSACTION_ID},&quot;amount&quot;:&quot;10.00&quot;,&quot;kind&quot;:&quot;refund&quot;,&quot;gateway&quot;:&quot;shopify_payments&quot;}]}}&#39;
+</code></pre>
+<h3>Returns</h3>
+<h4>List Returns</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/returns.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<p>Query parameters: <code>limit</code>, <code>status</code> (open, closed, cancelled, requested, in_progress)</p>
+<h4>Get Return</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/returns/{RETURN_ID}.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Create Return</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/returns.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;return&quot;:{&quot;order_id&quot;:{ORDER_ID},&quot;return_line_items&quot;:[{&quot;fulfillment_line_item_id&quot;:{FULFILLMENT_LINE_ITEM_ID},&quot;quantity&quot;:1,&quot;return_reason&quot;:&quot;WRONG_ITEM&quot;}]}}&#39;
+</code></pre>
+<p>Return reasons: <code>UNKNOWN</code>, <code>SIZE_TOO_SMALL</code>, <code>SIZE_TOO_LARGE</code>, <code>UNWANTED</code>, <code>NOT_AS_DESCRIBED</code>, <code>WRONG_ITEM</code>, <code>DEFECTIVE</code>, <code>STYLE</code>, <code>COLOR</code>, <code>OTHER</code></p>
+<h3>Transactions</h3>
+<h4>List Transactions for Order</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/orders/{ORDER_ID}/transactions.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Get Transaction</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/orders/{ORDER_ID}/transactions/{TRANSACTION_ID}.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Get Transaction Count</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/orders/{ORDER_ID}/transactions/count.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Create Transaction (Capture)</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/orders/{ORDER_ID}/transactions.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;transaction&quot;:{&quot;kind&quot;:&quot;capture&quot;,&quot;amount&quot;:&quot;10.00&quot;,&quot;parent_id&quot;:{AUTHORIZATION_ID}}}&#39;
+</code></pre>
+<p>Transaction kinds: <code>authorization</code>, <code>capture</code>, <code>sale</code>, <code>void</code>, <code>refund</code></p>
+<h3>Collections</h3>
+<h4>List Custom Collections</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/custom_collections.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Get Custom Collection</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/custom_collections/{COLLECTION_ID}.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Create Custom Collection</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/custom_collections.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;custom_collection&quot;:{&quot;title&quot;:&quot;Summer Collection&quot;,&quot;body_html&quot;:&quot;&lt;p&gt;Summer products&lt;/p&gt;&quot;}}&#39;
+</code></pre>
+<h4>Update Custom Collection</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/custom_collections/{COLLECTION_ID}.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X PUT \
+  -d &#39;{&quot;custom_collection&quot;:{&quot;id&quot;:{COLLECTION_ID},&quot;title&quot;:&quot;Updated Collection&quot;}}&#39;
+</code></pre>
+<h4>Delete Custom Collection</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/custom_collections/{COLLECTION_ID}.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -X DELETE
+</code></pre>
+<h4>List Smart Collections</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/smart_collections.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Get Smart Collection</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/smart_collections/{COLLECTION_ID}.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Create Smart Collection</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/smart_collections.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;smart_collection&quot;:{&quot;title&quot;:&quot;Sale Items&quot;,&quot;rules&quot;:[{&quot;column&quot;:&quot;compare_at_price&quot;,&quot;relation&quot;:&quot;greater_than&quot;,&quot;condition&quot;:&quot;0&quot;}]}}&#39;
+</code></pre>
+<p>Rule columns: <code>title</code>, <code>type</code>, <code>vendor</code>, <code>variant_price</code>, <code>tag</code>, <code>compare_at_price</code>, <code>weight</code>, <code>inventory_stock</code>, <code>variant_compare_at_price</code>, <code>variant_weight</code>, <code>variant_inventory</code>, <code>variant_title</code></p>
+<p>Rule relations: <code>equals</code>, <code>not_equals</code>, <code>greater_than</code>, <code>less_than</code>, <code>starts_with</code>, <code>ends_with</code>, <code>contains</code>, <code>not_contains</code></p>
+<h3>Collects (Product-Collection Links)</h3>
+<h4>List Collects</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/collects.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<p>Query parameters: <code>product_id</code>, <code>collection_id</code>, <code>limit</code>, <code>since_id</code>, <code>fields</code></p>
+<h4>Create Collect</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/collects.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;collect&quot;:{&quot;product_id&quot;:{PRODUCT_ID},&quot;collection_id&quot;:{COLLECTION_ID}}}&#39;
+</code></pre>
+<h4>Delete Collect</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/collects/{COLLECT_ID}.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -X DELETE
+</code></pre>
+<h3>Abandoned Checkouts</h3>
+<h4>List Abandoned Checkouts</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/checkouts.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<p>Query parameters: <code>limit</code>, <code>since_id</code>, <code>created_at_min</code>, <code>created_at_max</code>, <code>updated_at_min</code>, <code>updated_at_max</code>, <code>status</code> (open, closed)</p>
+<h4>Get Abandoned Checkout Count</h4>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/checkouts/count.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h2>Status Reference</h2>
+<h3>Order Status</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Values</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>financial_status</code></td>
+<td>pending, authorized, partially_paid, paid, partially_refunded, refunded, voided</td>
+</tr>
+<tr>
+<td><code>fulfillment_status</code></td>
+<td>null (unfulfilled), partial, fulfilled, restocked</td>
+</tr>
+</tbody></table>
+<h3>Product Status</h3>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>active</code></td>
+<td>Available for sale</td>
+</tr>
+<tr>
+<td><code>archived</code></td>
+<td>No longer available, hidden from admin lists</td>
+</tr>
+<tr>
+<td><code>draft</code></td>
+<td>Not ready for sale</td>
+</tr>
+</tbody></table>
+<h3>Return Status</h3>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>requested</code></td>
+<td>Return requested by customer</td>
+</tr>
+<tr>
+<td><code>in_progress</code></td>
+<td>Return being processed</td>
+</tr>
+<tr>
+<td><code>open</code></td>
+<td>Return accepted, awaiting items</td>
+</tr>
+<tr>
+<td><code>closed</code></td>
+<td>Return completed</td>
+</tr>
+<tr>
+<td><code>cancelled</code></td>
+<td>Return cancelled</td>
+</tr>
+</tbody></table>
+<h2>Pagination</h2>
+<p>Shopify uses cursor-based pagination via the <code>Link</code> header.</p>
+<h3>Using Page Info</h3>
+<pre><code class="language-bash"># First request
+curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/products.json?limit=50&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -i
+</code></pre>
+<p>Response includes <code>Link</code> header:</p>
+<pre><code>Link: &lt;https://store.myshopify.com/admin/api/2024-10/products.json?page_info=abc123&amp;limit=50&gt;; rel=&quot;next&quot;
+</code></pre>
+<pre><code class="language-bash"># Next page
+curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/products.json?page_info=abc123&amp;limit=50&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<p>Note: When using <code>page_info</code>, you cannot use other query parameters except <code>limit</code> and <code>fields</code>.</p>
+<h2>Rate Limiting</h2>
+<p>Shopify uses a leaky bucket algorithm:</p>
+<ul>
+<li><strong>Bucket size</strong>: 40 requests</li>
+<li><strong>Leak rate</strong>: 2 requests/second</li>
+<li><strong>Restoration</strong>: ~20 seconds for full bucket</li>
+</ul>
+<p>Response headers:</p>
+<ul>
+<li><code>X-Shopify-Shop-Api-Call-Limit</code>: Current usage (e.g., <code>32/40</code>)</li>
+<li><code>Retry-After</code>: Seconds to wait (on 429 response)</li>
+</ul>
+<h3>Best Practices</h3>
+<ol>
+<li>Check <code>X-Shopify-Shop-Api-Call-Limit</code> header</li>
+<li>If near limit, add delays between requests</li>
+<li>On 429 response, wait for <code>Retry-After</code> seconds</li>
+<li>Use bulk operations for large data sets</li>
+</ol>
+<h2>Webhooks</h2>
+<h3>List Webhooks</h3>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/webhooks.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot;
+</code></pre>
+<h3>Create Webhook</h3>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/webhooks.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;webhook&quot;:{&quot;topic&quot;:&quot;orders/create&quot;,&quot;address&quot;:&quot;https://example.com/webhooks/orders&quot;,&quot;format&quot;:&quot;json&quot;}}&#39;
+</code></pre>
+<p>Common topics: <code>orders/create</code>, <code>orders/updated</code>, <code>orders/fulfilled</code>, <code>orders/cancelled</code>, <code>products/create</code>, <code>products/update</code>, <code>products/delete</code>, <code>customers/create</code>, <code>customers/update</code>, <code>inventory_levels/update</code>, <code>refunds/create</code></p>
+<h3>Delete Webhook</h3>
+<pre><code class="language-bash">curl &quot;https://$SHOPIFY_STORE_DOMAIN/admin/api/2024-10/webhooks/{WEBHOOK_ID}.json&quot; \
+  -H &quot;X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN&quot; \
+  -X DELETE
+</code></pre>
+<h2>Changelog</h2>
+<h3>v1.0.0</h3>
+<ul>
+<li>Initial release with full Admin REST API coverage</li>
+<li>Orders, Products, Variants, Customers</li>
+<li>Inventory management (levels, items, locations)</li>
+<li>Fulfillments and fulfillment orders</li>
+<li>Refunds, Returns, Transactions</li>
+<li>Collections (custom, smart) and collects</li>
+<li>Abandoned checkouts</li>
+<li>Webhooks management</li>
+<li>Status reference tables</li>
+<li>Pagination and rate limiting documentation</li>
+</ul>
+
+                </div>
               </div>
             </article>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/zachgodsell93/shopify-admin-api/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">View on GitHub</a>
-                <a href="https://clawdhub.com/zachgodsell93/shopify-admin-api" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">View on ClawdHub</a>
+                <a href="https://github.com/openclaw/skills/blob/main/skills/zachgodsell93/shopify-admin-api/skill.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/zachgodsell93/shopify-admin-api" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/zachgodsell93/shopify-admin-api/skill.md" download class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download Source
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@zachgodsell93</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Shopping & E-commerce</span>
+                  </div>
+                </div>
               </div>
             </aside>
           </div>

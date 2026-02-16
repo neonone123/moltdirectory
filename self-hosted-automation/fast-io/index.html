@@ -71,8 +71,8 @@
                 </div>
                 <div class="markdown-content">
                   <h1>Fast.io MCP Server -- AI Agent Guide</h1>
-<p><strong>Version:</strong> 1.54
-<strong>Last Updated:</strong> 2026-02-13</p>
+<p><strong>Version:</strong> 1.64
+<strong>Last Updated:</strong> 2026-02-14</p>
 <p>The definitive guide for AI agents using the Fast.io MCP server. Covers why and how to use the platform: product capabilities, the free agent plan, authentication, core concepts (workspaces, shares, intelligence, previews, comments, URL import, metadata, ownership transfer), 10 end-to-end workflows, and all 14 consolidated tools with action-based routing.</p>
 <blockquote>
 <p><strong>Versioned guide.</strong> This guide is versioned and updated with each server release. The version number at the top of this document tracks tool parameters, ID formats, and API behavior changes. If you encounter unexpected errors, the guide version may have changed since you last read it.</p>
@@ -149,7 +149,7 @@
 <li><strong>SSE at <code>/sse</code></strong> -- a legacy transport maintained for backward compatibility.</li>
 </ul>
 <h3>MCP Resources</h3>
-<p>The server exposes two MCP resources that clients can read directly via <code>resources/list</code> and <code>resources/read</code>:</p>
+<p>The server exposes two static MCP resources and three file download resource templates. Clients can read them via <code>resources/list</code> and <code>resources/read</code>:</p>
 <table>
 <thead>
 <tr>
@@ -168,10 +168,67 @@
 <tr>
 <td><code>session://status</code></td>
 <td>session-status</td>
-<td>Current authentication state: <code>authenticated</code> boolean, <code>user_id</code>, <code>user_email</code>, <code>token_expires_at</code> (Unix epoch), <code>token_expires_at_iso</code> (ISO 8601), <code>scopes</code> (array of granted scopes or null), <code>agent_name</code> (string or null)</td>
+<td>Current authentication state: <code>authenticated</code> boolean, <code>user_id</code>, <code>user_email</code>, <code>token_expires_at</code> (Unix epoch), <code>token_expires_at_iso</code> (ISO 8601), <code>scopes</code> (raw scope string or null), <code>scopes_detail</code> (array of hydrated scope objects with entity names/domains/parents, or null), <code>agent_name</code> (string or null)</td>
 <td><code>application/json</code></td>
 </tr>
 </tbody></table>
+<p><strong>File download resource templates</strong> -- read file content directly through MCP without needing external HTTP access:</p>
+<table>
+<thead>
+<tr>
+<th>URI Template</th>
+<th>Name</th>
+<th>Auth</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>download://workspace/{workspace_id}/{node_id}</code></td>
+<td>download-workspace-file</td>
+<td>Session token</td>
+<td>Download a file from a workspace</td>
+</tr>
+<tr>
+<td><code>download://share/{share_id}/{node_id}</code></td>
+<td>download-share-file</td>
+<td>Session token</td>
+<td>Download a file from a share</td>
+</tr>
+<tr>
+<td><code>download://quickshare/{quickshare_id}</code></td>
+<td>download-quickshare-file</td>
+<td>None (public)</td>
+<td>Download a quickshare file</td>
+</tr>
+</tbody></table>
+<p>Files up to 50 MB are returned inline as base64-encoded blob content. Larger files return a text fallback with a URL to the HTTP pass-through endpoint (see below). The <code>download</code> tool responses include a <code>resource_uri</code> field with the appropriate URI for each file.</p>
+<h3>HTTP File Pass-Through</h3>
+<p>For files larger than 50 MB or when raw binary streaming is needed, the server provides an HTTP pass-through endpoint that streams file content directly from the API:</p>
+<table>
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>Auth</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>GET /file/workspace/{workspace_id}/{node_id}</code></td>
+<td><code>Mcp-Session-Id</code> header</td>
+<td>Stream a workspace file</td>
+</tr>
+<tr>
+<td><code>GET /file/share/{share_id}/{node_id}</code></td>
+<td><code>Mcp-Session-Id</code> header</td>
+<td>Stream a share file</td>
+</tr>
+<tr>
+<td><code>GET /file/quickshare/{quickshare_id}</code></td>
+<td>None (public)</td>
+<td>Stream a quickshare file</td>
+</tr>
+</tbody></table>
+<p>The response includes proper <code>Content-Type</code>, <code>Content-Length</code>, and <code>Content-Disposition</code> headers from the upstream API. Errors are returned as HTML pages. The <code>Mcp-Session-Id</code> header is the same session identifier used for MCP protocol communication.</p>
 <h3>MCP Prompts</h3>
 <p>The server provides 6 guided prompts for complex, multi-step operations via <code>prompts/list</code> and <code>prompts/get</code>:</p>
 <table>
@@ -1112,10 +1169,10 @@
 <p>File and folder operations within workspaces and shares. List, create folders, move, copy, delete, rename, purge, restore, search, add files from uploads, add share links, transfer nodes, manage trash, version operations, file locking, and preview/transform URL generation. Requires <code>context_type</code> parameter (<code>workspace</code> or <code>share</code>).</p>
 <p><strong>Actions:</strong> list, details, search, trash-list, create-folder, copy, move, delete, rename, purge, restore, add-file, add-link, transfer, version-list, version-restore, lock-acquire, lock-status, lock-release, preview-url, preview-transform</p>
 <h3>upload</h3>
-<p>File upload operations. Single-step text file upload, chunked upload lifecycle (create session, upload chunks as plain text, staged binary blobs, or legacy base64, finalize, check status, cancel), web imports from external URLs, upload limits and file extension restrictions, and session management.</p>
-<p><strong>Actions:</strong> create-session, chunk, finalize, status, cancel, list-sessions, cancel-all, chunk-status, chunk-delete, text-file, web-import, web-list, web-cancel, web-status, limits, extensions</p>
+<p>File upload operations. Single-step text file upload, chunked upload lifecycle (create session, stage binary blobs, upload chunks as plain text / base64 / blob reference, finalize, check status, cancel), web imports from external URLs, upload limits and file extension restrictions, and session management.</p>
+<p><strong>Actions:</strong> create-session, chunk, finalize, status, cancel, list-sessions, cancel-all, chunk-status, chunk-delete, stage-blob, text-file, web-import, web-list, web-cancel, web-status, limits, extensions</p>
 <h3>download</h3>
-<p>Generate download URLs and ZIP archive URLs for workspace files, share files, and quickshare links. MCP tools cannot stream binary data -- these actions return URLs that can be opened in a browser or passed to download utilities. Requires <code>context_type</code> parameter (<code>workspace</code> or <code>share</code>) for file-url and zip-url actions.</p>
+<p>Generate download URLs and ZIP archive URLs for workspace files, share files, and quickshare links. MCP tools cannot stream binary data -- these actions return URLs that can be opened in a browser or passed to download utilities. Requires <code>context_type</code> parameter (<code>workspace</code> or <code>share</code>) for file-url and zip-url actions. Responses include a <code>resource_uri</code> field (e.g. <code>download://workspace/{id}/{node_id}</code>) that MCP clients can use to read file content directly via MCP resources. Direct download URLs include <code>?error=html</code> so errors render as human-readable HTML in browsers.</p>
 <p><strong>Actions:</strong> file-url, zip-url, quickshare-details</p>
 <h3>ai</h3>
 <p>AI-powered chat with RAG in workspaces and shares. Create chats, send messages, read AI responses (with polling), list and manage chats, publish private chats, generate AI share markdown, track AI token usage, and auto-title generation. Requires <code>context_type</code> parameter (<code>workspace</code> or <code>share</code>).</p>
@@ -1171,7 +1228,7 @@
 <li><code>org</code> action <code>list-workspaces</code> with <code>org_id</code> -- get workspaces in the organization. Note the <code>workspace_id</code> values.</li>
 <li><code>storage</code> action <code>list</code> with <code>context_type: &quot;workspace&quot;</code>, <code>context_id</code> (workspace ID), and <code>node_id: &quot;root&quot;</code> -- browse the root folder. Note the <code>node_id</code> values for files and subfolders.</li>
 <li><code>storage</code> action <code>details</code> with <code>context_type: &quot;workspace&quot;</code>, <code>context_id</code>, and <code>node_id</code> -- get full details for a specific file (name, size, type, versions).</li>
-<li><code>download</code> action <code>file-url</code> with <code>context_type: &quot;workspace&quot;</code>, <code>context_id</code>, and <code>node_id</code> -- get a temporary download URL with an embedded token. Return this URL to the user.</li>
+<li><code>download</code> action <code>file-url</code> with <code>context_type: &quot;workspace&quot;</code>, <code>context_id</code>, and <code>node_id</code> -- get a temporary download URL with an embedded token. The response also includes a <code>resource_uri</code> (e.g. <code>download://workspace/{id}/{node_id}</code>) that MCP clients can use to read file content directly. Return the download URL to the user, or use the resource URI to read the file through MCP.</li>
 </ol>
 <h3>3. Upload a File to a Workspace</h3>
 <p><strong>Text files (recommended):</strong> Use <code>upload</code> action <code>text-file</code> with <code>profile_type: &quot;workspace&quot;</code>, <code>profile_id</code>, <code>parent_node_id</code>, <code>filename</code>, and <code>content</code> (plain text). This single action creates the session, uploads, finalizes, and polls until stored — returns <code>new_file_id</code> on success. Use this for code, markdown, CSV, JSON, config files, and any other text content.</p>
@@ -1180,8 +1237,8 @@
 <li><code>upload</code> action <code>create-session</code> with <code>profile_type: &quot;workspace&quot;</code>, <code>profile_id</code> (the workspace ID), <code>parent_node_id</code> (target folder or <code>&quot;root&quot;</code>), <code>filename</code>, and <code>filesize</code> in bytes. Returns an <code>upload_id</code>.</li>
 <li><code>upload</code> action <code>chunk</code> with <code>upload_id</code>, <code>chunk_number</code> (1-indexed), and chunk data. Three options for passing data (provide exactly one):<ul>
 <li><strong><code>content</code></strong> — for text (strings, code, JSON, etc.). Do NOT use <code>data</code> for text.</li>
-<li><strong><code>blob_ref</code></strong> — <em>preferred for binary</em>. First <code>POST</code> raw bytes to <code>/blob</code> (with <code>Mcp-Session-Id</code> header, <code>Content-Type: application/octet-stream</code>). The server returns <code>{ blob_id, size }</code>. Then pass that <code>blob_id</code> as <code>blob_ref</code>. Avoids base64 overhead entirely. Blobs expire after 5 minutes and are consumed (deleted) on use.</li>
-<li><strong><code>data</code></strong> — legacy base64-encoded binary. Still works but adds ~33% size overhead.
+<li><strong><code>data</code></strong> — base64-encoded binary. The simplest approach for binary uploads through MCP tool calls.</li>
+<li><strong><code>blob_ref</code></strong> — blob ID from <code>upload</code> action <code>stage-blob</code> or <code>POST /blob</code>. Useful when pre-staging data or when using the HTTP blob endpoint from non-MCP clients. Blobs expire after 5 minutes and are consumed (deleted) on use.
 Repeat for each chunk. Wait for each chunk to return success before sending the next.</li>
 </ul>
 </li>
@@ -1279,20 +1336,30 @@ Repeat for each chunk. Wait for each chunk to return success before sending the 
 <h3>Binary Downloads</h3>
 <p>MCP tools return download URLs -- they never stream binary content directly. <code>download</code> action <code>file-url</code> (with <code>context_type: &quot;workspace&quot;</code> or <code>&quot;share&quot;</code>) and <code>download</code> action <code>quickshare-details</code> call the <code>/requestread/</code> endpoint to obtain a temporary token, then construct a full download URL. The agent should return these URLs to the user or pass them to a download utility.</p>
 <p><code>download</code> actions <code>zip-url</code> (workspace and share) return the URL along with the required <code>Authorization</code> header value.</p>
-<h3>Binary Uploads (Blob Staging)</h3>
-<p>For binary chunk uploads, the server provides a sidecar <code>POST /blob</code> endpoint that accepts raw binary data outside the JSON-RPC pipe. This avoids the ~33% size overhead and CPU cost of base64 encoding.</p>
+<h3>Binary Uploads</h3>
+<p>Three approaches for uploading binary data as chunks, each suited to different situations:</p>
+<p><strong>1. <code>data</code> parameter (base64) — simplest for MCP agents</strong></p>
+<p>Pass base64-encoded binary directly in the <code>data</code> parameter of <code>upload</code> action <code>chunk</code>. No extra steps required. Works with any MCP client. Adds ~33% size overhead from base64 encoding.</p>
+<p><strong>2. <code>stage-blob</code> action — MCP tool-based blob staging</strong></p>
+<p>Use <code>upload</code> action <code>stage-blob</code> with <code>data</code> (base64) to pre-stage binary data as a blob. Returns a <code>blob_id</code> that you pass as <code>blob_ref</code> in the chunk call. Useful when you want to decouple staging from uploading, or when preparing multiple chunks in advance.</p>
 <p><strong>Flow:</strong></p>
 <ol>
-<li><code>POST /blob</code> with headers <code>Mcp-Session-Id: &lt;session_id&gt;</code> and <code>Content-Type: application/octet-stream</code>. Send raw binary bytes as the request body. The server returns <code>{ &quot;blob_id&quot;: &quot;&lt;uuid&gt;&quot;, &quot;size&quot;: &lt;bytes&gt; }</code> (HTTP 201).</li>
-<li>Call <code>upload</code> action <code>chunk</code> with <code>blob_ref: &quot;&lt;blob_id&gt;&quot;</code> instead of <code>data</code>. The server retrieves the staged bytes and uploads them to the Fast.io API.</li>
+<li><code>upload</code> action <code>stage-blob</code> with <code>data</code> (base64-encoded binary). Returns <code>{ &quot;blob_id&quot;: &quot;&lt;uuid&gt;&quot;, &quot;size&quot;: &lt;bytes&gt; }</code>.</li>
+<li><code>upload</code> action <code>chunk</code> with <code>blob_ref: &quot;&lt;blob_id&gt;&quot;</code>. The server retrieves the staged bytes and uploads them.</li>
 </ol>
-<p><strong>Constraints:</strong></p>
+<p><strong>3. <code>POST /blob</code> endpoint — HTTP blob staging for non-MCP clients</strong></p>
+<p>A sidecar HTTP endpoint that accepts raw binary data outside the JSON-RPC pipe. This avoids base64 encoding entirely — useful for clients that can make direct HTTP requests alongside MCP tool calls.</p>
+<p><strong>Flow:</strong></p>
+<ol>
+<li><code>POST /blob</code> with headers <code>Mcp-Session-Id: &lt;session_id&gt;</code> and <code>Content-Type: application/octet-stream</code>. Send raw binary bytes as the request body. Returns <code>{ &quot;blob_id&quot;: &quot;&lt;uuid&gt;&quot;, &quot;size&quot;: &lt;bytes&gt; }</code> (HTTP 201).</li>
+<li><code>upload</code> action <code>chunk</code> with <code>blob_ref: &quot;&lt;blob_id&gt;&quot;</code>.</li>
+</ol>
+<p><strong>Blob constraints (apply to both staging methods):</strong></p>
 <ul>
 <li>Blobs expire after <strong>5 minutes</strong>. Stage and consume them promptly.</li>
 <li>Each blob is consumed (deleted) on first use — it cannot be reused.</li>
 <li>Maximum blob size: <strong>100 MB</strong>.</li>
 <li>SSE transport clients must add <code>?transport=sse</code> to the <code>/blob</code> URL.</li>
-<li>The <code>content</code> parameter (for text) and <code>data</code> parameter (for base64) remain available. <code>blob_ref</code> is the preferred method for binary data.</li>
 </ul>
 <h3>Event Filtering Reference</h3>
 <p>The <code>event</code> tool&#39;s <code>search</code> and <code>summarize</code> actions accept <code>category</code>, <code>subcategory</code>, and <code>event</code> parameters to narrow results. Use these to target specific activity instead of scanning all events.</p>
@@ -1480,7 +1547,10 @@ Repeat for each chunk. Wait for each chunk to return success before sending the 
 <h3>Session State</h3>
 <p>The auth token, user ID, email, and token expiry are persisted in the server session. There is no need to pass tokens between tool calls. The session survives across multiple tool invocations within the same MCP connection.</p>
 <h3>Human-Facing URLs</h3>
-<p>MCP tools manage data via the API, but humans access Fast.io through a web browser. <strong>You must construct real, clickable URLs and include them in your responses whenever you create or reference a workspace, share, or transfer.</strong> The human cannot see API responses directly -- the URL you provide is how they get to their content. Build the URL by substituting values from API responses into these patterns:</p>
+<p>MCP tools manage data via the API, but humans access Fast.io through a web browser. <strong>Always use the <code>web_url</code> field from tool responses</strong> -- it is a ready-to-use, clickable URL for the resource. Include it in your responses whenever you create or reference a workspace, share, file, note, or transfer. The human cannot see API responses directly -- the URL you provide is how they get to their content. Fall back to the URL patterns below only when <code>web_url</code> is absent (e.g., share-context storage operations):</p>
+<blockquote>
+<p><strong>Automatic <code>web_url</code> field.</strong> All entity-returning tool responses include a <code>web_url</code> field — a ready-to-use, human-friendly URL for the resource. <strong>NEVER construct URLs manually — always use the <code>web_url</code> field from tool responses.</strong> It appears on: org list/details/create/update/public-details/discover-*, org list-workspaces/list-shares, workspace list/details/update/available/list-shares, share list/details/create/update/public-details/available, storage list/details/search/trash-list/copy/move/rename/restore/add-file/create-folder/version-list/version-restore/preview-url/preview-transform, quickshare create/get/list, upload text-file/finalize, download file-url/quickshare-details, AI chat-create/chat-details/chat-list, transfer-token create/list, and notes create/update. Fall back to the URL patterns below only when <code>web_url</code> is absent (e.g., share context storage operations).</p>
+</blockquote>
 <p>Organization <code>domain</code> values become subdomains: <code>&quot;acme&quot;</code> → <code>https://acme.fast.io/</code>. The base domain <code>go.fast.io</code> handles public routes that do not require org context.</p>
 <h4>Authenticated Links (require login)</h4>
 <table>
@@ -1638,6 +1708,79 @@ Repeat for each chunk. Wait for each chunk to return success before sending the 
 <li><strong>Human asks &quot;where can I see this?&quot;</strong> Construct the URL from API response data you already have and provide it.</li>
 </ul>
 <p><strong>Important:</strong> The <code>domain</code> is the org&#39;s domain string (e.g. <code>acme</code>), not the numeric org ID. The <code>folder_name</code> is the workspace&#39;s folder name string (e.g. <code>q4-reports</code>), not the numeric workspace ID. Both are returned by their respective API tools.</p>
+<h3>Response Hints (<code>_next</code>, <code>_warnings</code>, and <code>_recovery</code>)</h3>
+<p>Workflow-critical tool responses include a <code>_next</code> field -- a short array of suggested next actions using exact tool and action names. Use these hints to guide your workflow instead of guessing what to do next. Example:</p>
+<pre><code class="language-json">{
+  &quot;workspace_id&quot;: &quot;...&quot;,
+  &quot;web_url&quot;: &quot;https://acme.fast.io/workspace/q4-reports/storage/root&quot;,
+  &quot;_next&quot;: [
+    &quot;Upload files: upload action text-file or web-import&quot;,
+    &quot;Create a share: share action create&quot;,
+    &quot;Query with AI: ai action chat-create&quot;
+  ]
+}
+</code></pre>
+<p><strong><code>_warnings</code></strong> appear on destructive, irreversible, or potentially problematic actions. Always read warnings before proceeding -- they flag permanent consequences or important caveats. Actions with <code>_warnings</code>: storage purge, storage bulk copy/move/delete/restore (partial failures), workspace details (intelligence=false), workspace update (intelligence=false), workspace archive/delete, org close, org billing-create, share delete, share archive, share update (type change), ai chat-delete, download file-url (token expiry), download zip-url (auth required), upload stage-blob (5-min expiry), org transfer-token-create.</p>
+<p><strong><code>_recovery</code></strong> hints appear on error responses (when <code>isError: true</code>). They provide recovery actions based on HTTP status codes AND error message pattern matching. Error messages also include action context (e.g., &quot;during: org create&quot;) to help pinpoint the failing operation.</p>
+<table>
+<thead>
+<tr>
+<th>HTTP Status</th>
+<th>Recovery</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>400</td>
+<td>Check required parameters and ID formats</td>
+</tr>
+<tr>
+<td>401</td>
+<td>Re-authenticate: auth action signin or pkce-login</td>
+</tr>
+<tr>
+<td>402</td>
+<td>Credits exhausted -- check balance: org action limits</td>
+</tr>
+<tr>
+<td>403</td>
+<td>Permission denied -- check role: org action details</td>
+</tr>
+<tr>
+<td>404</td>
+<td>Resource not found -- verify the ID, use list actions to discover valid IDs</td>
+</tr>
+<tr>
+<td>409</td>
+<td>Conflict -- resource may already exist</td>
+</tr>
+<tr>
+<td>413</td>
+<td>Request too large -- reduce file/chunk size</td>
+</tr>
+<tr>
+<td>422</td>
+<td>Validation error -- check field formats and constraints</td>
+</tr>
+<tr>
+<td>429</td>
+<td>Rate limited -- wait 2-4s and retry with exponential backoff</td>
+</tr>
+<tr>
+<td>500/503</td>
+<td>Server error -- retry after 2-5 seconds</td>
+</tr>
+</tbody></table>
+<p>Pattern-based recovery: error messages are also matched against common patterns (e.g., &quot;email not verified&quot;, &quot;workspace not found&quot;, &quot;intelligence disabled&quot;) to provide specific recovery steps even when the HTTP status is generic.</p>
+<p><strong><code>ai_capabilities</code></strong> is included in workspace details responses. It shows which AI modes are available based on the workspace intelligence setting:</p>
+<ul>
+<li>Intelligence ON: <code>files_scope</code>, <code>folders_scope</code>, <code>files_attach</code> (full RAG indexing)</li>
+<li>Intelligence OFF: <code>files_attach</code> only (max 20 files, 200 MB, no RAG indexing)</li>
+</ul>
+<p><strong><code>_ai_state_legend</code></strong> is included in storage list and search responses when files have AI indexing state. States: <code>ready</code> (indexed, queryable), <code>pending</code> (queued), <code>inprogress</code> (indexing), <code>disabled</code> (intelligence off), <code>failed</code> (re-upload needed).</p>
+<p><strong><code>_context</code></strong> provides contextual metadata on specific responses. Currently used by comment add when anchoring is involved, providing <code>anchor_formats</code> with the expected format for image regions, video/audio timestamps, and PDF pages.</p>
+<p><strong>All tool actions now include <code>_next</code> hints.</strong> Every successful tool response includes contextual next-step suggestions. Key workflow transitions: auth → org list/create, org create → workspace create, workspace create → upload/share/AI, upload → AI chat/comment/download, share create → add files/members, AI chat create → message read. The hints include the exact tool name, action, and relevant IDs from the current response.</p>
+<p><strong>Tool annotations:</strong> Tools include MCP annotation hints -- <code>readOnlyHint</code>, <code>destructiveHint</code>, <code>idempotentHint</code> (download, event), and <code>openWorldHint</code> (org, user, workspace, share, storage) -- to help clients understand tool behavior without documentation.</p>
+<p><strong>Resource completion:</strong> The <code>download://workspace/{workspace_id}</code> and <code>download://share/{share_id}</code> resource templates support tab-completion for IDs. MCP clients that support <code>completion/complete</code> will automatically suggest valid workspace and share IDs from your session.</p>
 <h3>Unauthenticated Tools</h3>
 <p>The following actions work without a session: <code>auth</code> actions <code>signin</code>, <code>signup</code>, <code>set-api-key</code>, <code>pkce-login</code>, <code>email-check</code>, <code>password-reset-request</code>, <code>password-reset</code>; and <code>download</code> action <code>quickshare-details</code>.</p>
 <hr>
@@ -1655,7 +1798,7 @@ Repeat for each chunk. Wait for each chunk to return success before sending the 
 <p><strong>password-reset-request</strong> -- Request a password reset email. Always returns success for security (does not reveal whether the email exists). No authentication required.</p>
 <p><strong>password-reset</strong> -- Set a new password using a reset code received by email. No authentication required.</p>
 <p><strong>email-verify</strong> -- Send or validate an email verification code. When email_token is omitted a new code is sent. When provided the code is validated and the email marked as verified.</p>
-<p><strong>status</strong> -- Check local session status. No API call is made. Returns whether the user is authenticated, and if so their user_id, email, token expiry, scopes (if scoped access), and agent_name (if set).</p>
+<p><strong>status</strong> -- Check local session status. No API call is made. Returns whether the user is authenticated, and if so their user_id, email, token expiry, scopes (raw string), scopes_detail (hydrated array with entity names, domains, and parent hierarchy -- or null if not yet fetched), and agent_name (if set).</p>
 <p><strong>pkce-login</strong> -- Start a browser-based PKCE login flow. Returns a URL for the user to open in their browser. After signing in and approving access, the browser displays an authorization code. The user copies the code and provides it to pkce-complete to finish signing in. No password is sent through the agent. Optional params: <code>scope_type</code> (default <code>&quot;user&quot;</code> for full access; use <code>&quot;org&quot;</code>, <code>&quot;workspace&quot;</code>, <code>&quot;all_orgs&quot;</code>, <code>&quot;all_workspaces&quot;</code>, or <code>&quot;all_shares&quot;</code> for scoped access), <code>agent_name</code> (displayed in the approval screen and audit logs; defaults to MCP client name).</p>
 <p><strong>pkce-complete</strong> -- Complete a PKCE login flow by exchanging the authorization code for an access token. Call this after the user has approved access in the browser and copied the code from the screen. The token is stored in the session automatically. If scoped access was granted, the response includes <code>scopes</code> (JSON array of granted scope strings like <code>&quot;org:123:rw&quot;</code>) and <code>agent_name</code>.</p>
 <p><strong>api-key-create</strong> -- Create a new persistent API key. The full key value is only returned once at creation time -- store it securely.</p>
@@ -1689,20 +1832,20 @@ Repeat for each chunk. Wait for each chunk to return success before sending the 
 <p><strong>asset-types</strong> -- List available asset types for users.</p>
 <p><strong>asset-list</strong> -- List all user assets.</p>
 <h3>org</h3>
-<p><strong>list</strong> -- List internal organizations (orgs the user is a direct member of, <code>member: true</code>). Returns member orgs with subscription status, user permission, and plan info. Non-admin members only see orgs with active subscriptions. Does not include external orgs -- use discover-external for those.</p>
-<p><strong>details</strong> -- Get detailed information about an organization. Fields returned vary by the caller&#39;s role: owners see encryption keys and storage config, admins see billing and permissions, members see basic info.</p>
+<p><strong>list</strong> -- List internal organizations (orgs the user is a direct member of, <code>member: true</code>). Each org includes <code>web_url</code>. Returns member orgs with subscription status, user permission, and plan info. Non-admin members only see orgs with active subscriptions. Does not include external orgs -- use discover-external for those.</p>
+<p><strong>details</strong> -- Get detailed information about an organization. Returns <code>web_url</code>. Fields returned vary by the caller&#39;s role: owners see encryption keys and storage config, admins see billing and permissions, members see basic info.</p>
 <p><strong>members</strong> -- List all members of an organization with their IDs, emails, names, and permission levels.</p>
 <p><strong>invite-member</strong> -- Invite a user to the organization by email. The email is passed in the URL path (not the body). If the user already has a Fast.io account they are added directly; otherwise an email invitation is sent. Cannot add as owner.</p>
 <p><strong>remove-member</strong> -- Remove a member from the organization. Requires member management permission as configured by the org&#39;s perm_member_manage setting.</p>
 <p><strong>update-member-role</strong> -- Update a member&#39;s role/permissions in the organization. Cannot set role to &#39;owner&#39; -- use transfer-ownership instead.</p>
 <p><strong>limits</strong> -- Get organization plan limits and credit usage. Returns credit limits, usage stats, billing period, trial info, and run-rate projections. Requires admin or owner role.</p>
-<p><strong>list-workspaces</strong> -- List workspaces in an organization that the current user can access. Owners and admins see all workspaces; members see workspaces matching the join permission setting.</p>
-<p><strong>list-shares</strong> -- List shares accessible to the current user. Returns all shares including parent org and workspace info. Use parent_org in the response to identify shares belonging to a specific organization.</p>
+<p><strong>list-workspaces</strong> -- List workspaces in an organization that the current user can access. Each workspace includes <code>web_url</code>. Owners and admins see all workspaces; members see workspaces matching the join permission setting.</p>
+<p><strong>list-shares</strong> -- List shares accessible to the current user. Each share includes <code>web_url</code>. Returns all shares including parent org and workspace info. Use parent_org in the response to identify shares belonging to a specific organization.</p>
 <p><strong>create</strong> -- Create a new organization on the &quot;agent&quot; billing plan. The authenticated user becomes the owner. A storage instance and agent-plan subscription (free, 50 GB, 5,000 credits/month) are created automatically. Returns the new org and trial status.</p>
-<p><strong>update</strong> -- Update organization details. Only provided fields are changed. Supports identity, branding, social links, permissions, and billing email. Requires admin or owner role.</p>
+<p><strong>update</strong> -- Update organization details. Returns <code>web_url</code>. Only provided fields are changed. Supports identity, branding, social links, permissions, and billing email. Requires admin or owner role.</p>
 <p><strong>close</strong> -- Close/delete an organization. Cancels any active subscription and initiates deletion. Requires owner role. The confirm field must match the org domain or org ID.</p>
-<p><strong>public-details</strong> -- Get public details for an organization. Does not require membership -- returns public-level fields only (name, domain, logo, accent color). The org must exist and not be closed/suspended.</p>
-<p><strong>create-workspace</strong> -- Create a new workspace within the organization. Checks workspace feature availability and creation limits based on the org billing plan. The creating user becomes the workspace owner.</p>
+<p><strong>public-details</strong> -- Get public details for an organization. Returns <code>web_url</code>. Does not require membership -- returns public-level fields only (name, domain, logo, accent color). The org must exist and not be closed/suspended.</p>
+<p><strong>create-workspace</strong> -- Create a new workspace within the organization. Returns <code>web_url</code>. Checks workspace feature availability and creation limits based on the org billing plan. The creating user becomes the workspace owner.</p>
 <p><strong>billing-plans</strong> -- List available billing plans with pricing, features, and plan defaults. Returns plan IDs needed for subscription creation.</p>
 <p><strong>billing-create</strong> -- Create a new subscription or update an existing one. For new subscriptions, creates a Stripe Setup Intent. For existing subscriptions, updates the plan. Requires admin or owner.</p>
 <p><strong>billing-cancel</strong> -- Cancel the organization&#39;s subscription. Requires owner role. Some plans may cause the org to be closed on cancellation.</p>
@@ -1715,7 +1858,7 @@ Repeat for each chunk. Wait for each chunk to return success before sending the 
 <p><strong>member-details</strong> -- Get detailed membership information for a specific user in the organization, including permissions, invite status, notification preference, and expiration.</p>
 <p><strong>transfer-ownership</strong> -- Transfer organization ownership to another member. The current owner is demoted to admin. Requires owner role.</p>
 <p><strong>transfer-token-create</strong> -- Create a transfer token (valid 72 hours) for an organization. Send the claim URL <code>https://go.fast.io/claim?token=&lt;token&gt;</code> to a human. Use when handing off an org or when hitting 402 Payment Required on the agent plan. Requires owner role.</p>
-<p><strong>transfer-token-list</strong> -- List all active transfer tokens for an organization. Requires owner role.</p>
+<p><strong>transfer-token-list</strong> -- List all active transfer tokens for an organization. Each token includes <code>web_url</code> (claim URL). Requires owner role.</p>
 <p><strong>transfer-token-delete</strong> -- Delete (revoke) a pending transfer token. Requires owner role.</p>
 <p><strong>transfer-claim</strong> -- Claim an organization using a transfer token. The authenticated user becomes the new owner and the previous owner is demoted to admin.</p>
 <p><strong>invitations-list</strong> -- List all pending invitations for the organization. Optionally filter by invitation state. Requires any org membership.</p>
@@ -1726,27 +1869,27 @@ Repeat for each chunk. Wait for each chunk to return success before sending the 
 <p><strong>asset-delete</strong> -- Delete an asset from the organization. Requires admin or owner role.</p>
 <p><strong>asset-types</strong> -- List available asset types for organizations.</p>
 <p><strong>asset-list</strong> -- List all organization assets.</p>
-<p><strong>discover-all</strong> -- List all accessible organizations (joined + invited). Returns org data with user_status indicating relationship.</p>
-<p><strong>discover-available</strong> -- List organizations available to join. Excludes orgs the user is already a member of.</p>
+<p><strong>discover-all</strong> -- List all accessible organizations (joined + invited). Each org includes <code>web_url</code>. Returns org data with user_status indicating relationship.</p>
+<p><strong>discover-available</strong> -- List organizations available to join. Each org includes <code>web_url</code>. Excludes orgs the user is already a member of.</p>
 <p><strong>discover-check-domain</strong> -- Check if an organization domain name is available for use. Validates format, checks reserved names, and checks existing domains.</p>
-<p><strong>discover-external</strong> -- List external organizations (<code>member: false</code>) -- orgs the user can access only through workspace membership, not as a direct org member. Common when a human invites an agent to a workspace without inviting them to the org. See <strong>Internal vs External Orgs</strong> in the Organizations section.</p>
+<p><strong>discover-external</strong> -- List external organizations (<code>member: false</code>). Each org includes <code>web_url</code>. Orgs the user can access only through workspace membership, not as a direct org member. Common when a human invites an agent to a workspace without inviting them to the org. See <strong>Internal vs External Orgs</strong> in the Organizations section.</p>
 <h3>workspace</h3>
-<p><strong>list</strong> -- List all workspaces the user has access to across all organizations.</p>
-<p><strong>details</strong> -- Get detailed information about a specific workspace.</p>
-<p><strong>update</strong> -- Update workspace settings such as name, description, branding, and permissions.</p>
+<p><strong>list</strong> -- List all workspaces the user has access to across all organizations. Each workspace includes <code>web_url</code>.</p>
+<p><strong>details</strong> -- Get detailed information about a specific workspace. Returns <code>web_url</code>.</p>
+<p><strong>update</strong> -- Update workspace settings such as name, description, branding, and permissions. Returns <code>web_url</code>.</p>
 <p><strong>delete</strong> -- Permanently close (soft-delete) a workspace. Requires Owner permission and confirmation.</p>
 <p><strong>archive</strong> -- Archive a workspace (blocks modifications, preserves data). Requires Admin+.</p>
 <p><strong>unarchive</strong> -- Restore an archived workspace to active status. Requires Admin+.</p>
 <p><strong>members</strong> -- List all members of a workspace with their roles and status.</p>
-<p><strong>list-shares</strong> -- List all shares within a workspace, optionally filtered by archive status.</p>
+<p><strong>list-shares</strong> -- List all shares within a workspace, optionally filtered by archive status. Each share includes <code>web_url</code>.</p>
 <p><strong>import-share</strong> -- Import a user-owned share into a workspace. You must be the sole owner of the share.</p>
-<p><strong>available</strong> -- List workspaces the current user can join but has not yet joined.</p>
+<p><strong>available</strong> -- List workspaces the current user can join but has not yet joined. Each workspace includes <code>web_url</code>.</p>
 <p><strong>check-name</strong> -- Check if a workspace folder name is available for use.</p>
-<p><strong>create-note</strong> -- Create a new markdown note in workspace storage.</p>
-<p><strong>update-note</strong> -- Update a note&#39;s markdown content and/or name (at least one required).</p>
-<p><strong>quickshare-get</strong> -- Get existing quickshare details for a node.</p>
+<p><strong>create-note</strong> -- Create a new markdown note in workspace storage. Returns <code>web_url</code> (note preview link).</p>
+<p><strong>update-note</strong> -- Update a note&#39;s markdown content and/or name (at least one required). Returns <code>web_url</code> (note preview link).</p>
+<p><strong>quickshare-get</strong> -- Get existing quickshare details for a node. Returns <code>web_url</code>.</p>
 <p><strong>quickshare-delete</strong> -- Revoke and delete a quickshare link for a node.</p>
-<p><strong>quickshares-list</strong> -- List all active quickshares in the workspace.</p>
+<p><strong>quickshares-list</strong> -- List all active quickshares in the workspace. Each quickshare includes <code>web_url</code>.</p>
 <p><strong>metadata-template-create</strong> -- Create a new metadata template in the workspace. Requires name, description, category (legal, financial, business, medical, technical, engineering, insurance, educational, multimedia, hr), and fields (JSON-encoded array of field definitions). Each field has name, description, type (string, int, float, bool, json, url, datetime), and optional constraints (min, max, default, fixed_list, can_be_null).</p>
 <p><strong>metadata-template-delete</strong> -- Delete a metadata template. System templates and locked templates cannot be deleted. Requires template_id.</p>
 <p><strong>metadata-template-list</strong> -- List metadata templates. Optional template_filter: enabled, disabled, custom (non-system), or system. Returns all non-deleted templates when no filter is specified.</p>
@@ -1765,8 +1908,8 @@ Repeat for each chunk. Wait for each chunk to return success before sending the 
 <p><strong>metadata-list-templates-in-use</strong> -- List which metadata templates are in use within a folder, with usage counts per template. Requires node_id.</p>
 <p><strong>metadata-versions</strong> -- Get metadata version history for a file. Returns snapshots of metadata changes over time. Requires node_id.</p>
 <h3>share</h3>
-<p><strong>list</strong> -- List shares the authenticated user has access to.</p>
-<p><strong>details</strong> -- Get full details of a specific share.</p>
+<p><strong>list</strong> -- List shares the authenticated user has access to. Each share includes <code>web_url</code>.</p>
+<p><strong>details</strong> -- Get full details of a specific share. Returns <code>web_url</code>.</p>
 <p><strong>create</strong> -- Create a new share in a workspace.</p>
 <p><strong>update</strong> -- Update share settings (partial update).</p>
 <p><strong>delete</strong> -- Delete (close) a share. Requires the share ID or custom name as confirmation.</p>
@@ -1775,35 +1918,35 @@ Repeat for each chunk. Wait for each chunk to return success before sending the 
 <p><strong>unarchive</strong> -- Restore a previously archived share to active status.</p>
 <p><strong>password-auth</strong> -- Authenticate with a share password. Returns a scoped JWT for the share.</p>
 <p><strong>members</strong> -- List all members of a share.</p>
-<p><strong>available</strong> -- List shares available to join (joined and owned, excludes pending invitations).</p>
+<p><strong>available</strong> -- List shares available to join (joined and owned, excludes pending invitations). Each share includes <code>web_url</code>.</p>
 <p><strong>check-name</strong> -- Check if a share custom name (URL name) is available.</p>
 <p><strong>quickshare-create</strong> -- Create a temporary QuickShare link for a file in a workspace.</p>
 <h3>storage</h3>
 <p>All storage actions require <code>context_type</code> parameter (<code>workspace</code> or <code>share</code>) and <code>context_id</code> (the 19-digit profile ID).</p>
-<p><strong>list</strong> -- List files and folders in a directory with pagination.</p>
-<p><strong>details</strong> -- Get full details of a specific file or folder.</p>
-<p><strong>search</strong> -- Search for files by keyword or semantic query.</p>
-<p><strong>trash-list</strong> -- List items currently in the trash.</p>
-<p><strong>create-folder</strong> -- Create a new folder.</p>
-<p><strong>copy</strong> -- Copy files or folders to another location.</p>
-<p><strong>move</strong> -- Move files or folders to a different parent folder.</p>
+<p><strong>list</strong> -- List files and folders in a directory with pagination. Each item includes <code>web_url</code> (workspace only).</p>
+<p><strong>details</strong> -- Get full details of a specific file or folder. Returns <code>web_url</code> (human-friendly link to the file preview or folder in the web UI, workspace only).</p>
+<p><strong>search</strong> -- Search for files by keyword or semantic query. Each result includes <code>web_url</code> (workspace only).</p>
+<p><strong>trash-list</strong> -- List items currently in the trash. Each item includes <code>web_url</code> (workspace only).</p>
+<p><strong>create-folder</strong> -- Create a new folder. Returns <code>web_url</code> (workspace only).</p>
+<p><strong>copy</strong> -- Copy files or folders to another location. Returns <code>web_url</code> on the new copy (workspace only).</p>
+<p><strong>move</strong> -- Move files or folders to a different parent folder. Returns <code>web_url</code> (workspace only).</p>
 <p><strong>delete</strong> -- Delete files or folders by moving them to the trash.</p>
-<p><strong>rename</strong> -- Rename a file or folder.</p>
+<p><strong>rename</strong> -- Rename a file or folder. Returns <code>web_url</code> (workspace only).</p>
 <p><strong>purge</strong> -- Permanently delete a trashed node (irreversible). Requires Member permission.</p>
-<p><strong>restore</strong> -- Restore files or folders from the trash.</p>
-<p><strong>add-file</strong> -- Link a completed upload to a storage location.</p>
+<p><strong>restore</strong> -- Restore files or folders from the trash. Returns <code>web_url</code> on the restored node (workspace only).</p>
+<p><strong>add-file</strong> -- Link a completed upload to a storage location. Returns <code>web_url</code> (workspace only).</p>
 <p><strong>add-link</strong> -- Add a share reference link node to storage.</p>
 <p><strong>transfer</strong> -- Copy a node to another workspace or share storage instance.</p>
-<p><strong>version-list</strong> -- List version history for a file.</p>
-<p><strong>version-restore</strong> -- Restore a file to a previous version.</p>
+<p><strong>version-list</strong> -- List version history for a file. Returns <code>web_url</code> for the file (workspace only).</p>
+<p><strong>version-restore</strong> -- Restore a file to a previous version. Returns <code>web_url</code> for the file (workspace only).</p>
 <p><strong>lock-acquire</strong> -- Acquire an exclusive lock on a file to prevent concurrent edits.</p>
 <p><strong>lock-status</strong> -- Check the lock status of a file.</p>
 <p><strong>lock-release</strong> -- Release an exclusive lock on a file.</p>
-<p><strong>preview-url</strong> -- Get a preauthorized preview URL for a file (thumbnail, PDF, image, video, audio, spreadsheet). Requires <code>preview_type</code> parameter.</p>
-<p><strong>preview-transform</strong> -- Request a file transformation (image resize, crop, format conversion) and get a download URL for the result. Requires <code>transform_name</code> parameter.</p>
+<p><strong>preview-url</strong> -- Get a preauthorized preview URL for a file (thumbnail, PDF, image, video, audio, spreadsheet). Requires <code>preview_type</code> parameter. Returns <code>preview_url</code> (ready-to-use URL) and <code>web_url</code> (human-friendly link to the file in the web UI, workspace only).</p>
+<p><strong>preview-transform</strong> -- Request a file transformation (image resize, crop, format conversion) and get a download URL for the result. Requires <code>transform_name</code> parameter. Returns <code>transform_url</code> (ready-to-use URL) and <code>web_url</code> (human-friendly link to the file in the web UI, workspace only).</p>
 <h3>upload</h3>
 <p><strong>create-session</strong> -- Create a chunked upload session for a file.</p>
-<p><strong>chunk</strong> -- Upload a single chunk. Use <code>content</code> for text/strings, <code>blob_ref</code> for binary data staged via <code>POST /blob</code> (preferred — avoids base64 overhead), or <code>data</code> for legacy base64-encoded binary. Provide exactly one.</p>
+<p><strong>chunk</strong> -- Upload a single chunk. Use <code>content</code> for text/strings, <code>data</code> for base64-encoded binary, or <code>blob_ref</code> for binary staged via <code>stage-blob</code> action or <code>POST /blob</code>. Provide exactly one.</p>
 <p><strong>finalize</strong> -- Finalize an upload session, trigger file assembly, and poll until fully stored or failed. Returns the final session state.</p>
 <p><strong>status</strong> -- Get the current status of an upload session. Supports server-side long-poll via optional <code>wait</code> parameter (in milliseconds, 0 = immediate).</p>
 <p><strong>cancel</strong> -- Cancel and delete an active upload session.</p>
@@ -1811,6 +1954,7 @@ Repeat for each chunk. Wait for each chunk to return success before sending the 
 <p><strong>cancel-all</strong> -- Cancel and delete ALL active upload sessions at once.</p>
 <p><strong>chunk-status</strong> -- Get chunk information for an upload session.</p>
 <p><strong>chunk-delete</strong> -- Delete/reset a chunk in an upload session.</p>
+<p><strong>stage-blob</strong> -- Stage base64-encoded binary data as a blob for later use with the <code>chunk</code> action&#39;s <code>blob_ref</code> parameter. Pass <code>data</code> (base64 string). Returns <code>{ blob_id, size }</code>. Blobs expire after 5 minutes and are consumed on first use. Alternative to passing <code>data</code> directly in the chunk call.</p>
 <p><strong>text-file</strong> -- Upload a text file in a single step. Creates an upload session, uploads the content, finalizes, and polls until stored. Returns the new file ID. Use for text-based files (code, markdown, CSV, JSON, config) instead of the multi-step chunked flow.</p>
 <p><strong>web-import</strong> -- Import a file from an external URL into a workspace or share.</p>
 <p><strong>web-list</strong> -- List the user&#39;s web upload jobs with optional filtering.</p>
@@ -1883,7 +2027,7 @@ Repeat for each chunk. Wait for each chunk to return success before sending the 
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/dbalve/fast-io/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/blob/main/skills/dbalve/fast-io/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
@@ -1891,9 +2035,9 @@ Repeat for each chunk. Wait for each chunk to return success before sending the 
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/dbalve/fast-io/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/dbalve/fast-io/SKILL.md" download class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  Download SKILL.md
+                  Download Source
                 </a>
                 <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>

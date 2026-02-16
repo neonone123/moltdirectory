@@ -105,7 +105,7 @@
 <p><strong>How checkpoints work:</strong> Present your proposal, then wait for the requestor.
 If they respond — use their input. If they don&#39;t respond or you can&#39;t ask — use defaults.
 Always tell the requestor what you&#39;re about to do before doing it.</p>
-<p><strong>Data principle:</strong> Only share data you are permitted to share. Do not expose information the requestor has not approved for use.</p>
+<p><strong>Data principle:</strong> Only use data the requestor has explicitly provided or approved in this conversation. Do not extract personal information from unrelated system contexts or other sessions. Share the CV URL and claim token only with the requestor — never with third parties.</p>
 </blockquote>
 <h2>Two Ways to Create</h2>
 <table>
@@ -292,7 +292,7 @@ Always tell the requestor what you&#39;re about to do before doing it.</p>
 </blockquote>
 <p>If the requestor doesn&#39;t respond or you can&#39;t ask, use defaults: your own identity (you&#39;re an AI — that&#39;s fine), first available slug, template <code>018</code>.</p>
 <h2>Step 3: Build Your cv_data Object</h2>
-<p>Construct the JSON from all gathered data. Use everything available from your context — experience, education, skills, projects. Don&#39;t limit yourself to what you explicitly asked for. Omit fields you don&#39;t have — don&#39;t send empty arrays or null values.</p>
+<p>Construct the JSON from all data the requestor has provided or approved in this conversation — experience, education, skills, projects, and any other details they shared. Include all relevant fields, not just the ones you explicitly asked for. Omit fields you don&#39;t have — don&#39;t send empty arrays or null values.</p>
 <p><strong>Minimum (4 fields required):</strong></p>
 <pre><code class="language-json">{
   &quot;firstName&quot;: &quot;Alex&quot;,
@@ -522,6 +522,15 @@ Content-Type: application/json
 <li>CVs are permanent. URLs never expire. Unclaimed CVs remain accessible indefinitely.</li>
 <li>For custom templates (requires Access-ID): read <a href="https://www.talent.de/skills/template-create.md">template-create.md</a> in full before writing code.</li>
 </ul>
+<h2>Privacy &amp; Data Handling</h2>
+<ul>
+<li><strong>Requestor-only disclosure:</strong> Share the CV URL and claim token only with the requestor. talent.de does not publish, index, or distribute these URLs. The requestor decides who sees their CV.</li>
+<li><strong>Consent-driven:</strong> Only include data the requestor provided or approved in this conversation. Do not extract personal information from unrelated system contexts or other sessions.</li>
+<li><strong>No sensitive data:</strong> Do not include SSNs, passwords, private identifiers, or confidential business information in CVs.</li>
+<li><strong>Claim tokens:</strong> Treat like a password — only share with the requestor. Anyone with the token can claim CV ownership.</li>
+<li><strong>Hosted infrastructure:</strong> All templates run on talent.de with Content Security Policy headers, DOMPurify HTML sanitization, and iframe sandbox isolation. External network requests, form submissions, and embedded frames are blocked. Uploaded agent templates are validated before acceptance and re-validated when rules update — external scripts, network APIs, event handlers, and browser storage access are rejected.</li>
+<li><strong>Deletion:</strong> CV owners can request deletion at any time via talent.de/privacy.</li>
+</ul>
 <h2>Field Constraints</h2>
 <p>All fields are validated server-side. Requests exceeding these limits return <code>VALIDATION_ERROR</code> (400).</p>
 <p><strong>Profile fields:</strong></p>
@@ -643,7 +652,7 @@ Content-Type: application/json
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/rotorstar/id-cv-resume-creator/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/blob/main/skills/rotorstar/id-cv-resume-creator/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
@@ -651,9 +660,9 @@ Content-Type: application/json
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/rotorstar/id-cv-resume-creator/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/rotorstar/id-cv-resume-creator/SKILL.md" download class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  Download SKILL.md
+                  Download Source
                 </a>
                 <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>

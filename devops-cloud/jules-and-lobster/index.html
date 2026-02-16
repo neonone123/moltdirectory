@@ -75,16 +75,18 @@
 <pre><code class="language-bash"># 1. Verify available sources (pre-flight check)
 ./scripts/jules_api.sh sources
 
-# 2. Create a session with auto PR creation
+# 2. Create a session with plan approval and auto PR creation
 ./scripts/jules_api.sh new-session \
   --source &quot;sources/github/OWNER/REPO&quot; \
   --title &quot;Add unit tests&quot; \
   --prompt &quot;Add comprehensive unit tests for the authentication module&quot; \
   --branch main \
+  --require-plan-approval \
   --auto-pr
 
-# 3. Monitor session progress
+# 3. Monitor session progress and approve the plan
 ./scripts/jules_api.sh activities --session SESSION_ID
+./scripts/jules_api.sh approve-plan --session SESSION_ID
 </code></pre>
 <p><strong>Note:</strong> Use your GitHub username/org, not your local system username (e.g., <code>sources/github/octocat/Hello-World</code>, not <code>sources/github/$USER/Hello-World</code>).</p>
 <h2>Overview</h2>
@@ -255,38 +257,33 @@
 </tr>
 </tbody></table>
 <h2>Workflows</h2>
-<h3>Option 1: Automated Session with Auto-PR (Recommended)</h3>
-<p>Create a session that automatically creates a PR when complete:</p>
+<h3>Option 1: Session with Plan Approval and Auto-PR (Recommended)</h3>
+<p>Create a session that requires plan approval before execution and automatically creates a PR when complete:</p>
 <pre><code class="language-bash">./scripts/jules_api.sh new-session \
   --source &quot;sources/github/octocat/Hello-World&quot; \
   --title &quot;Fix login bug&quot; \
   --prompt &quot;Fix the null pointer exception in the login handler when email is empty&quot; \
   --branch main \
+  --require-plan-approval \
   --auto-pr
 </code></pre>
 <p><strong>Why this is recommended:</strong></p>
 <ul>
-<li>Plans are automatically approved (default behavior)</li>
+<li>You review and approve the plan before Jules executes changes</li>
 <li>PR is created automatically on completion</li>
-<li>Minimal manual intervention required</li>
+<li>Balances automation with human oversight</li>
 </ul>
-<h3>Option 2: Session with Plan Approval</h3>
-<p>For sensitive operations, require explicit plan approval:</p>
-<pre><code class="language-bash"># Create session requiring plan approval
+<h3>Option 2: Fully Automated Session (No Plan Approval)</h3>
+<p>For low-risk or routine tasks in non-sensitive repos, you can skip plan approval:</p>
+<pre><code class="language-bash"># Create session without plan approval (use only for low-risk tasks)
 ./scripts/jules_api.sh new-session \
   --source &quot;sources/github/octocat/Hello-World&quot; \
-  --title &quot;Refactor auth module&quot; \
-  --prompt &quot;Refactor the authentication module to use OAuth2&quot; \
+  --title &quot;Fix typo in README&quot; \
+  --prompt &quot;Fix the typo in README.md line 5&quot; \
   --branch main \
-  --require-plan-approval \
   --auto-pr
-
-# Monitor until AWAITING_PLAN_APPROVAL state
-./scripts/jules_api.sh activities --session SESSION_ID
-
-# Review the plan, then approve
-./scripts/jules_api.sh approve-plan --session SESSION_ID
 </code></pre>
+<p><strong>Warning:</strong> Without <code>--require-plan-approval</code>, Jules will automatically approve its own plan and execute changes. Only use this for low-risk tasks in non-critical repos.</p>
 <h3>Option 3: Interactive Session</h3>
 <p>Send follow-up messages during an active session:</p>
 <pre><code class="language-bash"># Create session
@@ -382,7 +379,7 @@
         &quot;startingBranch&quot;: &quot;main&quot;
       }
     },
-    &quot;requirePlanApproval&quot;: false,
+    &quot;requirePlanApproval&quot;: true,
     &quot;automationMode&quot;: &quot;AUTO_CREATE_PR&quot;
   }&#39;
 </code></pre>
@@ -424,7 +421,7 @@
 <td><code>requirePlanApproval</code></td>
 <td>boolean</td>
 <td>No</td>
-<td>If true, pause for plan approval (default: false)</td>
+<td>If true, pause for plan approval. Recommended: true for production repos</td>
 </tr>
 <tr>
 <td><code>automationMode</code></td>
@@ -621,7 +618,7 @@
   --prompt &quot;...&quot; \
   [--branch main] \
   [--auto-pr] \
-  [--require-plan-approval]
+  [--no-plan-approval]
 </code></pre>
 <p><strong>Flags:</strong></p>
 <table>
@@ -657,7 +654,11 @@
 </tr>
 <tr>
 <td><code>--require-plan-approval</code></td>
-<td>Require explicit plan approval</td>
+<td>Require explicit plan approval (default)</td>
+</tr>
+<tr>
+<td><code>--no-plan-approval</code></td>
+<td>Skip plan approval (use for low-risk tasks only)</td>
 </tr>
 <tr>
 <td><code>--page-size</code></td>
@@ -732,12 +733,14 @@ node scripts/jules.js pull --session SESSION_ID
 <ol>
 <li>Never include secrets or credentials in prompts</li>
 <li>Review generated PRs before merging</li>
-<li>Use <code>requirePlanApproval: true</code> for sensitive operations</li>
+<li>Use <code>requirePlanApproval: true</code> (recommended for all repos, especially production)</li>
+<li>Only install the Jules GitHub app on repositories you intend to use with Jules — limit access scope</li>
+<li>Treat <code>JULES_API_KEY</code> as a secret: store it securely, rotate it regularly, and never paste it into untrusted places</li>
 </ol>
 <h3>Performance</h3>
 <ol>
 <li>Use <code>automationMode: AUTO_CREATE_PR</code> for streamlined workflows</li>
-<li>Let plans auto-approve for routine tasks</li>
+<li>Only skip plan approval (<code>requirePlanApproval: false</code>) for routine, low-risk tasks in non-critical repos</li>
 <li>Break complex tasks into smaller sessions</li>
 </ol>
 <h2>Extracting Results</h2>
@@ -772,7 +775,7 @@ curl -sS \
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/sanjacob99/jules-and-lobster/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/blob/main/skills/sanjacob99/jules-and-lobster/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
@@ -780,9 +783,9 @@ curl -sS \
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/sanjacob99/jules-and-lobster/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/sanjacob99/jules-and-lobster/SKILL.md" download class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  Download SKILL.md
+                  Download Source
                 </a>
                 <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>

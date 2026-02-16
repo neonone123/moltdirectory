@@ -353,7 +353,7 @@ const PAGE_TEMPLATE = (content, title, desc, canonicalPath = '/') => {
 function rewriteRelativeDocLinks(skillHtml, skillRepoUrl) {
   const blobBase = skillRepoUrl
     .replace('/tree/', '/blob/')
-    .replace(/\/SKILL\.md$/, '/');
+    .replace(/\/(?:skill|skills)\.md$/i, '/');
 
   return skillHtml.replace(/<a([^>]*?)href="([^"]+)"([^>]*)>/gi, (match, pre, href, post) => {
     const isAbsolute = /^(?:[a-z]+:)?\/\//i.test(href) || href.startsWith('/') || href.startsWith('#');
@@ -379,6 +379,248 @@ function rewriteRelativeDocLinks(skillHtml, skillRepoUrl) {
     const githubHref = `${blobBase}${cleanHref}${queryPart ? `?${queryPart}` : ''}${hashPart ? `#${hashPart}` : ''}`;
     return `<a${pre}href="${githubHref}"${post}>`;
   });
+}
+
+const SKILL_DOC_FILENAMES = ['SKILL.md', 'skill.md', 'Skill.md', 'skills.md', 'SKILLS.md'];
+const SKILL_DOC_FILENAME_SET = new Set(SKILL_DOC_FILENAMES.map((value) => value.toLowerCase()));
+
+function toRawGitHubUrl(url) {
+  return url
+    .replace('https://github.com/', 'https://raw.githubusercontent.com/')
+    .replace('/tree/', '/')
+    .replace('/blob/', '/');
+}
+
+function toGitHubBlobUrl(rawUrl) {
+  const match = rawUrl.match(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([^/]+)\/(.+)$/);
+  if (!match) return rawUrl;
+  const [, owner, repo, branch, filePath] = match;
+  return `https://github.com/${owner}/${repo}/blob/${branch}/${filePath}`;
+}
+
+function stripTrailingSlash(value = '') {
+  return value.replace(/\/+$/, '');
+}
+
+function dirnameUrlPath(value = '') {
+  const normalized = stripTrailingSlash(value);
+  const idx = normalized.lastIndexOf('/');
+  return idx === -1 ? normalized : normalized.slice(0, idx);
+}
+
+function basenameUrlPath(value = '') {
+  const normalized = stripTrailingSlash(value);
+  const idx = normalized.lastIndexOf('/');
+  return idx === -1 ? normalized : normalized.slice(idx + 1);
+}
+
+function joinUrlPath(...segments) {
+  return segments
+    .filter(Boolean)
+    .map((segment, index) => {
+      const cleaned = String(segment).replace(/^\/+|\/+$/g, '');
+      if (index === 0 && segment.startsWith('/')) {
+        return `/${cleaned}`;
+      }
+      return cleaned;
+    })
+    .filter(Boolean)
+    .join('/');
+}
+
+function buildRawDocCandidates(sourceUrl) {
+  const rawUrl = stripTrailingSlash(toRawGitHubUrl(sourceUrl));
+  const tail = basenameUrlPath(rawUrl);
+  const hasKnownDocFilename = SKILL_DOC_FILENAME_SET.has(tail.toLowerCase());
+  const basePath = hasKnownDocFilename ? dirnameUrlPath(rawUrl) : rawUrl;
+  const candidates = [];
+
+  if (hasKnownDocFilename) {
+    candidates.push(rawUrl);
+  }
+
+  for (const fileName of SKILL_DOC_FILENAMES) {
+    candidates.push(`${basePath}/${fileName}`);
+  }
+
+  // If source path includes mixed/uppercase folder names, try lowercase parent directory too.
+  const parentDirName = basenameUrlPath(basePath);
+  if (parentDirName && parentDirName !== parentDirName.toLowerCase()) {
+    const loweredBasePath = joinUrlPath(dirnameUrlPath(basePath), parentDirName.toLowerCase());
+    for (const fileName of SKILL_DOC_FILENAMES) {
+      candidates.push(`${loweredBasePath}/${fileName}`);
+    }
+  }
+
+  return [...new Set(candidates)];
+}
+
+async function fetchMarkdownAtUrl(url) {
+  try {
+    const response = await axios.get(url, {
+      timeout: 20000,
+      validateStatus: () => true
+    });
+
+    const isOk = response.status >= 200 && response.status < 300;
+    const textBody = typeof response.data === 'string'
+      ? response.data
+      : (response.data == null ? '' : String(response.data));
+
+    if (isOk && textBody.trim().length > 0) {
+      return { ok: true, status: response.status, markdown: textBody };
+    }
+
+    return { ok: false, status: response.status };
+  } catch (error) {
+    return { ok: false, status: 'ERR', error: error.message };
+  }
+}
+
+function parseGitHubSourceUrl(url) {
+  const treeMatch = url.match(/^https:\/\/github\.com\/([^/]+)\/([^/]+)\/tree\/([^/]+)\/(.+)$/);
+  if (treeMatch) {
+    return {
+      owner: treeMatch[1],
+      repo: treeMatch[2],
+      branch: treeMatch[3],
+      sourcePath: treeMatch[4]
+    };
+  }
+
+  const blobMatch = url.match(/^https:\/\/github\.com\/([^/]+)\/([^/]+)\/blob\/([^/]+)\/(.+)$/);
+  if (blobMatch) {
+    return {
+      owner: blobMatch[1],
+      repo: blobMatch[2],
+      branch: blobMatch[3],
+      sourcePath: blobMatch[4]
+    };
+  }
+
+  return null;
+}
+
+const directoryChildrenCache = new Map();
+
+async function fetchDirectoryChildrenFromGitHubHtml(source, parentPath) {
+  const normalizedParent = stripTrailingSlash(parentPath || '');
+  const cacheKey = `${source.owner}/${source.repo}/${source.branch}/${normalizedParent}`;
+  if (directoryChildrenCache.has(cacheKey)) {
+    return directoryChildrenCache.get(cacheKey);
+  }
+
+  const treeUrl = `https://github.com/${source.owner}/${source.repo}/tree/${source.branch}/${normalizedParent}`;
+  const resultPromise = (async () => {
+    try {
+      const response = await axios.get(treeUrl, {
+        timeout: 20000,
+        validateStatus: () => true,
+        headers: {
+          'User-Agent': 'moltdirectory-build'
+        }
+      });
+
+      if (!(response.status >= 200 && response.status < 300) || typeof response.data !== 'string') {
+        return { ok: false, status: response.status };
+      }
+
+      const hrefPattern = new RegExp(`href="/${source.owner}/${source.repo}/tree/${source.branch}/([^"#?]+)"`, 'g');
+      const childSet = new Set();
+      const directChildren = [];
+      let match;
+      while ((match = hrefPattern.exec(response.data)) !== null) {
+        const fullPath = decodeURIComponent(match[1]).replace(/\/+$/, '');
+        if (normalizedParent) {
+          if (!fullPath.startsWith(`${normalizedParent}/`)) continue;
+        }
+        const relativePath = normalizedParent ? fullPath.slice(normalizedParent.length + 1) : fullPath;
+        const parts = relativePath.split('/').filter(Boolean);
+        if (parts.length !== 1) continue;
+        const childName = parts[0];
+        if (childSet.has(childName)) continue;
+        childSet.add(childName);
+        directChildren.push(childName);
+      }
+
+      return { ok: true, children: directChildren.sort((a, b) => a.localeCompare(b)) };
+    } catch (error) {
+      return { ok: false, status: 'ERR', error: error.message };
+    }
+  })();
+
+  directoryChildrenCache.set(cacheKey, resultPromise);
+  return resultPromise;
+}
+
+async function resolveSkillSource(skill) {
+  const attempts = [];
+  const candidates = buildRawDocCandidates(skill.url);
+
+  for (const candidateUrl of candidates) {
+    const result = await fetchMarkdownAtUrl(candidateUrl);
+    attempts.push({ url: candidateUrl, status: result.status });
+    if (result.ok) {
+      return {
+        status: 'resolved_direct',
+        rawUrl: candidateUrl,
+        githubUrl: toGitHubBlobUrl(candidateUrl),
+        markdown: result.markdown,
+        attempts
+      };
+    }
+  }
+
+  const source = parseGitHubSourceUrl(skill.url);
+  if (!source) {
+    return {
+      status: 'deleted_unresolved',
+      reason: 'unsupported_source_url',
+      attempts
+    };
+  }
+
+  const sourceTail = basenameUrlPath(source.sourcePath);
+  const parentPath = SKILL_DOC_FILENAME_SET.has(sourceTail.toLowerCase())
+    ? dirnameUrlPath(source.sourcePath)
+    : source.sourcePath;
+
+  const parentChildren = await fetchDirectoryChildrenFromGitHubHtml(source, parentPath);
+  if (!parentChildren.ok) {
+    return {
+      status: 'deleted_unresolved',
+      reason: 'unable_to_list_source_directory',
+      attempts,
+      sourceStatus: parentChildren.status
+    };
+  }
+
+  const children = [];
+  for (const childDirName of parentChildren.children) {
+    const childTreeUrl = `https://github.com/${source.owner}/${source.repo}/tree/${source.branch}/${joinUrlPath(parentPath, childDirName)}`;
+    children.push({
+      id: childDirName.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      name: childDirName,
+      fileName: null,
+      rawUrl: '',
+      githubUrl: childTreeUrl
+    });
+  }
+
+  if (children.length > 0) {
+    return {
+      status: 'resolved_subcategory',
+      parentSourceUrl: skill.url,
+      children: children.sort((a, b) => a.name.localeCompare(b.name)),
+      attempts
+    };
+  }
+
+  return {
+    status: 'deleted_unresolved',
+    reason: 'no_supported_skill_markdown_found',
+    attempts
+  };
 }
 
 // --- Build Logic ---
@@ -476,10 +718,81 @@ async function build() {
   };
 
   console.log(`Found ${filteredCategories.length} categories and ${filteredSkills.length} skills.`);
+  console.log('Resolving skill sources...');
+
+  const retainedSkills = [];
+  const deletedSkills = [];
+
+  for (let index = 0; index < filteredSkills.length; index += 1) {
+    const skill = filteredSkills[index];
+    const resolution = await resolveSkillSource(skill);
+
+    if (resolution.status === 'resolved_direct' || resolution.status === 'resolved_subcategory') {
+      retainedSkills.push({ ...skill, resolution });
+    } else {
+      deletedSkills.push({
+        categoryId: skill.catId,
+        toolId: skill.id,
+        name: skill.name,
+        sourceUrl: skill.url,
+        reason: resolution.reason || 'unknown',
+        attempts: resolution.attempts || []
+      });
+      fs.rmSync(path.join(OUTPUT_DIR, skill.catId, skill.id), { recursive: true, force: true });
+    }
+
+    if ((index + 1) % 100 === 0 || index === filteredSkills.length - 1) {
+      console.log(`Resolved ${index + 1}/${filteredSkills.length} skills...`);
+    }
+  }
+
+  const retainedSkillsByCategory = new Map();
+  for (const skill of retainedSkills) {
+    retainedSkillsByCategory.set(
+      skill.catId,
+      (retainedSkillsByCategory.get(skill.catId) || 0) + 1
+    );
+  }
+
+  const retainedCategories = filteredCategories
+    .map((category) => ({
+      ...category,
+      count: retainedSkillsByCategory.get(category.id) || 0
+    }))
+    .filter((category) => category.count > 0);
+
+  // Remove stale generated pages for removed skills/categories so deleted items return 404.
+  const retainedCategorySet = new Set(retainedCategories.map((category) => category.id));
+  const retainedSkillSet = new Set(retainedSkills.map((skill) => `${skill.catId}/${skill.id}`));
+
+  for (const category of filteredCategories) {
+    const categoryDir = path.join(OUTPUT_DIR, category.id);
+    if (!fs.existsSync(categoryDir)) continue;
+
+    if (!retainedCategorySet.has(category.id)) {
+      fs.rmSync(categoryDir, { recursive: true, force: true });
+      continue;
+    }
+
+    const entries = fs.readdirSync(categoryDir, { withFileTypes: true });
+    for (const entry of entries) {
+      if (!entry.isDirectory()) continue;
+      const skillKey = `${category.id}/${entry.name}`;
+      if (!retainedSkillSet.has(skillKey)) {
+        fs.rmSync(path.join(categoryDir, entry.name), { recursive: true, force: true });
+      }
+    }
+  }
+
+  console.log(
+    `Resolution summary: direct=${retainedSkills.filter((s) => s.resolution.status === 'resolved_direct').length}, ` +
+    `subcategory=${retainedSkills.filter((s) => s.resolution.status === 'resolved_subcategory').length}, ` +
+    `deleted=${deletedSkills.length}`
+  );
 
   const toolsManifest = {
     generatedAt: new Date().toISOString(),
-    tools: filteredSkills.map((s) => ({
+    tools: retainedSkills.map((s) => ({
       categoryId: s.catId,
       toolId: s.id
     }))
@@ -487,6 +800,14 @@ async function build() {
   const dataDir = path.join(OUTPUT_DIR, 'data');
   if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir);
   fs.writeFileSync(path.join(dataDir, 'tools-manifest.json'), JSON.stringify(toolsManifest, null, 2));
+  fs.writeFileSync(path.join(dataDir, 'build-health.json'), JSON.stringify({
+    generatedAt: new Date().toISOString(),
+    totalSkills: filteredSkills.length,
+    resolvedDirect: retainedSkills.filter((s) => s.resolution.status === 'resolved_direct').length,
+    resolvedSubcategory: retainedSkills.filter((s) => s.resolution.status === 'resolved_subcategory').length,
+    deletedUnresolved: deletedSkills.length,
+    deletedSkills
+  }, null, 2));
 
   // 1. Generate Homepage
   const homeContent = `
@@ -510,12 +831,12 @@ async function build() {
         
         <div class="hero-stats">
           <div class="hero-stat-card">
-            <div class="hero-stat-value">${filteredSkills.length}</div>
+            <div class="hero-stat-value">${retainedSkills.length}</div>
             <div class="hero-stat-label">Skills</div>
           </div>
           <div class="hero-stat-divider"></div>
           <div class="hero-stat-card">
-            <div class="hero-stat-value">${filteredCategories.length}</div>
+            <div class="hero-stat-value">${retainedCategories.length}</div>
             <div class="hero-stat-label">Categories</div>
           </div>
         </div>
@@ -533,7 +854,7 @@ async function build() {
     </section>
     <section class="categories-section" id="categoriesSection">
       <div class="categories-grid" id="categoriesGrid">
-        ${filteredCategories.map(cat => `
+        ${retainedCategories.map(cat => `
           <a href="/${cat.id}/" class="category-card" data-name="${cat.name.toLowerCase()}" data-desc="${cat.desc.toLowerCase()}">
             <div class="category-icon">${getIcon(cat.id)}</div>
             <div class="category-content">
@@ -552,7 +873,7 @@ async function build() {
     </section>
     <script>
       // Static search data embedded at build time
-      const skillsData = ${JSON.stringify(filteredSkills.map(s => ({ name: s.name, desc: s.desc, catId: s.catId, catName: s.catName, id: s.id })))};
+      const skillsData = ${JSON.stringify(retainedSkills.map(s => ({ name: s.name, desc: s.desc, catId: s.catId, catName: s.catName, id: s.id })))};
       
       const searchInput = document.getElementById('searchInput');
       const categoriesGrid = document.getElementById('categoriesGrid');
@@ -621,8 +942,8 @@ async function build() {
   fs.writeFileSync(path.join(OUTPUT_DIR, 'index.html'), PAGE_TEMPLATE(homeContent, 'OpenClaw Skills Directory', 'Browse AI agent skills for OpenClaw', '/'));
 
   // 2. Generate Category Pages
-  for (const cat of filteredCategories) {
-    const catSkills = filteredSkills.filter(s => s.catId === cat.id);
+  for (const cat of retainedCategories) {
+    const catSkills = retainedSkills.filter(s => s.catId === cat.id);
     const catContent = `
       <section class="category-hero">
         <div class="category-hero-content">
@@ -675,10 +996,10 @@ async function build() {
       const skillDir = path.join(catDir, s.id);
       if (!fs.existsSync(skillDir)) fs.mkdirSync(skillDir);
 
-      try {
-        const rawUrl = s.url.replace('github.com', 'raw.githubusercontent.com').replace('/tree/', '/').replace('/blob/', '/');
-        const skillRes = await axios.get(rawUrl);
-        let skillMd = skillRes.data;
+      const resolution = s.resolution;
+
+      if (resolution.status === 'resolved_direct') {
+        let skillMd = resolution.markdown;
 
         // GLOBAL REBRAND: Replace all instances of MoltBot with OpenClaw in the skill content
         skillMd = skillMd.replace(/MoltBot/g, 'OpenClaw').replace(/MoltDirectory/g, 'OpenClaw Directory').replace(/Molt /g, 'OpenClaw ');
@@ -686,7 +1007,7 @@ async function build() {
         // Remove YAML frontmatter (---...---) from the start of the markdown
         skillMd = skillMd.replace(/^---[\s\S]*?---\n*/m, '');
 
-        const skillHtml = rewriteRelativeDocLinks(marked(skillMd), s.url);
+        const skillHtml = rewriteRelativeDocLinks(marked(skillMd), resolution.githubUrl);
 
         const skillContent = `
           <section class="skill-page-header">
@@ -723,7 +1044,7 @@ async function build() {
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="${s.url}" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="${resolution.githubUrl}" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
@@ -731,9 +1052,9 @@ async function build() {
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="${rawUrl}" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="${resolution.rawUrl}" download class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  Download SKILL.md
+                  Download Source
                 </a>
                 <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -756,43 +1077,72 @@ async function build() {
             </aside>
           </div>
         `;
+
         fs.writeFileSync(path.join(skillDir, 'index.html'), PAGE_TEMPLATE(skillContent, s.name, s.desc, `/${cat.id}/${s.id}/`));
-      } catch (err) {
-        console.error(`Failed to fetch SKILL.md for ${s.name}: ${err.message}`);
-        // Fallback page if SKILL.md fails
-        const fallbackContent = `
-          <section class="skill-page-header">
-            <div class="skill-page-header-inner">
-              <a href="/${cat.id}/" class="back-link">← Back to ${cat.name}</a>
-              <div class="skill-page-meta">
-                <a href="/${cat.id}/" class="skill-page-category">${cat.name}</a>
+        continue;
+      }
+
+      const childCards = resolution.children.map((child, index) => `
+        <a href="${child.githubUrl}" target="_blank" rel="noopener" class="skill-card" style="text-decoration: none; color: inherit;" data-category-id="${cat.id}" data-tool-id="${s.id}-${child.id}" data-original-index="${index}" data-rank-score="0">
+          <div class="skill-header">
+            <div class="skill-name">${child.name}</div>
+          </div>
+          <div class="skill-desc">${child.fileName ? `Source file: ${child.fileName}` : 'Open child skill folder'}</div>
+          <div class="skill-footer">
+            <div class="skill-author">from @${s.author}</div>
+            <div class="skill-link">View Source →</div>
+          </div>
+        </a>
+      `).join('');
+
+      const subcategoryContent = `
+        <section class="skill-page-header">
+          <div class="skill-page-header-inner">
+            <a href="/${cat.id}/" class="back-link">← Back to ${cat.name}</a>
+            <div class="skill-page-meta">
+              <a href="/${cat.id}/" class="skill-page-category">${cat.name}</a>
+              <span class="skill-page-author">by @${s.author}</span>
+            </div>
+            <h1 class="skill-page-title">${s.name}</h1>
+            <p class="skill-page-desc">${s.desc}</p>
+            <div class="vote-widget skill-page-vote" data-category-id="${cat.id}" data-tool-id="${s.id}">
+              <button type="button" class="vote-btn" data-vote="1" aria-label="Upvote ${s.name}">▲</button>
+              <span class="vote-count">New</span>
+              <button type="button" class="vote-btn" data-vote="-1" aria-label="Downvote ${s.name}">▼</button>
+            </div>
+          </div>
+        </section>
+        <div class="skill-page-body">
+          <article class="skill-page-content">
+            <div class="markdown-content">
+              <p>This entry maps to multiple skills. Pick a child skill below.</p>
+            </div>
+            <section class="skills-section" style="padding-top: 16px;">
+              <div class="skills-grid" data-category-id="${cat.id}">
+                ${childCards}
               </div>
-              <h1 class="skill-page-title">${s.name}</h1>
-              <p class="skill-page-desc">${s.desc}</p>
-              <div class="vote-widget skill-page-vote" data-category-id="${cat.id}" data-tool-id="${s.id}">
-                <button type="button" class="vote-btn" data-vote="1" aria-label="Upvote ${s.name}">▲</button>
-                <span class="vote-count">New</span>
-                <button type="button" class="vote-btn" data-vote="-1" aria-label="Downvote ${s.name}">▼</button>
+            </section>
+          </article>
+          <aside class="skill-page-sidebar">
+            <div class="sidebar-card">
+              <div class="sidebar-title">Actions</div>
+              <a href="${resolution.parentSourceUrl}" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">View Source Folder</a>
+              <a href="https://clawdhub.com/${s.author}/${s.id}" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">View on ClawdHub</a>
+            </div>
+            <div class="sidebar-card">
+              <div class="sidebar-title">Details</div>
+              <div class="sidebar-info">
+                <div class="sidebar-info-item">
+                  <span class="sidebar-info-label">Child skills</span>
+                  <span class="sidebar-info-value">${resolution.children.length}</span>
+                </div>
               </div>
             </div>
-          </section>
-          <div class="skill-page-body">
-            <article class="skill-page-content">
-              <div class="markdown-content">
-                <p>Skill documentation is available on GitHub.</p>
-              </div>
-            </article>
-            <aside class="skill-page-sidebar">
-              <div class="sidebar-card">
-                <div class="sidebar-title">Actions</div>
-                <a href="${s.url}" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">View on GitHub</a>
-                <a href="https://clawdhub.com/${s.author}/${s.id}" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">View on ClawdHub</a>
-              </div>
-            </aside>
-          </div>
-        `;
-        fs.writeFileSync(path.join(skillDir, 'index.html'), PAGE_TEMPLATE(fallbackContent, s.name, s.desc, `/${cat.id}/${s.id}/`));
-      }
+          </aside>
+        </div>
+      `;
+
+      fs.writeFileSync(path.join(skillDir, 'index.html'), PAGE_TEMPLATE(subcategoryContent, s.name, s.desc, `/${cat.id}/${s.id}/`));
     }
   }
 
@@ -892,8 +1242,8 @@ OpenClaw's power comes from **Skills** (plugins). Out of the box, it can do basi
     cleanPath('/'),
     cleanPath('/start-here/'),
     cleanPath('/security-auditor', false),
-    ...filteredCategories.map(cat => cleanPath(`/${cat.id}/`)),
-    ...filteredSkills.map(s => cleanPath(`/${s.catId}/${s.id}/`))
+    ...retainedCategories.map(cat => cleanPath(`/${cat.id}/`)),
+    ...retainedSkills.map(s => cleanPath(`/${s.catId}/${s.id}/`))
   ]);
   const sitemapUrls = [...canonicalPaths]
     .sort()

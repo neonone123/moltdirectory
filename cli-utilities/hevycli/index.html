@@ -48,6 +48,7 @@
               <a href="/cli-utilities/" class="back-link">← Back to CLI Utilities</a>
               <div class="skill-page-meta">
                 <a href="/cli-utilities/" class="skill-page-category">CLI Utilities</a>
+                <span class="skill-page-author">by @nsampre</span>
               </div>
               <h1 class="skill-page-title">hevycli</h1>
               <p class="skill-page-desc">Access and analyze Hevy fitness tracking data including workouts, routines</p>
@@ -60,15 +61,179 @@
           </section>
           <div class="skill-page-body">
             <article class="skill-page-content">
-              <div class="markdown-content">
-                <p>Skill documentation is available on GitHub.</p>
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Hevy CLI Skill</h1>
+<h2>Description</h2>
+<p>Access and analyze Hevy fitness tracking data including workouts, routines, and exercise templates via the command line.</p>
+<h2>When to Use</h2>
+<p>Use this skill when the user asks to:</p>
+<ul>
+<li>View their workout history or recent workouts</li>
+<li>Get details about a specific workout</li>
+<li>Check their total workout count</li>
+<li>List or view their workout routines</li>
+<li>Browse exercise templates</li>
+<li>Export workout data as JSON</li>
+<li>Analyze their fitness progress over time</li>
+</ul>
+<h2>Prerequisites</h2>
+<ul>
+<li>User must have <code>hevycli</code> installed (<code>go install github.com/nsampre/hevycli@latest</code>)</li>
+<li>User must have configured their Hevy API key (<code>hevycli config set-api-key &lt;key&gt;</code>)</li>
+<li>User must have a Hevy Pro subscription</li>
+</ul>
+<h2>Available Commands</h2>
+<h3>Configuration</h3>
+<pre><code class="language-bash"># Set API key
+hevycli config set-api-key &lt;api-key-uuid&gt;
+
+# View current config
+hevycli config show
+</code></pre>
+<h3>Workouts</h3>
+<pre><code class="language-bash"># List recent workouts
+hevycli workouts list [--page N] [--page-size N] [--format json|table]
+
+# Get detailed workout information (accepts full UUID or 8-char short ID)
+hevycli workouts get &lt;workout-id&gt;
+
+# Get total workout count
+hevycli workouts count
+</code></pre>
+<h3>Routines</h3>
+<pre><code class="language-bash"># List routines
+hevycli routines list [--page N] [--page-size N] [--format json|table]
+
+# Get routine details (accepts full UUID or 8-char short ID)
+hevycli routines get &lt;routine-id&gt;
+</code></pre>
+<h3>Exercises</h3>
+<pre><code class="language-bash"># List exercise templates
+hevycli exercises list [--page N] [--page-size N] [--format json|table]
+
+# Get exercise template details
+hevycli exercises get &lt;template-id&gt;
+</code></pre>
+<h2>Global Flags</h2>
+<ul>
+<li><code>--format</code> - Output format: <code>table</code> (default) or <code>json</code></li>
+<li><code>--debug</code> - Enable debug output for API requests</li>
+</ul>
+<h2>Usage Examples</h2>
+<h3>Example 1: View Recent Workout History</h3>
+<pre><code class="language-bash">hevycli workouts list --page-size 5
+</code></pre>
+<h3>Example 2: Get Detailed Workout with Sets and Reps</h3>
+<pre><code class="language-bash"># Using short ID (first 8 characters)
+hevycli workouts get f75e9c13
+
+# Or using full UUID
+hevycli workouts get f75e9c13-32d7-407d-9715-011f5d5698fa
+</code></pre>
+<h3>Example 3: Export Data for Analysis</h3>
+<pre><code class="language-bash"># Export all workouts as JSON
+hevycli workouts list --format json &gt; workouts.json
+
+# Export routines
+hevycli routines list --format json &gt; routines.json
+</code></pre>
+<h3>Example 4: Check Progress</h3>
+<pre><code class="language-bash"># View total workouts completed
+hevycli workouts count
+
+# List exercise templates to find specific exercise IDs
+hevycli exercises list
+</code></pre>
+<h2>Tips for Claude</h2>
+<ol>
+<li><p><strong>Use JSON format for analysis</strong>: When helping users analyze their data, use <code>--format json</code> to get structured data that can be parsed and analyzed.</p>
+</li>
+<li><p><strong>Short IDs are supported</strong>: Users can copy short IDs from <code>workouts list</code> output and use them directly in <code>workouts get</code> commands.</p>
+</li>
+<li><p><strong>Pagination</strong>: API max page size is 10. Use pagination (<code>--page N</code>) to access older workouts.</p>
+</li>
+<li><p><strong>Error handling</strong>: If a command fails:</p>
+<ul>
+<li>Check if API key is configured (<code>hevycli config show</code>)</li>
+<li>Verify the user has Hevy Pro subscription</li>
+<li>Check if the ID exists or is valid</li>
+</ul>
+</li>
+<li><p><strong>Data insights</strong>: After retrieving workout data, you can:</p>
+<ul>
+<li>Calculate training volume (weight × reps × sets)</li>
+<li>Track progression over time</li>
+<li>Identify patterns in workout frequency</li>
+<li>Suggest rest day intervals</li>
+</ul>
+</li>
+</ol>
+<h2>Example Interaction</h2>
+<p><strong>User</strong>: &quot;Show me my last 3 workouts&quot;</p>
+<p><strong>Claude</strong>:</p>
+<pre><code class="language-bash">hevycli workouts list --page-size 3
+</code></pre>
+<p><strong>User</strong>: &quot;Get details on the first workout&quot;</p>
+<p><strong>Claude</strong>:</p>
+<pre><code class="language-bash"># Using the short ID from the list output
+hevycli workouts get f75e9c13
+</code></pre>
+<p><strong>User</strong>: &quot;How many total workouts have I completed?&quot;</p>
+<p><strong>Claude</strong>:</p>
+<pre><code class="language-bash">hevycli workouts count
+</code></pre>
+<h2>Notes</h2>
+<ul>
+<li>The tool reads data only - it does not create or modify workouts</li>
+<li>All timestamps are in ISO 8601 format</li>
+<li>Weights are always displayed in kilograms</li>
+<li>Distances are in meters, durations in seconds</li>
+<li>Table output handles emoji in workout titles (may have minor alignment issues depending on terminal)</li>
+</ul>
+
+                </div>
               </div>
             </article>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/nsampre/hevycli/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">View on GitHub</a>
-                <a href="https://clawdhub.com/nsampre/hevycli" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">View on ClawdHub</a>
+                <a href="https://github.com/openclaw/skills/blob/main/skills/nsampre/hevycli/Skill.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/nsampre/hevycli" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/nsampre/hevycli/Skill.md" download class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download Source
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@nsampre</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">CLI Utilities</span>
+                  </div>
+                </div>
               </div>
             </aside>
           </div>

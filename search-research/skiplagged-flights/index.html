@@ -70,79 +70,100 @@
                   </button>
                 </div>
                 <div class="markdown-content">
-                  <h1>Skiplagged Flights</h1>
-<p>Search flights using Skiplagged MCP via mcporter.</p>
-<h2>Quick Start</h2>
-<pre><code class="language-bash">mcporter call skiplagged.sk_flights_search origin=WAW destination=LHR departureDate=2026-02-15
+                  <h1>Skiplagged Flights (MCP)</h1>
+<p>This skill queries <strong>Skiplagged&#39;s public MCP server</strong> to search flights, hotels, cars and flexible date calendars.</p>
+<ul>
+<li><strong>Server URL:</strong> <code>https://mcp.skiplagged.com/mcp</code></li>
+<li><strong>Auth:</strong> none (public server)</li>
+</ul>
+<h2>Prerequisites</h2>
+<ol>
+<li><p>Ensure the <code>mcporter</code> CLI is available on PATH (this skill declares it as a required binary).</p>
+</li>
+<li><p>Prefer <strong>ad-hoc HTTPS targeting</strong> (no local mcporter config required):</p>
+</li>
+</ol>
+<pre><code class="language-bash"># Inspect tools + schemas (recommended)
+mcporter list https://mcp.skiplagged.com/mcp --schema
 </code></pre>
+<h2>Quick start</h2>
+<pre><code class="language-bash">mcporter call https://mcp.skiplagged.com/mcp.sk_flights_search origin=WAW destination=LHR departureDate=2026-03-15 --output json
+</code></pre>
+<blockquote>
+<p>If your environment already has a configured server name <code>skiplagged</code>, <code>mcporter call skiplagged.sk_flights_search ...</code> is equivalent. Using the explicit HTTPS URL is preferred because it avoids relying on (or enumerating) local MCP config.</p>
+</blockquote>
 <h2>Tools</h2>
 <h3>sk_flights_search</h3>
 <p>Search flights between locations.</p>
 <p><strong>Required:</strong> <code>origin</code>, <code>destination</code>, <code>departureDate</code></p>
-<p><strong>Common options:</strong></p>
+<p><strong>Common options (verify exact names via <code>--schema</code>):</strong></p>
 <ul>
-<li><code>returnDate</code> - Round-trip date</li>
+<li><code>returnDate</code> - round-trip date</li>
 <li><code>sort</code> - <code>price</code>, <code>duration</code>, <code>value</code> (default)</li>
-<li><code>limit</code> - Max results (default 12)</li>
+<li><code>limit</code> - max results (default ~12)</li>
 <li><code>maxStops</code> - <code>none</code>, <code>one</code>, <code>many</code></li>
 <li><code>fareClass</code> - <code>basic-economy</code>, <code>economy</code>, <code>premium</code>, <code>business</code>, <code>first</code></li>
-<li><code>preferredAirlines</code>/<code>excludedAirlines</code> - e.g., <code>[&#39;UA&#39;,&#39;DL&#39;]</code></li>
-<li><code>departureTimeEarliest</code>/<code>departureTimeLatest</code> - Minutes from midnight (0-1439)</li>
+<li><code>preferredAirlines</code> / <code>excludedAirlines</code> - comma-separated IATA codes (e.g., <code>UA,DL</code>)</li>
+<li><code>departureTimeEarliest</code> / <code>departureTimeLatest</code> - minutes from midnight (<code>0–1439</code>)</li>
 </ul>
 <p><strong>Examples:</strong></p>
 <pre><code class="language-bash"># Cheapest one-way
-mcporter call skiplagged.sk_flights_search origin=NYC destination=LAX departureDate=2026-03-15 sort=price
+mcporter call https://mcp.skiplagged.com/mcp.sk_flights_search origin=NYC destination=LAX departureDate=2026-03-15 sort=price limit=5
 
 # Round-trip, nonstop only
-mcporter call skiplagged.sk_flights_search origin=WAW destination=CDG departureDate=2026-04-10 returnDate=2026-04-17 maxStops=none
+mcporter call https://mcp.skiplagged.com/mcp.sk_flights_search origin=WAW destination=CDG departureDate=2026-04-10 returnDate=2026-04-17 maxStops=none limit=5
 
-# Exclude budget airlines, morning only (6am-12pm)
-mcporter call skiplagged.sk_flights_search origin=LHR destination=JFK departureDate=2026-05-01 excludedAirlines=F9,NK departureTimeEarliest=360 departureTimeLatest=720
+# Exclude budget airlines, morning only (6am–12pm)
+mcporter call https://mcp.skiplagged.com/mcp.sk_flights_search origin=LHR destination=JFK departureDate=2026-05-01 excludedAirlines=F9,NK departureTimeEarliest=360 departureTimeLatest=720 limit=5
 </code></pre>
 <h3>sk_flex_departure_calendar</h3>
 <p>Find cheapest fares around a departure date.</p>
-<pre><code class="language-bash">mcporter call skiplagged.sk_flex_departure_calendar origin=WAW destination=BCN departureDate=2026-06-15 sort=price
+<pre><code class="language-bash">mcporter call https://mcp.skiplagged.com/mcp.sk_flex_departure_calendar origin=WAW destination=BCN departureDate=2026-06-15 sort=price --output json
 </code></pre>
 <h3>sk_flex_return_calendar</h3>
-<p>Find cheapest round-trip fares for fixed trip length.</p>
-<pre><code class="language-bash">mcporter call skiplagged.sk_flex_return_calendar origin=WAW destination=NYC departureDate=2026-07-01 returnDate=2026-07-08
+<p>Find cheapest round-trip fares for a fixed trip length.</p>
+<pre><code class="language-bash">mcporter call https://mcp.skiplagged.com/mcp.sk_flex_return_calendar origin=WAW destination=NYC departureDate=2026-07-01 returnDate=2026-07-08 --output json
 </code></pre>
 <h3>sk_destinations_anywhere</h3>
 <p>Discover cheap destinations when flexible.</p>
-<pre><code class="language-bash">mcporter call skiplagged.sk_destinations_anywhere from=WAW depart=2026-02-15
+<pre><code class="language-bash">mcporter call https://mcp.skiplagged.com/mcp.sk_destinations_anywhere from=WAW depart=2026-03-15 --output json
 </code></pre>
-<h2>Response Formatting</h2>
-<p>When presenting flight results to users:</p>
+<h2>Response formatting</h2>
+<p>When presenting results to users:</p>
 <ul>
-<li><strong>NEVER use markdown tables</strong> - use bullet lists or labeled lines instead</li>
-<li>Use <strong>MarkdownV2</strong> compatible formatting (Telegram-safe)</li>
-<li>Keep replies <strong>mobile-friendly</strong> - concise, scannable</li>
-<li><strong>Limit results</strong> shown (top 3-5), offer more if needed</li>
+<li><strong>Never use markdown tables</strong> — use bullet lists or labeled lines.</li>
+<li>Use <strong>MarkdownV2</strong>-compatible formatting when replying in Telegram-style channels.</li>
+<li>Keep replies <strong>mobile-friendly</strong>: concise, scannable.</li>
+<li>Show <strong>top 3–5</strong> options by default; offer to expand.</li>
+<li>Include booking/deep links when returned.</li>
+<li>If hidden-city itineraries appear, present clear caveats (checked-bag constraints and missed-leg implications).</li>
+<li>Highlight savings, routing insights, and key tradeoffs (stops vs duration vs price).</li>
 </ul>
 <p><strong>Good example:</strong></p>
-<pre><code>Found 3 flights WAW → LHR on Feb 15:
+<pre><code>Found 3 flights WAW → LHR on Mar 15:
 
-• $90 · 28h 15m · 1 stop
-  Wizz Air + SAS
-  05:40 WAW → 08:55+1 LHR
+• $90 · 2h 35m · nonstop
+  LOT
+  05:40 WAW → 07:15 LHR
   [Book](link)
 
-• $91 · 12h 20m · 1 stop
-  Wizz Air + SAS  
-  05:40 WAW → 17:00 LHR
+• $91 · 4h 20m · 1 stop
+  SAS
+  06:10 WAW → 09:30 LHR
   [Book](link)
 </code></pre>
 <h2>Tips</h2>
 <ul>
-<li>Use IATA codes (e.g., <code>WAW</code>, <code>LHR</code>, <code>JFK</code>)</li>
-<li>Hidden city flights included by default (often cheapest)</li>
-<li>Add <code>--output json</code> for structured data</li>
-<li>Results include <code>deepLink</code> for booking</li>
+<li>Prefer <strong>IATA codes</strong> (e.g., <code>WAW</code>, <code>LHR</code>, <code>JFK</code>) when possible.</li>
+<li>Use <code>--output json</code> when you need structured data for post-processing.</li>
+<li>Results often include a <code>deepLink</code> (or similar) for booking/verification.</li>
+<li>For failures other than lack of results, suggest using <a href="https://skiplagged.com">https://skiplagged.com</a> directly.</li>
+<li>Prices/availability change quickly—treat results as point-in-time and encourage users to confirm via the booking link.</li>
 </ul>
-<h2>References</h2>
+<h2>References / provenance</h2>
 <ul>
-<li>Tool schemas: <code>mcporter list skiplagged --schema</code></li>
-<li>MCP docs: <a href="https://skiplagged.github.io/mcp/">https://skiplagged.github.io/mcp/</a></li>
+<li>Skiplagged MCP docs + privacy notes: <a href="https://skiplagged.github.io/mcp/">https://skiplagged.github.io/mcp/</a></li>
+<li>MCPorter CLI (call syntax + ad-hoc URLs): <a href="https://raw.githubusercontent.com/steipete/mcporter/main/README.md">https://raw.githubusercontent.com/steipete/mcporter/main/README.md</a></li>
 </ul>
 
                 </div>
@@ -151,7 +172,7 @@ mcporter call skiplagged.sk_flights_search origin=LHR destination=JFK departureD
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/wzs/skiplagged-flights/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/blob/main/skills/wzs/skiplagged-flights/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
@@ -159,9 +180,9 @@ mcporter call skiplagged.sk_flights_search origin=LHR destination=JFK departureD
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/wzs/skiplagged-flights/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/wzs/skiplagged-flights/SKILL.md" download class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  Download SKILL.md
+                  Download Source
                 </a>
                 <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>

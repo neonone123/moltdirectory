@@ -48,6 +48,7 @@
               <a href="/communication/" class="back-link">← Back to Communication</a>
               <div class="skill-page-meta">
                 <a href="/communication/" class="skill-page-category">Communication</a>
+                <span class="skill-page-author">by @aaronwander</span>
               </div>
               <h1 class="skill-page-title">scheduler-for-discord</h1>
               <p class="skill-page-desc">Create and manage scheduled reminders</p>
@@ -60,15 +61,108 @@
           </section>
           <div class="skill-page-body">
             <article class="skill-page-content">
-              <div class="markdown-content">
-                <p>Skill documentation is available on GitHub.</p>
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Scheduler (cron)</h1>
+<p>This skill schedules future actions using Moltbot’s <code>cron</code> CLI (via <code>exec</code>), defaulting to delivering the result back into the <strong>current</strong> Discord channel when available.</p>
+<h2>What to collect</h2>
+<ul>
+<li><strong>When</strong>: either a one-shot time (<code>in 2 minutes</code>, <code>at 20:00</code>) or a recurring schedule (<code>every day at 20:00</code>).</li>
+<li><strong>Timezone</strong>: ask if ambiguous; otherwise prefer the gateway host’s timezone.</li>
+<li><strong>What</strong>: what the message should say, or what should be generated.</li>
+<li><strong>Where</strong>:<ul>
+<li>If the request came from <strong>Discord</strong>, use the message context’s channel id and set delivery target to <code>channel:&lt;id&gt;</code>.</li>
+<li>If the request came from another surface (webchat/terminal), ask for a destination (Discord channel ID, Telegram chat ID, etc).</li>
+</ul>
+</li>
+</ul>
+<h2>Key rules</h2>
+<ul>
+<li>Cron jobs run in the background, so there is no “current channel” at execution time. Always <strong>capture the channel id at creation time</strong> and bake it into the cron job (<code>--channel discord --to channel:&lt;id&gt;</code>).</li>
+<li>Use an <strong>isolated agent job</strong> for scheduled messages (prevents the “Main jobs require --system-event” error).</li>
+<li>Avoid ambiguous Discord names like <code>#test</code>; always deliver to an explicit <code>channel:&lt;id&gt;</code> or <code>user:&lt;id&gt;</code>.</li>
+</ul>
+<h2>Implementation (use <code>exec</code>)</h2>
+<h3>One-shot message to the current Discord channel</h3>
+<p>If the user says “remind me in 2 minutes” (or similar), schedule a one-shot isolated agent job:</p>
+<pre><code class="language-bash">moltbot cron add \
+  --name &quot;&lt;short-name&gt;&quot; \
+  --session isolated \
+  --at 2m \
+  --agent main \
+  --message &quot;&lt;message text&gt;&quot; \
+  --deliver \
+  --channel discord \
+  --to channel:&lt;DISCORD_CHANNEL_ID&gt; \
+  --delete-after-run
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>--at</code> accepts <code>2m</code>, <code>20m</code>, <code>1h</code>, or an ISO timestamp. Do <strong>not</strong> use <code>+2m</code>.</li>
+</ul>
+<h3>Daily “tomorrow plan” at 20:00 (recurring)</h3>
+<p>If the user says “every day at 8pm, send me tomorrow’s work plan”, create a recurring cron job that instructs the agent to generate the plan and deliver it:</p>
+<pre><code class="language-bash">moltbot cron add \
+  --name &quot;tomorrow-plan&quot; \
+  --session isolated \
+  --cron &quot;0 20 * * *&quot; \
+  --tz &quot;Asia/Shanghai&quot; \
+  --agent main \
+  --message &quot;At execution time, write tomorrow&#39;s work plan. Keep it concise. Include: priorities, schedule blocks, risks, and a short checklist.&quot; \
+  --deliver \
+  --channel discord \
+  --to channel:&lt;DISCORD_CHANNEL_ID&gt;
+</code></pre>
+<h3>Verify</h3>
+<pre><code class="language-bash">moltbot cron list
+moltbot cron runs --id &lt;JOB_ID&gt;
+</code></pre>
+<h2>How to find the current Discord channel id</h2>
+<p>When the user request comes from Discord, the message context includes channel identifiers (e.g. <code>channel=...</code> / <code>discord channel id ...</code>). Use that value for <code>channel:&lt;id&gt;</code>.</p>
+<p>If the context does not include it, ask the user to provide a Discord message link (from which you can extract the channel id), or the channel id directly.</p>
+
+                </div>
               </div>
             </article>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/aaronwander/scheduler-for-discord/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">View on GitHub</a>
-                <a href="https://clawdhub.com/aaronwander/scheduler-for-discord" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">View on ClawdHub</a>
+                <a href="https://github.com/openclaw/skills/blob/main/skills/aaronwander/scheduler-for-discord/skills.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/aaronwander/scheduler-for-discord" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/aaronwander/scheduler-for-discord/skills.md" download class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download Source
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@aaronwander</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Communication</span>
+                  </div>
+                </div>
               </div>
             </aside>
           </div>

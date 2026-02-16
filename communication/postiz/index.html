@@ -70,77 +70,595 @@
                   </button>
                 </div>
                 <div class="markdown-content">
-                  <h1>Postiz Skill</h1>
-<p>Postiz is a tool to schedule social media and chat posts to 28+ channels:</p>
-<p>X, LinkedIn, LinkedIn Page, Reddit, Instagram, Facebook Page, Threads, YouTube, Google My Business, TikTok, Pinterest, Dribbble, Discord, Slack, Kick, Twitch, Mastodon, Bluesky, Lemmy, Farcaster, Telegram, Nostr, VK, Medium, Dev.to, Hashnode, WordPress, ListMonk</p>
-<h2>Setup</h2>
+                  <h2>Install Postiz if it doesn&#39;t exist</h2>
+<pre><code class="language-bash">npm install -g postiz
+# or
+pnpm install -g postiz
+</code></pre>
+<h2>npm release: <a href="https://www.npmjs.com/package/postiz">https://www.npmjs.com/package/postiz</a></h2>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>name</strong></td>
+<td>postiz</td>
+</tr>
+<tr>
+<td><strong>description</strong></td>
+<td>Social media automation CLI for scheduling posts across 28+ platforms</td>
+</tr>
+<tr>
+<td><strong>allowed-tools</strong></td>
+<td>Bash(postiz:*)</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Core Workflow</h2>
+<p>The fundamental pattern for using Postiz CLI:</p>
 <ol>
-<li>Get your API key: <a href="https://platform.postiz.com/settings">https://platform.postiz.com/settings</a></li>
-<li>Click on &quot;Settings&quot;</li>
-<li>Click &quot;Reveal&quot;</li>
-<li>Set environment variables:<pre><code class="language-bash">export POSTIZ_API_KEY=&quot;your-api-key&quot;
-</code></pre>
-</li>
+<li><strong>Discover</strong> - List integrations and get their settings</li>
+<li><strong>Fetch</strong> - Use integration tools to retrieve dynamic data (flairs, playlists, companies)</li>
+<li><strong>Prepare</strong> - Upload media files if needed</li>
+<li><strong>Post</strong> - Create posts with content, media, and platform-specific settings</li>
+<li><strong>Analyze</strong> - Track performance with platform and post-level analytics</li>
+<li><strong>Resolve</strong> - If analytics returns <code>{&quot;missing&quot;: true}</code>, run <code>posts:missing</code> to list provider content, then <code>posts:connect</code> to link it</li>
 </ol>
-<h2>Get all added channels</h2>
-<pre><code class="language-bash">curl -X GET &quot;https://api.postiz.com/public/v1/integrations&quot; \
-  -H &quot;Authorization: $POSTIZ_API_KEY&quot;
+<pre><code class="language-bash"># 1. Discover
+postiz integrations:list
+postiz integrations:settings &lt;integration-id&gt;
+
+# 2. Fetch (if needed)
+postiz integrations:trigger &lt;integration-id&gt; &lt;method&gt; -d &#39;{&quot;key&quot;:&quot;value&quot;}&#39;
+
+# 3. Prepare
+postiz upload image.jpg
+
+# 4. Post
+postiz posts:create -c &quot;Content&quot; -m &quot;image.jpg&quot; -i &quot;&lt;integration-id&gt;&quot;
+
+# 5. Analyze
+postiz analytics:platform &lt;integration-id&gt; -d 30
+postiz analytics:post &lt;post-id&gt; -d 7
+
+# 6. Resolve (if analytics returns {&quot;missing&quot;: true})
+postiz posts:missing &lt;post-id&gt;
+postiz posts:connect &lt;post-id&gt; --release-id &quot;&lt;content-id&gt;&quot;
 </code></pre>
-<h2>Get the next available slot for a channel</h2>
-<pre><code class="language-bash">curl -X GET &quot;https://api.postiz.com/public/v1/find-slot/:id&quot; \
-  -H &quot;Authorization: $POSTIZ_API_KEY&quot;
+<hr>
+<h2>Essential Commands</h2>
+<h3>Setup</h3>
+<pre><code class="language-bash"># Required environment variable
+export POSTIZ_API_KEY=your_api_key_here
+
+# Optional custom API URL
+export POSTIZ_API_URL=https://custom-api-url.com
 </code></pre>
-<h2>Upload a new file (form-data)</h2>
-<pre><code class="language-bash">curl -X POST &quot;https://api.postiz.com/public/v1/upload&quot; \
-  -H &quot;Authorization: $POSTIZ_API_KEY&quot; \
-  -F &quot;file=@/path/to/your/file.png&quot;
+<h3>Integration Discovery</h3>
+<pre><code class="language-bash"># List all connected integrations
+postiz integrations:list
+
+# Get settings schema for specific integration
+postiz integrations:settings &lt;integration-id&gt;
+
+# Trigger integration tool to fetch dynamic data
+postiz integrations:trigger &lt;integration-id&gt; &lt;method-name&gt;
+postiz integrations:trigger &lt;integration-id&gt; &lt;method-name&gt; -d &#39;{&quot;param&quot;:&quot;value&quot;}&#39;
 </code></pre>
-<h2>Upload a new file from an existing URL</h2>
-<pre><code class="language-bash">curl -X POST &quot;https://api.postiz.com/public/v1/upload-from-url&quot; \
-  -H &quot;Authorization: $POSTIZ_API_KEY&quot; \
-  -H &quot;Content-Type: application/json&quot; \
-  -d &#39;{
-    &quot;url&quot;: &quot;https://example.com/image.png&quot;
-  }&#39;
+<h3>Creating Posts</h3>
+<pre><code class="language-bash"># Simple post (date is REQUIRED)
+postiz posts:create -c &quot;Content&quot; -s &quot;2024-12-31T12:00:00Z&quot; -i &quot;integration-id&quot;
+
+# Draft post
+postiz posts:create -c &quot;Content&quot; -s &quot;2024-12-31T12:00:00Z&quot; -t draft -i &quot;integration-id&quot;
+
+# Post with media
+postiz posts:create -c &quot;Content&quot; -m &quot;img1.jpg,img2.jpg&quot; -s &quot;2024-12-31T12:00:00Z&quot; -i &quot;integration-id&quot;
+
+# Post with comments (each with own media)
+postiz posts:create \
+  -c &quot;Main post&quot; -m &quot;main.jpg&quot; \
+  -c &quot;First comment&quot; -m &quot;comment1.jpg&quot; \
+  -c &quot;Second comment&quot; -m &quot;comment2.jpg,comment3.jpg&quot; \
+  -s &quot;2024-12-31T12:00:00Z&quot; \
+  -i &quot;integration-id&quot;
+
+# Multi-platform post
+postiz posts:create -c &quot;Content&quot; -s &quot;2024-12-31T12:00:00Z&quot; -i &quot;twitter-id,linkedin-id,facebook-id&quot;
+
+# Platform-specific settings
+postiz posts:create \
+  -c &quot;Content&quot; \
+  -s &quot;2024-12-31T12:00:00Z&quot; \
+  --settings &#39;{&quot;subreddit&quot;:[{&quot;value&quot;:{&quot;subreddit&quot;:&quot;programming&quot;,&quot;title&quot;:&quot;My Post&quot;,&quot;type&quot;:&quot;text&quot;}}]}&#39; \
+  -i &quot;reddit-id&quot;
+
+# Complex post from JSON file
+postiz posts:create --json post.json
 </code></pre>
-<h2>Post list</h2>
-<pre><code class="language-bash">curl -X GET &quot;https://api.postiz.com/public/v1/posts?startDate=2024-12-14T08:18:54.274Z&amp;endDate=2024-12-14T08:18:54.274Z&amp;customer=optionalCustomerId&quot; \
-  -H &quot;Authorization: $POSTIZ_API_KEY&quot;
+<h3>Managing Posts</h3>
+<pre><code class="language-bash"># List posts (defaults to last 30 days to next 30 days)
+postiz posts:list
+
+# List posts in date range
+postiz posts:list --startDate &quot;2024-01-01T00:00:00Z&quot; --endDate &quot;2024-12-31T23:59:59Z&quot;
+
+# Delete post
+postiz posts:delete &lt;post-id&gt;
 </code></pre>
-<h2>Schedule a new post</h2>
-<p>Settings for different channels can be found in:
-<a href="https://docs.postiz.com/public-api/introduction">https://docs.postiz.com/public-api/introduction</a>
-On the bottom left menu</p>
-<pre><code class="language-bash">curl -X POST &quot;https://api.postiz.com/public/v1/posts&quot; \
-  -H &quot;Authorization: $POSTIZ_API_KEY&quot; \
-  -H &quot;Content-Type: application/json&quot; \
-  -d &#39;{
-  &quot;type&quot;: &quot;schedule&quot;,
-  &quot;date&quot;: &quot;2024-12-14T10:00:00.000Z&quot;,
-  &quot;shortLink&quot;: false,
-  &quot;tags&quot;: [],
+<h3>Analytics</h3>
+<pre><code class="language-bash"># Get platform analytics (default: last 7 days)
+postiz analytics:platform &lt;integration-id&gt;
+
+# Get platform analytics for last 30 days
+postiz analytics:platform &lt;integration-id&gt; -d 30
+
+# Get post analytics (default: last 7 days)
+postiz analytics:post &lt;post-id&gt;
+
+# Get post analytics for last 30 days
+postiz analytics:post &lt;post-id&gt; -d 30
+</code></pre>
+<p>Returns an array of metrics (e.g. Followers, Impressions, Likes, Comments) with daily data points and percentage change over the period.</p>
+<p><strong>⚠️ IMPORTANT: Missing Release ID Handling</strong></p>
+<p>If <code>analytics:post</code> returns <code>{&quot;missing&quot;: true}</code> instead of an analytics array, the post was published but the platform didn&#39;t return a usable post ID. You <strong>must</strong> resolve this before analytics will work:</p>
+<pre><code class="language-bash"># 1. analytics:post returns {&quot;missing&quot;: true}
+postiz analytics:post &lt;post-id&gt;
+
+# 2. Get available content from the provider
+postiz posts:missing &lt;post-id&gt;
+# Returns: [{&quot;id&quot;: &quot;7321456789012345678&quot;, &quot;url&quot;: &quot;https://...cover.jpg&quot;}, ...]
+
+# 3. Connect the correct content to the post
+postiz posts:connect &lt;post-id&gt; --release-id &quot;7321456789012345678&quot;
+
+# 4. Now analytics will work
+postiz analytics:post &lt;post-id&gt;
+</code></pre>
+<h3>Connecting Missing Posts</h3>
+<p>Some platforms (e.g. TikTok) don&#39;t return a post ID immediately after publishing. When this happens, the post&#39;s <code>releaseId</code> is set to <code>&quot;missing&quot;</code> and analytics are unavailable until resolved.</p>
+<pre><code class="language-bash"># List recent content from the provider for a post with missing release ID
+postiz posts:missing &lt;post-id&gt;
+
+# Connect a post to its published content
+postiz posts:connect &lt;post-id&gt; --release-id &quot;&lt;content-id&gt;&quot;
+</code></pre>
+<p>Returns an empty array if the provider doesn&#39;t support this feature or if the post doesn&#39;t have a missing release ID.</p>
+<h3>Media Upload</h3>
+<p><strong>⚠️ IMPORTANT:</strong> Always upload files to Postiz before using them in posts. Many platforms (TikTok, Instagram, YouTube) <strong>require verified URLs</strong> and will reject external links.</p>
+<pre><code class="language-bash"># Upload file and get URL
+postiz upload image.jpg
+
+# Supports: images (PNG, JPG, GIF, WEBP, SVG), videos (MP4, MOV, AVI, MKV, WEBM),
+# audio (MP3, WAV, OGG, AAC), documents (PDF, DOC, DOCX)
+
+# Workflow: Upload → Extract URL → Use in post
+VIDEO=$(postiz upload video.mp4)
+VIDEO_PATH=$(echo &quot;$VIDEO&quot; | jq -r &#39;.path&#39;)
+postiz posts:create -c &quot;Content&quot; -s &quot;2024-12-31T12:00:00Z&quot; -m &quot;$VIDEO_PATH&quot; -i &quot;tiktok-id&quot;
+</code></pre>
+<hr>
+<h2>Common Patterns</h2>
+<h3>Pattern 1: Discover &amp; Use Integration Tools</h3>
+<p><strong>Reddit - Get flairs for a subreddit:</strong></p>
+<pre><code class="language-bash"># Get Reddit integration ID
+REDDIT_ID=$(postiz integrations:list | jq -r &#39;.[] | select(.identifier==&quot;reddit&quot;) | .id&#39;)
+
+# Fetch available flairs
+FLAIRS=$(postiz integrations:trigger &quot;$REDDIT_ID&quot; getFlairs -d &#39;{&quot;subreddit&quot;:&quot;programming&quot;}&#39;)
+FLAIR_ID=$(echo &quot;$FLAIRS&quot; | jq -r &#39;.output[0].id&#39;)
+
+# Use in post
+postiz posts:create \
+  -c &quot;My post content&quot; \
+  -s &quot;2024-12-31T12:00:00Z&quot; \
+  --settings &quot;{\&quot;subreddit\&quot;:[{\&quot;value\&quot;:{\&quot;subreddit\&quot;:\&quot;programming\&quot;,\&quot;title\&quot;:\&quot;Post Title\&quot;,\&quot;type\&quot;:\&quot;text\&quot;,\&quot;is_flair_required\&quot;:true,\&quot;flair\&quot;:{\&quot;id\&quot;:\&quot;$FLAIR_ID\&quot;,\&quot;name\&quot;:\&quot;Discussion\&quot;}}}]}&quot; \
+  -i &quot;$REDDIT_ID&quot;
+</code></pre>
+<p><strong>YouTube - Get playlists:</strong></p>
+<pre><code class="language-bash">YOUTUBE_ID=$(postiz integrations:list | jq -r &#39;.[] | select(.identifier==&quot;youtube&quot;) | .id&#39;)
+PLAYLISTS=$(postiz integrations:trigger &quot;$YOUTUBE_ID&quot; getPlaylists)
+PLAYLIST_ID=$(echo &quot;$PLAYLISTS&quot; | jq -r &#39;.output[0].id&#39;)
+
+postiz posts:create \
+  -c &quot;Video description&quot; \
+  -s &quot;2024-12-31T12:00:00Z&quot; \
+  --settings &quot;{\&quot;title\&quot;:\&quot;My Video\&quot;,\&quot;type\&quot;:\&quot;public\&quot;,\&quot;playlistId\&quot;:\&quot;$PLAYLIST_ID\&quot;}&quot; \
+  -m &quot;video.mp4&quot; \
+  -i &quot;$YOUTUBE_ID&quot;
+</code></pre>
+<p><strong>LinkedIn - Post as company:</strong></p>
+<pre><code class="language-bash">LINKEDIN_ID=$(postiz integrations:list | jq -r &#39;.[] | select(.identifier==&quot;linkedin&quot;) | .id&#39;)
+COMPANIES=$(postiz integrations:trigger &quot;$LINKEDIN_ID&quot; getCompanies)
+COMPANY_ID=$(echo &quot;$COMPANIES&quot; | jq -r &#39;.output[0].id&#39;)
+
+postiz posts:create \
+  -c &quot;Company announcement&quot; \
+  -s &quot;2024-12-31T12:00:00Z&quot; \
+  --settings &quot;{\&quot;companyId\&quot;:\&quot;$COMPANY_ID\&quot;}&quot; \
+  -i &quot;$LINKEDIN_ID&quot;
+</code></pre>
+<h3>Pattern 2: Upload Media Before Posting</h3>
+<pre><code class="language-bash"># Upload multiple files
+VIDEO_RESULT=$(postiz upload video.mp4)
+VIDEO_PATH=$(echo &quot;$VIDEO_RESULT&quot; | jq -r &#39;.path&#39;)
+
+THUMB_RESULT=$(postiz upload thumbnail.jpg)
+THUMB_PATH=$(echo &quot;$THUMB_RESULT&quot; | jq -r &#39;.path&#39;)
+
+# Use in post
+postiz posts:create \
+  -c &quot;Check out my video!&quot; \
+  -s &quot;2024-12-31T12:00:00Z&quot; \
+  -m &quot;$VIDEO_PATH&quot; \
+  -i &quot;tiktok-id&quot;
+</code></pre>
+<h3>Pattern 3: Twitter Thread</h3>
+<pre><code class="language-bash">postiz posts:create \
+  -c &quot;🧵 Thread starter (1/4)&quot; -m &quot;intro.jpg&quot; \
+  -c &quot;Point one (2/4)&quot; -m &quot;point1.jpg&quot; \
+  -c &quot;Point two (3/4)&quot; -m &quot;point2.jpg&quot; \
+  -c &quot;Conclusion (4/4)&quot; -m &quot;outro.jpg&quot; \
+  -s &quot;2024-12-31T12:00:00Z&quot; \
+  -d 2000 \
+  -i &quot;twitter-id&quot;
+</code></pre>
+<h3>Pattern 4: Multi-Platform Campaign</h3>
+<pre><code class="language-bash"># Create JSON file with platform-specific content
+cat &gt; campaign.json &lt;&lt; &#39;EOF&#39;
+{
+  &quot;integrations&quot;: [&quot;twitter-123&quot;, &quot;linkedin-456&quot;, &quot;facebook-789&quot;],
   &quot;posts&quot;: [
     {
-      &quot;integration&quot;: {
-        &quot;id&quot;: &quot;your-x-integration-id&quot;
-      },
-      &quot;value&quot;: [
+      &quot;provider&quot;: &quot;twitter&quot;,
+      &quot;post&quot;: [
         {
-          &quot;content&quot;: &quot;Hello from the Postiz API! 🚀&quot;,
-          &quot;image&quot;: [{ &quot;id&quot;: &quot;img-123&quot;, &quot;path&quot;: &quot;https://uploads.postiz.com/photo.jpg&quot; }]
+          &quot;content&quot;: &quot;Short tweet version #tech&quot;,
+          &quot;image&quot;: [&quot;twitter-image.jpg&quot;]
         }
-      ],
+      ]
+    },
+    {
+      &quot;provider&quot;: &quot;linkedin&quot;,
+      &quot;post&quot;: [
+        {
+          &quot;content&quot;: &quot;Professional LinkedIn version with more context...&quot;,
+          &quot;image&quot;: [&quot;linkedin-image.jpg&quot;]
+        }
+      ]
+    }
+  ]
+}
+EOF
+
+postiz posts:create --json campaign.json
+</code></pre>
+<h3>Pattern 5: Validate Settings Before Posting</h3>
+<pre><code class="language-bash">#!/bin/bash
+
+INTEGRATION_ID=&quot;twitter-123&quot;
+CONTENT=&quot;Your post content here&quot;
+
+# Get integration settings and extract max length
+SETTINGS_JSON=$(postiz integrations:settings &quot;$INTEGRATION_ID&quot;)
+MAX_LENGTH=$(echo &quot;$SETTINGS_JSON&quot; | jq &#39;.output.maxLength&#39;)
+
+# Check character limit and truncate if needed
+if [ ${#CONTENT} -gt &quot;$MAX_LENGTH&quot; ]; then
+  echo &quot;Content exceeds $MAX_LENGTH chars, truncating...&quot;
+  CONTENT=&quot;${CONTENT:0:$((MAX_LENGTH - 3))}...&quot;
+fi
+
+# Create post with settings
+postiz posts:create \
+  -c &quot;$CONTENT&quot; \
+  -s &quot;2024-12-31T12:00:00Z&quot; \
+  --settings &#39;{&quot;key&quot;: &quot;value&quot;}&#39; \
+  -i &quot;$INTEGRATION_ID&quot;
+</code></pre>
+<h3>Pattern 6: Batch Scheduling</h3>
+<pre><code class="language-bash">#!/bin/bash
+
+# Schedule posts for the week
+DATES=(
+  &quot;2024-02-14T09:00:00Z&quot;
+  &quot;2024-02-15T09:00:00Z&quot;
+  &quot;2024-02-16T09:00:00Z&quot;
+)
+
+CONTENT=(
+  &quot;Monday motivation 💪&quot;
+  &quot;Tuesday tips 💡&quot;
+  &quot;Wednesday wisdom 🧠&quot;
+)
+
+for i in &quot;${!DATES[@]}&quot;; do
+  postiz posts:create \
+    -c &quot;${CONTENT[$i]}&quot; \
+    -s &quot;${DATES[$i]}&quot; \
+    -i &quot;twitter-id&quot; \
+    -m &quot;post-${i}.jpg&quot;
+  echo &quot;Scheduled: ${CONTENT[$i]} for ${DATES[$i]}&quot;
+done
+</code></pre>
+<h3>Pattern 7: Error Handling &amp; Retry</h3>
+<pre><code class="language-bash">#!/bin/bash
+
+CONTENT=&quot;Your post content&quot;
+INTEGRATION_ID=&quot;twitter-123&quot;
+DATE=&quot;2024-12-31T12:00:00Z&quot;
+MAX_RETRIES=3
+
+for attempt in $(seq 1 $MAX_RETRIES); do
+  if postiz posts:create -c &quot;$CONTENT&quot; -s &quot;$DATE&quot; -i &quot;$INTEGRATION_ID&quot;; then
+    echo &quot;Post created successfully&quot;
+    break
+  else
+    echo &quot;Attempt $attempt failed&quot;
+    if [ &quot;$attempt&quot; -lt &quot;$MAX_RETRIES&quot; ]; then
+      DELAY=$((2 ** attempt))
+      echo &quot;Retrying in ${DELAY}s...&quot;
+      sleep &quot;$DELAY&quot;
+    else
+      echo &quot;Failed after $MAX_RETRIES attempts&quot;
+      exit 1
+    fi
+  fi
+done
+</code></pre>
+<hr>
+<h2>Technical Concepts</h2>
+<h3>Integration Tools Workflow</h3>
+<p>Many integrations require dynamic data (IDs, tags, playlists) that can&#39;t be hardcoded. The tools workflow enables discovery and usage:</p>
+<ol>
+<li><strong>Check available tools</strong> - <code>integrations:settings</code> returns a <code>tools</code> array</li>
+<li><strong>Review tool schema</strong> - Each tool has <code>methodName</code>, <code>description</code>, and <code>dataSchema</code></li>
+<li><strong>Trigger tool</strong> - Call <code>integrations:trigger</code> with required parameters</li>
+<li><strong>Use output</strong> - Tool returns data to use in post settings</li>
+</ol>
+<p><strong>Example tools by platform:</strong></p>
+<ul>
+<li><strong>Reddit</strong>: <code>getFlairs</code>, <code>searchSubreddits</code>, <code>getSubreddits</code></li>
+<li><strong>YouTube</strong>: <code>getPlaylists</code>, <code>getCategories</code>, <code>getChannels</code></li>
+<li><strong>LinkedIn</strong>: <code>getCompanies</code>, <code>getOrganizations</code></li>
+<li><strong>Twitter/X</strong>: <code>getListsowned</code>, <code>getCommunities</code></li>
+<li><strong>Pinterest</strong>: <code>getBoards</code>, <code>getBoardSections</code></li>
+</ul>
+<h3>Provider Settings Structure</h3>
+<p>Platform-specific settings use a discriminator pattern with <code>__type</code> field:</p>
+<pre><code class="language-json">{
+  &quot;posts&quot;: [
+    {
+      &quot;provider&quot;: &quot;reddit&quot;,
+      &quot;post&quot;: [{ &quot;content&quot;: &quot;...&quot;, &quot;image&quot;: [...] }],
       &quot;settings&quot;: {
-        &quot;__type&quot;: &quot;provider name&quot;,
-        rest of the settings
+        &quot;__type&quot;: &quot;reddit&quot;,
+        &quot;subreddit&quot;: [{
+          &quot;value&quot;: {
+            &quot;subreddit&quot;: &quot;programming&quot;,
+            &quot;title&quot;: &quot;Post Title&quot;,
+            &quot;type&quot;: &quot;text&quot;,
+            &quot;url&quot;: &quot;&quot;,
+            &quot;is_flair_required&quot;: false
+          }
+        }]
       }
     }
   ]
-}&#39;
+}
 </code></pre>
-<h2>Delete a post</h2>
-<pre><code class="language-bash">curl -X DELETE &quot;https://api.postiz.com/public/v1/posts/:id&quot; \
-  -H &quot;Authorization: $POSTIZ_API_KEY&quot;
+<p>Pass settings directly:</p>
+<pre><code class="language-bash">postiz posts:create -c &quot;Content&quot; -s &quot;2024-12-31T12:00:00Z&quot; --settings &#39;{&quot;subreddit&quot;:[...]}&#39; -i &quot;reddit-id&quot;
+# Backend automatically adds &quot;__type&quot; based on integration ID
+</code></pre>
+<h3>Comments and Threading</h3>
+<p>Posts can have comments (threads on Twitter/X, replies elsewhere). Each comment can have its own media:</p>
+<pre><code class="language-bash"># Using multiple -c and -m flags
+postiz posts:create \
+  -c &quot;Main post&quot; -m &quot;image1.jpg,image2.jpg&quot; \
+  -c &quot;Comment 1&quot; -m &quot;comment-img.jpg&quot; \
+  -c &quot;Comment 2&quot; -m &quot;another.jpg,more.jpg&quot; \
+  -s &quot;2024-12-31T12:00:00Z&quot; \
+  -d 5000 \  # Delay between comments in ms
+  -i &quot;integration-id&quot;
+</code></pre>
+<p>Internally creates:</p>
+<pre><code class="language-json">{
+  &quot;posts&quot;: [{
+    &quot;value&quot;: [
+      { &quot;content&quot;: &quot;Main post&quot;, &quot;image&quot;: [&quot;image1.jpg&quot;, &quot;image2.jpg&quot;] },
+      { &quot;content&quot;: &quot;Comment 1&quot;, &quot;image&quot;: [&quot;comment-img.jpg&quot;], &quot;delay&quot;: 5000 },
+      { &quot;content&quot;: &quot;Comment 2&quot;, &quot;image&quot;: [&quot;another.jpg&quot;, &quot;more.jpg&quot;], &quot;delay&quot;: 5000 }
+    ]
+  }]
+}
+</code></pre>
+<h3>Date Handling</h3>
+<p>All dates use ISO 8601 format:</p>
+<ul>
+<li>Schedule posts: <code>-s &quot;2024-12-31T12:00:00Z&quot;</code></li>
+<li>List posts: <code>--startDate &quot;2024-01-01T00:00:00Z&quot; --endDate &quot;2024-12-31T23:59:59Z&quot;</code></li>
+<li>Defaults: <code>posts:list</code> uses 30 days ago to 30 days from now</li>
+</ul>
+<h3>Media Upload Response</h3>
+<p>Upload returns JSON with path and metadata:</p>
+<pre><code class="language-json">{
+  &quot;path&quot;: &quot;https://cdn.postiz.com/uploads/abc123.jpg&quot;,
+  &quot;size&quot;: 123456,
+  &quot;type&quot;: &quot;image/jpeg&quot;
+}
+</code></pre>
+<p>Extract path for use in posts:</p>
+<pre><code class="language-bash">RESULT=$(postiz upload image.jpg)
+PATH=$(echo &quot;$RESULT&quot; | jq -r &#39;.path&#39;)
+postiz posts:create -c &quot;Content&quot; -s &quot;2024-12-31T12:00:00Z&quot; -m &quot;$PATH&quot; -i &quot;integration-id&quot;
+</code></pre>
+<h3>JSON Mode vs CLI Flags</h3>
+<p><strong>CLI flags</strong> - Quick posts:</p>
+<pre><code class="language-bash">postiz posts:create -c &quot;Content&quot; -m &quot;img.jpg&quot; -i &quot;twitter-id&quot;
+</code></pre>
+<p><strong>JSON mode</strong> - Complex posts with multiple platforms and settings:</p>
+<pre><code class="language-bash">postiz posts:create --json post.json
+</code></pre>
+<p>JSON mode supports:</p>
+<ul>
+<li>Multiple platforms with different content per platform</li>
+<li>Complex provider-specific settings</li>
+<li>Scheduled posts</li>
+<li>Posts with many comments</li>
+<li>Custom delay between comments</li>
+</ul>
+<hr>
+<h2>Platform-Specific Examples</h2>
+<h3>Reddit</h3>
+<pre><code class="language-bash">postiz posts:create \
+  -c &quot;Post content&quot; \
+  -s &quot;2024-12-31T12:00:00Z&quot; \
+  --settings &#39;{&quot;subreddit&quot;:[{&quot;value&quot;:{&quot;subreddit&quot;:&quot;programming&quot;,&quot;title&quot;:&quot;My Title&quot;,&quot;type&quot;:&quot;text&quot;,&quot;url&quot;:&quot;&quot;,&quot;is_flair_required&quot;:false}}]}&#39; \
+  -i &quot;reddit-id&quot;
+</code></pre>
+<h3>YouTube</h3>
+<pre><code class="language-bash"># Upload video first (required!)
+VIDEO=$(postiz upload video.mp4)
+VIDEO_URL=$(echo &quot;$VIDEO&quot; | jq -r &#39;.path&#39;)
+
+postiz posts:create \
+  -c &quot;Video description&quot; \
+  -s &quot;2024-12-31T12:00:00Z&quot; \
+  --settings &#39;{&quot;title&quot;:&quot;Video Title&quot;,&quot;type&quot;:&quot;public&quot;,&quot;tags&quot;:[{&quot;value&quot;:&quot;tech&quot;,&quot;label&quot;:&quot;Tech&quot;}]}&#39; \
+  -m &quot;$VIDEO_URL&quot; \
+  -i &quot;youtube-id&quot;
+</code></pre>
+<h3>TikTok</h3>
+<pre><code class="language-bash"># Upload video first (TikTok only accepts verified URLs!)
+VIDEO=$(postiz upload video.mp4)
+VIDEO_URL=$(echo &quot;$VIDEO&quot; | jq -r &#39;.path&#39;)
+
+postiz posts:create \
+  -c &quot;Video caption #fyp&quot; \
+  -s &quot;2024-12-31T12:00:00Z&quot; \
+  --settings &#39;{&quot;privacy&quot;:&quot;PUBLIC_TO_EVERYONE&quot;,&quot;duet&quot;:true,&quot;stitch&quot;:true}&#39; \
+  -m &quot;$VIDEO_URL&quot; \
+  -i &quot;tiktok-id&quot;
+</code></pre>
+<h3>X (Twitter)</h3>
+<pre><code class="language-bash">postiz posts:create \
+  -c &quot;Tweet content&quot; \
+  -s &quot;2024-12-31T12:00:00Z&quot; \
+  --settings &#39;{&quot;who_can_reply_post&quot;:&quot;everyone&quot;}&#39; \
+  -i &quot;twitter-id&quot;
+</code></pre>
+<h3>LinkedIn</h3>
+<pre><code class="language-bash"># Personal post
+postiz posts:create -c &quot;Content&quot; -s &quot;2024-12-31T12:00:00Z&quot; -i &quot;linkedin-id&quot;
+
+# Company post
+postiz posts:create \
+  -c &quot;Content&quot; \
+  -s &quot;2024-12-31T12:00:00Z&quot; \
+  --settings &#39;{&quot;companyId&quot;:&quot;company-123&quot;}&#39; \
+  -i &quot;linkedin-id&quot;
+</code></pre>
+<h3>Instagram</h3>
+<pre><code class="language-bash"># Upload image first (Instagram requires verified URLs!)
+IMAGE=$(postiz upload image.jpg)
+IMAGE_URL=$(echo &quot;$IMAGE&quot; | jq -r &#39;.path&#39;)
+
+# Regular post
+postiz posts:create \
+  -c &quot;Caption #hashtag&quot; \
+  -s &quot;2024-12-31T12:00:00Z&quot; \
+  --settings &#39;{&quot;post_type&quot;:&quot;post&quot;}&#39; \
+  -m &quot;$IMAGE_URL&quot; \
+  -i &quot;instagram-id&quot;
+
+# Story
+STORY=$(postiz upload story.jpg)
+STORY_URL=$(echo &quot;$STORY&quot; | jq -r &#39;.path&#39;)
+
+postiz posts:create \
+  -c &quot;&quot; \
+  -s &quot;2024-12-31T12:00:00Z&quot; \
+  --settings &#39;{&quot;post_type&quot;:&quot;story&quot;}&#39; \
+  -m &quot;$STORY_URL&quot; \
+  -i &quot;instagram-id&quot;
+</code></pre>
+<hr>
+<h2>Supporting Resources</h2>
+<p><strong>Deep-dive documentation:</strong></p>
+<ul>
+<li><a href="https://github.com/openclaw/skills/blob/main/skills/nevo-david/postiz/./HOW_TO_RUN.md">HOW_TO_RUN.md</a> - Installation and setup methods</li>
+<li><a href="https://github.com/openclaw/skills/blob/main/skills/nevo-david/postiz/./COMMAND_LINE_GUIDE.md">COMMAND_LINE_GUIDE.md</a> - Complete command syntax reference</li>
+<li><a href="https://github.com/openclaw/skills/blob/main/skills/nevo-david/postiz/./PROVIDER_SETTINGS.md">PROVIDER_SETTINGS.md</a> - All 28+ platform settings schemas</li>
+<li><a href="https://github.com/openclaw/skills/blob/main/skills/nevo-david/postiz/./INTEGRATION_TOOLS_WORKFLOW.md">INTEGRATION_TOOLS_WORKFLOW.md</a> - Complete tools workflow guide</li>
+<li><a href="https://github.com/openclaw/skills/blob/main/skills/nevo-david/postiz/./INTEGRATION_SETTINGS_DISCOVERY.md">INTEGRATION_SETTINGS_DISCOVERY.md</a> - Settings discovery workflow</li>
+<li><a href="https://github.com/openclaw/skills/blob/main/skills/nevo-david/postiz/./SUPPORTED_FILE_TYPES.md">SUPPORTED_FILE_TYPES.md</a> - All supported media formats</li>
+<li><a href="https://github.com/openclaw/skills/blob/main/skills/nevo-david/postiz/./PROJECT_STRUCTURE.md">PROJECT_STRUCTURE.md</a> - Code architecture</li>
+<li><a href="https://github.com/openclaw/skills/blob/main/skills/nevo-david/postiz/./PUBLISHING.md">PUBLISHING.md</a> - npm publishing guide</li>
+</ul>
+<p><strong>Ready-to-use examples:</strong></p>
+<ul>
+<li><a href="https://github.com/openclaw/skills/blob/main/skills/nevo-david/postiz/./examples/EXAMPLES.md">examples/EXAMPLES.md</a> - Comprehensive examples</li>
+<li><a href="./examples/basic-usage.sh">examples/basic-usage.sh</a> - Shell script basics</li>
+<li><a href="./examples/post-with-comments.json">examples/post-with-comments.json</a> - Threading example</li>
+<li><a href="./examples/multi-platform-with-settings.json">examples/multi-platform-with-settings.json</a> - Campaign example</li>
+<li><a href="./examples/youtube-video.json">examples/youtube-video.json</a> - YouTube with tags</li>
+<li><a href="./examples/reddit-post.json">examples/reddit-post.json</a> - Reddit with subreddit</li>
+<li><a href="./examples/tiktok-video.json">examples/tiktok-video.json</a> - TikTok with privacy</li>
+</ul>
+<hr>
+<h2>Common Gotchas</h2>
+<ol>
+<li><strong>API Key not set</strong> - Always <code>export POSTIZ_API_KEY=key</code> before using CLI</li>
+<li><strong>Invalid integration ID</strong> - Run <code>integrations:list</code> to get current IDs</li>
+<li><strong>Settings schema mismatch</strong> - Check <code>integrations:settings</code> for required fields</li>
+<li><strong>Media MUST be uploaded to Postiz first</strong> - ⚠️ <strong>CRITICAL:</strong> TikTok, Instagram, YouTube, and many platforms only accept verified URLs. Upload files via <code>postiz upload</code> first, then use the returned URL in <code>-m</code>. External URLs will be rejected!</li>
+<li><strong>JSON escaping in shell</strong> - Use single quotes for JSON: <code>--settings &#39;{...}&#39;</code></li>
+<li><strong>Date format</strong> - Must be ISO 8601: <code>&quot;2024-12-31T12:00:00Z&quot;</code> and is REQUIRED</li>
+<li><strong>Tool not found</strong> - Check available tools in <code>integrations:settings</code> output</li>
+<li><strong>Character limits</strong> - Each platform has different limits, check <code>maxLength</code> in settings</li>
+<li><strong>Required settings</strong> - Some platforms require specific settings (Reddit needs title, YouTube needs title)</li>
+<li><strong>Media MIME types</strong> - CLI auto-detects from file extension, ensure correct extension</li>
+<li><strong>Analytics returns <code>{&quot;missing&quot;: true}</code></strong> - The post was published but the platform didn&#39;t return a post ID. Run <code>posts:missing &lt;post-id&gt;</code> to get available content, then <code>posts:connect &lt;post-id&gt; --release-id &quot;&lt;id&gt;&quot;</code> to link it. Analytics will work after connecting.</li>
+</ol>
+<hr>
+<h2>Quick Reference</h2>
+<pre><code class="language-bash"># Environment
+export POSTIZ_API_KEY=key
+
+# Discovery
+postiz integrations:list                           # Get integration IDs
+postiz integrations:settings &lt;id&gt;                  # Get settings schema
+postiz integrations:trigger &lt;id&gt; &lt;method&gt; -d &#39;{}&#39;  # Fetch dynamic data
+
+# Posting (date is REQUIRED)
+postiz posts:create -c &quot;text&quot; -s &quot;2024-12-31T12:00:00Z&quot; -i &quot;id&quot;                  # Simple
+postiz posts:create -c &quot;text&quot; -s &quot;2024-12-31T12:00:00Z&quot; -t draft -i &quot;id&quot;        # Draft
+postiz posts:create -c &quot;text&quot; -m &quot;img.jpg&quot; -s &quot;2024-12-31T12:00:00Z&quot; -i &quot;id&quot;    # With media
+postiz posts:create -c &quot;main&quot; -c &quot;comment&quot; -s &quot;2024-12-31T12:00:00Z&quot; -i &quot;id&quot;    # With comment
+postiz posts:create -c &quot;text&quot; -s &quot;2024-12-31T12:00:00Z&quot; --settings &#39;{}&#39; -i &quot;id&quot; # Platform-specific
+postiz posts:create --json file.json                                             # Complex
+
+# Management
+postiz posts:list                                  # List posts
+postiz posts:delete &lt;id&gt;                          # Delete post
+postiz upload &lt;file&gt;                              # Upload media
+
+# Analytics
+postiz analytics:platform &lt;id&gt;                    # Platform analytics (7 days)
+postiz analytics:platform &lt;id&gt; -d 30             # Platform analytics (30 days)
+postiz analytics:post &lt;id&gt;                        # Post analytics (7 days)
+postiz analytics:post &lt;id&gt; -d 30                 # Post analytics (30 days)
+# If analytics:post returns {&quot;missing&quot;: true}, resolve it:
+postiz posts:missing &lt;id&gt;                         # List provider content
+postiz posts:connect &lt;id&gt; --release-id &quot;&lt;rid&gt;&quot;    # Connect content to post
+
+# Help
+postiz --help                                     # Show help
+postiz posts:create --help                        # Command help
 </code></pre>
 
                 </div>
@@ -149,7 +667,7 @@ On the bottom left menu</p>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/nevo-david/postiz/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/blob/main/skills/nevo-david/postiz/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
@@ -157,9 +675,9 @@ On the bottom left menu</p>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/nevo-david/postiz/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/nevo-david/postiz/SKILL.md" download class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  Download SKILL.md
+                  Download Source
                 </a>
                 <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>

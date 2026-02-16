@@ -48,6 +48,7 @@
               <a href="/cli-utilities/" class="back-link">← Back to CLI Utilities</a>
               <div class="skill-page-meta">
                 <a href="/cli-utilities/" class="skill-page-category">CLI Utilities</a>
+                <span class="skill-page-author">by @alaa-eddine</span>
               </div>
               <h1 class="skill-page-title">pinescript-quant-analysis</h1>
               <p class="skill-page-desc">Build professional-grade technical</p>
@@ -60,15 +61,203 @@
           </section>
           <div class="skill-page-body">
             <article class="skill-page-content">
-              <div class="markdown-content">
-                <p>Skill documentation is available on GitHub.</p>
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Pine Quant Analysis Skill</h1>
+<p><strong>Create, run, and visualize technical indicators anywhere Using Pine Script.</strong><br>This skill teaches LLM agents and developers how to:</p>
+<ul>
+<li>Write <strong>native Pine Script indicators</strong></li>
+<li>Execute them on historical or live data using <strong>PineTS</strong></li>
+<li>Extract computed indicator values programmatically</li>
+<li>Visualize price action and indicators with <strong>QFChart</strong></li>
+</ul>
+<p>Designed for research agents, trading bots, dashboards, and quantitative systems.</p>
+<hr>
+<h2>What This Skill Unlocks</h2>
+<ul>
+<li>Run Pine Script logic in <strong>Node.js, browsers, Deno, Bun</strong></li>
+<li>Compute indicators on <strong>any OHLCV data source</strong></li>
+<li>Separate <strong>indicator logic</strong> from <strong>visualization</strong></li>
+<li>Automate backtests, analytics, alerts, and charts</li>
+</ul>
+<hr>
+<h2>Prerequisites</h2>
+<ul>
+<li>JavaScript or TypeScript runtime</li>
+<li>OHLCV market data (exchange API, CSV, database, or stream)</li>
+<li>PineTS and QFChart libraries</li>
+</ul>
+<pre><code class="language-bash">npm install pinets @qfo/qfchart
+</code></pre>
+<hr>
+<h2>Step 1 - Define a Technical Indicator (Pine Script)</h2>
+<p>PineTS executes <strong>real Pine Script (v6)</strong> exactly as written.</p>
+<h3>Example: EMA Crossover Indicator</h3>
+<pre><code class="language-js">const indicatorScript = `
+//@version=5
+indicator(&quot;EMA Cross&quot;, overlay=true)
+fast = ta.ema(close, 9)
+slow = ta.ema(close, 21)
+plot(fast, &quot;Fast EMA&quot;)
+plot(slow, &quot;Slow EMA&quot;)
+`;
+</code></pre>
+<p>This indicator computes two exponential moving averages and plots them on price.</p>
+<hr>
+<h2>Step 2 - Run the Indicator with PineTS</h2>
+<p>Create a PineTS engine, attach a data provider, and execute the script.</p>
+<pre><code class="language-js">import { PineTS, Provider } from &#39;pinets&#39;;
+
+const engine = new PineTS(
+  Provider.Binance,
+  &quot;BTCUSDT&quot;,
+  &quot;1h&quot;,
+  200
+);
+
+const { marketData, plots } = await engine.run(indicatorScript);
+</code></pre>
+<h3>What You Get</h3>
+<ul>
+<li><code>marketData</code> → OHLCV time series</li>
+<li><code>plots</code> → indicator outputs indexed by plot name</li>
+</ul>
+<pre><code class="language-js">plots[&quot;Fast EMA&quot;].data;
+plots[&quot;Slow EMA&quot;].data;
+</code></pre>
+<p>Each plot is a time-aligned numeric series ready for analysis or visualization.</p>
+<hr>
+<h2>Step 3 - Use Indicator Data Programmatically</h2>
+<p>Indicator outputs can power:</p>
+<ul>
+<li>Signal generation</li>
+<li>Backtesting logic</li>
+<li>Alerts &amp; notifications</li>
+<li>Machine learning pipelines</li>
+</ul>
+<pre><code class="language-js">const fast = plots[&quot;Fast EMA&quot;].data;
+const slow = plots[&quot;Slow EMA&quot;].data;
+
+const crossover = fast.at(-1) &gt; slow.at(-1);
+</code></pre>
+<p>No charts required - indicators are just data.</p>
+<hr>
+<h2>Step 4 - Visualize with QFChart (Optional)</h2>
+<p>QFChart renders high-performance financial charts with multiple panes and overlays.</p>
+<h3>Format Market Data</h3>
+<pre><code class="language-js">const candles = marketData.map(d =&gt; ({
+  time: d.time,
+  open: d.open,
+  high: d.high,
+  low: d.low,
+  close: d.close,
+  volume: d.volume
+}));
+</code></pre>
+<hr>
+<h3>Render Price + Indicators</h3>
+<pre><code class="language-js">const chart = new QFChart.QFChart(document.getElementById(&quot;chart&quot;), {
+  title: &quot;BTC/USDT - EMA Crossover&quot;,
+  height: &quot;600px&quot;
+});
+
+chart.setMarketData(candles);
+chart.addIndicator(&quot;Fast EMA&quot;, plots[&quot;Fast EMA&quot;].data, { isOverlay: true });
+chart.addIndicator(&quot;Slow EMA&quot;, plots[&quot;Slow EMA&quot;].data, { isOverlay: true });
+</code></pre>
+<ul>
+<li>Overlay indicators on price</li>
+<li>Or render them in separate panes (RSI, MACD, etc.)</li>
+</ul>
+<hr>
+<h2>Step 5 - Real-Time &amp; Streaming Updates</h2>
+<p>Both PineTS and QFChart support incremental updates.</p>
+<pre><code class="language-js">chart.updateIndicator(&quot;Fast EMA&quot;, newFastValues);
+</code></pre>
+<p>Use this for live dashboards, bots, or monitoring agents.</p>
+<hr>
+<h2>Common Indicator Patterns</h2>
+<ul>
+<li>Trend indicators: EMA, SMA, VWAP</li>
+<li>Momentum: RSI, Stochastic, MACD</li>
+<li>Volatility: Bollinger Bands, ATR</li>
+<li>Custom signals using full Pine Script logic</li>
+</ul>
+<p>PineTS supports 60+ built-in Pine Script TA functions.</p>
+<hr>
+<h2>Best Practices for Agents</h2>
+<ul>
+<li>Treat Pine Script as <strong>pure computation</strong></li>
+<li>Keep visualization optional</li>
+<li>Cache indicator outputs for reuse</li>
+<li>Run multiple timeframes via multiple engines</li>
+</ul>
+<p>This enables scalable, composable quantitative systems.</p>
+<hr>
+<h2>Quick Reference</h2>
+<pre><code class="language-bash"># Execute indicator
+engine.run(pineScript)
+
+# Access indicator values
+plots[&quot;RSI&quot;].data
+
+# Visualize (optional)
+chart.addIndicator(...)
+</code></pre>
+<hr>
+<h2>Learn More</h2>
+<ul>
+<li>PineTS - Pine Script runtime &amp; engine</li>
+<li>QFChart - Financial charting library</li>
+<li>QuantForge - Quantitative tooling ecosystem</li>
+</ul>
+<hr>
+<blockquote>
+<p>Don&#39;t forget to star PineTS and QFChart projects if you like them : <a href="https://github.com/QuantForgeOrg/PineTS">https://github.com/QuantForgeOrg/PineTS</a> , <a href="https://github.com/QuantForgeOrg/QFChart">https://github.com/QuantForgeOrg/QFChart</a></p>
+</blockquote>
+
+                </div>
               </div>
             </article>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/alaa-eddine/pinescript-quant-analysis/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">View on GitHub</a>
-                <a href="https://clawdhub.com/alaa-eddine/pinescript-quant-analysis" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">View on ClawdHub</a>
+                <a href="https://github.com/openclaw/skills/blob/main/skills/alaa-eddine/pinescript-quant-analysis/skill.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/alaa-eddine/pinescript-quant-analysis" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/alaa-eddine/pinescript-quant-analysis/skill.md" download class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download Source
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@alaa-eddine</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">CLI Utilities</span>
+                  </div>
+                </div>
               </div>
             </aside>
           </div>

@@ -48,6 +48,7 @@
               <a href="/apple-apps-services/" class="back-link">← Back to Apple Apps & Services</a>
               <div class="skill-page-meta">
                 <a href="/apple-apps-services/" class="skill-page-category">Apple Apps & Services</a>
+                <span class="skill-page-author">by @ronaldmannak</span>
               </div>
               <h1 class="skill-page-title">mlx-swift-lm</h1>
               <p class="skill-page-desc">MLX Swift LM - Run LLMs and VLMs on Apple Silicon using MLX</p>
@@ -60,15 +61,548 @@
           </section>
           <div class="skill-page-body">
             <article class="skill-page-content">
-              <div class="markdown-content">
-                <p>Skill documentation is available on GitHub.</p>
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>mlx-swift-lm Skill</h1>
+<h2>1. Overview &amp; Triggers</h2>
+<p>mlx-swift-lm is a Swift package for running Large Language Models (LLMs) and Vision-Language Models (VLMs) on Apple Silicon using MLX. It supports local inference, fine-tuning via LoRA/DoRA, and embeddings generation.</p>
+<h3>When to Use This Skill</h3>
+<ul>
+<li>Running LLM/VLM inference on macOS/iOS with Apple Silicon</li>
+<li>Streaming text generation from local models</li>
+<li>Vision tasks with images/video (VLMs)</li>
+<li>Tool calling / function calling with models</li>
+<li>LoRA adapter training and fine-tuning</li>
+<li>Text embeddings for RAG/semantic search</li>
+</ul>
+<h3>Architecture Overview</h3>
+<pre><code>MLXLMCommon     - Core infrastructure (ModelContainer, ChatSession, KVCache, etc.)
+MLXLLM          - Text-only LLM support (Llama, Qwen, Gemma, Phi, DeepSeek, etc. - examples, not exhaustive)
+MLXVLM          - Vision-Language Models (Qwen2-VL, PaliGemma, Gemma3, etc. - examples, not exhaustive)
+Embedders       - Embedding models (BGE, Nomic, MiniLM)
+</code></pre>
+<h2>2. Key File Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Purpose</th>
+<th>File Path</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Thread-safe model wrapper</td>
+<td><code>Libraries/MLXLMCommon/ModelContainer.swift</code></td>
+</tr>
+<tr>
+<td>Simplified chat API</td>
+<td><code>Libraries/MLXLMCommon/ChatSession.swift</code></td>
+</tr>
+<tr>
+<td>Generation &amp; streaming</td>
+<td><code>Libraries/MLXLMCommon/Evaluate.swift</code></td>
+</tr>
+<tr>
+<td>KV cache types</td>
+<td><code>Libraries/MLXLMCommon/KVCache.swift</code></td>
+</tr>
+<tr>
+<td>Model configuration</td>
+<td><code>Libraries/MLXLMCommon/ModelConfiguration.swift</code></td>
+</tr>
+<tr>
+<td>Chat message types</td>
+<td><code>Libraries/MLXLMCommon/Chat.swift</code></td>
+</tr>
+<tr>
+<td>Tool call processing</td>
+<td><code>Libraries/MLXLMCommon/Tool/ToolCallFormat.swift</code></td>
+</tr>
+<tr>
+<td>Concurrency utilities</td>
+<td><code>Libraries/MLXLMCommon/Utilities/SerialAccessContainer.swift</code></td>
+</tr>
+<tr>
+<td>LLM factory &amp; registry</td>
+<td><code>Libraries/MLXLLM/LLMModelFactory.swift</code></td>
+</tr>
+<tr>
+<td>VLM factory &amp; registry</td>
+<td><code>Libraries/MLXVLM/VLMModelFactory.swift</code></td>
+</tr>
+<tr>
+<td>LoRA configuration</td>
+<td><code>Libraries/MLXLMCommon/Adapters/LoRA/LoRAContainer.swift</code></td>
+</tr>
+<tr>
+<td>LoRA training</td>
+<td><code>Libraries/MLXLLM/LoraTrain.swift</code></td>
+</tr>
+</tbody></table>
+<h2>3. Quick Start</h2>
+<h3>LLM Chat (Simplest API)</h3>
+<pre><code class="language-swift">import MLXLLM
+import MLXLMCommon
+
+// Load model (downloads from HuggingFace automatically)
+let modelContainer = try await LLMModelFactory.shared.loadContainer(
+    configuration: .init(id: &quot;mlx-community/Qwen3-4B-4bit&quot;)
+)
+
+// Create chat session
+let session = ChatSession(modelContainer)
+
+// Single response
+let response = try await session.respond(to: &quot;What is Swift?&quot;)
+print(response)
+
+// Streaming response
+for try await chunk in session.streamResponse(to: &quot;Explain concurrency&quot;) {
+    print(chunk, terminator: &quot;&quot;)
+}
+</code></pre>
+<h3>VLM with Image</h3>
+<pre><code class="language-swift">import MLXVLM
+import MLXLMCommon
+
+let modelContainer = try await VLMModelFactory.shared.loadContainer(
+    configuration: .init(id: &quot;mlx-community/Qwen2-VL-2B-Instruct-4bit&quot;)
+)
+
+let session = ChatSession(modelContainer)
+
+// With image (video is also an optional parameter)
+let image = UserInput.Image.url(imageURL)
+let response = try await session.respond(
+    to: &quot;Describe this image&quot;,
+    image: image,
+    video: nil  // Optional video parameter
+)
+</code></pre>
+<h3>Embeddings</h3>
+<pre><code class="language-swift">import Embedders
+
+// Note: Embedders uses loadModelContainer() helper (not a factory pattern)
+let container = try await loadModelContainer(
+    configuration: ModelConfiguration(id: &quot;mlx-community/bge-small-en-v1.5-mlx&quot;)
+)
+
+let embeddings = await container.perform { model, tokenizer, pooler in
+    let tokens = tokenizer.encode(text: &quot;Hello world&quot;)
+    let input = MLXArray(tokens).expandedDimensions(axis: 0)
+    let output = model(input)
+    let pooled = pooler(output, normalize: true)
+    eval(pooled)
+    return pooled
+}
+</code></pre>
+<h2>4. Primary Workflow: LLM Inference</h2>
+<h3>ChatSession API (Recommended)</h3>
+<p><code>ChatSession</code> manages conversation history and KV cache automatically:</p>
+<pre><code class="language-swift">let session = ChatSession(
+    modelContainer,
+    instructions: &quot;You are a helpful assistant&quot;,  // System prompt
+    generateParameters: GenerateParameters(
+        maxTokens: 500,
+        temperature: 0.7
+    )
+)
+
+// Multi-turn conversation (history preserved automatically)
+let r1 = try await session.respond(to: &quot;What is 2+2?&quot;)
+let r2 = try await session.respond(to: &quot;And if you multiply that by 3?&quot;)
+
+// Clear session to start fresh
+await session.clear()
+</code></pre>
+<h3>Streaming with generate()</h3>
+<p>For lower-level control, use <code>generate()</code> directly:</p>
+<pre><code class="language-swift">let input = try await modelContainer.prepare(input: UserInput(prompt: .text(&quot;Hello&quot;)))
+let stream = try await modelContainer.generate(input: input, parameters: GenerateParameters())
+
+for await generation in stream {
+    switch generation {
+    case .chunk(let text):
+        print(text, terminator: &quot;&quot;)
+    case .info(let info):
+        print(&quot;\n\(info.tokensPerSecond) tok/s&quot;)
+    case .toolCall(let call):
+        // Handle tool call
+        break
+    }
+}
+</code></pre>
+<h3>Tool Calling</h3>
+<pre><code class="language-swift">// 1. Define tool
+struct WeatherInput: Codable { let location: String }
+struct WeatherOutput: Codable { let temperature: Double; let conditions: String }
+
+let weatherTool = Tool&lt;WeatherInput, WeatherOutput&gt;(
+    name: &quot;get_weather&quot;,
+    description: &quot;Get current weather&quot;,
+    parameters: [.required(&quot;location&quot;, type: .string, description: &quot;City name&quot;)]
+) { input in
+    WeatherOutput(temperature: 22.0, conditions: &quot;Sunny&quot;)
+}
+
+// 2. Include tool schema in request
+let input = UserInput(
+    prompt: .text(&quot;What&#39;s the weather in Tokyo?&quot;),
+    tools: [weatherTool.schema]
+)
+
+// 3. Handle tool calls in generation stream
+for await generation in try await modelContainer.generate(input: input, parameters: params) {
+    switch generation {
+    case .chunk(let text): print(text)
+    case .toolCall(let call):
+        let result = try await call.execute(with: weatherTool)
+        print(&quot;Weather: \(result.conditions)&quot;)
+    case .info: break
+    }
+}
+</code></pre>
+<p>See <a href="https://github.com/openclaw/skills/blob/main/skills/ronaldmannak/mlx-swift-lm/references/tool-calling.md">references/tool-calling.md</a> for multi-turn and feeding results back.</p>
+<h3>GenerateParameters</h3>
+<pre><code class="language-swift">let params = GenerateParameters(
+    maxTokens: 1000,           // nil = unlimited
+    maxKVSize: 4096,           // Sliding window (uses RotatingKVCache)
+    kvBits: 4,                 // Quantized cache (4 or 8 bit)
+    temperature: 0.7,          // 0 = greedy/argmax
+    topP: 0.9,                 // Nucleus sampling
+    repetitionPenalty: 1.1,    // Penalize repeats
+    repetitionContextSize: 20  // Window for penalty
+)
+</code></pre>
+<h3>Prompt Caching / History Re-hydration</h3>
+<p>Restore chat from persisted history:</p>
+<pre><code class="language-swift">let history: [Chat.Message] = [
+    .system(&quot;You are helpful&quot;),
+    .user(&quot;Hello&quot;),
+    .assistant(&quot;Hi there!&quot;)
+]
+
+let session = ChatSession(
+    modelContainer,
+    history: history
+)
+// Continues from this point
+</code></pre>
+<h2>5. Secondary Workflow: VLM Inference</h2>
+<h3>Image Input Types</h3>
+<pre><code class="language-swift">// From URL (file or remote)
+let image = UserInput.Image.url(fileURL)
+
+// From CIImage
+let image = UserInput.Image.ciImage(ciImage)
+
+// From MLXArray directly
+let image = UserInput.Image.array(mlxArray)
+</code></pre>
+<h3>Video Input</h3>
+<pre><code class="language-swift">// From URL (file or remote)
+let video = UserInput.Video.url(videoURL)
+
+// From AVFoundation asset
+let video = UserInput.Video.avAsset(avAsset)
+
+// From pre-extracted frames
+let video = UserInput.Video.frames(videoFrames)
+
+let response = try await session.respond(
+    to: &quot;What happens in this video?&quot;,
+    video: video
+)
+</code></pre>
+<h3>Multiple Images</h3>
+<pre><code class="language-swift">let images: [UserInput.Image] = [
+    .url(url1),
+    .url(url2)
+]
+
+let response = try await session.respond(
+    to: &quot;Compare these two images&quot;,
+    images: images,
+    videos: []
+)
+</code></pre>
+<h3>VLM-Specific Processing</h3>
+<pre><code class="language-swift">let session = ChatSession(
+    modelContainer,
+    processing: UserInput.Processing(
+        resize: CGSize(width: 512, height: 512)  // Resize images
+    )
+)
+</code></pre>
+<h2>6. Best Practices</h2>
+<h3>DO</h3>
+<pre><code class="language-swift">// DO: Use ChatSession for multi-turn conversations
+let session = ChatSession(modelContainer)
+
+// DO: Use AsyncStream APIs (modern, Swift concurrency)
+for try await chunk in session.streamResponse(to: prompt) { ... }
+
+// DO: Check Task.isCancelled in long-running loops
+for try await generation in stream {
+    if Task.isCancelled { break }
+    // process generation
+}
+
+// DO: Use ModelContainer.perform() for thread-safe access
+await modelContainer.perform { context in
+    // Access model, tokenizer safely
+    let tokens = try context.tokenizer.applyChatTemplate(messages: messages)
+    return tokens
+}
+
+// DO: When breaking early from generation, use generateTask() to get a task handle
+// This is the lower-level API used internally by ChatSession
+let (stream, task) = generateTask(...)  // Returns (AsyncStream, Task)
+
+for await item in stream {
+    if shouldStop { break }
+}
+await task.value  // Ensures KV cache cleanup before next generation
+</code></pre>
+<blockquote>
+<p><code>generateTask()</code> is defined in <code>Evaluate.swift</code>. Most users should use <code>ChatSession</code> which handles this internally.</p>
+</blockquote>
+<h3>DON&#39;T</h3>
+<pre><code class="language-swift">// DON&#39;T: Share MLXArray across tasks (not Sendable)
+let array = MLXArray(...)
+Task { array.sum() }  // Wrong!
+
+// DON&#39;T: Use deprecated callback-based generation
+// Old:
+generate(input: input, parameters: params) { tokens in ... }  // Deprecated
+// New:
+for await generation in try generate(input: input, parameters: params, context: context) { ... }
+
+// DON&#39;T: Use old perform(model, tokenizer) signature
+// Old:
+modelContainer.perform { model, tokenizer in ... }  // Deprecated
+// New:
+modelContainer.perform { context in ... }
+
+// DON&#39;T: Forget to eval() MLXArrays before returning from perform()
+await modelContainer.perform { context in
+    let result = context.model(input)
+    eval(result)  // Required before returning
+    return result.item(Float.self)
+}
+</code></pre>
+<h3>Thread Safety</h3>
+<ul>
+<li><code>ModelContainer</code> is <code>Sendable</code> and thread-safe</li>
+<li><code>ChatSession</code> is NOT thread-safe (use from single task)</li>
+<li><code>MLXArray</code> is NOT <code>Sendable</code> - don&#39;t pass across isolation boundaries</li>
+<li>Use <code>SendableBox</code> for transferring non-Sendable data in consuming contexts</li>
+</ul>
+<h3>Memory Management</h3>
+<pre><code class="language-swift">// For long contexts, use sliding window cache
+let params = GenerateParameters(maxKVSize: 4096)
+
+// For memory efficiency, use quantized cache
+let params = GenerateParameters(kvBits: 4)  // or 8
+
+// Clear session cache when done
+await session.clear()
+</code></pre>
+<h2>7. Reference Links</h2>
+<p>For detailed documentation on specific topics, see:</p>
+<table>
+<thead>
+<tr>
+<th>Reference</th>
+<th>When to Use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://github.com/openclaw/skills/blob/main/skills/ronaldmannak/mlx-swift-lm/references/model-container.md">references/model-container.md</a></td>
+<td>Loading models, ModelContainer API, ModelConfiguration</td>
+</tr>
+<tr>
+<td><a href="https://github.com/openclaw/skills/blob/main/skills/ronaldmannak/mlx-swift-lm/references/kv-cache.md">references/kv-cache.md</a></td>
+<td>Cache types, memory optimization, cache serialization</td>
+</tr>
+<tr>
+<td><a href="https://github.com/openclaw/skills/blob/main/skills/ronaldmannak/mlx-swift-lm/references/concurrency.md">references/concurrency.md</a></td>
+<td>Thread safety, SerialAccessContainer, async patterns</td>
+</tr>
+<tr>
+<td><a href="https://github.com/openclaw/skills/blob/main/skills/ronaldmannak/mlx-swift-lm/references/tool-calling.md">references/tool-calling.md</a></td>
+<td>Function calling, tool formats, ToolCallProcessor</td>
+</tr>
+<tr>
+<td><a href="https://github.com/openclaw/skills/blob/main/skills/ronaldmannak/mlx-swift-lm/references/tokenizer-chat.md">references/tokenizer-chat.md</a></td>
+<td>Tokenizer, Chat.Message, EOS tokens</td>
+</tr>
+<tr>
+<td><a href="https://github.com/openclaw/skills/blob/main/skills/ronaldmannak/mlx-swift-lm/references/supported-models.md">references/supported-models.md</a></td>
+<td>Model families, registries, model-specific config</td>
+</tr>
+<tr>
+<td><a href="https://github.com/openclaw/skills/blob/main/skills/ronaldmannak/mlx-swift-lm/references/lora-adapters.md">references/lora-adapters.md</a></td>
+<td>LoRA/DoRA/QLoRA, loading adapters</td>
+</tr>
+<tr>
+<td><a href="https://github.com/openclaw/skills/blob/main/skills/ronaldmannak/mlx-swift-lm/references/training.md">references/training.md</a></td>
+<td>LoRATrain API, fine-tuning</td>
+</tr>
+<tr>
+<td><a href="https://github.com/openclaw/skills/blob/main/skills/ronaldmannak/mlx-swift-lm/references/embeddings.md">references/embeddings.md</a></td>
+<td>EmbeddingModel, pooling, use cases</td>
+</tr>
+</tbody></table>
+<h2>8. Deprecated Patterns Summary</h2>
+<p>Most common migrations (see individual reference files for topic-specific deprecations):</p>
+<table>
+<thead>
+<tr>
+<th>If you see...</th>
+<th>Use instead...</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>generate(... didGenerate:)</code> callback</td>
+<td><code>generate(...) -&gt; AsyncStream</code></td>
+</tr>
+<tr>
+<td><code>perform { model, tokenizer in }</code></td>
+<td><code>perform { context in }</code></td>
+</tr>
+<tr>
+<td><code>TokenIterator(prompt: MLXArray)</code></td>
+<td><code>TokenIterator(input: LMInput)</code></td>
+</tr>
+<tr>
+<td><code>ModelRegistry</code> typealias</td>
+<td><code>LLMRegistry</code> or <code>VLMRegistry</code></td>
+</tr>
+<tr>
+<td><code>createAttentionMask(h:cache:[KVCache]?)</code></td>
+<td><code>createAttentionMask(h:cache:KVCache?)</code></td>
+</tr>
+</tbody></table>
+<p>Each reference file contains a &quot;Deprecated Patterns&quot; section with topic-specific migrations.</p>
+<h2>9. Automatic vs Manual Configuration</h2>
+<h3>Automatic Behaviors (NO developer action needed)</h3>
+<p>The framework handles these automatically:</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>EOS token loading</strong></td>
+<td>Loaded from <code>config.json</code></td>
+</tr>
+<tr>
+<td><strong>EOS token override</strong></td>
+<td>Priority: <code>generation_config.json</code> &gt; <code>config.json</code> &gt; defaults</td>
+</tr>
+<tr>
+<td><strong>EOS token merging</strong></td>
+<td>All sources merged at generation time</td>
+</tr>
+<tr>
+<td><strong>EOS token detection</strong></td>
+<td>Stops generation automatically when EOS encountered</td>
+</tr>
+<tr>
+<td><strong>Chat template application</strong></td>
+<td>Applied automatically via <code>applyChatTemplate()</code></td>
+</tr>
+<tr>
+<td><strong>Tool call format detection</strong></td>
+<td>Inferred from <code>model_type</code> in <code>config.json</code></td>
+</tr>
+<tr>
+<td><strong>Cache type selection</strong></td>
+<td>Based on GenerateParameters (<code>maxKVSize</code>, <code>kvBits</code>)</td>
+</tr>
+<tr>
+<td><strong>Tokenizer loading</strong></td>
+<td>Loaded from <code>tokenizer.json</code> automatically</td>
+</tr>
+<tr>
+<td><strong>Model weights loading</strong></td>
+<td>Downloaded and loaded from HuggingFace</td>
+</tr>
+</tbody></table>
+<h3>Optional Configuration (Developer MAY configure)</h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>When to Configure</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>extraEOSTokens</code></td>
+<td>Only if model has unlisted stop tokens</td>
+</tr>
+<tr>
+<td><code>toolCallFormat</code></td>
+<td>Only to override auto-detection</td>
+</tr>
+<tr>
+<td><code>maxKVSize</code></td>
+<td>To enable sliding window cache</td>
+</tr>
+<tr>
+<td><code>kvBits</code></td>
+<td>To enable quantized cache (4 or 8 bit)</td>
+</tr>
+<tr>
+<td><code>maxTokens</code></td>
+<td>To limit output length</td>
+</tr>
+</tbody></table>
+
+                </div>
               </div>
             </article>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/ronaldmannak/mlx-swift-lm/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">View on GitHub</a>
-                <a href="https://clawdhub.com/ronaldmannak/mlx-swift-lm" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">View on ClawdHub</a>
+                <a href="https://github.com/openclaw/skills/blob/main/skills/ronaldmannak/mlx-swift-lm/skill.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/ronaldmannak/mlx-swift-lm" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/ronaldmannak/mlx-swift-lm/skill.md" download class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download Source
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@ronaldmannak</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Apple Apps & Services</span>
+                  </div>
+                </div>
               </div>
             </aside>
           </div>

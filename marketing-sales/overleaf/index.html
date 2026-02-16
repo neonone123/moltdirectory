@@ -173,7 +173,10 @@ pyoverleaf --host overleaf.mycompany.com ls
 <p><img src="example-em-dash.jpg" alt="Example: Remove em dashes and push to Overleaf"></p>
 <h2>Troubleshooting</h2>
 <ul>
-<li><strong>Auth error</strong>: User needs to log into Overleaf in browser first</li>
+<li><strong>Auth error / websocket error</strong>: Open Overleaf in Chrome browser first (<code>open -a &quot;Google Chrome&quot; &quot;https://www.overleaf.com/project&quot;</code> then wait 5s) to refresh cookies, then retry</li>
+<li><strong>&quot;scheme https is invalid&quot; (websocket redirect bug)</strong>: The default host <code>overleaf.com</code> causes a 301→<code>www.overleaf.com</code> redirect that breaks websocket. Fix: set <code>PYOVERLEAF_HOST=www.overleaf.com</code>:<pre><code class="language-bash">cat main.tex | PYOVERLEAF_HOST=www.overleaf.com pyoverleaf write &quot;Project/main.tex&quot;
+</code></pre>
+</li>
 <li><strong>Keychain Access Denied</strong> (macOS): pyoverleaf needs keychain access to read browser cookies. User must run <code>pyoverleaf ls</code> in their terminal and click &quot;Always Allow&quot; on the keychain prompt</li>
 <li><strong>Project not found</strong>: Use exact project name (case-sensitive), check with <code>pyoverleaf ls</code></li>
 <li><strong>Permission denied</strong>: User may not have edit access to the project</li>
@@ -185,7 +188,7 @@ pyoverleaf --host overleaf.mycompany.com ls
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/easonc13/overleaf/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/blob/main/skills/easonc13/overleaf/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
@@ -193,9 +196,9 @@ pyoverleaf --host overleaf.mycompany.com ls
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/easonc13/overleaf/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/easonc13/overleaf/SKILL.md" download class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  Download SKILL.md
+                  Download Source
                 </a>
                 <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>

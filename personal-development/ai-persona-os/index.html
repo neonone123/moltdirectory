@@ -74,25 +74,430 @@
 <p><strong>The complete operating system for OpenClaw agents that actually work.</strong></p>
 <hr>
 <h2>🚀 Just Installed? Start Here!</h2>
-<post_install_check>
-**For the AI reading this:** Check if the user's workspace has SOUL.md, USER.md, and MEMORY.md.
-
-<p>If these files DON&#39;T exist, immediately say:</p>
 <blockquote>
-<p>&quot;Welcome to AI Persona OS! I see this is a fresh install. Would you like me to run the setup wizard? It takes about 10 minutes and I&#39;ll guide you through creating your personalized workspace — including your AI Persona&#39;s identity, your context, security settings, and daily operations.&quot;</p>
+<h2>⛔ AGENT RULES — READ BEFORE DOING ANYTHING</h2>
+<ol>
+<li><strong>Use EXACT text from this file.</strong> Do not paraphrase menus, preset names, or instructions. Copy them verbatim.</li>
+<li><strong>NEVER tell the user to open a terminal or run commands.</strong> You have the exec tool. USE IT. Run every command yourself via exec. The user&#39;s only job is clicking &quot;Approve&quot; on the exec popup. If you find yourself typing &quot;Run this in your terminal&quot; — STOP. Use exec instead.</li>
+<li><strong>One step at a time.</strong> Run one exec, show the result, explain it, then proceed.</li>
+<li><strong>We NEVER modify existing workspace files without asking.</strong> If files already exist, ask before overwriting.</li>
+<li><strong>Only the 4 presets exist:</strong> <code>coding-assistant</code>, <code>executive-assistant</code>, <code>marketing-assistant</code>, <code>custom</code>. Never invent other preset names.</li>
+<li><strong>Scope: ~/workspace only.</strong> All file operations stay under <code>~/workspace/</code>. Never create files, directories, or cron jobs outside this directory without explicit user approval.</li>
+<li><strong>Cron jobs and gateway changes are opt-in.</strong> Never schedule recurring tasks or modify gateway config unless the user explicitly requests it. These are covered in Step 5 (Optional).</li>
+</ol>
 </blockquote>
-<p>If the user says yes, run: <code>./scripts/setup-wizard.sh</code></p>
-<p>If they prefer, you can also walk them through setup conversationally by asking the questions from the wizard.
+<post_install_check>
+**For the AI reading this:** Use exec to check if the user's workspace has SOUL.md, USER.md, and MEMORY.md:
+```
+ls ~/workspace/SOUL.md ~/workspace/USER.md ~/workspace/MEMORY.md 2>/dev/null
+```
+
+<p>If ALL THREE exist → workspace is set up. Skip to <strong>In-Chat Commands</strong> section and operate normally.</p>
+<p>If ANY are missing → this is a fresh install. <strong>Ask the user before doing anything:</strong></p>
+<blockquote>
+<p>&quot;👋 Welcome to AI Persona OS! I see this is a fresh install — your workspace doesn&#39;t have the core files yet. Want me to set everything up? It takes about 5 minutes and I&#39;ll walk you through it. Just say <strong>yes</strong> to start, or <strong>no</strong> if you&#39;d rather set up later.&quot;</p>
+</blockquote>
+<p>Wait for explicit confirmation before proceeding to Step 1. Do NOT auto-run setup without the user&#39;s approval.
 </post_install_check></p>
-<h3>Quick Start Options</h3>
-<p><strong>Option 1: Run the Setup Wizard (Recommended)</strong></p>
-<pre><code class="language-bash">./scripts/setup-wizard.sh
+<hr>
+<hr>
+<h1>First-Run Setup — Agent-Driven (Zero Terminal)</h1>
+<p>Everything below is the agent-driven setup flow. The user picks numbers. The agent does everything via exec. The user clicks Approve. That&#39;s it.</p>
+<hr>
+<h2>Step 1: First Chat — Pick a Preset</h2>
+<p>When the skill loads on a fresh workspace, the agent shows this menu. The agent must output the EXACT text below:</p>
+<blockquote>
+<p><strong>🚨 AGENT: OUTPUT THE EXACT TEXT BELOW VERBATIM. DO NOT PARAPHRASE. DO NOT INVENT YOUR OWN PRESET NAMES.</strong></p>
+</blockquote>
+<pre><code>👋 Welcome to AI Persona OS!
+
+I&#39;m going to build your complete AI workspace — identity, memory,
+security, daily operations — everything your agent needs to actually
+work reliably.
+
+This takes about 5 minutes. You pick options, I do everything.
+
+What kind of AI Persona are you building?
+
+── STARTER PACKS ────────────────────────────────
+1. 💻 Coding Assistant
+   &quot;Axiom&quot; — direct, technical, ships code
+   Best for: developers, engineers, technical work
+
+2. 📋 Executive Assistant
+   &quot;Atlas&quot; — anticipatory, discreet, strategic
+   Best for: execs, founders, busy professionals
+
+3. 📣 Marketing Assistant
+   &quot;Spark&quot; — energetic, brand-aware, creative
+   Best for: content creators, marketers, brand builders
+
+── BUILD YOUR OWN ───────────────────────────────
+4. 🔧 Custom
+   I&#39;ll ask you a few questions and build it from scratch
+   Best for: unique roles, specific needs
 </code></pre>
-<p>Interactive 10-minute setup that teaches you the system while building it.</p>
-<p><strong>Option 2: Tell me to set you up</strong>
-Just say: <em>&quot;Set up AI Persona OS&quot;</em> or <em>&quot;Run the wizard&quot;</em> and I&#39;ll guide you.</p>
-<p><strong>Option 3: Manual Setup</strong>
-Copy templates from <code>assets/</code> to your workspace and customize.</p>
+<blockquote>
+<p><strong>AGENT — Preset mapping (do not show this to user):</strong>
+1→<code>coding-assistant</code>, 2→<code>executive-assistant</code>, 3→<code>marketing-assistant</code>, 4→<code>custom</code>
+Vague answer → <code>coding-assistant</code>. &quot;I don&#39;t know&quot; → <code>coding-assistant</code> + &quot;We can change everything later.&quot;</p>
+</blockquote>
+<hr>
+<h2>Step 2: Gather Context (ALL presets)</h2>
+<p>After the user picks a preset, the agent needs a few personalization details. Ask ALL of these in ONE message:</p>
+<blockquote>
+<p><strong>🚨 AGENT: Ask these questions in a single message. Do not split across turns.</strong></p>
+</blockquote>
+<p>For presets 1-3:</p>
+<pre><code>Great choice! I need a few details to personalize your setup:
+
+1. What&#39;s YOUR name? (so your Persona knows who it&#39;s working for)
+2. What should I call you? (nickname, first name, etc.)
+3. What&#39;s your role? (e.g., Founder, Senior Dev, Marketing Director)
+4. What&#39;s your main goal right now? (one sentence)
+</code></pre>
+<p>For preset 4 (custom), ask these ADDITIONAL questions:</p>
+<pre><code>Let&#39;s build your custom Persona! I need a few details:
+
+1. What&#39;s YOUR name?
+2. What should I call you?
+3. What&#39;s your role? (e.g., Founder, Senior Dev, Marketing Director)
+4. What&#39;s your main goal right now? (one sentence)
+5. What&#39;s your AI Persona&#39;s name? (e.g., Atlas, Aria, Max)
+6. What role should it serve? (e.g., research assistant, ops manager)
+7. Communication style?
+   a) Professional &amp; formal
+   b) Friendly &amp; warm
+   c) Direct &amp; concise
+   d) Casual &amp; conversational
+8. How proactive should it be?
+   a) Reactive only — only responds when asked
+   b) Occasionally proactive — suggests when obvious
+   c) Highly proactive — actively anticipates needs
+</code></pre>
+<blockquote>
+<p><strong>AGENT — defaults for missing answers:</strong></p>
+<ul>
+<li>Name → &quot;User&quot;</li>
+<li>Nickname → same as name</li>
+<li>Role → &quot;Professional&quot;</li>
+<li>Goal → &quot;Be more productive and effective&quot;</li>
+<li>Persona name → &quot;Persona&quot; (custom only)</li>
+<li>Persona role → &quot;personal assistant&quot; (custom only)</li>
+<li>Comm style → c (direct &amp; concise)</li>
+<li>Proactive level → b (occasionally proactive)</li>
+</ul>
+</blockquote>
+<hr>
+<h2>Step 3: Agent Builds Everything — User Clicks Approve</h2>
+<p>After collecting answers, the agent explains what it&#39;s about to create, then does it all via exec.</p>
+<blockquote>
+<p><strong>🚨 AGENT SETUP INSTRUCTIONS — FOLLOW EXACTLY:</strong></p>
+<p><strong>Step 3a: Create workspace directories.</strong> Use exec:</p>
+<pre><code>mkdir -p ~/workspace/{memory/archive,projects,notes/areas,backups,.learnings}
+</code></pre>
+<p>Tell user: &quot;Creating your workspace structure — click Approve.&quot;</p>
+<p><strong>Step 3b: Copy starter pack files (presets 1-3) OR templates (preset 4).</strong> Use exec:</p>
+<p>For preset 1 (coding-assistant):</p>
+<pre><code>cp examples/coding-assistant/SOUL.md ~/workspace/SOUL.md &amp;&amp; cp examples/coding-assistant/HEARTBEAT.md ~/workspace/HEARTBEAT.md &amp;&amp; cp examples/coding-assistant/KNOWLEDGE.md ~/workspace/KNOWLEDGE.md
+</code></pre>
+<p>For preset 2 (executive-assistant):</p>
+<pre><code>cp examples/executive-assistant/SOUL.md ~/workspace/SOUL.md &amp;&amp; cp examples/executive-assistant/HEARTBEAT.md ~/workspace/HEARTBEAT.md
+</code></pre>
+<p>For preset 3 (marketing-assistant):</p>
+<pre><code>cp examples/marketing-assistant/SOUL.md ~/workspace/SOUL.md &amp;&amp; cp examples/marketing-assistant/HEARTBEAT.md ~/workspace/HEARTBEAT.md
+</code></pre>
+<p>For preset 4 (custom): Do NOT copy starter packs. The agent will generate SOUL.md from the user&#39;s answers (see Step 3d).</p>
+<p><strong>Step 3c: Copy shared templates.</strong> These apply to ALL presets. Use exec:</p>
+<pre><code>cp assets/MEMORY-template.md ~/workspace/MEMORY.md &amp;&amp; cp assets/AGENTS-template.md ~/workspace/AGENTS.md &amp;&amp; cp assets/SECURITY-template.md ~/workspace/SECURITY.md &amp;&amp; cp assets/WORKFLOWS-template.md ~/workspace/WORKFLOWS.md &amp;&amp; cp assets/TOOLS-template.md ~/workspace/TOOLS.md &amp;&amp; cp assets/INDEX-template.md ~/workspace/INDEX.md &amp;&amp; cp assets/ESCALATION-template.md ~/workspace/ESCALATION.md &amp;&amp; cp assets/VERSION.md ~/workspace/VERSION.md &amp;&amp; cp assets/LEARNINGS-template.md ~/workspace/.learnings/LEARNINGS.md &amp;&amp; cp assets/ERRORS-template.md ~/workspace/.learnings/ERRORS.md
+</code></pre>
+<p><strong>Step 3d: Personalize files.</strong> The agent uses exec to run <code>sed</code> commands replacing placeholders with the user&#39;s answers. This is the CRITICAL step that makes the workspace theirs.</p>
+<p>For ALL presets — personalize SOUL.md:
+Replace <code>[HUMAN]</code>, <code>[HUMAN NAME]</code>, or the example human name (e.g., &quot;Alex&quot;, &quot;Jordan&quot;) with the user&#39;s actual name.</p>
+<p>For ALL presets — generate USER.md:
+The agent writes a personalized USER.md using exec + heredoc. Include: name, nickname, role, main goal, and update preference (default: bullet points). Use the USER-template.md structure but fill in known answers. Leave unknown sections as placeholders with <code>[To be filled]</code>.</p>
+<p>For ALL presets — personalize MEMORY.md:
+Replace <code>[Name]</code> with the user&#39;s name, <code>[Role]</code> with their role, and the persona name/role.</p>
+<p>For preset 4 (custom) — generate SOUL.md:
+The agent writes a SOUL.md from scratch using the SOUL-template.md as structure, filling in the persona name, role, communication style, and proactive level from the user&#39;s answers. Use exec + heredoc.</p>
+<p><strong>Step 3e: Verify setup.</strong> Use exec:</p>
+<pre><code>ls -la ~/workspace/SOUL.md ~/workspace/USER.md ~/workspace/MEMORY.md ~/workspace/AGENTS.md ~/workspace/SECURITY.md ~/workspace/HEARTBEAT.md ~/workspace/WORKFLOWS.md ~/workspace/ESCALATION.md ~/workspace/VERSION.md
+</code></pre>
+<p><strong>Total: 3-5 Approve clicks.</strong> That&#39;s the entire setup.</p>
+<p><strong>DO NOT tell users to run commands in a terminal. ALWAYS use exec.</strong></p>
+</blockquote>
+<hr>
+<h2>Step 4: Setup Complete — Show Summary</h2>
+<p>After all files are created and verified, show this:</p>
+<pre><code>🎉 Your AI Persona is ready!
+
+Here&#39;s what I built:
+
+✅ SOUL.md        — [Persona name]&#39;s identity and values
+✅ USER.md        — Your context and preferences
+✅ MEMORY.md      — Permanent memory (starts fresh)
+✅ AGENTS.md      — 8 operating rules
+✅ SECURITY.md    — Prompt injection defense
+✅ HEARTBEAT.md   — Daily operations checklist
+✅ WORKFLOWS.md   — Growth loops and processes
+✅ ESCALATION.md  — Structured handoff protocol
+✅ VERSION.md     — Version tracking
+
+From now on:
+• I check context health every session automatically
+• I checkpoint before context gets too high
+• I&#39;ll tell you if something needs attention (🟡 or 🔴)
+• I stay silent when everything&#39;s green
+
+Try these commands anytime:
+• &quot;status&quot;        — See system health dashboard
+• &quot;show persona&quot;  — View your Persona&#39;s identity
+• &quot;health check&quot;  — Run full workspace validation
+• &quot;help&quot;          — See all available commands
+
+Everything can be customized later — just ask.
+</code></pre>
+<hr>
+<h2>Step 5 (Optional): Advanced Setup</h2>
+<p>After the basic setup, mention these but don&#39;t push:</p>
+<blockquote>
+<p><strong>🚨 AGENT: These are ALL opt-in. NEVER set up cron jobs, gateway configs, or team files without the user explicitly requesting it. Just mention they exist.</strong></p>
+</blockquote>
+<pre><code>Want to go further? (totally optional, we can do any of these later)
+
+• &quot;set up heartbeat&quot; — Configure automated health checks
+• &quot;set up cron jobs&quot;  — Daily briefings and weekly reviews
+  ⚠️  Creates scheduled tasks that run automatically.
+  I&#39;ll explain exactly what each one does before adding it.
+• &quot;add team members&quot;  — Set up TEAM.md with your team
+• &quot;configure Discord&quot; — Set requireMention for shared channels
+  ⚠️  Changes gateway config — requires openclaw CLI.
+</code></pre>
+<hr>
+<hr>
+<h1>In-Chat Commands</h1>
+<p>These commands work anytime in chat. The agent recognizes them and responds with the appropriate action.</p>
+<blockquote>
+<p><strong>🚨 AGENT: Recognize these commands in natural language too.</strong> &quot;How&#39;s my system?&quot; = &quot;status&quot;. &quot;What&#39;s my persona?&quot; = &quot;show persona&quot;. Be flexible with phrasing.</p>
+</blockquote>
+<h2>Command Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What It Does</th>
+<th>How Agent Handles It</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>status</code></td>
+<td>System health dashboard</td>
+<td>Run health checks via exec, show 🟢🟡🔴 dashboard</td>
+</tr>
+<tr>
+<td><code>show persona</code></td>
+<td>Display SOUL.md summary</td>
+<td>Read SOUL.md via exec, show name/role/values/style</td>
+</tr>
+<tr>
+<td><code>show memory</code></td>
+<td>Display MEMORY.md</td>
+<td>Read MEMORY.md via exec, show current contents</td>
+</tr>
+<tr>
+<td><code>health check</code></td>
+<td>Full workspace validation</td>
+<td>Run <code>./scripts/health-check.sh</code> via exec</td>
+</tr>
+<tr>
+<td><code>security audit</code></td>
+<td>Monthly security scan</td>
+<td>Run <code>./scripts/security-audit.sh</code> via exec</td>
+</tr>
+<tr>
+<td><code>show config</code></td>
+<td>Show all settings</td>
+<td>Run <code>./scripts/config-validator.sh</code> via exec</td>
+</tr>
+<tr>
+<td><code>help</code></td>
+<td>List available commands</td>
+<td>Show this command table</td>
+</tr>
+<tr>
+<td><code>checkpoint</code></td>
+<td>Force a context checkpoint</td>
+<td>Write checkpoint to <code>memory/YYYY-MM-DD.md</code> NOW</td>
+</tr>
+<tr>
+<td><code>advisor on</code></td>
+<td>Enable proactive suggestions</td>
+<td>Agent confirms: <code>✅ Proactive mode: ON</code></td>
+</tr>
+<tr>
+<td><code>advisor off</code></td>
+<td>Disable proactive suggestions</td>
+<td>Agent confirms: <code>✅ Proactive mode: OFF</code></td>
+</tr>
+<tr>
+<td><code>switch preset</code></td>
+<td>Change to different preset</td>
+<td>Show preset menu from Step 1, rebuild files</td>
+</tr>
+</tbody></table>
+<h3>&quot;status&quot; Command — Output Format</h3>
+<p>When the user says &quot;status&quot; (or &quot;how&#39;s my system&quot;, &quot;dashboard&quot;, &quot;system health&quot;), the agent runs checks via exec and shows:</p>
+<blockquote>
+<p><strong>🚨 AGENT: Run these checks via exec, then format the output below. Do NOT tell the user to run anything.</strong></p>
+</blockquote>
+<pre><code>exec: ls -la ~/workspace/SOUL.md ~/workspace/USER.md ~/workspace/MEMORY.md ~/workspace/AGENTS.md ~/workspace/SECURITY.md ~/workspace/HEARTBEAT.md 2&gt;/dev/null | wc -l
+exec: wc -c ~/workspace/MEMORY.md 2&gt;/dev/null
+exec: find ~/workspace/memory/ -name &quot;*.md&quot; -mtime -1 2&gt;/dev/null | wc -l
+exec: cat ~/workspace/VERSION.md 2&gt;/dev/null
+</code></pre>
+<p>Then format as:</p>
+<pre><code>📊 AI Persona OS — Status Dashboard
+
+🫀 [current date/time] | AI Persona OS v[VERSION]
+
+🟢 Core Files: [X/6] present
+   SOUL.md ✓ | USER.md ✓ | MEMORY.md ✓
+   AGENTS.md ✓ | SECURITY.md ✓ | HEARTBEAT.md ✓
+
+🟢 Memory: MEMORY.md at [X]KB (limit 4KB)
+
+🟢 Recent Activity: [X] log(s) from today
+
+🟢 Version: [VERSION]
+</code></pre>
+<p>Replace 🟢 with 🟡 if attention needed (e.g., MEMORY.md &gt;3.5KB, missing files) or 🔴 if action required (e.g., core file missing, MEMORY.md &gt;4KB).</p>
+<h3>&quot;show persona&quot; Command — Output Format</h3>
+<pre><code>exec: head -20 ~/workspace/SOUL.md
+</code></pre>
+<p>Then format as:</p>
+<pre><code>🪪 Your AI Persona
+
+Name:  [Persona name]
+Role:  [Role description]
+Style: [Communication style]
+Human: [User&#39;s name]
+
+Core values:
+• [Value 1]
+• [Value 2]
+• [Value 3]
+
+Say &quot;edit persona&quot; to make changes.
+</code></pre>
+<hr>
+<hr>
+<h1>Ambient Context Monitoring — Core Behavior</h1>
+<p>Everything below defines how the agent behaves BETWEEN explicit commands, on every message.</p>
+<blockquote>
+<p><strong>🚨 AGENT: These rules apply to EVERY incoming message, silently. No user action needed.</strong></p>
+</blockquote>
+<hr>
+<h2>On EVERY Incoming Message — Silent Checks</h2>
+<h3>1. Context health (ALWAYS, before doing anything)</h3>
+<p>Check your current context window usage percentage.</p>
+<table>
+<thead>
+<tr>
+<th>Context %</th>
+<th>Action</th>
+<th>User Sees</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&lt; 50%</td>
+<td>Nothing</td>
+<td>Nothing — do the task</td>
+</tr>
+<tr>
+<td>50-69%</td>
+<td>Note it internally</td>
+<td>Nothing — do the task</td>
+</tr>
+<tr>
+<td>70-84%</td>
+<td><strong>STOP</strong> — write checkpoint FIRST</td>
+<td><code>📝 Context at [X]% — saving checkpoint before continuing.</code> then do the task</td>
+</tr>
+<tr>
+<td>85-94%</td>
+<td>Emergency checkpoint</td>
+<td><code>🟠 Context at [X]% — emergency checkpoint saved. Consider starting a new session soon.</code></td>
+</tr>
+<tr>
+<td>95%+</td>
+<td>Survival mode</td>
+<td><code>🔴 Context at [X]% — critical. Saving essentials. Please start a new session.</code></td>
+</tr>
+</tbody></table>
+<p><strong>Checkpoint format:</strong> Write to <code>memory/YYYY-MM-DD.md</code> via exec:</p>
+<pre><code>## Checkpoint [HH:MM] — Context: XX%
+
+**Active task:** [What we&#39;re working on]
+**Key decisions:** [Bullets]
+**Resume from:** [Exact next step]
+</code></pre>
+<h3>2. Proactive suggestions (when advisor is ON)</h3>
+<p>If proactive mode is ON (default), the agent can surface ideas — but ONLY when:</p>
+<ul>
+<li>It learns significant new context about the user&#39;s goals</li>
+<li>It spots a pattern the user hasn&#39;t noticed</li>
+<li>There&#39;s a time-sensitive opportunity</li>
+</ul>
+<p><strong>Format for proactive suggestions:</strong></p>
+<pre><code>💡 SUGGESTION
+
+[One sentence: what you noticed]
+[One sentence: what you&#39;d propose]
+
+Want me to do this? (yes/no)
+</code></pre>
+<p><strong>Rules:</strong></p>
+<ul>
+<li>MAX one suggestion per session</li>
+<li>Never suggest during complex tasks</li>
+<li>If user says &quot;no&quot; or ignores it → drop it, never repeat</li>
+<li>If user says &quot;advisor off&quot; → stop all suggestions</li>
+</ul>
+<h3>3. Session start detection</h3>
+<p>If this is the FIRST message in a new session (no prior messages in conversation):</p>
+<ol>
+<li>Read SOUL.md, USER.md, MEMORY.md silently (via exec, no output to user)</li>
+<li>Check for yesterday&#39;s log in <code>memory/</code> — surface any uncompleted items</li>
+<li>If items need attention, show:</li>
+</ol>
+<pre><code>📋 Resuming from last session:
+• [Uncompleted item 1]
+• [Uncompleted item 2]
+
+Want me to pick up where we left off, or start fresh?
+</code></pre>
+<ol start="4">
+<li>If nothing to surface → say nothing extra, just do the task</li>
+</ol>
+<h3>4. Memory maintenance (silent, periodic)</h3>
+<p>Every ~10 exchanges, silently check:</p>
+<ul>
+<li>Is MEMORY.md &gt; 4KB? → Auto-prune entries older than 30 days</li>
+<li>Are there daily logs &gt; 90 days old? → Move to <code>memory/archive/</code></li>
+<li>Are there uncompleted items from previous days? → Surface them once</li>
+</ul>
+<p>Only notify the user if action was taken:</p>
+<pre><code>🗂️ Housekeeping: Archived [X] old entries from MEMORY.md to keep it under 4KB.
+</code></pre>
+<hr>
+<h2>What the User Should NEVER See</h2>
+<ul>
+<li>Raw exec output (unless they asked for it)</li>
+<li>&quot;Checking context...&quot; or &quot;Loading files...&quot; messages</li>
+<li>Repeated suggestions after being told no</li>
+<li>Checkpoint notifications below 70% context</li>
+<li>Any mention of running terminal commands</li>
+</ul>
 <hr>
 <p>Most agents are held together with duct tape and hope. They forget everything, make the same mistakes, and burn API credits with nothing to show for it.</p>
 <p>AI Persona OS fixes this. One install. Complete system. Production-ready.</p>
@@ -181,24 +586,33 @@ Copy templates from <code>assets/</code> to your workspace and customize.</p>
 <td><strong>Status Dashboard</strong></td>
 <td>See your entire system health at a glance</td>
 </tr>
+<tr>
+<td><strong>Zero-Terminal Setup</strong></td>
+<td>Agent-driven setup — pick a number, click Approve, done (NEW v1.4.0)</td>
+</tr>
+<tr>
+<td><strong>Quick-Start Presets</strong></td>
+<td>3 pre-built personas + custom option — first-run menu (NEW v1.4.0)</td>
+</tr>
+<tr>
+<td><strong>In-Chat Commands</strong></td>
+<td><code>status</code>, <code>show persona</code>, <code>health check</code>, <code>help</code> — no terminal needed (NEW v1.4.0)</td>
+</tr>
+<tr>
+<td><strong>Ambient Context Monitoring</strong></td>
+<td>Silent context health checks with automatic checkpointing (NEW v1.4.0)</td>
+</tr>
+<tr>
+<td><strong>Advisor Toggle</strong></td>
+<td><code>advisor on</code>/<code>advisor off</code> — control proactive suggestions (NEW v1.4.0)</td>
+</tr>
 </tbody></table>
 <hr>
 <h2>Quick Start</h2>
-<h3>Option 1: Interactive Setup (Recommended)</h3>
-<pre><code class="language-bash"># After installing, run the setup wizard
-./scripts/setup-wizard.sh
-</code></pre>
-<p>The wizard asks about your AI Persona and generates customized files.</p>
-<h3>Option 2: Manual Setup</h3>
-<pre><code class="language-bash"># Copy assets to your workspace
-cp -r assets/* ~/workspace/
-
-# Create directories
-mkdir -p ~/workspace/{memory/archive,projects,notes/areas,backups,.learnings}
-
-# Customize the templates
-# Start with SOUL.md and USER.md
-</code></pre>
+<p><strong>Just start chatting.</strong> The agent detects a fresh install automatically and walks you through setup — no terminal needed.</p>
+<p>Or say any of these: <em>&quot;Set up AI Persona OS&quot;</em> / <em>&quot;Run setup&quot;</em> / <em>&quot;Get started&quot;</em></p>
+<p><strong>Alternative: Terminal Setup (Advanced)</strong>
+If you prefer the terminal wizard: <code>./scripts/setup-wizard.sh</code></p>
 <hr>
 <h2>The 4-Tier Architecture</h2>
 <pre><code>Your Workspace
@@ -522,9 +936,46 @@ Step 4: Assessment
    └── Status + recommended actions
 </code></pre>
 <hr>
-<h2>Heartbeat Protocol v2 (v1.3.0, patched v1.3.1, v1.3.2, v1.3.3)</h2>
-<p>The #1 issue with v1.2.0: heartbeats fired but agents rubber-stamped <code>HEARTBEAT_OK</code> without running the protocol. v1.3.0 fixes this with an architecture that matches how OpenClaw actually works. v1.3.1 patches line break rendering, adds auto-migration, and bakes in the heartbeat prompt override. v1.3.2 adds model name display, version tracking, MEMORY.md auto-pruning, and config validation. v1.3.3 passes security scanning by removing literal injection examples from documentation.</p>
+<h2>Heartbeat Protocol v2 (v1.3.0, patched v1.3.1, v1.3.2, v1.3.3, v1.4.0, v1.4.1)</h2>
+<p>The #1 issue with v1.2.0: heartbeats fired but agents rubber-stamped <code>HEARTBEAT_OK</code> without running the protocol. v1.3.0 fixes this with an architecture that matches how OpenClaw actually works. v1.3.1 patches line break rendering, adds auto-migration, and bakes in the heartbeat prompt override. v1.3.2 adds model name display, version tracking, MEMORY.md auto-pruning, and config validation. v1.3.3 passes security scanning by removing literal injection examples from documentation. v1.4.0 adds zero-terminal agent-driven setup, quick-start presets, in-chat commands, and ambient context monitoring.</p>
 <h3>What Changed</h3>
+<table>
+<thead>
+<tr>
+<th>v1.3.x</th>
+<th>v1.4.0</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Setup required terminal or bash wizard</td>
+<td>Agent-driven setup — zero terminal, user picks numbers</td>
+</tr>
+<tr>
+<td>Starter packs buried in <code>examples/</code></td>
+<td>Quick-start presets in first-run menu (pick 1-4)</td>
+</tr>
+<tr>
+<td>No in-chat commands</td>
+<td><code>status</code>, <code>show persona</code>, <code>health check</code>, <code>help</code>, etc.</td>
+</tr>
+<tr>
+<td>Context monitoring documented but not scripted</td>
+<td>Ambient monitoring with exact thresholds and output formats</td>
+</tr>
+<tr>
+<td>&quot;Tell your agent to run this&quot;</td>
+<td>Agent uses exec for everything — user clicks Approve</td>
+</tr>
+<tr>
+<td>Manual file copying and customization</td>
+<td>Agent personalizes files automatically via sed/heredoc</td>
+</tr>
+<tr>
+<td>Proactive behavior described generally</td>
+<td>Advisor on/off toggle with strict suggestion format</td>
+</tr>
+</tbody></table>
+<h3>What Changed (v1.2.x → v1.3.x)</h3>
 <table>
 <thead>
 <tr>
@@ -576,11 +1027,11 @@ Step 4: Assessment
 <h3>Two-Layer Design</h3>
 <p><strong>Layer 1 — Heartbeat Pulse (every 30 minutes)</strong>
 Tiny HEARTBEAT.md runs context guard + memory health. If everything&#39;s green, replies <code>HEARTBEAT_OK</code> → OpenClaw suppresses delivery → your phone stays silent.</p>
-<p><strong>Layer 2 — Daily Briefing (cron job, 1-2x daily)</strong>
-Full 4-step protocol runs in an isolated session. Deep channel scan, priority assessment, structured report delivered to your chat.</p>
+<p><strong>Layer 2 — Daily Briefing (opt-in cron job, 1-2x daily)</strong>
+Full 4-step protocol runs in an isolated session. Deep channel scan, priority assessment, structured report delivered to your chat. <em>Requires manual cron setup — see <code>assets/cron-templates/</code>.</em></p>
 <h3>Output Format</h3>
 <p>Every heartbeat that surfaces something uses this format (note the blank lines between indicators — critical for Discord/WhatsApp rendering):</p>
-<pre><code>🫀 Feb 6, 10:30 AM PT | anthropic/claude-haiku-4-5 | AI Persona OS v1.3.3
+<pre><code>🫀 Feb 6, 10:30 AM PT | anthropic/claude-haiku-4-5 | AI Persona OS v1.4.1
 
 🟢 Context: 22% — Healthy
 
@@ -600,8 +1051,8 @@ Full 4-step protocol runs in an isolated session. Deep channel scan, priority as
 <li>Copy ESCALATION.md: <code>cp assets/ESCALATION-template.md ~/workspace/ESCALATION.md</code></li>
 <li><strong>Add heartbeat prompt override</strong> (strongly recommended) — see <code>references/heartbeat-automation.md</code></li>
 <li>Run config validator: <code>./scripts/config-validator.sh</code> (catches missing settings)</li>
-<li>(Optional) Add cron jobs — see <code>assets/cron-payloads/</code></li>
-<li>(Optional) Set <code>requireMention: true</code> for all Discord guilds — enforces Rule 5</li>
+<li>(Optional, user-initiated) Add cron jobs — copy-paste from <code>assets/cron-templates/</code> — requires openclaw CLI</li>
+<li>(Optional, user-initiated) Set <code>requireMention: true</code> for Discord guilds — requires gateway config access</li>
 </ol>
 <p>Full guide: <code>references/heartbeat-automation.md</code></p>
 <hr>
@@ -647,7 +1098,7 @@ Full 4-step protocol runs in an isolated session. Deep channel scan, priority as
 ├── SECURITY-template.md    → Cognitive inoculation &amp; credential rules
 ├── MEMORY-template.md      → Permanent facts &amp; context management
 ├── AGENTS-template.md      → Operating rules + learned lessons + proactive patterns + escalation
-├── HEARTBEAT-template.md   → Imperative checklist with 🟢🟡🔴 + model/version display + auto-pruning (PATCHED v1.3.3)
+├── HEARTBEAT-template.md   → Imperative checklist with 🟢🟡🔴 + model/version display + auto-pruning (PATCHED v1.4.0)
 ├── ESCALATION-template.md  → Structured handoff protocol for when agent is stuck (NEW v1.3.2)
 ├── VERSION.md              → Current version number — heartbeat reads this (NEW v1.3.2)
 ├── WORKFLOWS-template.md   → Growth loops + process documentation
@@ -658,38 +1109,33 @@ Full 4-step protocol runs in an isolated session. Deep channel scan, priority as
 ├── LEARNINGS-template.md   → Learning capture template
 ├── ERRORS-template.md      → Error tracking template
 ├── checkpoint-template.md  → Context preservation formats
-└── cron-payloads/          → Ready-to-use cron job templates
+└── cron-templates/          → Ready-to-use cron job templates
     ├── morning-briefing.sh → Daily 4-step protocol via isolated cron
     ├── eod-checkpoint.sh   → End-of-day context flush
     └── weekly-review.sh    → Weekly learning promotion &amp; archiving
 </code></pre>
 <hr>
-<h2>🎯 Starter Packs (Updated in v1.3.0)</h2>
-<p>Don&#39;t know where to start? Copy a starter pack and customize it.</p>
+<h2>🎯 Starter Packs (Updated in v1.4.0)</h2>
+<p>These are now available as <strong>presets</strong> during first-run setup. Pick a number and the agent does the rest.</p>
+<p>To switch presets later, just say: <strong>&quot;switch preset&quot;</strong></p>
 <pre><code>examples/
-├── coding-assistant/       → For developers
+├── coding-assistant/       → Preset 1: For developers
 │   ├── README.md          → How to use this pack
 │   ├── SOUL.md            → &quot;Axiom&quot; — direct, technical assistant
 │   ├── HEARTBEAT.md       → Context guard + CI/CD + PR status (🟢🟡🔴 format)
 │   └── KNOWLEDGE.md       → Tech stack, code patterns, commands
 │
-├── executive-assistant/    → For exec support
+├── executive-assistant/    → Preset 2: For exec support
 │   ├── README.md          → How to use this pack
 │   ├── SOUL.md            → &quot;Atlas&quot; — anticipatory, discreet assistant
 │   └── HEARTBEAT.md       → Context guard + calendar + comms triage (🟢🟡🔴 format)
 │
-└── marketing-assistant/    → For brand &amp; content
+└── marketing-assistant/    → Preset 3: For brand &amp; content
     ├── README.md          → How to use this pack
     ├── SOUL.md            → &quot;Spark&quot; — energetic, brand-aware assistant
     └── HEARTBEAT.md       → Context guard + content calendar + campaigns (🟢🟡🔴 format)
 </code></pre>
-<p><strong>How to use a Starter Pack:</strong></p>
-<ol>
-<li>Pick the one closest to your needs</li>
-<li>Copy files to your workspace</li>
-<li>Customize names, preferences, and specifics</li>
-<li>Run setup wizard for remaining files (MEMORY.md, AGENTS.md, etc.)</li>
-</ol>
+<p><strong>Manual use:</strong> Copy files from the pack to <code>~/workspace/</code> and customize. But the agent-driven setup (say &quot;switch preset&quot;) is faster.</p>
 <hr>
 <h2>References (Deep Dives)</h2>
 <pre><code>references/
@@ -709,8 +1155,8 @@ Full 4-step protocol runs in an isolated session. Deep channel scan, priority as
 ├── weekly-review.sh    → Learning promotion &amp; archiving
 └── security-audit.sh   → Monthly security check
 </code></pre>
-<h3>Cron Payloads (NEW v1.3.0)</h3>
-<pre><code>assets/cron-payloads/
+<h3>Cron Templates (NEW v1.3.0)</h3>
+<pre><code>assets/cron-templates/
 ├── morning-briefing.sh → Copy &amp; paste: daily 4-step protocol
 ├── eod-checkpoint.sh   → Copy &amp; paste: end-of-day context flush
 └── weekly-review.sh    → Copy &amp; paste: weekly learning promotion
@@ -779,7 +1225,7 @@ Full 4-step protocol runs in an isolated session. Deep channel scan, priority as
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/jeffjhunter/ai-persona-os/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/blob/main/skills/jeffjhunter/ai-persona-os/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
@@ -787,9 +1233,9 @@ Full 4-step protocol runs in an isolated session. Deep channel scan, priority as
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/jeffjhunter/ai-persona-os/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/jeffjhunter/ai-persona-os/SKILL.md" download class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  Download SKILL.md
+                  Download Source
                 </a>
                 <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>

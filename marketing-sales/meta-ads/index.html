@@ -48,6 +48,7 @@
               <a href="/marketing-sales/" class="back-link">← Back to Marketing & Sales</a>
               <div class="skill-page-meta">
                 <a href="/marketing-sales/" class="skill-page-category">Marketing & Sales</a>
+                <span class="skill-page-author">by @zachgodsell93</span>
               </div>
               <h1 class="skill-page-title">meta-ads</h1>
               <p class="skill-page-desc">Full read/write integration with Meta (Facebook) Ads API for managing</p>
@@ -60,15 +61,674 @@
           </section>
           <div class="skill-page-body">
             <article class="skill-page-content">
-              <div class="markdown-content">
-                <p>Skill documentation is available on GitHub.</p>
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Meta Ads API</h1>
+<h2>Description</h2>
+<p>Full read/write integration with Meta (Facebook) Ads API for managing campaigns, ad sets, ads, and accessing performance insights/metrics.</p>
+<h2>Setup</h2>
+<h3>Environment Variables</h3>
+<ul>
+<li><code>META_ACCESS_TOKEN</code> - Meta access token (User Access Token or System User Token)</li>
+<li><code>META_AD_ACCOUNT_ID</code> - Your ad account ID (numeric, without <code>act_</code> prefix)</li>
+</ul>
+<h3>Required Permissions</h3>
+<ul>
+<li><code>ads_read</code> - Read access to ads data</li>
+<li><code>ads_management</code> - Create, edit, and delete ads</li>
+</ul>
+<h3>Token Types</h3>
+<p><strong>User Access Token</strong></p>
+<ul>
+<li>Short-lived: ~2 hours</li>
+<li>Can be extended to 60-90 days</li>
+<li>Obtained via OAuth flow or Graph API Explorer</li>
+</ul>
+<p><strong>System User Token</strong></p>
+<ul>
+<li>No expiration</li>
+<li>Recommended for production/automated access</li>
+<li>Created in Business Manager</li>
+</ul>
+<h3>Authentication</h3>
+<p>All requests require the access token as a query parameter or header:</p>
+<pre><code>Authorization: Bearer $META_ACCESS_TOKEN
+Content-Type: application/json
+</code></pre>
+<p>Or as query parameter:</p>
+<pre><code>?access_token=$META_ACCESS_TOKEN
+</code></pre>
+<h2>API Reference</h2>
+<p>Base URL: <code>https://graph.facebook.com/v25.0/</code></p>
+<p><strong>Important:</strong> Ad account IDs must be prefixed with <code>act_</code> in API calls (e.g., <code>act_123456789</code>).</p>
+<h3>Ad Account</h3>
+<h4>Get Ad Account Info</h4>
+<pre><code class="language-bash">curl &quot;https://graph.facebook.com/v25.0/act_$META_AD_ACCOUNT_ID?fields=name,account_status,currency,timezone_name,amount_spent&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot;
+</code></pre>
+<hr>
+<h3>Campaigns</h3>
+<h4>List Campaigns</h4>
+<pre><code class="language-bash">curl &quot;https://graph.facebook.com/v25.0/act_$META_AD_ACCOUNT_ID/campaigns?fields=id,name,status,objective,daily_budget,lifetime_budget,created_time&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Get Single Campaign</h4>
+<pre><code class="language-bash">curl &quot;https://graph.facebook.com/v25.0/{CAMPAIGN_ID}?fields=id,name,status,objective,daily_budget,lifetime_budget,created_time,updated_time&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Create Campaign</h4>
+<pre><code class="language-bash">curl -X POST &quot;https://graph.facebook.com/v25.0/act_$META_AD_ACCOUNT_ID/campaigns&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;name&quot;: &quot;My Campaign&quot;,
+    &quot;objective&quot;: &quot;OUTCOME_TRAFFIC&quot;,
+    &quot;status&quot;: &quot;PAUSED&quot;,
+    &quot;special_ad_categories&quot;: []
+  }&#39;
+</code></pre>
+<h4>Update Campaign</h4>
+<pre><code class="language-bash">curl -X POST &quot;https://graph.facebook.com/v25.0/{CAMPAIGN_ID}&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;name&quot;: &quot;Updated Campaign Name&quot;,
+    &quot;status&quot;: &quot;ACTIVE&quot;
+  }&#39;
+</code></pre>
+<h4>Pause Campaign</h4>
+<pre><code class="language-bash">curl -X POST &quot;https://graph.facebook.com/v25.0/{CAMPAIGN_ID}&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;status&quot;: &quot;PAUSED&quot;
+  }&#39;
+</code></pre>
+<h4>Delete Campaign</h4>
+<pre><code class="language-bash">curl -X DELETE &quot;https://graph.facebook.com/v25.0/{CAMPAIGN_ID}&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot;
+</code></pre>
+<hr>
+<h3>Ad Sets</h3>
+<h4>List Ad Sets</h4>
+<pre><code class="language-bash">curl &quot;https://graph.facebook.com/v25.0/act_$META_AD_ACCOUNT_ID/adsets?fields=id,name,status,campaign_id,daily_budget,lifetime_budget,targeting,optimization_goal&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Get Single Ad Set</h4>
+<pre><code class="language-bash">curl &quot;https://graph.facebook.com/v25.0/{ADSET_ID}?fields=id,name,status,campaign_id,daily_budget,lifetime_budget,targeting,optimization_goal,bid_amount,billing_event&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Create Ad Set</h4>
+<pre><code class="language-bash">curl -X POST &quot;https://graph.facebook.com/v25.0/act_$META_AD_ACCOUNT_ID/adsets&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;name&quot;: &quot;My Ad Set&quot;,
+    &quot;campaign_id&quot;: &quot;{CAMPAIGN_ID}&quot;,
+    &quot;daily_budget&quot;: 5000,
+    &quot;billing_event&quot;: &quot;IMPRESSIONS&quot;,
+    &quot;optimization_goal&quot;: &quot;LINK_CLICKS&quot;,
+    &quot;bid_amount&quot;: 200,
+    &quot;targeting&quot;: {
+      &quot;geo_locations&quot;: {
+        &quot;countries&quot;: [&quot;US&quot;]
+      },
+      &quot;age_min&quot;: 18,
+      &quot;age_max&quot;: 65
+    },
+    &quot;status&quot;: &quot;PAUSED&quot;
+  }&#39;
+</code></pre>
+<p><strong>Note:</strong> Budget values are in cents (e.g., 5000 = $50.00).</p>
+<h4>Update Ad Set</h4>
+<pre><code class="language-bash">curl -X POST &quot;https://graph.facebook.com/v25.0/{ADSET_ID}&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;name&quot;: &quot;Updated Ad Set Name&quot;,
+    &quot;daily_budget&quot;: 10000,
+    &quot;status&quot;: &quot;ACTIVE&quot;
+  }&#39;
+</code></pre>
+<h4>Pause Ad Set</h4>
+<pre><code class="language-bash">curl -X POST &quot;https://graph.facebook.com/v25.0/{ADSET_ID}&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;status&quot;: &quot;PAUSED&quot;
+  }&#39;
+</code></pre>
+<h4>Delete Ad Set</h4>
+<pre><code class="language-bash">curl -X DELETE &quot;https://graph.facebook.com/v25.0/{ADSET_ID}&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot;
+</code></pre>
+<hr>
+<h3>Ads</h3>
+<h4>List Ads</h4>
+<pre><code class="language-bash">curl &quot;https://graph.facebook.com/v25.0/act_$META_AD_ACCOUNT_ID/ads?fields=id,name,status,adset_id,campaign_id,creative,created_time&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Get Single Ad</h4>
+<pre><code class="language-bash">curl &quot;https://graph.facebook.com/v25.0/{AD_ID}?fields=id,name,status,adset_id,campaign_id,creative,tracking_specs,created_time,updated_time&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Create Ad</h4>
+<pre><code class="language-bash">curl -X POST &quot;https://graph.facebook.com/v25.0/act_$META_AD_ACCOUNT_ID/ads&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;name&quot;: &quot;My Ad&quot;,
+    &quot;adset_id&quot;: &quot;{ADSET_ID}&quot;,
+    &quot;creative&quot;: {
+      &quot;creative_id&quot;: &quot;{CREATIVE_ID}&quot;
+    },
+    &quot;status&quot;: &quot;PAUSED&quot;
+  }&#39;
+</code></pre>
+<h4>Create Ad with Inline Creative</h4>
+<pre><code class="language-bash">curl -X POST &quot;https://graph.facebook.com/v25.0/act_$META_AD_ACCOUNT_ID/ads&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;name&quot;: &quot;My Ad&quot;,
+    &quot;adset_id&quot;: &quot;{ADSET_ID}&quot;,
+    &quot;creative&quot;: {
+      &quot;object_story_spec&quot;: {
+        &quot;page_id&quot;: &quot;{PAGE_ID}&quot;,
+        &quot;link_data&quot;: {
+          &quot;link&quot;: &quot;https://example.com&quot;,
+          &quot;message&quot;: &quot;Check out our website!&quot;,
+          &quot;name&quot;: &quot;Example Site&quot;,
+          &quot;call_to_action&quot;: {
+            &quot;type&quot;: &quot;LEARN_MORE&quot;
+          }
+        }
+      }
+    },
+    &quot;status&quot;: &quot;PAUSED&quot;
+  }&#39;
+</code></pre>
+<h4>Update Ad</h4>
+<pre><code class="language-bash">curl -X POST &quot;https://graph.facebook.com/v25.0/{AD_ID}&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;name&quot;: &quot;Updated Ad Name&quot;,
+    &quot;status&quot;: &quot;ACTIVE&quot;
+  }&#39;
+</code></pre>
+<h4>Pause Ad</h4>
+<pre><code class="language-bash">curl -X POST &quot;https://graph.facebook.com/v25.0/{AD_ID}&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;status&quot;: &quot;PAUSED&quot;
+  }&#39;
+</code></pre>
+<h4>Delete Ad</h4>
+<pre><code class="language-bash">curl -X DELETE &quot;https://graph.facebook.com/v25.0/{AD_ID}&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot;
+</code></pre>
+<hr>
+<h3>Ad Creatives</h3>
+<h4>List Ad Creatives</h4>
+<pre><code class="language-bash">curl &quot;https://graph.facebook.com/v25.0/act_$META_AD_ACCOUNT_ID/adcreatives?fields=id,name,object_story_spec,thumbnail_url&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Create Ad Creative</h4>
+<pre><code class="language-bash">curl -X POST &quot;https://graph.facebook.com/v25.0/act_$META_AD_ACCOUNT_ID/adcreatives&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;name&quot;: &quot;My Creative&quot;,
+    &quot;object_story_spec&quot;: {
+      &quot;page_id&quot;: &quot;{PAGE_ID}&quot;,
+      &quot;link_data&quot;: {
+        &quot;link&quot;: &quot;https://example.com&quot;,
+        &quot;message&quot;: &quot;Ad copy text here&quot;,
+        &quot;name&quot;: &quot;Headline&quot;,
+        &quot;description&quot;: &quot;Description text&quot;,
+        &quot;call_to_action&quot;: {
+          &quot;type&quot;: &quot;SHOP_NOW&quot;
+        }
+      }
+    }
+  }&#39;
+</code></pre>
+<hr>
+<h3>Insights (Performance Metrics)</h3>
+<h4>Get Account-Level Insights</h4>
+<pre><code class="language-bash">curl &quot;https://graph.facebook.com/v25.0/act_$META_AD_ACCOUNT_ID/insights?fields=spend,impressions,clicks,reach,cpc,cpm,ctr&amp;date_preset=last_30d&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Get Campaign Insights</h4>
+<pre><code class="language-bash">curl &quot;https://graph.facebook.com/v25.0/{CAMPAIGN_ID}/insights?fields=spend,impressions,clicks,reach,frequency,cpc,cpm,ctr,actions&amp;date_preset=last_7d&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Get Ad Set Insights</h4>
+<pre><code class="language-bash">curl &quot;https://graph.facebook.com/v25.0/{ADSET_ID}/insights?fields=spend,impressions,clicks,reach,cpc,cpm,ctr,actions&amp;date_preset=last_7d&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Get Ad Insights</h4>
+<pre><code class="language-bash">curl &quot;https://graph.facebook.com/v25.0/{AD_ID}/insights?fields=spend,impressions,clicks,reach,cpc,cpm,ctr,actions&amp;date_preset=last_7d&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Get Insights with Custom Date Range</h4>
+<pre><code class="language-bash">curl &quot;https://graph.facebook.com/v25.0/act_$META_AD_ACCOUNT_ID/insights?fields=spend,impressions,clicks,cpc,cpm,ctr&amp;time_range={\&quot;since\&quot;:\&quot;2026-01-01\&quot;,\&quot;until\&quot;:\&quot;2026-01-31\&quot;}&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Get Insights with Breakdowns</h4>
+<pre><code class="language-bash">curl &quot;https://graph.facebook.com/v25.0/act_$META_AD_ACCOUNT_ID/insights?fields=spend,impressions,clicks,cpc&amp;breakdowns=age,gender&amp;date_preset=last_7d&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Get Insights by Day</h4>
+<pre><code class="language-bash">curl &quot;https://graph.facebook.com/v25.0/act_$META_AD_ACCOUNT_ID/insights?fields=spend,impressions,clicks&amp;time_increment=1&amp;date_preset=last_7d&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot;
+</code></pre>
+<h4>Get Insights with Attribution Window</h4>
+<pre><code class="language-bash">curl &quot;https://graph.facebook.com/v25.0/{CAMPAIGN_ID}/insights?fields=spend,actions,action_values&amp;action_attribution_windows=[\&quot;7d_click\&quot;,\&quot;1d_view\&quot;]&amp;date_preset=last_7d&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot;
+</code></pre>
+<h2>Campaign Objectives</h2>
+<table>
+<thead>
+<tr>
+<th>Objective</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>OUTCOME_AWARENESS</code></td>
+<td>Brand awareness and reach</td>
+</tr>
+<tr>
+<td><code>OUTCOME_ENGAGEMENT</code></td>
+<td>Post engagement, page likes, event responses</td>
+</tr>
+<tr>
+<td><code>OUTCOME_TRAFFIC</code></td>
+<td>Drive traffic to website or app</td>
+</tr>
+<tr>
+<td><code>OUTCOME_LEADS</code></td>
+<td>Lead generation</td>
+</tr>
+<tr>
+<td><code>OUTCOME_APP_PROMOTION</code></td>
+<td>App installs and engagement</td>
+</tr>
+<tr>
+<td><code>OUTCOME_SALES</code></td>
+<td>Conversions and catalog sales</td>
+</tr>
+</tbody></table>
+<p><strong>Legacy objectives (still supported):</strong></p>
+<ul>
+<li><code>BRAND_AWARENESS</code>, <code>REACH</code>, <code>LINK_CLICKS</code>, <code>POST_ENGAGEMENT</code>, <code>VIDEO_VIEWS</code>, <code>LEAD_GENERATION</code>, <code>CONVERSIONS</code>, <code>APP_INSTALLS</code></li>
+</ul>
+<h2>Targeting Options</h2>
+<h3>Geographic Targeting</h3>
+<pre><code class="language-json">{
+  &quot;geo_locations&quot;: {
+    &quot;countries&quot;: [&quot;US&quot;, &quot;CA&quot;],
+    &quot;regions&quot;: [{&quot;key&quot;: &quot;4081&quot;}],
+    &quot;cities&quot;: [{&quot;key&quot;: &quot;2420379&quot;, &quot;radius&quot;: 25, &quot;distance_unit&quot;: &quot;mile&quot;}],
+    &quot;zips&quot;: [{&quot;key&quot;: &quot;US:90210&quot;}]
+  }
+}
+</code></pre>
+<h3>Demographic Targeting</h3>
+<pre><code class="language-json">{
+  &quot;age_min&quot;: 25,
+  &quot;age_max&quot;: 54,
+  &quot;genders&quot;: [1, 2]
+}
+</code></pre>
+<p>Gender values: <code>1</code> = Male, <code>2</code> = Female</p>
+<h3>Interest Targeting</h3>
+<pre><code class="language-json">{
+  &quot;flexible_spec&quot;: [{
+    &quot;interests&quot;: [{&quot;id&quot;: &quot;6003139266461&quot;, &quot;name&quot;: &quot;Technology&quot;}]
+  }]
+}
+</code></pre>
+<h2>Budget Types</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>daily_budget</code></td>
+<td>Maximum spend per day (in cents)</td>
+</tr>
+<tr>
+<td><code>lifetime_budget</code></td>
+<td>Total budget for campaign/ad set duration (in cents)</td>
+</tr>
+</tbody></table>
+<p><strong>Important:</strong> Budget values are in the smallest currency unit (cents for USD). Example: <code>5000</code> = $50.00</p>
+<h2>Status Values</h2>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ACTIVE</code></td>
+<td>Currently running</td>
+</tr>
+<tr>
+<td><code>PAUSED</code></td>
+<td>Manually paused</td>
+</tr>
+<tr>
+<td><code>DELETED</code></td>
+<td>Soft deleted</td>
+</tr>
+<tr>
+<td><code>ARCHIVED</code></td>
+<td>Archived, not running</td>
+</tr>
+</tbody></table>
+<h2>Available Metrics</h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>spend</code></td>
+<td>Total amount spent</td>
+</tr>
+<tr>
+<td><code>impressions</code></td>
+<td>Number of times ads were shown</td>
+</tr>
+<tr>
+<td><code>clicks</code></td>
+<td>Number of clicks on ads</td>
+</tr>
+<tr>
+<td><code>reach</code></td>
+<td>Number of unique people who saw ads</td>
+</tr>
+<tr>
+<td><code>frequency</code></td>
+<td>Average number of times each person saw your ad</td>
+</tr>
+<tr>
+<td><code>cpc</code></td>
+<td>Cost per click</td>
+</tr>
+<tr>
+<td><code>cpm</code></td>
+<td>Cost per 1,000 impressions</td>
+</tr>
+<tr>
+<td><code>ctr</code></td>
+<td>Click-through rate (clicks / impressions)</td>
+</tr>
+<tr>
+<td><code>cpp</code></td>
+<td>Cost per 1,000 people reached</td>
+</tr>
+<tr>
+<td><code>actions</code></td>
+<td>Total actions (conversions) broken down by type</td>
+</tr>
+<tr>
+<td><code>action_values</code></td>
+<td>Value of conversions</td>
+</tr>
+<tr>
+<td><code>conversions</code></td>
+<td>Number of conversions</td>
+</tr>
+<tr>
+<td><code>cost_per_action_type</code></td>
+<td>Cost per action by type</td>
+</tr>
+</tbody></table>
+<h2>Attribution Windows</h2>
+<table>
+<thead>
+<tr>
+<th>Window</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>1d_click</code></td>
+<td>1-day click attribution</td>
+</tr>
+<tr>
+<td><code>7d_click</code></td>
+<td>7-day click attribution (default)</td>
+</tr>
+<tr>
+<td><code>28d_click</code></td>
+<td>28-day click attribution</td>
+</tr>
+<tr>
+<td><code>1d_view</code></td>
+<td>1-day view-through attribution</td>
+</tr>
+</tbody></table>
+<p><strong>Note:</strong> As of January 2026, 7-day view (<code>7d_view</code>) and 28-day view (<code>28d_view</code>) attribution windows have been removed. Only <code>1d_view</code> remains for view-through attribution.</p>
+<h2>Breakdowns</h2>
+<table>
+<thead>
+<tr>
+<th>Breakdown</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>age</code></td>
+<td>Age ranges (18-24, 25-34, etc.)</td>
+</tr>
+<tr>
+<td><code>gender</code></td>
+<td>Male, Female, Unknown</td>
+</tr>
+<tr>
+<td><code>placement</code></td>
+<td>Where ad was shown (feed, stories, etc.)</td>
+</tr>
+<tr>
+<td><code>device_platform</code></td>
+<td>Device type (mobile, desktop)</td>
+</tr>
+<tr>
+<td><code>platform_position</code></td>
+<td>Position within platform</td>
+</tr>
+<tr>
+<td><code>publisher_platform</code></td>
+<td>Facebook, Instagram, Audience Network</td>
+</tr>
+<tr>
+<td><code>country</code></td>
+<td>Country of viewer</td>
+</tr>
+<tr>
+<td><code>region</code></td>
+<td>Region/state of viewer</td>
+</tr>
+</tbody></table>
+<h2>Date Presets</h2>
+<table>
+<thead>
+<tr>
+<th>Preset</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>today</code></td>
+<td>Today only</td>
+</tr>
+<tr>
+<td><code>yesterday</code></td>
+<td>Yesterday only</td>
+</tr>
+<tr>
+<td><code>this_month</code></td>
+<td>Current month</td>
+</tr>
+<tr>
+<td><code>last_month</code></td>
+<td>Previous month</td>
+</tr>
+<tr>
+<td><code>last_7d</code></td>
+<td>Last 7 days</td>
+</tr>
+<tr>
+<td><code>last_14d</code></td>
+<td>Last 14 days</td>
+</tr>
+<tr>
+<td><code>last_28d</code></td>
+<td>Last 28 days</td>
+</tr>
+<tr>
+<td><code>last_30d</code></td>
+<td>Last 30 days</td>
+</tr>
+<tr>
+<td><code>last_90d</code></td>
+<td>Last 90 days</td>
+</tr>
+</tbody></table>
+<h2>Pagination</h2>
+<p>The API uses cursor-based pagination. Responses include a <code>paging</code> object with cursors.</p>
+<pre><code class="language-json">{
+  &quot;data&quot;: [...],
+  &quot;paging&quot;: {
+    &quot;cursors&quot;: {
+      &quot;before&quot;: &quot;abc123&quot;,
+      &quot;after&quot;: &quot;xyz789&quot;
+    },
+    &quot;next&quot;: &quot;https://graph.facebook.com/v25.0/...&quot;
+  }
+}
+</code></pre>
+<p>To get the next page:</p>
+<pre><code class="language-bash">curl &quot;https://graph.facebook.com/v25.0/act_$META_AD_ACCOUNT_ID/campaigns?fields=id,name&amp;after={AFTER_CURSOR}&quot; \
+  -H &quot;Authorization: Bearer $META_ACCESS_TOKEN&quot;
+</code></pre>
+<p><strong>Limits:</strong></p>
+<ul>
+<li>Default: 25 records per page</li>
+<li>Maximum: 5000 records per page (use <code>limit</code> parameter)</li>
+</ul>
+<h2>Rate Limits</h2>
+<p>Rate limits are calculated per ad account using the formula:</p>
+<pre><code>Call Limit = 60 + (400 × Active Ads) - (0.001 × API Errors)
+</code></pre>
+<ul>
+<li>Minimum: 60 calls per hour</li>
+<li>Increases with more active ads</li>
+<li>Decreases with API errors</li>
+</ul>
+<p><strong>Handling Rate Limits:</strong></p>
+<ul>
+<li>Check <code>X-Business-Use-Case-Usage</code> header for current usage</li>
+<li>Implement exponential backoff when receiving 429 responses</li>
+<li>Start with 1 second delay, double on each retry (max 5 retries)</li>
+</ul>
+<h2>Token Management</h2>
+<h3>Extending User Access Tokens</h3>
+<p>Short-lived user tokens (~2 hours) can be exchanged for long-lived tokens (60-90 days):</p>
+<pre><code class="language-bash">curl &quot;https://graph.facebook.com/v25.0/oauth/access_token?grant_type=fb_exchange_token&amp;client_id={APP_ID}&amp;client_secret={APP_SECRET}&amp;fb_exchange_token={SHORT_LIVED_TOKEN}&quot;
+</code></pre>
+<p>Response:</p>
+<pre><code class="language-json">{
+  &quot;access_token&quot;: &quot;long_lived_token_here&quot;,
+  &quot;token_type&quot;: &quot;bearer&quot;,
+  &quot;expires_in&quot;: 5184000
+}
+</code></pre>
+<h3>Debugging Tokens</h3>
+<p>Check token validity and permissions:</p>
+<pre><code class="language-bash">curl &quot;https://graph.facebook.com/v25.0/debug_token?input_token={TOKEN_TO_CHECK}&amp;access_token={APP_ID}|{APP_SECRET}&quot;
+</code></pre>
+<h3>Recommended: System User Tokens</h3>
+<p>For production use, create a System User in Business Manager:</p>
+<ol>
+<li>Go to Business Settings &gt; Users &gt; System Users</li>
+<li>Create a new System User with &quot;Admin&quot; role</li>
+<li>Assign the ad account to the System User</li>
+<li>Generate a token with <code>ads_read</code> and <code>ads_management</code> permissions</li>
+</ol>
+<p>System User tokens do not expire.</p>
+<h2>Changelog</h2>
+<h3>v1.0.0</h3>
+<ul>
+<li>Initial release with full read/write access</li>
+<li>Ad Account: get info</li>
+<li>Campaigns: list, get, create, update, pause, delete</li>
+<li>Ad Sets: list, get, create, update, pause, delete with targeting</li>
+<li>Ads: list, get, create, update, pause, delete</li>
+<li>Ad Creatives: list, create</li>
+<li>Insights: account/campaign/adset/ad level with all metrics</li>
+<li>Support for breakdowns, date ranges, and attribution windows</li>
+<li>Campaign objectives and targeting documentation</li>
+<li>Budget types (daily/lifetime) in cents</li>
+<li>Pagination documentation</li>
+<li>Rate limits and token management</li>
+</ul>
+
+                </div>
               </div>
             </article>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/zachgodsell93/meta-ads/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">View on GitHub</a>
-                <a href="https://clawdhub.com/zachgodsell93/meta-ads" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">View on ClawdHub</a>
+                <a href="https://github.com/openclaw/skills/blob/main/skills/zachgodsell93/meta-ads/skill.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/zachgodsell93/meta-ads" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/zachgodsell93/meta-ads/skill.md" download class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download Source
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@zachgodsell93</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Marketing & Sales</span>
+                  </div>
+                </div>
               </div>
             </aside>
           </div>

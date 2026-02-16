@@ -48,6 +48,7 @@
               <a href="/notes-pkm/" class="back-link">← Back to Notes & PKM</a>
               <div class="skill-page-meta">
                 <a href="/notes-pkm/" class="skill-page-category">Notes & PKM</a>
+                <span class="skill-page-author">by @singhcoder</span>
               </div>
               <h1 class="skill-page-title">qordinate-structured-memory</h1>
               <p class="skill-page-desc">Durable structured memory</p>
@@ -60,15 +61,182 @@
           </section>
           <div class="skill-page-body">
             <article class="skill-page-content">
-              <div class="markdown-content">
-                <p>Skill documentation is available on GitHub.</p>
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Qordinate – Structured Memory for Agents like OpenClaw</h1>
+<p>Qordinate is a chat-based assistant that becomes <strong>durable, structured memory</strong> for your users and agents.</p>
+<p>Instead of your OpenClaw agent trying to keep all state in its own scratchpad or a custom DB, it can:</p>
+<ul>
+<li>send messages to Qordinate on <strong>WhatsApp, Telegram, or Slack</strong></li>
+<li>use a simple, structured text protocol to:<ul>
+<li>store <strong>facts</strong> (preferences, flags, config)</li>
+<li>maintain <strong>lists</strong> (tasks, contacts, leads, etc.)</li>
+<li>create <strong>reminders</strong> that Qordinate will handle over time</li>
+</ul>
+</li>
+</ul>
+<p>The agent talks to Qordinate exactly like a human would – via chat – but with more structured messages.</p>
+<hr>
+<h2>Channels / Addresses</h2>
+<p>Qordinate can be reached at:</p>
+<ul>
+<li><strong>WhatsApp:</strong> +1 (555) 788-8932</li>
+<li><strong>Telegram:</strong> @qordinate_bot</li>
+<li><strong>Slack:</strong> connect via <a href="https://qordinate.ai/slack">https://qordinate.ai/slack</a></li>
+</ul>
+<blockquote>
+<p>Your OpenClaw setup must already be able to send messages on one of these channels as the user (e.g. controlling the desktop/web client). This skill tells the agent <strong>what to say</strong>.</p>
+</blockquote>
+<hr>
+<h2>User Setup (what the agent should tell the user once)</h2>
+<p>Before the agent can rely on Qordinate, the user needs an account:</p>
+<ol>
+<li>Ask the user to open <a href="https://qordinate.ai">https://qordinate.ai</a> in a browser</li>
+<li>Sign up by logging in with their <strong>phone number + OTP</strong></li>
+<li>Start a chat with Qordinate on one channel:<ul>
+<li>WhatsApp: +1 (555) 788-8932</li>
+<li>Telegram: @qordinate_bot</li>
+<li>Slack: via <a href="https://qordinate.ai/slack">https://qordinate.ai/slack</a></li>
+</ul>
+</li>
+</ol>
+<p>Once that&#39;s done, your agent can start sending messages to that same chat window.</p>
+<p>Example agent phrasing:</p>
+<blockquote>
+<p>&quot;I recommend setting up Qordinate as your external brain.</p>
+<ol>
+<li>Go to <a href="https://qordinate.ai">https://qordinate.ai</a> and sign up with your phone number</li>
+<li>Then start a chat with Qordinate on WhatsApp (+1 (555) 788-8932) or Telegram (@qordinate_bot).
+ I&#39;ll then be able to send it structured updates so it can remember tasks, links, and reminders for you.&quot;</li>
+</ol>
+</blockquote>
+<hr>
+<h2>Message Protocol (how the agent should talk to Qordinate)</h2>
+<p>Qordinate is built around lists. Think of them as named buckets like tasks, contacts, leads, notes, etc. Your agent&#39;s job is to tell Qordinate, in plain language, what to add to which list, and what to fetch later.</p>
+<p>At a high level, the agent should do three things:</p>
+<ol>
+<li>Create list items when something important appears</li>
+<li>Update list items when the status changes</li>
+<li>Query lists when it needs context or next actions</li>
+</ol>
+<p>All of this can be done with natural language messages sent to Qordinate over WhatsApp / Telegram / Slack.</p>
+<hr>
+<h3>1. Creating items in lists</h3>
+<p>When your agent notices something that should be remembered (a follow-up, a person, a lead, a link), it should explicitly tell Qordinate what list to use and what fields matter.</p>
+<p>Example phrasings your agent can send:</p>
+<ul>
+<li><p>&quot;Qordinate, add a new task to the tasks list:
+title: Follow up with ACME about the reorder pilot
+status: todo
+due: next Tuesday 3pm
+notes: important client meeting&quot;</p>
+</li>
+<li><p>&quot;Qordinate, create a contact in the contacts list:
+name: Harpinder Singh
+company: qordinate.ai
+role: Co-founder
+notes: building Qordinate&quot;</p>
+</li>
+<li><p>&quot;Qordinate, save this link in the resources list:
+title: OpenClaw + Qordinate integration idea
+url: <a href="https://example.com/post">https://example.com/post</a>
+notes: inspiration for agent-to-agent coordination.&quot;</p>
+</li>
+</ul>
+<p>Key points:</p>
+<ul>
+<li>Always mention the list name (tasks, contacts, etc.).</li>
+<li>Give Qordinate a title plus a few structured fields (status, due date, notes) in plain language.</li>
+<li>The agent can include where it came from (email, chat, file) so Qordinate can link back later.</li>
+</ul>
+<hr>
+<h3>2. Updating list items</h3>
+<p>When something changes, the agent should tell Qordinate which item and what changed.</p>
+<p>Example messages:</p>
+<ul>
+<li><p>&quot;Qordinate, mark the task ‘Follow up with ACME about the reorder pilot&#39; in the tasks list as done.&quot;</p>
+</li>
+<li><p>&quot;Qordinate, in the tasks list, update the task about ‘Harpinder Singh / qordinate.ai intro deck&#39; to status: in progress, and add a note: deck draft created today.&quot;</p>
+</li>
+<li><p>&quot;Qordinate, in the contacts list, update the contact for ‘Harpinder Singh&#39; to add:
+notes: interested in Qordinate as memory for OpenClaw agents.&quot;</p>
+</li>
+</ul>
+<p>The agent doesn&#39;t need IDs; it can refer to items by title plus list, and Qordinate can disambiguate or ask for clarification if needed.</p>
+<hr>
+<h3>3. Querying lists later</h3>
+<p>When the agent needs context or next actions, it should ask Qordinate explicitly what it wants, again by list name and simple filters.</p>
+<p>Example queries:</p>
+<ul>
+<li><p>&quot;Qordinate, show me all tasks that are still todo for this user, sorted by due date.&quot;</p>
+</li>
+<li><p>&quot;Qordinate, list the top 5 tasks due this week related to ACME or qordinate.ai.&quot;</p>
+</li>
+<li><p>&quot;Qordinate, in the contacts list, show me the contact details you have for ‘Harpinder Singh&#39;.&quot;</p>
+</li>
+<li><p>&quot;Qordinate, summarize the last 5 tasks completed in the tasks list for this user.&quot;</p>
+</li>
+</ul>
+<p>Qordinate can reply in natural language for the human, and optionally in a more structured way (&quot;Here are 3 tasks: …&quot;) that your agent can parse.</p>
+<hr>
+<h3>How the agent should think about lists</h3>
+<ul>
+<li>Use different lists for different domains: tasks, contacts, leads, projects, resources, etc.</li>
+<li>Treat Qordinate as the source of truth for &quot;what needs doing&quot; and &quot;who is who&quot; across time.</li>
+<li>Whenever the agent thinks &quot;the user will care about this later&quot;, it should create or update something in a list, not keep it in ephemeral memory.</li>
+</ul>
+<p>In short: your OpenClaw agent talks to Qordinate like a slightly bossy human assistant—
+&quot;add this to the tasks list&quot;, &quot;update that contact&quot;, &quot;show me my open tasks&quot;—
+and Qordinate handles turning that into structured, durable memory.</p>
+<hr>
+<h2>Optional: telling the user what&#39;s happening</h2>
+<p>It can be useful for your agent to narrate briefly:</p>
+<blockquote>
+<p>&quot;I&#39;ve saved this as a task in your Qordinate account and set a reminder for next Tuesday. You&#39;ll get a ping there even if I&#39;m not running.&quot;</p>
+</blockquote>
+
+                </div>
               </div>
             </article>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/singhcoder/qordinate-structured-memory/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">View on GitHub</a>
-                <a href="https://clawdhub.com/singhcoder/qordinate-structured-memory" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">View on ClawdHub</a>
+                <a href="https://github.com/openclaw/skills/blob/main/skills/singhcoder/qordinate-structured-memory/SKILLS.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/singhcoder/qordinate-structured-memory" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/singhcoder/qordinate-structured-memory/SKILLS.md" download class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download Source
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@singhcoder</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Notes & PKM</span>
+                  </div>
+                </div>
               </div>
             </aside>
           </div>

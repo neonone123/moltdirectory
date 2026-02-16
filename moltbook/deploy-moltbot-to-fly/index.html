@@ -48,6 +48,7 @@
               <a href="/moltbook/" class="back-link">← Back to Moltbook</a>
               <div class="skill-page-meta">
                 <a href="/moltbook/" class="skill-page-category">Moltbook</a>
+                <span class="skill-page-author">by @hollaugo</span>
               </div>
               <h1 class="skill-page-title">deploy-moltbot-to-fly</h1>
               <p class="skill-page-desc">Deploy Moltbot (Clawdbot) to Fly.io with proper</p>
@@ -60,15 +61,350 @@
           </section>
           <div class="skill-page-body">
             <article class="skill-page-content">
-              <div class="markdown-content">
-                <p>Skill documentation is available on GitHub.</p>
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Deploy Moltbot to Fly.io</h1>
+<p>Deploy Moltbot (Clawdbot) to Fly.io with proper configuration, persistent storage, and device pairing.</p>
+<h2>Overview</h2>
+<p>Deploying Moltbot to Fly.io requires:</p>
+<ol>
+<li>Setting up the Fly app with a persistent volume</li>
+<li>Configuring environment secrets (API keys, gateway token)</li>
+<li>Creating a proper config file with token authentication</li>
+<li>Approving device pairing for web UI access</li>
+</ol>
+<h2>Prerequisites</h2>
+<p>Before starting:</p>
+<ul>
+<li>Fly.io CLI installed (<code>brew install flyctl</code> or <code>curl -L https://fly.io/install.sh | sh</code>)</li>
+<li>Fly.io account and logged in (<code>fly auth login</code>)</li>
+<li>Anthropic API key (and optionally OpenAI API key)</li>
+<li>Git installed</li>
+</ul>
+<h2>Phase 1: Clone and Setup</h2>
+<h3>1.1 Clone the Moltbot Repository</h3>
+<pre><code class="language-bash">git clone https://github.com/clawdbot/clawdbot.git moltbot-deploy
+cd moltbot-deploy
+</code></pre>
+<h3>1.2 Generate Gateway Token</h3>
+<p>Generate a secure token for authentication:</p>
+<pre><code class="language-bash">openssl rand -hex 32
+</code></pre>
+<p><strong>IMPORTANT:</strong> Save this token - you&#39;ll need it for:</p>
+<ul>
+<li>Fly secrets</li>
+<li>Config file</li>
+<li>Web UI access URL</li>
+</ul>
+<h2>Phase 2: Fly.io Configuration</h2>
+<h3>2.1 Create fly.toml</h3>
+<p>Create <code>fly.toml</code> with the correct configuration:</p>
+<pre><code class="language-toml">app = &#39;your-app-name&#39;
+primary_region = &#39;iad&#39;
+
+[build]
+  dockerfile = &#39;Dockerfile&#39;
+
+[env]
+  NODE_ENV = &#39;production&#39;
+  CLAWDBOT_PREFER_PNPM = &#39;1&#39;
+  CLAWDBOT_STATE_DIR = &#39;/data&#39;
+  NODE_OPTIONS = &#39;--max-old-space-size=1536&#39;
+
+[processes]
+  app = &quot;node dist/index.js gateway --allow-unconfigured --port 3000 --bind lan&quot;
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = [&quot;app&quot;]
+
+[[vm]]
+  size = &#39;shared-cpu-2x&#39;
+  memory = &#39;2048mb&#39;
+
+[mounts]
+  source = &#39;moltbot_data&#39;
+  destination = &#39;/data&#39;
+</code></pre>
+<p><strong>CRITICAL Settings:</strong></p>
+<ul>
+<li><code>CLAWDBOT_STATE_DIR = &#39;/data&#39;</code> - Required for proper config persistence</li>
+<li><code>--bind lan</code> - Allows Fly&#39;s proxy to reach the gateway</li>
+<li><code>http_service</code> - Newer Fly format (not <code>[[services]]</code>)</li>
+<li><code>memory = &#39;2048mb&#39;</code> - 512MB is too small; 2GB recommended</li>
+</ul>
+<h3>2.2 Create App and Volume</h3>
+<pre><code class="language-bash">fly apps create your-app-name
+fly volumes create moltbot_data --region iad --size 1 -a your-app-name -y
+</code></pre>
+<p>Choose a region close to you:</p>
+<ul>
+<li><code>iad</code> - Virginia (US East)</li>
+<li><code>lhr</code> - London</li>
+<li><code>sjc</code> - San Jose (US West)</li>
+</ul>
+<h3>2.3 Set Fly Secrets</h3>
+<pre><code class="language-bash"># Set your generated token
+fly secrets set CLAWDBOT_GATEWAY_TOKEN=&quot;YOUR-TOKEN-HERE&quot; -a your-app-name
+
+# Set API keys
+fly secrets set ANTHROPIC_API_KEY=&quot;sk-ant-xxxxx&quot; -a your-app-name
+fly secrets set OPENAI_API_KEY=&quot;sk-xxxxx&quot; -a your-app-name  # Optional
+</code></pre>
+<p><strong>Note:</strong> Secrets are deployed on first <code>fly deploy</code>, not immediately.</p>
+<h2>Phase 3: Deploy</h2>
+<p>Deploy the application:</p>
+<pre><code class="language-bash">fly deploy -a your-app-name
+</code></pre>
+<p>First deployment takes ~3-5 minutes (building Docker image).</p>
+<p><strong>Wait for gateway to start:</strong></p>
+<pre><code class="language-bash">fly logs -a your-app-name --no-tail | grep &quot;listening on&quot;
+</code></pre>
+<p>You should see:</p>
+<pre><code>[gateway] listening on ws://0.0.0.0:3000 (PID xxx)
+</code></pre>
+<h2>Phase 4: Create Config File</h2>
+<p><strong>CRITICAL:</strong> The config file must include the same token as the env var for authentication to work.</p>
+<h3>4.1 SSH into the machine</h3>
+<pre><code class="language-bash">fly ssh console -a your-app-name
+</code></pre>
+<h3>4.2 Create the config file</h3>
+<pre><code class="language-bash">cat &gt; /data/moltbot.json &lt;&lt; &#39;EOF&#39;
+{
+  &quot;gateway&quot;: {
+    &quot;mode&quot;: &quot;local&quot;,
+    &quot;bind&quot;: &quot;lan&quot;,
+    &quot;auth&quot;: {
+      &quot;mode&quot;: &quot;token&quot;,
+      &quot;token&quot;: &quot;YOUR-TOKEN-HERE&quot;
+    }
+  },
+  &quot;agents&quot;: {
+    &quot;defaults&quot;: {
+      &quot;model&quot;: {
+        &quot;primary&quot;: &quot;anthropic/claude-opus-4-5&quot;
+      }
+    }
+  },
+  &quot;auth&quot;: {
+    &quot;profiles&quot;: {
+      &quot;anthropic:default&quot;: { &quot;mode&quot;: &quot;token&quot;, &quot;provider&quot;: &quot;anthropic&quot; }
+    }
+  }
+}
+EOF
+</code></pre>
+<p><strong>Replace <code>YOUR-TOKEN-HERE</code> with your actual token!</strong></p>
+<h3>4.3 Exit and restart</h3>
+<pre><code class="language-bash">exit
+fly machine restart &lt;machine-id&gt; -a your-app-name
+</code></pre>
+<p>Get machine ID with: <code>fly machines list -a your-app-name</code></p>
+<h2>Phase 5: Access and Device Pairing</h2>
+<h3>5.1 Wait for DNS propagation</h3>
+<p>DNS may take 2-5 minutes to propagate. Check status:</p>
+<pre><code class="language-bash">nslookup your-app-name.fly.dev 8.8.8.8
+</code></pre>
+<p>If DNS isn&#39;t resolving on your machine, flush your DNS cache:</p>
+<p><strong>macOS:</strong></p>
+<pre><code class="language-bash">sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
+</code></pre>
+<p><strong>Linux:</strong></p>
+<pre><code class="language-bash">sudo systemd-resolve --flush-caches
+</code></pre>
+<h3>5.2 Access Web UI</h3>
+<p>Open in browser with the tokenized URL:</p>
+<pre><code>https://your-app-name.fly.dev/?token=YOUR-TOKEN-HERE
+</code></pre>
+<p>You&#39;ll see &quot;disconnected (1008): pairing required&quot; - this is normal!</p>
+<h3>5.3 Approve Device Pairing</h3>
+<p>While the browser is open and attempting to connect, approve the pairing:</p>
+<pre><code class="language-bash">fly ssh console -a your-app-name
+</code></pre>
+<p>Then run:</p>
+<pre><code class="language-bash">node -e &quot;
+const fs = require(&#39;fs&#39;);
+const pending = JSON.parse(fs.readFileSync(&#39;/data/devices/pending.json&#39;));
+const paired = JSON.parse(fs.readFileSync(&#39;/data/devices/paired.json&#39;) || &#39;{}&#39;);
+const requestId = Object.keys(pending)[0];
+if (requestId) {
+  const device = pending[requestId];
+  paired[device.deviceId] = {
+    deviceId: device.deviceId,
+    publicKey: device.publicKey,
+    platform: device.platform,
+    clientId: device.clientId,
+    role: device.role,
+    roles: device.roles,
+    scopes: device.scopes,
+    approvedAt: Date.now(),
+    approvedBy: &#39;cli&#39;
+  };
+  delete pending[requestId];
+  fs.writeFileSync(&#39;/data/devices/pending.json&#39;, JSON.stringify(pending, null, 2));
+  fs.writeFileSync(&#39;/data/devices/paired.json&#39;, JSON.stringify(paired, null, 2));
+  console.log(&#39;Approved device:&#39;, device.deviceId);
+} else {
+  console.log(&#39;No pending devices&#39;);
+}
+&quot;
+</code></pre>
+<h3>5.4 Refresh Browser</h3>
+<p>After approval, refresh your browser. You should now be connected! 🎉</p>
+<h2>Troubleshooting</h2>
+<h3>Gateway Token Mismatch</h3>
+<p><strong>Symptoms:</strong> <code>unauthorized: gateway token mismatch</code></p>
+<p><strong>Fix:</strong> Token in config file must match the env var:</p>
+<pre><code class="language-bash"># Check env var token
+fly ssh console -a your-app-name -C &quot;printenv CLAWDBOT_GATEWAY_TOKEN&quot;
+
+# Update config file to match
+fly ssh console -a your-app-name
+# Edit /data/moltbot.json and update gateway.auth.token
+</code></pre>
+<h3>App Not Listening / Connection Refused</h3>
+<p><strong>Symptoms:</strong> <code>instance refused connection</code> or <code>not listening on expected address</code></p>
+<p><strong>Fix:</strong> Ensure <code>--bind lan</code> in fly.toml and gateway is fully started:</p>
+<pre><code class="language-bash">fly logs -a your-app-name --no-tail | tail -50
+</code></pre>
+<p>Wait 30-60 seconds after deploy for gateway to initialize.</p>
+<h3>DNS Not Resolving</h3>
+<p><strong>Symptoms:</strong> <code>Could not resolve host</code></p>
+<p><strong>Fix:</strong> </p>
+<ol>
+<li>Wait 2-5 minutes for DNS propagation</li>
+<li>Use Google DNS: <code>8.8.8.8</code> or <code>1.1.1.1</code></li>
+<li>Flush local DNS cache (see Phase 5.1)</li>
+</ol>
+<h3>Config Validation Errors</h3>
+<p><strong>Symptoms:</strong> Gateway exits with &quot;Invalid input&quot; or validation errors</p>
+<p><strong>Fix:</strong> Check config syntax:</p>
+<pre><code class="language-bash">fly ssh console -a your-app-name -C &quot;cat /data/moltbot.json&quot;
+</code></pre>
+<p>Common issues:</p>
+<ul>
+<li><strong>Invalid <code>auth.mode</code></strong>: Only <code>&quot;token&quot;</code> is valid (not <code>&quot;off&quot;</code>)</li>
+<li>Missing commas in JSON</li>
+<li>Mismatched quotes</li>
+</ul>
+<h3>State Not Persisting</h3>
+<p><strong>Symptoms:</strong> Config/devices reset after restart</p>
+<p><strong>Fix:</strong> Ensure <code>CLAWDBOT_STATE_DIR=/data</code> is set in fly.toml <code>[env]</code> section.</p>
+<h3>Stuck Deployment</h3>
+<p><strong>Symptoms:</strong> Machine keeps restarting or won&#39;t stabilize</p>
+<p><strong>Nuclear option (fastest):</strong></p>
+<pre><code class="language-bash">fly apps destroy your-app-name -y
+# Then re-run Phase 2 onwards with fresh setup
+</code></pre>
+<h2>Advanced: Trusted Proxies (Optional)</h2>
+<p>If you see proxy warnings in logs, add trusted proxies:</p>
+<pre><code class="language-bash">fly ssh console -a your-app-name
+</code></pre>
+<pre><code class="language-bash">node -e &quot;
+const fs = require(&#39;fs&#39;);
+const config = JSON.parse(fs.readFileSync(&#39;/data/moltbot.json&#39;));
+config.gateway.trustedProxies = [
+  &#39;172.16.0.0/12&#39;,
+  &#39;10.0.0.0/8&#39;
+];
+fs.writeFileSync(&#39;/data/moltbot.json&#39;, JSON.stringify(config, null, 2));
+console.log(&#39;Trusted proxies configured&#39;);
+&quot;
+</code></pre>
+<p>Restart machine after changes.</p>
+<h2>Quick Reference</h2>
+<pre><code class="language-bash"># Check status
+fly status -a APP
+
+# View logs
+fly logs -a APP --no-tail | tail -50
+
+# SSH into machine
+fly ssh console -a APP
+
+# Restart machine
+fly machines list -a APP  # Get machine ID
+fly machine restart &lt;machine-id&gt; -a APP
+
+# Check secrets
+fly secrets list -a APP
+
+# Get gateway token
+fly ssh console -a APP -C &quot;printenv CLAWDBOT_GATEWAY_TOKEN&quot;
+
+# Redeploy
+fly deploy -a APP
+</code></pre>
+<h2>Updates</h2>
+<p>To update Moltbot:</p>
+<pre><code class="language-bash">cd moltbot-deploy
+git pull
+fly deploy -a your-app-name
+</code></pre>
+<p>Config and paired devices persist on the volume across updates.</p>
+<h2>Key Lessons</h2>
+<ol>
+<li><strong><code>CLAWDBOT_STATE_DIR=/data</code></strong> is critical - without it, config location is wrong</li>
+<li><strong>Token must be in BOTH</strong> env var AND config file</li>
+<li><strong>Use <code>http_service</code></strong> not <code>[[services]]</code> (newer Fly format)</li>
+<li><strong>Device pairing is required</strong> even with token auth</li>
+<li><strong>DNS takes time</strong> - wait 2-5 minutes, flush cache if needed</li>
+<li><strong>Fresh deploy is often faster</strong> than debugging corrupted state</li>
+<li><strong>2GB RAM minimum</strong> - 512MB will OOM, 1GB may work but 2GB is recommended</li>
+</ol>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://fly.io/docs/">Fly.io Documentation</a></li>
+<li><a href="https://docs.molt.bot/platforms/fly">Moltbot Official Docs</a></li>
+<li><a href="https://github.com/clawdbot/clawdbot">Clawdbot GitHub</a></li>
+</ul>
+
+                </div>
               </div>
             </article>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/hollaugo/deploy-moltbot-to-fly/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">View on GitHub</a>
-                <a href="https://clawdhub.com/hollaugo/deploy-moltbot-to-fly" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">View on ClawdHub</a>
+                <a href="https://github.com/openclaw/skills/blob/main/skills/hollaugo/deploy-moltbot-to-fly/skill.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/hollaugo/deploy-moltbot-to-fly" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/hollaugo/deploy-moltbot-to-fly/skill.md" download class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download Source
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@hollaugo</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Moltbook</span>
+                  </div>
+                </div>
               </div>
             </aside>
           </div>

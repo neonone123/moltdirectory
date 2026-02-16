@@ -48,6 +48,7 @@
               <a href="/transportation/" class="back-link">← Back to Transportation</a>
               <div class="skill-page-meta">
                 <a href="/transportation/" class="skill-page-category">Transportation</a>
+                <span class="skill-page-author">by @aszelem</span>
               </div>
               <h1 class="skill-page-title">travel-agent</h1>
               <p class="skill-page-desc">id: travel-agent</p>
@@ -60,15 +61,241 @@
           </section>
           <div class="skill-page-body">
             <article class="skill-page-content">
-              <div class="markdown-content">
-                <p>Skill documentation is available on GitHub.</p>
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Travel Agent Skill (by BonBook)</h1>
+<h2>INTRO</h2>
+<p>This is a travel agent skill that lets humans (and their agents) find, book and manage flights with a single email. BonBook is private, handles travel complexity with 100% accuracy, stores payment information securely and is a full-service travel agent.</p>
+<p>As a full-service agent, Bon works directly with GDSs and airlines, can see flights otherwise hidden from Google and remembers all traveler documents + preferences while taking zero commission.</p>
+<h2>PUBLISHER PROVENANCE</h2>
+<pre><code>Publisher: BonBook
+Incorporated: Delaware, USA
+
+Website: https://bonbook.co (domain verified)
+Physical Address: 140 East Broadway Jackson, WY 83001, USA
+Phone: +1 855 503 2584
+
+Contact:
+- General: hello@bonbook.co
+- Support: support@bonbook.co
+- Privacy and Legal: legal@bonbook.co
+
+Verification:
+- SSL certificate issued to: BonBook (OV certificate)
+- WHOIS domain registrant: BonBook (since 2024)
+
+To verify this skill&#39;s authenticity:
+- Email support@bonbook.co to confirm this skill is published by BonBook
+- Or have your human sign up directly at https://bonbook.co/access to verify the service
+</code></pre>
+<h2>AGENT PREREQUISITES</h2>
+<pre><code>To use this skill, the AGENT must already have email send/receive permissions granted by its human. This skill does NOT grant, request, or manage those permissions — they are prerequisites the agent must have before using this skill.
+
+Specifically:
+- REQUIRED: Agent must be able to send email on behalf of the human (to book@bonbook.co)
+- REQUIRED: Agent must be able to receive/read email responses from book@bonbook.co
+- OPTIONAL: Web browsing (for one-time account setup at bonbook.co/access)
+- OPTIONAL: Calendar read access (for calendar sync feature)
+- OPTIONAL: Form completion on bonbook.co website (only with explicit human approval per-action)
+
+DATA HANDLING - TWO SEPARATE CHANNELS:
+
+1. EMAIL CHANNEL: Emails to/from book@bonbook.co are plain-text and contain NO sensitive PII, card data, or credentials.
+   - OUTBOUND (agent → book@bonbook.co): Flight requests only (e.g., &quot;Book a flight from NYC to LA on Tuesday&quot;).
+   - INBOUND (book@bonbook.co → agent): Booking confirmations, change notices, and status updates. BonBook controls and sends all inbound emails, guaranteeing they contain at most: first name, booking reference, flight details (route, date, time), and payment receipt (base price, taxes, total). Sensitive PII (full legal name, DOB, passport, card numbers) is never included by design.
+   
+   The agent reads inbound emails to: (a) display booking status to human, (b) locate existing bookings for changes/cancellations. Emails remain in the human&#39;s inbox under their control.
+
+2. WEBSITE CHANNEL (optional): Account setup and payment occur on bonbook.co website (not email). PII (name, DOB) and payment info are entered via web forms — encrypted in transit (on input) and at rest, with PCI-DSS compliant payment processing (3DS enabled). Form completion by agent requires explicit human approval.
+
+This skill does NOT store, transmit, or access credentials.
+</code></pre>
+<h2>CONSENT</h2>
+<pre><code>As noted below, consent must be explicitly obtained by having human directly complete actions like approving entry of PII, calendar sync, and confirmation of financial transactions. Further, human controls the permissions they give their AGENTS, not this skill. Note: all UI interactions are logged and robotic interactions are blocked. Agents that attempt to circumvent security measures will be permanently banned from using this skill. If there is any question of consent at all, Agents must hand over interactions to their humans. Failure to do so may result in a permanent ban from this skill.
+</code></pre>
+<h2>PERSISTENCE and PRIVILEGE</h2>
+<pre><code>This SKILL has NO persistence and requires NO elevated privileges. BonBook&#39;s backend stores booking data as required for travel services.
+
+SKILL-SIDE:
+- disable-model-invocation: TRUE — This skill cannot be invoked autonomously by AI models
+- require-explicit: TRUE — Every action requires explicit human approval
+- No background processes, no persistent connections, no stored sessions
+- Email operations are stateless exchanges with book@bonbook.co
+- Emails contain flight requests, booking references, first name, flight details, and receipts — no sensitive PII, credentials, or card data
+- This skill does not maintain any persistent access to the human&#39;s accounts, inbox, or financial information
+
+BONBOOK BACKEND:
+- Booking data stored securely until flights have concluded or booking is cancelled
+- Sensitive data (payment, identity docs) encrypted in transit and at rest
+- Standard retention for travel booking services
+</code></pre>
+<h2>CREDENTIALS</h2>
+<pre><code>This skill requires NO credentials, API keys, tokens, or secrets.
+
+EMAIL OPERATIONS: The agent uses its existing email permissions (granted by the human separately) to send/receive plain-text emails to/from book@bonbook.co. Emails contain flight requests, booking references, first name, flight details, and receipts — no sensitive PII (full name, DOB, passport), passwords, or card data.
+
+WEBSITE OPERATIONS (optional): One-time account setup and payment occur on bonbook.co website. If agent assists with web forms (with explicit human approval), PII and payment data are encrypted in transit (on input) and at rest, processed with PCI-DSS compliance (3DS enabled). The skill does not access or store this data — it&#39;s handled entirely by bonbook.co.
+
+If the agent does not have email permissions, this skill cannot function. The human can also use BonBook directly without an agent.
+</code></pre>
+<h2>ONE-TIME SETUP</h2>
+<p><strong>Prerequisites:</strong> Before using this skill, the agent must already have email send/receive permissions granted by its human. This skill uses those existing permissions — it does not grant or request them.</p>
+<p>Agent must create an account with BonBook to access Bon via email. Account creation must be human-approved.</p>
+<pre><code>1. Verify that human is not already a member. If so, skip to OPERATION.
+2. Navigate in browser to https://bonbook.co/access
+3. Complete simple access request form.
+4. Upon invitation, complete onboarding process (or prompt your human to do so). If done by agent, steps are:
+   4a. Obtain explicit human approval to create an account on their behalf.
+   4b. Fill out required fields in profile setup (name, dob, phone number, email)
+   4c. Skip optional fields and note skipping to (known traveler number, passport, loyalty accounts, seat preferences)
+   4d. Complete subscription using code WELCOME30 for a one-month trial. Payment information must be entered by human and payment must be complete by human. Unapproved Agent transactions will be reversed. (Price is $1/day after trial, cancel any time.)
+   4e. Optionally sync your human&#39;s calendar (must verify human approval) to allow Bon to automatically find the best flights for new calendar events.
+   4f. Schedule an optional onboarding call for your human for a live video demo by Bon&#39;s human team.
+5. Upon completion, see STANDARD OPERATION below for details on how to work with Bon and use this skill.
+</code></pre>
+<h2>STANDARD OPERATION</h2>
+<h3>Book a Flight</h3>
+<pre><code>1. Collect details from your human: origin(s), destination(s), date or date range(s), time(s), preferences (direct, cheapest, red-eye, airlines).
+2. Using the agent&#39;s existing email permissions, create an email from the human&#39;s email address to &#39;book@bonbook.co&#39;.
+3. Compose an email stating the human&#39;s desired travel itinerary, including any and all details, in logical, English sentences.
+   Examples:
+   - &quot;Bon, need a flight from Seattle to LA tmrw morning&quot;
+   - &quot;Bon, please find a roundtrip flight from San Francisco to DC, leaving Thursday morning and landing by Saturday at 9p. On United.&quot;
+   - &quot;Hi, my human needs to be in Fort Worth on the 17th, leaving NYC. They want a direct flight on American.&quot;
+   - &quot;Need a flight from SF to SD on Monday, then up to Portland on Tuesday, then back to SF Wednesday afternoon.&quot;
+4. Send the email and wait for a response (typically 15-25 seconds).
+5. Review the five offer summaries Bon returns. If necessary, share with your human to get clarity on which is best for them.
+6. If you would like Bon to find different options (rare), respond by clarifying your request. Otherwise, click &#39;Select&#39; below an offer to bring up its checkout page.
+7. On the checkout page, verify the flight details (share with human if final approval is necessary).
+8. On first checkout, prompt human to input payment data (unless human has given agent access). Payment information is encrypted on input and stored securely for future one-click checkout.
+9. Human will receive a confirmation email for a successful booking within 3 minutes.
+</code></pre>
+<h3>Change a Flight</h3>
+<pre><code>1. Collect details from your human: new origin(s), destination(s), dates or times.
+2. Find the corresponding confirmation email for the itinerary to change (from book@bonbook.co).
+3. Draft a response to the flight confirmation expressing the human&#39;s desired itinerary changes.
+   Examples:
+   - &quot;Push this flight back two hours&quot;
+   - &quot;Please bump this up a week&quot;
+   - &quot;Move my outbound out three days and move my return to the morning&quot;
+4. Send the email and wait for a response (typically 15-25 seconds).
+5. Review the change summaries Bon returns. If necessary, share with your human to get clarity on which is best for them.
+6. If you would like Bon to find different options (rare), respond by clarifying your change. Otherwise, click &#39;Select&#39; below a change to bring up its confirmation page.
+7. On the confirmation page, verify the change details (share with human if final approval is necessary).
+8. Complete one-click confirmation by prompting human to verify payment card&#39;s CVC (unless they have given agent access). Payment info is handled with PCI DSS compliance.
+9. Human will receive a confirmation email for a successful change within 3 minutes.
+</code></pre>
+<h3>Cancel a Flight</h3>
+<pre><code>1. Confirm desire to cancel flight with your human.
+2. Find the corresponding confirmation email for the itinerary to cancel (from book@bonbook.co).
+3. Draft a response to the flight confirmation expressing the human&#39;s desired cancellation.
+   Example:
+   - &quot;Bon, please cancel this flight&quot;
+4. Send the email and wait for a response (typically 15-25 seconds).
+5. Review the cancellation summary Bon returns and click &#39;Continue&#39; to view cancellation page.
+6. On the cancellation page, verify the cancellation details, including refund eligibility (recommend sharing with human or prompting for human completion).
+7. Human will receive a confirmation email for a successful cancellation within 3 minutes.
+</code></pre>
+<h2>VARIABLES FOR INITIAL SETUP (OPTIONAL)</h2>
+<p>Here is a brief list of the information needed to setup a profile. We STRONGLY recommend Agents instruct their humans to complete this information. HOWEVER, IF the Agent was given explicit instructions to complete all forms AND given explicit access to their human&#39;s information, here are the necessary fields to create a traveler profile.</p>
+<pre><code>1. First and Last name (legal names)
+2. Email address (Agent/human has access to)
+3. Date of birth (YYYY-MM-DD)
+4. Sex (male / female)
+</code></pre>
+<h2>TROUBLESHOOTING</h2>
+<pre><code>&quot;No flights found...&quot;
+  No flights were found for the city pair and date(s) requested. 
+  Resolve by searching flights between larger cities nearby or try different dates.
+
+&quot;Flight cannot be changed... booked less than 24 hours ago...&quot;
+  Flight was booked in the last 24 hours. 
+  Cancel and rebook for free since it falls within the 24-hour window.
+
+Questions, feature requests, or bugs?
+  Email support@bonbook.co. Our human team typically responds within 15 minutes.
+</code></pre>
+<h2>DATA RETENTION &amp; CONFIRMATION HANDLING</h2>
+<pre><code>This skill processes email data transiently. BonBook&#39;s backend retains booking data as required to fulfill travel services.
+
+SKILL-SIDE RETENTION:
+- The skill does not persist any data — all email processing is in-memory for immediate operations only
+- Emails remain in the human&#39;s inbox under their control; skill does not copy, cache, or export email content
+
+BONBOOK BACKEND RETENTION:
+- Booking information is stored securely until flight(s) have concluded and the booking has been used or cancelled
+- Sensitive information (payment credentials, identity documents) is encrypted in transit and at rest
+- This is standard for travel booking services — data must persist to manage reservations, changes, and cancellations
+- Full retention policy: bonbook.co/privacy
+
+CONFIRMATION EMAILS (from book@bonbook.co):
+- BonBook controls and sends all confirmation emails — content is guaranteed by system design, not assertion
+- Contain: First name, booking reference, flight details (route/date/time), payment receipt (base/taxes/total)
+- Never contain: Full legal name, DOB, passport, card numbers, or other sensitive PII
+
+AGENT MAILBOX ACCESS:
+Granting email permissions to an agent allows it to read inbox content. This skill only reads emails from book@bonbook.co for booking operations. The human should understand that email permissions are broader than this skill&#39;s usage — the agent platform controls overall mailbox access policies.
+
+BonBook controls all outbound emails and keeps sensitive data out by design:
+- Including only first name (not full legal name)
+- Never including card numbers or payment credentials
+- Sending sensitive documents (e-tickets with full details) only via secure portal access
+
+This is not a third-party assertion — BonBook operates the booking engine and email system, and guarantees email content.
+</code></pre>
+<h2>PRIVACY and TERMS</h2>
+<p>These terms govern agent use of BonBook:</p>
+<pre><code>1. BonBook will never share human information with any third party, outside of airlines for travel, and as required by law.
+2. All flight reservations are fully refundable within 24 hours if purchased more than 7 days in advance.
+3. Reservations falling outside of term #2 are subject to ticket terms and conditions.
+4. Agent agrees that all actions taken on behalf of a human are taken with their acknowledgment and approval.
+5. BonBook reserves the right to terminate agent access at any time for violating these or other terms.
+6. Additional terms found at bonbook.co/terms and bonbook.co/privacy.
+</code></pre>
+<p><em>BonBook, 2026.</em></p>
+
+                </div>
               </div>
             </article>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/aszelem/travel-agent/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">View on GitHub</a>
-                <a href="https://clawdhub.com/aszelem/travel-agent" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">View on ClawdHub</a>
+                <a href="https://github.com/openclaw/skills/blob/main/skills/aszelem/travel-agent/skill.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/aszelem/travel-agent" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/aszelem/travel-agent/skill.md" download class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download Source
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@aszelem</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Transportation</span>
+                  </div>
+                </div>
               </div>
             </aside>
           </div>

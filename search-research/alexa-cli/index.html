@@ -48,6 +48,7 @@
               <a href="/search-research/" class="back-link">← Back to Search & Research</a>
               <div class="skill-page-meta">
                 <a href="/search-research/" class="skill-page-category">Search & Research</a>
+                <span class="skill-page-author">by @buddyh</span>
               </div>
               <h1 class="skill-page-title">alexa-cli</h1>
               <p class="skill-page-desc">Control Amazon Alexa devices and smart home via the `alexacli` CLI</p>
@@ -60,15 +61,206 @@
           </section>
           <div class="skill-page-body">
             <article class="skill-page-content">
-              <div class="markdown-content">
-                <p>Skill documentation is available on GitHub.</p>
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Alexa CLI</h1>
+<p>Use <code>alexacli</code> to control Amazon Echo devices and smart home via the unofficial Alexa API.</p>
+<h2>Authentication</h2>
+<pre><code class="language-bash"># Browser login (recommended)
+alexacli auth
+
+# Non-US accounts
+alexacli auth --domain amazon.de
+alexacli auth --domain amazon.co.uk
+
+# Check auth status
+alexacli auth status
+alexacli auth status --verify    # validate token against API
+
+# Remove credentials
+alexacli auth logout
+</code></pre>
+<p>Token is valid <del>14 days. Configuration stored in `</del>/.alexa-cli/config.json`.</p>
+<h2>Devices</h2>
+<pre><code class="language-bash">alexacli devices
+alexacli devices --json
+</code></pre>
+<h2>Text-to-Speech</h2>
+<pre><code class="language-bash"># Speak on a specific device
+alexacli speak &quot;Hello world&quot; -d &quot;Kitchen Echo&quot;
+
+# Announce to ALL devices
+alexacli speak &quot;Dinner is ready!&quot; --announce
+
+# Device name matching is flexible
+alexacli speak &quot;Build complete&quot; -d Kitchen
+</code></pre>
+<h2>Voice Commands (Smart Home Control)</h2>
+<p>Send any command as if you spoke it to Alexa:</p>
+<pre><code class="language-bash"># Lights, switches, plugs
+alexacli command &quot;turn off the living room lights&quot; -d Kitchen
+alexacli command &quot;dim the bedroom lights to 50 percent&quot; -d Bedroom
+
+# Thermostats
+alexacli command &quot;set thermostat to 72 degrees&quot; -d Bedroom
+alexacli command &quot;what&#39;s the temperature inside&quot; -d Kitchen
+
+# Locks
+alexacli command &quot;lock the front door&quot; -d Kitchen
+
+# Music
+alexacli command &quot;play jazz music&quot; -d &quot;Living Room&quot;
+alexacli command &quot;stop&quot; -d &quot;Living Room&quot;
+
+# Questions
+alexacli command &quot;what&#39;s the weather&quot; -d Kitchen
+
+# Timers
+alexacli command &quot;set a timer for 10 minutes&quot; -d Kitchen
+</code></pre>
+<h2>Ask (Get Response Back)</h2>
+<p>Send a command and capture Alexa&#39;s text response:</p>
+<pre><code class="language-bash">alexacli ask &quot;what&#39;s the thermostat set to&quot; -d Kitchen
+# Output: The thermostat is set to 68 degrees.
+
+alexacli ask &quot;what&#39;s on my calendar today&quot; -d Kitchen --json
+</code></pre>
+<h2>Alexa+ (LLM Conversations)</h2>
+<p>Interact with Amazon&#39;s LLM-powered assistant:</p>
+<pre><code class="language-bash"># Quick start - auto-selects conversation
+alexacli askplus -d &quot;Echo Show&quot; &quot;What&#39;s the capital of France?&quot;
+
+# Multi-turn retains context
+alexacli askplus -d &quot;Echo Show&quot; &quot;What about Germany?&quot;
+
+# List conversations
+alexacli conversations
+
+# View conversation history
+alexacli fragments &quot;amzn1.conversation.xxx&quot;
+</code></pre>
+<h2>Audio Playback</h2>
+<p>Play MP3 audio through Echo devices:</p>
+<pre><code class="language-bash">alexacli play --url &quot;https://example.com/audio.mp3&quot; -d &quot;Echo Show&quot;
+</code></pre>
+<p>Requirements: MP3 at 48kbps, 22050Hz sample rate, HTTPS URL.</p>
+<h2>History</h2>
+<pre><code class="language-bash">alexacli history
+alexacli history --limit 5
+alexacli history --json
+</code></pre>
+<h2>Command Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>alexacli devices</code></td>
+<td>List all Echo devices</td>
+</tr>
+<tr>
+<td><code>alexacli speak &lt;text&gt; -d &lt;device&gt;</code></td>
+<td>Text-to-speech on device</td>
+</tr>
+<tr>
+<td><code>alexacli speak &lt;text&gt; --announce</code></td>
+<td>Announce to all devices</td>
+</tr>
+<tr>
+<td><code>alexacli command &lt;text&gt; -d &lt;device&gt;</code></td>
+<td>Voice command (smart home, music, etc.)</td>
+</tr>
+<tr>
+<td><code>alexacli ask &lt;text&gt; -d &lt;device&gt;</code></td>
+<td>Send command, get response back</td>
+</tr>
+<tr>
+<td><code>alexacli conversations</code></td>
+<td>List Alexa+ conversation IDs</td>
+</tr>
+<tr>
+<td><code>alexacli fragments &lt;id&gt;</code></td>
+<td>View Alexa+ conversation history</td>
+</tr>
+<tr>
+<td><code>alexacli askplus -d &lt;device&gt; &lt;text&gt;</code></td>
+<td>Alexa+ LLM conversation</td>
+</tr>
+<tr>
+<td><code>alexacli play --url &lt;url&gt; -d &lt;device&gt;</code></td>
+<td>Play MP3 via SSML</td>
+</tr>
+<tr>
+<td><code>alexacli auth</code></td>
+<td>Browser login or manual token</td>
+</tr>
+<tr>
+<td><code>alexacli auth status [--verify]</code></td>
+<td>Show auth status</td>
+</tr>
+<tr>
+<td><code>alexacli auth logout</code></td>
+<td>Remove credentials</td>
+</tr>
+<tr>
+<td><code>alexacli history</code></td>
+<td>View recent voice activity</td>
+</tr>
+</tbody></table>
+<h2>Notes</h2>
+<ul>
+<li>Uses Amazon&#39;s unofficial API (same as Alexa app)</li>
+<li>Refresh token valid ~14 days, re-run <code>alexacli auth</code> if expired</li>
+<li>Device names support partial, case-insensitive matching</li>
+<li>For AI/agentic use, <code>alexacli command</code> with natural language is preferred</li>
+<li>Add <code>--verbose</code> or <code>-v</code> to any command for debug output</li>
+</ul>
+
+                </div>
               </div>
             </article>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/buddyh/alexa-cli/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">View on GitHub</a>
-                <a href="https://clawdhub.com/buddyh/alexa-cli" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">View on ClawdHub</a>
+                <a href="https://github.com/openclaw/skills/blob/main/skills/buddyh/alexa-cli/skill.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/buddyh/alexa-cli" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/buddyh/alexa-cli/skill.md" download class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download Source
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@buddyh</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Search & Research</span>
+                  </div>
+                </div>
               </div>
             </aside>
           </div>

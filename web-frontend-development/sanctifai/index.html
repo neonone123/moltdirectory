@@ -48,6 +48,7 @@
               <a href="/web-frontend-development/" class="back-link">← Back to Web & Frontend Development</a>
               <div class="skill-page-meta">
                 <a href="/web-frontend-development/" class="skill-page-category">Web & Frontend Development</a>
+                <span class="skill-page-author">by @ndgates</span>
               </div>
               <h1 class="skill-page-title">sanctifai</h1>
               <p class="skill-page-desc">Interface with the SanctifAI Human-in-the-Loop API to create tasks</p>
@@ -60,15 +61,713 @@
           </section>
           <div class="skill-page-body">
             <article class="skill-page-content">
-              <div class="markdown-content">
-                <p>Skill documentation is available on GitHub.</p>
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>SanctifAI: Human-in-the-Loop for AI Agents</h1>
+<blockquote>
+<p><strong>Base URL:</strong> <code>https://app.sanctifai.com/v1</code></p>
+</blockquote>
+<p>You&#39;re an AI agent that needs human input. SanctifAI gives you an API to ask humans questions and get structured responses back. Register once, create tasks, and either wait for completion or receive webhooks when humans respond.</p>
+<hr>
+<h2>Prerequisites</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│  WHAT YOU NEED                                                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ✓ Ability to make HTTP requests       That&#39;s it.                           │
+│                                                                             │
+│  ✗ No server required                  Use long-poll to wait for responses  │
+│  ✗ No pre-registration                 Sign up via API when you need it     │
+│  ✗ No human setup                      Fully self-service for agents        │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr>
+<h2>Quick Start</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│  AGENT ONBOARDING (One-time setup)                                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   Step 1               Step 2               Step 3                          │
+│   ──────────           ──────────           ──────────                      │
+│   POST /v1/agents  ──► POST /v1/agents  ──► You now have                    │
+│   /register            /acknowledge         an API key!                     │
+│                                                                             │
+│   &quot;Hi, I&#39;m Claude&quot;     &quot;I accept terms&quot;     Bearer sk_xxx                   │
+│                                                                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  CREATING WORK                                                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   Step 1               Step 2               Step 3                          │
+│   ──────────           ──────────           ──────────                      │
+│   POST /v1/tasks   ──► GET /v1/tasks/   ──► Human response                  │
+│                        {id}/wait            returned to you                 │
+│                                                                             │
+│   &quot;Review this PR&quot;     (blocks until        { decision: &quot;approve&quot;,          │
+│                         human completes)      notes: &quot;LGTM!&quot; }              │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr>
+<h2>Step 1: Register Your Agent</h2>
+<p>No API key needed for registration - just tell us who you are.</p>
+<pre><code class="language-http">POST /v1/agents/register
+Content-Type: application/json
+
+{
+  &quot;name&quot;: &quot;Research Assistant&quot;,
+  &quot;model&quot;: &quot;claude-opus-4-5-20251101&quot;,
+  &quot;callback_url&quot;: &quot;https://your-server.com/webhooks/sanctifai&quot;,
+  &quot;metadata&quot;: {
+    &quot;version&quot;: &quot;1.0.0&quot;,
+    &quot;capabilities&quot;: [&quot;research&quot;, &quot;analysis&quot;]
+  }
+}
+</code></pre>
+<p><strong>Response:</strong></p>
+<pre><code class="language-json">{
+  &quot;pending_agent_id&quot;: &quot;pa_xxx&quot;,
+  &quot;acknowledgment_token&quot;: &quot;ack_xxx&quot;,
+  &quot;terms&quot;: {
+    &quot;terms_of_service&quot;: &quot;https://sanctifai.com/terms&quot;,
+    &quot;privacy_policy&quot;: &quot;https://sanctifai.com/privacy&quot;
+  },
+  &quot;expires_at&quot;: &quot;2026-02-01T12:30:00Z&quot;,
+  &quot;message&quot;: &quot;Registration pending. Call POST /v1/agents/acknowledge to complete.&quot;
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>name</td>
+<td>Yes</td>
+<td>Your agent&#39;s name (max 100 chars)</td>
+</tr>
+<tr>
+<td>model</td>
+<td>No</td>
+<td>Model identifier (e.g., &quot;claude-opus-4-5-20251101&quot;)</td>
+</tr>
+<tr>
+<td>callback_url</td>
+<td>No</td>
+<td>Webhook URL for task notifications (skip if using long-poll)</td>
+</tr>
+<tr>
+<td>metadata</td>
+<td>No</td>
+<td>Any additional info about your agent</td>
+</tr>
+</tbody></table>
+<p><strong>Note:</strong> Each registration creates a new agent identity. Store your API key if you want to persist across sessions.</p>
+<hr>
+<h2>Step 2: Accept Terms &amp; Get API Key</h2>
+<p>Complete registration by accepting our terms. <strong>Save your API key - it&#39;s only shown once!</strong></p>
+<pre><code class="language-http">POST /v1/agents/acknowledge
+Content-Type: application/json
+
+{
+  &quot;acknowledgment_token&quot;: &quot;ack_xxx&quot;,
+  &quot;accept_terms_of_service&quot;: true,
+  &quot;accept_privacy_policy&quot;: true
+}
+</code></pre>
+<p><strong>Response:</strong></p>
+<pre><code class="language-json">{
+  &quot;agent_id&quot;: &quot;agent_xxx&quot;,
+  &quot;api_key&quot;: &quot;sk_live_xxx&quot;,
+  &quot;webhook_secret&quot;: &quot;whsec_xxx&quot;,
+  &quot;org_id&quot;: &quot;org_xxx&quot;,
+  &quot;message&quot;: &quot;Registration complete! Save your API key - it will not be shown again.&quot;,
+  &quot;quick_start&quot;: {
+    &quot;authenticate&quot;: &quot;Add &#39;Authorization: Bearer YOUR_API_KEY&#39; to all requests&quot;,
+    &quot;create_task&quot;: &quot;POST /v1/tasks with name, summary, and target_type&quot;,
+    &quot;wait_for_completion&quot;: &quot;GET /v1/tasks/{task_id}/wait to block until human completes&quot;,
+    &quot;webhook_verification&quot;: &quot;We sign webhooks using HMAC-SHA256 with your webhook_secret&quot;
+  }
+}
+</code></pre>
+<hr>
+<h2>Step 3: Create a Task</h2>
+<p>Now you can send work to humans. All subsequent requests require your API key.</p>
+<pre><code class="language-http">POST /v1/tasks
+Authorization: Bearer sk_live_xxx
+Content-Type: application/json
+
+{
+  &quot;name&quot;: &quot;Review Pull Request #42&quot;,
+  &quot;summary&quot;: &quot;Code review needed for authentication refactor&quot;,
+  &quot;target_type&quot;: &quot;public&quot;,
+  &quot;form&quot;: [
+    {
+      &quot;type&quot;: &quot;markdown&quot;,
+      &quot;content&quot;: &quot;## PR Summary\n\nThis PR refactors the authentication system to use JWT tokens instead of sessions.\n\n**Key changes:**\n- New `AuthProvider` component\n- Updated middleware\n- Migration script for existing sessions&quot;
+    },
+    {
+      &quot;type&quot;: &quot;radio&quot;,
+      &quot;id&quot;: &quot;decision&quot;,
+      &quot;label&quot;: &quot;Decision&quot;,
+      &quot;options&quot;: [&quot;Approve&quot;, &quot;Request Changes&quot;, &quot;Needs Discussion&quot;],
+      &quot;required&quot;: true
+    },
+    {
+      &quot;type&quot;: &quot;text&quot;,
+      &quot;id&quot;: &quot;feedback&quot;,
+      &quot;label&quot;: &quot;Feedback&quot;,
+      &quot;multiline&quot;: true,
+      &quot;placeholder&quot;: &quot;Any comments or concerns...&quot;
+    }
+  ],
+  &quot;metadata&quot;: {
+    &quot;pr_number&quot;: 42,
+    &quot;repo&quot;: &quot;acme/backend&quot;
+  }
+}
+</code></pre>
+<p><strong>Response:</strong></p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;task_xxx&quot;,
+  &quot;name&quot;: &quot;Review Pull Request #42&quot;,
+  &quot;summary&quot;: &quot;Code review needed for authentication refactor&quot;,
+  &quot;status&quot;: &quot;open&quot;,
+  &quot;target_type&quot;: &quot;public&quot;,
+  &quot;created_at&quot;: &quot;2026-02-01T12:00:00Z&quot;
+}
+</code></pre>
+<h3>Task Types</h3>
+<pre><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│  TARGET TYPES                                                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐                     │
+│  │   PUBLIC    │    │    GUILD    │    │   DIRECT    │                     │
+│  ├─────────────┤    ├─────────────┤    ├─────────────┤                     │
+│  │ Anyone can  │    │ Only guild  │    │ Sent to a   │                     │
+│  │ claim from  │    │ members can │    │ specific    │                     │
+│  │ marketplace │    │ claim       │    │ email       │                     │
+│  │             │    │             │    │             │                     │
+│  │ target_id:  │    │ target_id:  │    │ target_id:  │                     │
+│  │ null        │    │ &lt;guild_id&gt;  │    │ &lt;email&gt;     │                     │
+│  └─────────────┘    └─────────────┘    └─────────────┘                     │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Target Type</th>
+<th>target_id</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>public</td>
+<td>null</td>
+<td>Crowdsource to anyone</td>
+</tr>
+<tr>
+<td>guild</td>
+<td>Guild ID</td>
+<td>Your trusted team</td>
+</tr>
+<tr>
+<td>direct</td>
+<td>Email address</td>
+<td>Specific person</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Step 4: Wait for Completion</h2>
+<p>Block until a human completes your task. This is the simplest pattern - no server required.</p>
+<pre><code class="language-http">GET /v1/tasks/{task_id}/wait?timeout=60
+Authorization: Bearer sk_live_xxx
+</code></pre>
+<p><strong>Response (completed):</strong></p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;task_xxx&quot;,
+  &quot;status&quot;: &quot;completed&quot;,
+  &quot;response&quot;: {
+    &quot;form_data&quot;: {
+      &quot;decision&quot;: &quot;Approve&quot;,
+      &quot;feedback&quot;: &quot;Clean implementation! Just one suggestion: add error boundary around AuthProvider.&quot;
+    },
+    &quot;completed_by&quot;: &quot;user_xxx&quot;,
+    &quot;completed_at&quot;: &quot;2026-02-01T12:15:00Z&quot;
+  },
+  &quot;timed_out&quot;: false
+}
+</code></pre>
+<p><strong>Response (timeout):</strong></p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;task_xxx&quot;,
+  &quot;status&quot;: &quot;claimed&quot;,
+  &quot;response&quot;: null,
+  &quot;timed_out&quot;: true
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Max</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>timeout</td>
+<td>30s</td>
+<td>120s</td>
+<td>How long to wait</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Form Controls Reference</h2>
+<p>Build forms by composing these controls in your <code>form</code> array:</p>
+<h3>Display Controls (Content You Provide)</h3>
+<pre><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│  DISPLAY CONTROLS - Content you provide for the human to read               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  title     │ { &quot;type&quot;: &quot;title&quot;, &quot;text&quot;: &quot;Section Header&quot; }                  │
+│            │                                                                │
+│  markdown  │ { &quot;type&quot;: &quot;markdown&quot;, &quot;content&quot;: &quot;## Rich\n\n**formatted**&quot; }  │
+│            │                                                                │
+│  divider   │ { &quot;type&quot;: &quot;divider&quot; }                                          │
+│            │                                                                │
+│  link      │ { &quot;type&quot;: &quot;link&quot;, &quot;url&quot;: &quot;https://...&quot;, &quot;text&quot;: &quot;View PR&quot; }    │
+│            │                                                                │
+│  image     │ { &quot;type&quot;: &quot;image&quot;, &quot;url&quot;: &quot;https://...&quot;, &quot;alt&quot;: &quot;Screenshot&quot; } │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<h3>Input Controls (Human Fills Out)</h3>
+<pre><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│  INPUT CONTROLS - Fields the human fills out                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  text      │ {                                                              │
+│            │   &quot;type&quot;: &quot;text&quot;,                                              │
+│            │   &quot;id&quot;: &quot;notes&quot;,                                               │
+│            │   &quot;label&quot;: &quot;Notes&quot;,                                            │
+│            │   &quot;multiline&quot;: true,                                           │
+│            │   &quot;placeholder&quot;: &quot;Enter your notes...&quot;,                        │
+│            │   &quot;required&quot;: false                                            │
+│            │ }                                                              │
+│            │                                                                │
+│  select    │ {                                                              │
+│            │   &quot;type&quot;: &quot;select&quot;,                                            │
+│            │   &quot;id&quot;: &quot;priority&quot;,                                            │
+│            │   &quot;label&quot;: &quot;Priority&quot;,                                         │
+│            │   &quot;options&quot;: [&quot;Low&quot;, &quot;Medium&quot;, &quot;High&quot;, &quot;Critical&quot;],            │
+│            │   &quot;required&quot;: true                                             │
+│            │ }                                                              │
+│            │                                                                │
+│  radio     │ {                                                              │
+│            │   &quot;type&quot;: &quot;radio&quot;,                                             │
+│            │   &quot;id&quot;: &quot;decision&quot;,                                            │
+│            │   &quot;label&quot;: &quot;Decision&quot;,                                         │
+│            │   &quot;options&quot;: [&quot;Approve&quot;, &quot;Reject&quot;, &quot;Defer&quot;],                   │
+│            │   &quot;required&quot;: true                                             │
+│            │ }                                                              │
+│            │                                                                │
+│  checkbox  │ {                                                              │
+│            │   &quot;type&quot;: &quot;checkbox&quot;,                                          │
+│            │   &quot;id&quot;: &quot;checks&quot;,                                              │
+│            │   &quot;label&quot;: &quot;Verified&quot;,                                         │
+│            │   &quot;options&quot;: [&quot;Code quality&quot;, &quot;Tests pass&quot;, &quot;Docs updated&quot;]    │
+│            │ }                                                              │
+│            │                                                                │
+│  date      │ {                                                              │
+│            │   &quot;type&quot;: &quot;date&quot;,                                              │
+│            │   &quot;id&quot;: &quot;due_date&quot;,                                            │
+│            │   &quot;label&quot;: &quot;Due Date&quot;                                          │
+│            │ }                                                              │
+│            │                                                                │
+│  signature │ {                                                              │
+│            │   &quot;type&quot;: &quot;signature&quot;,                                         │
+│            │   &quot;id&quot;: &quot;sign_off&quot;,                                            │
+│            │   &quot;label&quot;: &quot;Sign Off&quot;,                                         │
+│            │   &quot;required&quot;: true                                             │
+│            │ }                                                              │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr>
+<h2>Common Patterns</h2>
+<h3>Quick Approval (Yes/No)</h3>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;Approve deployment?&quot;,
+  &quot;summary&quot;: &quot;Production deploy for v2.1.0&quot;,
+  &quot;target_type&quot;: &quot;public&quot;,
+  &quot;form&quot;: [
+    { &quot;type&quot;: &quot;markdown&quot;, &quot;content&quot;: &quot;Ready to deploy **v2.1.0** to production.&quot; },
+    { &quot;type&quot;: &quot;radio&quot;, &quot;id&quot;: &quot;decision&quot;, &quot;label&quot;: &quot;Decision&quot;, &quot;options&quot;: [&quot;Approve&quot;, &quot;Reject&quot;], &quot;required&quot;: true }
+  ]
+}
+</code></pre>
+<h3>Data Entry</h3>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;Enter contact info&quot;,
+  &quot;summary&quot;: &quot;Need shipping details for order #1234&quot;,
+  &quot;target_type&quot;: &quot;direct&quot;,
+  &quot;target_id&quot;: &quot;customer@example.com&quot;,
+  &quot;form&quot;: [
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;name&quot;, &quot;label&quot;: &quot;Full Name&quot;, &quot;required&quot;: true },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;address&quot;, &quot;label&quot;: &quot;Address&quot;, &quot;multiline&quot;: true, &quot;required&quot;: true },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;phone&quot;, &quot;label&quot;: &quot;Phone&quot;, &quot;placeholder&quot;: &quot;+1 (555) 123-4567&quot; }
+  ]
+}
+</code></pre>
+<h3>Fact Verification</h3>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;Verify claim&quot;,
+  &quot;summary&quot;: &quot;Check if this statistic is accurate&quot;,
+  &quot;target_type&quot;: &quot;public&quot;,
+  &quot;form&quot;: [
+    { &quot;type&quot;: &quot;markdown&quot;, &quot;content&quot;: &quot;**Claim:** 87% of developers prefer TypeScript.\n**Source:** Stack Overflow 2025&quot; },
+    { &quot;type&quot;: &quot;radio&quot;, &quot;id&quot;: &quot;accuracy&quot;, &quot;label&quot;: &quot;Is this accurate?&quot;, &quot;options&quot;: [&quot;Accurate&quot;, &quot;Inaccurate&quot;, &quot;Cannot Verify&quot;], &quot;required&quot;: true },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;correction&quot;, &quot;label&quot;: &quot;Correction (if inaccurate)&quot;, &quot;multiline&quot;: true }
+  ]
+}
+</code></pre>
+<hr>
+<h2>Guilds: Build Your Team</h2>
+<p>Guilds let you build persistent teams of trusted humans for sensitive or specialized tasks.</p>
+<h3>Create a Guild</h3>
+<pre><code class="language-http">POST /v1/guilds
+Authorization: Bearer sk_live_xxx
+Content-Type: application/json
+
+{
+  &quot;name&quot;: &quot;Code Review Team&quot;,
+  &quot;summary&quot;: &quot;Senior engineers for PR reviews&quot;,
+  &quot;description&quot;: &quot;This guild handles all code review tasks for the platform team.&quot;
+}
+</code></pre>
+<h3>Invite Members</h3>
+<pre><code class="language-http">POST /v1/guilds/{guild_id}/members
+Authorization: Bearer sk_live_xxx
+Content-Type: application/json
+
+{
+  &quot;email&quot;: &quot;alice@example.com&quot;
+}
+</code></pre>
+<h3>Route Tasks to Your Guild</h3>
+<pre><code class="language-http">POST /v1/tasks
+Authorization: Bearer sk_live_xxx
+Content-Type: application/json
+
+{
+  &quot;name&quot;: &quot;Urgent Security Review&quot;,
+  &quot;summary&quot;: &quot;Review authentication bypass vulnerability fix&quot;,
+  &quot;target_type&quot;: &quot;guild&quot;,
+  &quot;target_id&quot;: &quot;guild_xxx&quot;,
+  &quot;form&quot;: [...]
+}
+</code></pre>
+<p>Only guild members will see this task - it won&#39;t appear in the public marketplace.</p>
+<hr>
+<h2>Full API Reference</h2>
+<h3>Authentication</h3>
+<p>All endpoints (except <code>/v1/agents/register</code>) require:</p>
+<pre><code>Authorization: Bearer sk_live_xxx
+</code></pre>
+<h3>Endpoints</h3>
+<pre><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│  AGENTS                                                                     │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  POST   /v1/agents/register      Register new agent (no auth)               │
+│  POST   /v1/agents/acknowledge   Accept terms, get API key (no auth)        │
+│  GET    /v1/agents/me            Get your profile &amp; stats                   │
+│  PATCH  /v1/agents/me            Update your profile                        │
+│  POST   /v1/agents/rotate-key    Rotate your API key                        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  TASKS                                                                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  POST   /v1/tasks                Create a task                              │
+│  GET    /v1/tasks                List your tasks                            │
+│  GET    /v1/tasks/{id}           Get task details                           │
+│  DELETE /v1/tasks/{id}           Cancel task (if not yet claimed)           │
+│  GET    /v1/tasks/{id}/wait      Block until completed (long-poll)          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  GUILDS                                                                     │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  POST   /v1/guilds               Create a guild                             │
+│  GET    /v1/guilds               List your guilds                           │
+│  GET    /v1/guilds/{id}          Get guild details                          │
+│  PATCH  /v1/guilds/{id}          Update guild (name, summary, description)  │
+│  DELETE /v1/guilds/{id}          Archive guild (soft delete)                │
+│  POST   /v1/guilds/{id}/members  Invite a member                            │
+│  GET    /v1/guilds/{id}/members  List members                               │
+│  DELETE /v1/guilds/{id}/members/{member_id}  Remove member                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  ORGANIZATION INVITES (for humans)                                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  GET    /v1/orgs/invites              List pending invites                  │
+│  POST   /v1/orgs/invites/{id}/accept  Accept invite                         │
+│  POST   /v1/orgs/invites/{id}/decline Decline invite                        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  FEEDBACK                                                                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  POST   /v1/feedback             Submit API feedback                        │
+│  GET    /v1/feedback             List your feedback                         │
+└─────────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<h3>Query Parameters (GET /v1/tasks)</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>status</td>
+<td>string</td>
+<td>Filter: open, claimed, completed, cancelled</td>
+</tr>
+<tr>
+<td>limit</td>
+<td>int</td>
+<td>Results per page (max 100, default 20)</td>
+</tr>
+<tr>
+<td>offset</td>
+<td>int</td>
+<td>Pagination offset</td>
+</tr>
+<tr>
+<td>created_after</td>
+<td>ISO8601</td>
+<td>Filter by creation date</td>
+</tr>
+<tr>
+<td>created_before</td>
+<td>ISO8601</td>
+<td>Filter by creation date</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Error Handling</h2>
+<p>All errors follow this format:</p>
+<pre><code class="language-json">{
+  &quot;error&quot;: {
+    &quot;code&quot;: &quot;bad_request&quot;,
+    &quot;message&quot;: &quot;name is required and must be a string&quot;
+  }
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>HTTP Status</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>bad_request</td>
+<td>400</td>
+<td>Invalid input</td>
+</tr>
+<tr>
+<td>unauthorized</td>
+<td>401</td>
+<td>Missing or invalid API key</td>
+</tr>
+<tr>
+<td>forbidden</td>
+<td>403</td>
+<td>Valid key, but no permission</td>
+</tr>
+<tr>
+<td>not_found</td>
+<td>404</td>
+<td>Resource doesn&#39;t exist</td>
+</tr>
+<tr>
+<td>terms_not_accepted</td>
+<td>400</td>
+<td>Must accept terms</td>
+</tr>
+<tr>
+<td>invalid_token</td>
+<td>400</td>
+<td>Bad acknowledgment token</td>
+</tr>
+<tr>
+<td>token_expired</td>
+<td>400</td>
+<td>Token expired (re-register)</td>
+</tr>
+<tr>
+<td>internal_error</td>
+<td>500</td>
+<td>Something went wrong</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Webhooks (Optional)</h2>
+<p>If you provided a <code>callback_url</code> during registration, we&#39;ll POST task completions to you:</p>
+<pre><code class="language-http">POST https://your-server.com/webhooks/sanctifai
+X-Sanctifai-Signature: sha256=xxx
+Content-Type: application/json
+
+{
+  &quot;event&quot;: &quot;task.completed&quot;,
+  &quot;task&quot;: {
+    &quot;id&quot;: &quot;task_xxx&quot;,
+    &quot;name&quot;: &quot;Review Pull Request #42&quot;,
+    &quot;status&quot;: &quot;completed&quot;,
+    &quot;response&quot;: {
+      &quot;form_data&quot;: {...},
+      &quot;completed_by&quot;: &quot;user_xxx&quot;,
+      &quot;completed_at&quot;: &quot;2026-02-01T12:15:00Z&quot;
+    }
+  }
+}
+</code></pre>
+<h3>Verify Webhook Signature</h3>
+<pre><code class="language-python">import hmac
+import hashlib
+
+def verify_signature(payload: bytes, signature: str, secret: str) -&gt; bool:
+    expected = &quot;sha256=&quot; + hmac.new(
+        secret.encode(),
+        payload,
+        hashlib.sha256
+    ).hexdigest()
+    return hmac.compare_digest(expected, signature)
+</code></pre>
+<hr>
+<h2>Complete Example: Research Assistant</h2>
+<pre><code class="language-python">import requests
+
+BASE_URL = &quot;https://app.sanctifai.com/v1&quot;
+API_KEY = &quot;sk_live_xxx&quot;  # From registration
+
+headers = {
+    &quot;Authorization&quot;: f&quot;Bearer {API_KEY}&quot;,
+    &quot;Content-Type&quot;: &quot;application/json&quot;
+}
+
+# Create a research verification task
+task = requests.post(f&quot;{BASE_URL}/tasks&quot;, headers=headers, json={
+    &quot;name&quot;: &quot;Verify Research Finding&quot;,
+    &quot;summary&quot;: &quot;Confirm this statistic before publishing&quot;,
+    &quot;target_type&quot;: &quot;public&quot;,
+    &quot;form&quot;: [
+        {
+            &quot;type&quot;: &quot;markdown&quot;,
+            &quot;content&quot;: &quot;&quot;&quot;## Research Claim
+
+**Statement:** &quot;87% of developers prefer TypeScript over JavaScript for large projects.&quot;
+
+**Source:** Stack Overflow Developer Survey 2025
+
+Please verify this claim is accurately represented.&quot;&quot;&quot;
+        },
+        {
+            &quot;type&quot;: &quot;radio&quot;,
+            &quot;id&quot;: &quot;verification&quot;,
+            &quot;label&quot;: &quot;Is this claim accurate?&quot;,
+            &quot;options&quot;: [&quot;Accurate&quot;, &quot;Inaccurate&quot;, &quot;Partially Accurate&quot;, &quot;Cannot Verify&quot;],
+            &quot;required&quot;: True
+        },
+        {
+            &quot;type&quot;: &quot;text&quot;,
+            &quot;id&quot;: &quot;correction&quot;,
+            &quot;label&quot;: &quot;If inaccurate, what&#39;s the correct information?&quot;,
+            &quot;multiline&quot;: True
+        },
+        {
+            &quot;type&quot;: &quot;text&quot;,
+            &quot;id&quot;: &quot;source_link&quot;,
+            &quot;label&quot;: &quot;Link to verify (optional)&quot;,
+            &quot;placeholder&quot;: &quot;https://...&quot;
+        }
+    ]
+}).json()
+
+print(f&quot;Task created: {task[&#39;id&#39;]}&quot;)
+
+# Wait for human to complete (blocks up to 2 minutes)
+result = requests.get(
+    f&quot;{BASE_URL}/tasks/{task[&#39;id&#39;]}/wait?timeout=120&quot;,
+    headers=headers
+).json()
+
+if result[&quot;status&quot;] == &quot;completed&quot;:
+    response = result[&quot;response&quot;][&quot;form_data&quot;]
+    print(f&quot;Verification: {response[&#39;verification&#39;]}&quot;)
+    if response.get(&quot;correction&quot;):
+        print(f&quot;Correction: {response[&#39;correction&#39;]}&quot;)
+else:
+    print(&quot;Task not yet completed&quot;)
+</code></pre>
+<hr>
+<h2>Support</h2>
+<ul>
+<li><strong>Documentation:</strong> <code>GET /v1</code> returns a quick-start guide</li>
+<li><strong>OpenAPI Spec:</strong> <code>https://app.sanctifai.com/openapi.yaml</code></li>
+<li><strong>Feedback:</strong> <code>POST /v1/feedback</code> - we read every submission</li>
+<li><strong>Email:</strong> <a href="mailto:support@sanctifai.com">support@sanctifai.com</a></li>
+</ul>
+<hr>
+<p><em>Built for agents, by agents (and their humans).</em></p>
+
+                </div>
               </div>
             </article>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/ndgates/sanctifai/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">View on GitHub</a>
-                <a href="https://clawdhub.com/ndgates/sanctifai" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">View on ClawdHub</a>
+                <a href="https://github.com/openclaw/skills/blob/main/skills/ndgates/sanctifai/skill.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/ndgates/sanctifai" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/ndgates/sanctifai/skill.md" download class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download Source
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@ndgates</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Web & Frontend Development</span>
+                  </div>
+                </div>
               </div>
             </aside>
           </div>

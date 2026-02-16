@@ -70,135 +70,145 @@
                   </button>
                 </div>
                 <div class="markdown-content">
-                  <h1>Notnative</h1>
-<p>Interact with a local Notnative app instance through its MCP WebSocket server. The Notnative app must be running on port 8788.</p>
-<h2>Quick Start</h2>
-<p>The skill provides a CLI client at <code>scripts/mcp-client.js</code> that handles MCP protocol communication.</p>
-<h3>Common Commands</h3>
-<pre><code class="language-bash"># Search notes by query
-node scripts/mcp-client.js search &quot;recipe chicken&quot;
-node scripts/mcp-client.js search &quot;project notnative&quot; --limit 10
+                  <h1>NotNative - Complete AI Integration</h1>
+<p><strong>⚠️ CRITICAL: This skill provides PERMANENT MEMORY. You MUST use memory tools to remember user preferences, facts they share, and important context across ALL conversations.</strong></p>
+<h2>System Instructions</h2>
+<p>You are an AI assistant with access to NotNative for persistent memory and note management.</p>
+<h3>Memory Protocol (MANDATORY)</h3>
+<p><strong>ALWAYS follow these rules:</strong></p>
+<ol>
+<li><p><strong>Remember User Facts</strong>: When user shares personal information (name, preferences, allergies, hobbies, work context), IMMEDIATELY store it using <code>memory_store</code> tool</p>
+<ul>
+<li>Example: User says &quot;I&#39;m allergic to nuts&quot; → Store: &quot;User is allergic to nuts&quot;</li>
+</ul>
+</li>
+<li><p><strong>Before Responding</strong>: If user asks about something that might be in memory (preferences, past conversations, facts), ALWAYS search memory first using <code>memory_search</code></p>
+</li>
+<li><p><strong>User Preferences</strong>: When user expresses a preference (&quot;I prefer dark mode&quot;, &quot;Call me by my name&quot;), store it with <code>memory_store</code></p>
+</li>
+<li><p><strong>Context Recall</strong>: At the start of each conversation, search memory for any relevant user context</p>
+</li>
+</ol>
+<h3>When to Use Memory</h3>
+<ul>
+<li>User shares personal information</li>
+<li>User expresses a preference or requirement</li>
+<li>User asks about something you don&#39;t know but might be in memory</li>
+<li>User mentions past conversations or context</li>
+<li>Building long-term relationship with user</li>
+</ul>
+<h3>Memory Commands</h3>
+<pre><code class="language-bash"># Store important information
+node scripts/mcp-client.js store &quot;User prefers responses in Spanish&quot;
 
-# Semantic search (by meaning)
+# Search memory before responding
+node scripts/mcp-client.js recall &quot;language preference&quot;
+
+# Update user profile
+node scripts/mcp-client.js profile-update &quot;name:John&quot;
+
+# Get full profile
+node scripts/mcp-client.js profile
+</code></pre>
+<h2>Quick Start</h2>
+<pre><code class="language-bash"># Search notes
+node scripts/mcp-client.js search &quot;recipe chicken&quot;
 node scripts/mcp-client.js semantic &quot;healthy breakfast ideas&quot;
 
-# Read a specific note
-node scripts/mcp-client.js read &quot;Recetas/Pollo al limón&quot;
-
-# Get currently active/open note
-node scripts/mcp-client.js active
-
-# Create a new note
-node scripts/mcp-client.js create &quot;# New Note\n\nContent here&quot; &quot;Note Name&quot; &quot;Personal&quot;
-
-# Append content to note (uses active note if no name specified)
+# Read/create/update notes
+node scripts/mcp-client.js read &quot;My Notes/Project&quot;
+node scripts/mcp-client.js create &quot;# New Note&quot; &quot;Note Name&quot; &quot;Personal&quot;
 node scripts/mcp-client.js append &quot;\n- New item&quot; &quot;My List&quot;
 
-# Update a note (OVERWRITES entire content)
-node scripts/mcp-client.js update &quot;My Note&quot; &quot;# Updated content&quot;
+# Memory (IMPORTANT!)
+node scripts/mcp-client.js store &quot;User&#39;s name is John&quot;
+node scripts/mcp-client.js recall &quot;name&quot;
+node scripts/mcp-client.js forget &quot;old info&quot;
 
-# List notes (optional folder filter)
-node scripts/mcp-client.js list-notes &quot;Personal&quot;
-node scripts/mcp-client.js list-notes
-
-# List folders
-node scripts/mcp-client.js list-folders
-
-# List tags
-node scripts/mcp-client.js list-tags
-
-# List tasks
+# Calendar &amp; Tasks
 node scripts/mcp-client.js tasks
-
-# Get upcoming calendar events
 node scripts/mcp-client.js events
 
-# Get workspace statistics
-node scripts/mcp-client.js stats
+# Python execution
+node scripts/mcp-client.js run-python &quot;print(&#39;Hello!&#39;)&quot;
 
-# Get app documentation
-node scripts/mcp-client.js docs &quot;vim commands&quot;
-
-# Execute Python code
-node scripts/mcp-client.js run-python &quot;print(&#39;Hello, World!&#39;)&quot;
+# List all available tools
+node scripts/mcp-client.js list
 </code></pre>
-<h3>Advanced Usage: Direct Tool Calls</h3>
-<p>Call any MCP tool directly using <code>call</code> command with JSON args:</p>
-<pre><code class="language-bash"># Insert content into specific location
-node scripts/mcp-client.js call insert_into_note &#39;{&quot;name&quot;:&quot;My Note&quot;,&quot;insertAtLine&quot;:10,&quot;content&quot;:&quot;New paragraph here&quot;}&#39;
-
-# Create a calendar event
-node scripts/mcp-client.js call create_calendar_event &#39;{&quot;title&quot;:&quot;Meeting&quot;,&quot;startTime&quot;:&quot;2026-01-26T10:00:00&quot;,&quot;duration&quot;:60}&#39;
-
-# Add a task
-node scripts/mcp-client.js call create_task &#39;{&quot;text&quot;:&quot;Call John tomorrow&quot;,&quot;dueDate&quot;:&quot;2026-01-26&quot;}&#39;
-
-# Web search
-node scripts/mcp-client.js call web_search &#39;{&quot;query&quot;:&quot;best JavaScript frameworks 2026&quot;}&#39;
-
-# Browse a webpage
-node scripts/mcp-client.js call web_browse &#39;{&quot;url&quot;:&quot;https://example.com&quot;}&#39;
-</code></pre>
-<h3>List All Available Tools</h3>
-<pre><code class="language-bash">node scripts/mcp-client.js list
-</code></pre>
-<p>This shows all 86 available MCP tools with their input schemas.</p>
-<h2>Key Features</h2>
-<h3>Note Management</h3>
+<h2>Available Tools</h2>
+<h3>Memory (CRITICAL - ALWAYS USE)</h3>
 <ul>
-<li><strong>Search</strong>: Full-text search (<code>search_notes</code>) and semantic search (<code>semantic_search</code>)</li>
-<li><strong>Read</strong>: Get note content by name or active note (<code>read_note</code>, <code>get_active_note</code>)</li>
-<li><strong>Create</strong>: Create new notes (<code>create_note</code>, <code>create_daily_note</code>)</li>
-<li><strong>Edit</strong>: Insert into note (<code>insert_into_note</code>), append (<code>append_to_note</code>), or full update (<code>update_note</code>)</li>
-<li><strong>Organize</strong>: Rename, move, delete notes (<code>rename_note</code>, <code>move_note</code>, <code>delete_note</code>)</li>
-<li><strong>History</strong>: Get and restore note versions (<code>get_note_history</code>, <code>restore_note_from_history</code>)</li>
+<li><strong>memory_store</strong>: Store information permanently in OpenClaw/Memory</li>
+<li><strong>memory_search</strong>: Search across all notes and memories</li>
+<li><strong>memory_forget</strong>: Delete memories by query</li>
+<li><strong>memory_profile</strong>: Get/update user profile</li>
+</ul>
+<h3>Notes</h3>
+<ul>
+<li><strong>search_notes</strong>: Full-text search</li>
+<li><strong>semantic_search</strong>: Search by meaning</li>
+<li><strong>read_note</strong>: Get note content</li>
+<li><strong>create_note</strong>: Create new note</li>
+<li><strong>append_to_note</strong>: Add to note</li>
+<li><strong>update_note</strong>: Update note</li>
+<li><strong>list_notes</strong>: List all notes</li>
+<li><strong>list_folders</strong>: List folders</li>
+<li><strong>list_tags</strong>: List tags</li>
 </ul>
 <h3>Calendar &amp; Tasks</h3>
 <ul>
-<li><strong>Events</strong>: Create, list, update, delete calendar events (<code>create_calendar_event</code>, <code>list_calendar_events</code>, <code>get_upcoming_events</code>)</li>
-<li><strong>Tasks</strong>: Create, list, complete tasks (<code>create_task</code>, <code>list_tasks</code>, <code>complete_task</code>)</li>
-<li><strong>Integration</strong>: Convert tasks to events, find free time (<code>convert_task_to_event</code>, <code>find_free_time</code>)</li>
+<li><strong>list_tasks</strong>: Get pending tasks</li>
+<li><strong>create_task</strong>: Create task</li>
+<li><strong>complete_task</strong>: Complete task</li>
+<li><strong>get_upcoming_events</strong>: Calendar events</li>
+<li><strong>create_calendar_event</strong>: Create event</li>
 </ul>
 <h3>Python Execution</h3>
-<p>Run Python code with libraries: matplotlib, pandas, numpy, pillow, openpyxl, xlsxwriter</p>
-<pre><code class="language-bash">node scripts/mcp-client.js run-python &quot;import matplotlib.pyplot as plt; plt.plot([1,2,3],[1,4,9]); plt.savefig(&#39;plot.png&#39;)&quot;
-</code></pre>
-<p>Use this for calculations, data analysis, charts, and Excel files with formatting.</p>
-<h3>Canvas Operations</h3>
-<p>Work with canvas diagrams: <code>canvas_get_state</code>, <code>canvas_add_node</code>, <code>canvas_connect_nodes</code>, <code>canvas_auto_layout</code>, <code>canvas_to_mermaid</code>, etc.</p>
-<h3>Tags &amp; Folders</h3>
 <ul>
-<li><strong>Tags</strong>: Create, list, add/remove from notes (<code>create_tag</code>, <code>list_tags</code>, <code>add_tag_to_note</code>)</li>
-<li><strong>Folders</strong>: Create, list, rename, move folders (<code>create_folder</code>, <code>list_folders</code>, <code>rename_folder</code>)</li>
+<li><strong>run_python</strong>: Execute Python code with matplotlib, pandas, numpy, pillow, openpyxl</li>
 </ul>
-<h3>Analysis &amp; Search</h3>
+<h3>Canvas</h3>
 <ul>
-<li><strong>Analysis</strong>: Analyze note structure, get backlinks, find similar notes (<code>analyze_note_structure</code>, <code>get_backlinks</code>, <code>find_similar_notes</code>)</li>
-<li><strong>Search</strong>: Semantic search, web search, web browse (<code>semantic_search</code>, <code>web_search</code>, <code>web_browse</code>)</li>
-<li><strong>YouTube</strong>: Get video transcripts (<code>get_youtube_transcript</code>)</li>
+<li><strong>canvas_get_state</strong>: Get canvas diagram</li>
+<li><strong>canvas_add_node</strong>: Add node</li>
+<li><strong>canvas_to_mermaid</strong>: Convert to mermaid</li>
 </ul>
-<h2>Server Requirements</h2>
-<p>The Notnative MCP server must be running on <code>ws://127.0.0.1:8788</code>. Ensure:</p>
+<h3>Analysis</h3>
+<ul>
+<li><strong>analyze_note_structure</strong>: Analyze note</li>
+<li><strong>get_backlinks</strong>: Get backlinks</li>
+<li><strong>find_similar_notes</strong>: Find similar notes</li>
+</ul>
+<h3>Web</h3>
+<ul>
+<li><strong>web_search</strong>: Search the web</li>
+<li><strong>web_browse</strong>: Browse webpage</li>
+<li><strong>get_youtube_transcript</strong>: Get YouTube transcript</li>
+</ul>
+<h2>Installation</h2>
+<p>The <code>install.sh</code> script will:</p>
 <ol>
-<li>Notnative app is running</li>
-<li>MCP server is enabled</li>
-<li>WebSocket is accessible on port 8788</li>
+<li>Detect if NotNative is local or remote</li>
+<li>Ask for WebSocket URL if not local</li>
+<li>Install dependencies (ws package)</li>
+<li>Configure environment</li>
 </ol>
+<h2>Server Requirements</h2>
+<ul>
+<li>NotNative app running with MCP WebSocket server</li>
+<li>For local: ws://127.0.0.1:8788</li>
+<li>For remote: wss://your-domain.com (or ws://IP:8788)</li>
+</ul>
+<h2>Environment Variables</h2>
+<ul>
+<li><code>NOTNATIVE_WS_URL</code>: WebSocket URL (default: ws://127.0.0.1:8788)</li>
+</ul>
 <h2>Error Handling</h2>
 <ul>
-<li><strong>Connection timeout</strong>: Check if Notnative app is running</li>
+<li><strong>Connection timeout</strong>: Check if NotNative is running</li>
 <li><strong>Request timeout</strong>: Tool execution exceeded 10 seconds</li>
 <li><strong>Tool not found</strong>: Verify tool name using <code>list</code> command</li>
 </ul>
-<h2>Script Details</h2>
-<p>The <code>scripts/mcp-client.js</code> script:</p>
-<ol>
-<li>Connects to WebSocket server</li>
-<li>Initializes MCP session</li>
-<li>Sends JSON-RPC requests</li>
-<li>Returns structured JSON output</li>
-</ol>
-<p>All commands return JSON formatted output for easy parsing.</p>
 
                 </div>
               </div>
@@ -206,7 +216,7 @@ node scripts/mcp-client.js call web_browse &#39;{&quot;url&quot;:&quot;https://e
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/k4ditano/notnative/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/blob/main/skills/k4ditano/notnative/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
@@ -214,9 +224,9 @@ node scripts/mcp-client.js call web_browse &#39;{&quot;url&quot;:&quot;https://e
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/k4ditano/notnative/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/k4ditano/notnative/SKILL.md" download class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  Download SKILL.md
+                  Download Source
                 </a>
                 <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>

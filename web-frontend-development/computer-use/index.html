@@ -279,7 +279,18 @@ sudo systemctl restart xvfb xfce-minimal x11vnc novnc
 </ul>
 <h2>Opening Applications</h2>
 <pre><code class="language-bash">export DISPLAY=:99
-google-chrome --no-sandbox &amp;    # Chrome (recommended)
+
+# Chrome — only use --no-sandbox if the kernel lacks user namespace support.
+# Check: cat /proc/sys/kernel/unprivileged_userns_clone
+#   1 = sandbox works, do NOT use --no-sandbox
+#   0 = sandbox fails, --no-sandbox required as fallback
+# Using --no-sandbox when unnecessary causes instability and crashes.
+if [ &quot;$(cat /proc/sys/kernel/unprivileged_userns_clone 2&gt;/dev/null)&quot; = &quot;0&quot; ]; then
+    google-chrome --no-sandbox &amp;
+else
+    google-chrome &amp;
+fi
+
 xfce4-terminal &amp;                # Terminal
 thunar &amp;                        # File manager
 </code></pre>
@@ -293,21 +304,10 @@ sudo apt-get install -f
 <pre><code class="language-bash"># Install packages
 sudo apt install -y xvfb xfce4 xfce4-terminal xdotool scrot imagemagick dbus-x11 x11vnc novnc websockify
 
-# Copy service files
-sudo cp systemd/*.service /etc/systemd/system/
-
-# Edit xfce-minimal.service: replace %USER% and %SCRIPT_PATH%
-sudo nano /etc/systemd/system/xfce-minimal.service
-
-# Mask xfdesktop (prevents VNC flickering)
-sudo mv /usr/bin/xfdesktop /usr/bin/xfdesktop.real
-echo -e &#39;#!/bin/bash\nexit 0&#39; | sudo tee /usr/bin/xfdesktop
-sudo chmod +x /usr/bin/xfdesktop
-
-# Enable and start
-sudo systemctl daemon-reload
-sudo systemctl enable --now xvfb xfce-minimal x11vnc novnc
+# Run the setup script (generates systemd services, masks xfdesktop, starts everything)
+./scripts/setup-vnc.sh
 </code></pre>
+<p>If you prefer fully manual setup, the <code>setup-vnc.sh</code> script generates all systemd service files inline -- read it for the exact service definitions.</p>
 <h2>Troubleshooting</h2>
 <h3>VNC shows black screen</h3>
 <ul>
@@ -340,7 +340,7 @@ sudo systemctl enable --now xvfb xfce-minimal x11vnc novnc
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/ram-raghav-s/computer-use/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/blob/main/skills/ram-raghav-s/computer-use/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
@@ -348,9 +348,9 @@ sudo systemctl enable --now xvfb xfce-minimal x11vnc novnc
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/ram-raghav-s/computer-use/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/ram-raghav-s/computer-use/SKILL.md" download class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  Download SKILL.md
+                  Download Source
                 </a>
                 <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>

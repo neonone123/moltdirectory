@@ -48,6 +48,7 @@
               <a href="/cli-utilities/" class="back-link">← Back to CLI Utilities</a>
               <div class="skill-page-meta">
                 <a href="/cli-utilities/" class="skill-page-category">CLI Utilities</a>
+                <span class="skill-page-author">by @abtdomain</span>
               </div>
               <h1 class="skill-page-title">domain</h1>
               <p class="skill-page-desc">Domain intelligence toolkit - search newly registered domains (NRDS)</p>
@@ -60,15 +61,198 @@
           </section>
           <div class="skill-page-body">
             <article class="skill-page-content">
-              <div class="markdown-content">
-                <p>Skill documentation is available on GitHub.</p>
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>DomainKits</h1>
+<p>Turn AI into your domain investment expert. Search, analyze, and discover domains with real-time market data.</p>
+<h2>Why DomainKits?</h2>
+<p>DomainKits doesn&#39;t just give AI tools — it gives AI <strong>domain intelligence</strong>.</p>
+<p>Your AI can now:</p>
+<ul>
+<li><strong>Think like a domainer</strong> — Understand what makes a domain valuable, spot trends before they peak</li>
+<li><strong>Act on real-time data</strong> — See what&#39;s registering now, what&#39;s expiring tomorrow, what just dropped</li>
+<li><strong>Make informed decisions</strong> — Analyze backlinks, keyword value, brand risk, and safety in seconds</li>
+<li><strong>Execute instantly</strong> — From idea to available domain with pricing and register links</li>
+</ul>
+<h2>Setup</h2>
+<h3>Option 1: Direct call (no config needed)</h3>
+<pre><code class="language-bash"># List all DomainKits tools
+npx mcporter list --http-url https://api.domainkits.com/v1/mcp
+
+# Call a tool directly
+npx mcporter call https://api.domainkits.com/v1/mcp.available domain=example.com
+</code></pre>
+<h3>Option 2: Add to mcporter config (recommended)</h3>
+<p>Add to <code>config/mcporter.json</code> or <code>~/.mcporter/mcporter.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;mcpServers&quot;: {
+    &quot;domainkits&quot;: {
+      &quot;description&quot;: &quot;Domain intelligence tools for AI agents&quot;,
+      &quot;baseUrl&quot;: &quot;https://api.domainkits.com/v1/mcp&quot;
+    }
+  }
+}
+</code></pre>
+<p>With API key (for higher limits):</p>
+<pre><code class="language-json">{
+  &quot;mcpServers&quot;: {
+    &quot;domainkits&quot;: {
+      &quot;description&quot;: &quot;Domain intelligence tools for AI agents&quot;,
+      &quot;baseUrl&quot;: &quot;https://api.domainkits.com/v1/mcp&quot;,
+      &quot;headers&quot;: {
+        &quot;X-API-Key&quot;: &quot;$env:DOMAINKITS_API_KEY&quot;
+      }
+    }
+  }
+}
+</code></pre>
+<p>Then call tools by name:</p>
+<pre><code class="language-bash">npx mcporter call domainkits.available domain=example.com
+npx mcporter call domainkits.nrds keyword=ai limit=10
+</code></pre>
+<p>Get your API key at <a href="https://domainkits.com">https://domainkits.com</a></p>
+<h2>Instructions</h2>
+<p>Call DomainKits tools via mcporter:</p>
+<pre><code class="language-bash"># List available tools
+mcporter list domainkits
+
+# Check domain availability
+mcporter call domainkits.available domain=example.com
+
+# Search newly registered domains
+mcporter call domainkits.nrds keyword=ai limit=10
+
+# Full domain analysis
+mcporter call domainkits.analyze domain=stripe.com
+</code></pre>
+<h2>Tools</h2>
+<p>Search</p>
+<ul>
+<li><code>nrds</code> — Newly registered domains</li>
+<li><code>aged</code> — Domains with 5-20+ years history</li>
+<li><code>expired</code> — Domains entering deletion cycle</li>
+<li><code>deleted</code> — Just-dropped domains, available now</li>
+<li><code>active</code> — Live sites and for-sale listings</li>
+<li><code>ns_reverse</code> — Domains on a specific nameserver</li>
+</ul>
+<p>Query</p>
+<ul>
+<li><code>available</code> — Availability check with pricing</li>
+<li><code>bulk_available</code> — Check multiple domains (max 10)</li>
+<li><code>whois</code> — Registration details</li>
+<li><code>dns</code> — DNS records</li>
+<li><code>safety</code> — Google Safe Browsing check</li>
+<li><code>tld_check</code> — Keyword availability across TLDs</li>
+</ul>
+<p>Analysis (requires account)</p>
+<ul>
+<li><code>backlink_summary</code> — SEO backlink profile</li>
+<li><code>keyword_data</code> — Google Ads keyword data</li>
+</ul>
+<p>Trends</p>
+<ul>
+<li><code>keywords_trends</code> — Hot keywords in registrations</li>
+<li><code>tld_trends</code> — TLD growth patterns</li>
+<li><code>tld_rank</code> — Top TLDs by volume</li>
+<li><code>price</code> — Registration costs by TLD</li>
+</ul>
+<p>Workflows</p>
+<ul>
+<li><code>suggest</code> — Domain name brainstorming</li>
+<li><code>similar</code> — Alternatives when domain is taken</li>
+<li><code>plan_b</code> — Search deleted/expired/aged</li>
+<li><code>analyze</code> — Full domain audit</li>
+<li><code>brand_match</code> — Brand risk detection</li>
+<li><code>expired_analysis</code> — Expired domain evaluation</li>
+</ul>
+<p>Memory</p>
+<ul>
+<li><code>get_preferences</code> — Get saved preferences</li>
+<li><code>set_preferences</code> — Save preferences</li>
+<li><code>delete_preferences</code> — Delete all data</li>
+</ul>
+<h2>Instructions</h2>
+<p>When user wants domain suggestions:</p>
+<ol>
+<li>Brainstorm names based on keywords</li>
+<li>Call <code>bulk_available</code> to validate</li>
+<li>Show available options with prices and <code>register_url</code></li>
+</ol>
+<p>When user wants to analyze a domain:</p>
+<ol>
+<li>Call <code>whois</code>, <code>dns</code>, <code>safety</code></li>
+<li>Give a clear verdict</li>
+</ol>
+<p>Output rules:</p>
+<ul>
+<li>Always show <code>register_url</code> for available domains</li>
+<li>Disclose affiliate links</li>
+<li>Default to <code>no_hyphen=true</code> and <code>no_number=true</code></li>
+</ul>
+<h2>Access Tiers</h2>
+<ul>
+<li><strong>Guest</strong> — Most tools, limited daily usage</li>
+<li><strong>Member</strong> (free) — All tools, higher limits, memory features</li>
+<li><strong>Premium</strong> — 500 requests/day, full result depth</li>
+<li><strong>Platinum</strong> — Unlimited</li>
+</ul>
+<p>Get API key at <a href="https://domainkits.com">https://domainkits.com</a></p>
+<h2>Privacy</h2>
+<ul>
+<li>Works without API key</li>
+<li>Memory OFF by default</li>
+<li>GDPR compliant</li>
+<li>Delete data anytime via <code>delete_preferences</code></li>
+</ul>
+<h2>Links</h2>
+<ul>
+<li>Website: <a href="https://domainkits.com/mcp">https://domainkits.com/mcp</a></li>
+<li>GitHub: <a href="https://github.com/ABTdomain/domainkits-mcp">https://github.com/ABTdomain/domainkits-mcp</a></li>
+<li>Contact: <a href="mailto:info@domainkits.com">info@domainkits.com</a></li>
+</ul>
+
+                </div>
               </div>
             </article>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/abtdomain/domain/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">View on GitHub</a>
-                <a href="https://clawdhub.com/abtdomain/domain" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">View on ClawdHub</a>
+                <a href="https://github.com/openclaw/skills/blob/main/skills/abtdomain/domain/skill.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/abtdomain/domain" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/abtdomain/domain/skill.md" download class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download Source
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@abtdomain</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">CLI Utilities</span>
+                  </div>
+                </div>
               </div>
             </aside>
           </div>

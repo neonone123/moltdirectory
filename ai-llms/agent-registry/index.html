@@ -87,38 +87,38 @@
 </tr>
 </thead>
 <tbody><tr>
-<td><code>list_agents.py</code></td>
+<td><code>list.js</code></td>
 <td>User asks &quot;what agents do I have&quot; or needs overview</td>
-<td><code>python scripts/list_agents.py</code></td>
+<td><code>bun bin/list.js</code></td>
 </tr>
 <tr>
-<td><code>search_agents.py</code></td>
+<td><code>search.js</code></td>
 <td>Find agents matching user intent (ALWAYS do this first)</td>
-<td><code>python scripts/search_agents.py &quot;code review security&quot;</code></td>
+<td><code>bun bin/search.js &quot;code review security&quot;</code></td>
 </tr>
 <tr>
-<td><code>search_agents_paged.py</code></td>
+<td><code>search-paged.js</code></td>
 <td>Paged search for large registries (300+ agents)</td>
-<td><code>python scripts/search_agents_paged.py &quot;query&quot; --page 1 --page-size 10</code></td>
+<td><code>bun bin/search-paged.js &quot;query&quot; --page 1 --page-size 10</code></td>
 </tr>
 <tr>
-<td><code>get_agent.py</code></td>
+<td><code>get.js</code></td>
 <td>Load a specific agent&#39;s full instructions</td>
-<td><code>python scripts/get_agent.py code-reviewer</code></td>
+<td><code>bun bin/get.js code-reviewer</code></td>
 </tr>
 </tbody></table>
 <h2>Search First Pattern</h2>
 <ol>
 <li><strong>Extract intent keywords</strong> from user request</li>
-<li><strong>Run search</strong>: <code>python scripts/search_agents.py &quot;&lt;keywords&gt;&quot;</code></li>
+<li><strong>Run search</strong>: <code>bun bin/search.js &quot;&lt;keywords&gt;&quot;</code></li>
 <li><strong>Review results</strong>: Check relevance scores (0.0-1.0)</li>
-<li><strong>Load if needed</strong>: <code>python scripts/get_agent.py &lt;agent-name&gt;</code></li>
+<li><strong>Load if needed</strong>: <code>bun bin/get.js &lt;agent-name&gt;</code></li>
 <li><strong>Execute</strong>: Follow the loaded agent&#39;s instructions</li>
 </ol>
 <h2>Example</h2>
 <p>User: &quot;Can you review my authentication code for security issues?&quot;</p>
 <pre><code class="language-bash"># Step 1: Search for relevant agents
-python scripts/search_agents.py &quot;code review security authentication&quot;
+bun bin/search.js &quot;code review security authentication&quot;
 
 # Output:
 # Found 2 matching agents:
@@ -126,18 +126,21 @@ python scripts/search_agents.py &quot;code review security authentication&quot;
 #   2. code-reviewer (score: 0.71) - General code review and best practices
 
 # Step 2: Load the best match
-python scripts/get_agent.py security-auditor
+bun bin/get.js security-auditor
 
 # Step 3: Follow loaded agent instructions for the task
 </code></pre>
 <h2>Installation</h2>
 <h3>Step 1: Install the Skill</h3>
 <p><strong>Quick Install (Recommended):</strong></p>
-<pre><code class="language-bash"># NPX with add-skill (recommended)
-npx add-skill MaTriXy/Agent-Registry
+<pre><code class="language-bash"># Using Skills CLI (recommended)
+npx skills add MaTriXy/Agent-Registry@agent-registry
 
-# OR npm directly
-npm install -g @claude-code/agent-registry
+# Discover skills interactively
+npx skills find
+
+# Update existing skills
+npx skills update
 </code></pre>
 <p><strong>Traditional Install:</strong></p>
 <pre><code class="language-bash"># User-level installation
@@ -145,53 +148,52 @@ npm install -g @claude-code/agent-registry
 
 # OR project-level installation
 ./install.sh --project
+
+# Optional: install enhanced interactive UI dependency
+./install.sh --install-deps
 </code></pre>
 <p><strong>What install.sh does:</strong></p>
 <ol>
-<li>✓ Copies skill files to <code>~/.claude/skills/agent-registry/</code></li>
-<li>✓ Creates empty registry structure</li>
-<li>✓ Automatically installs <code>questionary</code> Python package (for interactive UI)</li>
-<li>✓ Falls back gracefully if <code>pip3</code> not available</li>
+<li>Copies skill files to <code>~/.claude/skills/agent-registry/</code></li>
+<li>Creates empty registry structure</li>
+<li>Optionally installs dependencies via <code>--install-deps</code> (<code>@clack/prompts</code> for enhanced UI)</li>
 </ol>
-<p><strong>Note:</strong> All installation methods support Python-based migration and CLI tools</p>
 <h3>Step 2: Migrate Your Agents</h3>
 <p>Run the interactive migration script:</p>
 <pre><code class="language-bash">cd ~/.claude/skills/agent-registry
-python scripts/init_registry.py
+bun bin/init.js
+# Optional destructive mode:
+bun bin/init.js --move
 </code></pre>
 <p><strong>Interactive selection modes:</strong></p>
 <ul>
-<li><p><strong>With questionary</strong> (recommended): Checkbox UI with category grouping, token indicators, and paging</p>
+<li><p><strong>With @clack/prompts</strong> (default): Beautiful checkbox UI with category grouping, token indicators, and paging</p>
 <ul>
-<li>↑↓ navigate, Space toggle, Enter confirm</li>
-<li>Visual indicators: 🟢 &lt;1k tokens, 🟡 1-3k, 🔴 &gt;3k</li>
+<li>Arrow keys navigate, Space toggle, Enter confirm</li>
+<li>Visual indicators: [green] &lt;1k tokens, [yellow] 1-3k, [red] &gt;3k</li>
 <li>Grouped by subdirectory</li>
 </ul>
 </li>
-<li><p><strong>Without questionary</strong> (fallback): Text-based number input</p>
+<li><p><strong>Fallback</strong>: Text-based number input</p>
 <ul>
 <li>Enter comma-separated numbers (e.g., <code>1,3,5</code>)</li>
 <li>Type <code>all</code> to migrate everything</li>
 </ul>
 </li>
 </ul>
-<p><strong>What init_registry.py does:</strong></p>
+<p><strong>What init.js does:</strong></p>
 <ol>
 <li>Scans <code>~/.claude/agents/</code> and <code>.claude/agents/</code> for agent files</li>
 <li>Displays available agents with metadata</li>
 <li>Lets you interactively select which to migrate</li>
-<li>Moves selected agents to the registry</li>
+<li>Copies selected agents to the registry by default (<code>--move</code> is explicit opt-in)</li>
 <li>Builds search index (<code>registry.json</code>)</li>
 </ol>
 <h2>Dependencies</h2>
 <ul>
-<li><strong>Python</strong>: 3.7 or higher</li>
-<li><strong>questionary</strong>: Interactive checkbox selection UI with Separator support</li>
+<li><strong>Bun</strong> (ships with Claude Code) — zero additional dependencies for core functionality</li>
+<li><strong>@clack/prompts</strong>: Optional enhanced interactive selection UI (install via <code>./install.sh --install-deps</code>)</li>
 </ul>
-<p>The installer automatically installs questionary. If installation fails or pip3 is unavailable, the migration script falls back to text-based input mode.</p>
-<p><strong>Manual installation:</strong></p>
-<pre><code class="language-bash">pip3 install questionary
-</code></pre>
 <h2>Registry Location</h2>
 <ul>
 <li><strong>Global</strong>: <code>~/.claude/skills/agent-registry/</code></li>
@@ -205,7 +207,7 @@ python scripts/init_registry.py
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/matrixy/agent-registry/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/blob/main/skills/matrixy/agent-registry/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
@@ -213,9 +215,9 @@ python scripts/init_registry.py
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/matrixy/agent-registry/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/matrixy/agent-registry/SKILL.md" download class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  Download SKILL.md
+                  Download Source
                 </a>
                 <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>

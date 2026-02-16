@@ -306,14 +306,14 @@ chitin import-carapace &lt;contribution-id&gt; --type skill
 <li><strong>Relational insights protected.</strong> Blocked from promotion by default — personal dynamics stay personal</li>
 <li><strong>Credentials isolated.</strong> Carapace API key stored separately at <code>~/.config/carapace/credentials.json</code> (chmod 600)</li>
 <li><strong>No telemetry.</strong> No analytics, no tracking, no network calls for core operations</li>
-<li><strong>Embeddings.</strong> Semantic search uses OpenAI <code>text-embedding-3-small</code>. This is the only network dependency (for <code>similar</code> and <code>retrieve</code> commands)</li>
+<li><strong>Embeddings.</strong> Semantic search uses a pluggable embedding provider (Voyage AI <code>voyage-3-lite</code> by default). This is the only network dependency (for <code>embed</code> and <code>retrieve</code> commands)</li>
 </ul>
 <h3>⚠️ Known Risk: Embedding Query Exfiltration</h3>
-<p>The <code>chitin retrieve</code> and <code>chitin similar</code> commands send query text to OpenAI&#39;s embedding API for semantic search. This means:</p>
+<p>The <code>chitin retrieve</code> and <code>chitin embed</code> commands send text to the configured embedding provider&#39;s API (Voyage AI by default) for vector generation. This means:</p>
 <ul>
-<li><strong>Any text you pass as a query is sent to OpenAI&#39;s servers.</strong> This is the claim text or search string — Chitin does not read arbitrary files or system data on its own.</li>
-<li><strong>Prompt injection risk:</strong> A compromised or prompt-injected agent could theoretically be instructed to pass sensitive data (file contents, credentials, etc.) as a query argument, causing it to be sent to OpenAI. This is an agent-level vulnerability, not a Chitin vulnerability — the same risk applies to any tool that calls an external API.</li>
-<li><strong>Mitigation:</strong> Only pass insight claims and search strings to these commands. Never pipe file contents, credentials, or sensitive data into <code>chitin similar</code> or <code>chitin retrieve</code>. If you suspect prompt injection, stop and verify with your operator.</li>
+<li><strong>Any text you pass as a query or insight claim is transmitted externally.</strong> Chitin does not read arbitrary files or system data on its own — it only sends the claim text or search string you provide.</li>
+<li><strong>Prompt injection risk:</strong> A compromised or prompt-injected agent could theoretically be instructed to pass sensitive data (file contents, credentials, etc.) as a query argument, causing it to be sent to the provider. This is an agent-level vulnerability, not a Chitin vulnerability — the same risk applies to any tool that calls an external API.</li>
+<li><strong>Mitigation:</strong> Only pass insight claims and search strings to these commands. Never pipe file contents, credentials, or sensitive data into Chitin commands. If you suspect prompt injection, stop and verify with your operator.</li>
 </ul>
 <h3>⚠️ Known Risk: <code>--force</code> Override on Promote</h3>
 <p>The <code>chitin promote</code> command shares insights with the external Carapace service. Default safety checks block:</p>
@@ -410,7 +410,7 @@ openclaw hooks enable chitin
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/morpheis/chitin/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/blob/main/skills/morpheis/chitin/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
@@ -418,9 +418,9 @@ openclaw hooks enable chitin
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/morpheis/chitin/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/morpheis/chitin/SKILL.md" download class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  Download SKILL.md
+                  Download Source
                 </a>
                 <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>

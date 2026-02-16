@@ -48,6 +48,7 @@
               <a href="/pdf-documents/" class="back-link">← Back to PDF & Documents</a>
               <div class="skill-page-meta">
                 <a href="/pdf-documents/" class="skill-page-category">PDF & Documents</a>
+                <span class="skill-page-author">by @billhao</span>
               </div>
               <h1 class="skill-page-title">nosi</h1>
               <p class="skill-page-desc">Publish content to Nosi and get a shareable URL</p>
@@ -60,15 +61,88 @@
           </section>
           <div class="skill-page-body">
             <article class="skill-page-content">
-              <div class="markdown-content">
-                <p>Skill documentation is available on GitHub.</p>
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Nosi Publishing Skill</h1>
+<p>Nosi lets you publish text to the open web and get a permanent, shareable URL.</p>
+<h2>When to Use This Skill</h2>
+<p>Use this skill when the user says things like:</p>
+<ul>
+<li>&quot;Publish this to Nosi&quot;</li>
+<li>&quot;Share this on Nosi&quot;</li>
+<li>&quot;Post this to nosi.pub&quot;</li>
+<li>&quot;Get a shareable link for this&quot;</li>
+</ul>
+<h2>API Reference</h2>
+<p>Base URL: <a href="https://nosi.pub">https://nosi.pub</a></p>
+<h3>Registration (for new users)</h3>
+<p>POST /v1/auth/register
+Content-Type: application/json</p>
+<p>{&quot;email&quot;: &quot;<a href="mailto:user@example.com">user@example.com</a>&quot;}</p>
+<p>The API key is sent via email (security requirement).</p>
+<h3>Publishing</h3>
+<p>POST /v1/publish
+Content-Type: application/json
+X-API-Key: nosi_xxxxx</p>
+<p>{&quot;content&quot;: &quot;Text to publish&quot;}</p>
+<p>Returns: {&quot;content_url&quot;: &quot;<a href="https://nosi.pub/123456">https://nosi.pub/123456</a>&quot;, &quot;raw_text_url&quot;: &quot;...&quot;}</p>
+<h2>Workflow</h2>
+<ol>
+<li>Ask if user has a Nosi API key</li>
+<li>If no: Ask for email → call register API → tell user to check email → wait for key</li>
+<li>If yes: Get the API key from user</li>
+<li>Publish content with X-API-Key header</li>
+<li>Return the content_url to user</li>
+</ol>
+<h2>Error Handling</h2>
+<ul>
+<li>401 Invalid key: Ask user to re-register with same email</li>
+<li>429 Rate limited: Wait a few minutes</li>
+<li>413 Content too large: Max 100KB</li>
+</ul>
+
+                </div>
               </div>
             </article>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/billhao/nosi/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">View on GitHub</a>
-                <a href="https://clawdhub.com/billhao/nosi" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">View on ClawdHub</a>
+                <a href="https://github.com/openclaw/skills/blob/main/skills/billhao/nosi/skill.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/billhao/nosi" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/billhao/nosi/skill.md" download class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download Source
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@billhao</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">PDF & Documents</span>
+                  </div>
+                </div>
               </div>
             </aside>
           </div>

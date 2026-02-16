@@ -83,9 +83,11 @@
 </li>
 <li><p><strong>Set up JSON data source</strong></p>
 <ul>
-<li>Athlete creates a private GitHub repo for training data</li>
-<li>Set up automated sync from Intervals.icu to <code>latest.json</code></li>
-<li>Save the raw URL in DOSSIER.md under &quot;Data Source&quot;</li>
+<li>Athlete creates a private GitHub repo for training data, or keeps files locally</li>
+<li>Set up automated sync from Intervals.icu to <code>latest.json</code> and <code>history.json</code></li>
+<li>Save both raw URLs in DOSSIER.md under &quot;Data Source&quot; (or local file paths if running locally)</li>
+<li><code>latest.json</code> — current 7-day snapshot + 28-day derived metrics</li>
+<li><code>history.json</code> — longitudinal data (daily 90d, weekly 180d, monthly 3y)</li>
 <li>See: <a href="https://github.com/CrankAddict/section-11#2-set-up-your-data-mirror-optional-but-recommended">https://github.com/CrankAddict/section-11#2-set-up-your-data-mirror-optional-but-recommended</a></li>
 </ul>
 </li>
@@ -107,10 +109,10 @@
 <p>Do not proceed with coaching until dossier, data source, and heartbeat config are complete.</p>
 <h2>Protocol</h2>
 <p>Fetch and follow: <a href="https://raw.githubusercontent.com/CrankAddict/section-11/main/SECTION_11.md">https://raw.githubusercontent.com/CrankAddict/section-11/main/SECTION_11.md</a></p>
-<p><strong>Current version:</strong> 11.3</p>
+<p><strong>Current version:</strong> 11.4</p>
 <h2>Data Hierarchy</h2>
 <ol>
-<li>JSON data (always fetch first from athlete&#39;s data URL)</li>
+<li>JSON data (always fetch latest.json first, then history.json for longitudinal context)</li>
 <li>Protocol rules (SECTION_11.md)</li>
 <li>Athlete dossier (DOSSIER.md)</li>
 <li>Heartbeat config (HEARTBEAT.md)</li>
@@ -118,7 +120,8 @@
 <h2>Required Actions</h2>
 <ul>
 <li>Fetch latest.json before any training question</li>
-<li>No virtual math — use only fetched values</li>
+<li>Fetch history.json when trend analysis, phase context, or longitudinal comparison is needed</li>
+<li>No virtual math on pre-computed metrics — use fetched values for CTL, ATL, TSB, ACWR, RI, zones, etc. Custom analysis from raw data is fine when pre-computed values don&#39;t cover the question.</li>
 <li>Follow Section 11 C validation checklist before generating recommendations</li>
 <li>Cite frameworks per protocol (checklist item #10)</li>
 </ul>
@@ -137,10 +140,36 @@
 <h2>Heartbeat Operation</h2>
 <p>On each heartbeat, follow the checks and scheduling rules defined in your HEARTBEAT.md:</p>
 <ul>
-<li>Daily: training/wellness observations, weather (only if conditions are good)</li>
-<li>Weekly: background analysis</li>
+<li>Daily: training/wellness observations (from latest.json), weather (only if conditions are good)</li>
+<li>Weekly: background analysis (use history.json for trend comparison)</li>
 <li>Self-schedule next heartbeat with randomized timing within notification hours</li>
 </ul>
+<h2>Security &amp; Privacy</h2>
+<p><strong>Data ownership &amp; storage</strong>
+All training data is stored where the user chooses: on their own device or in a Git repository they control. This project does not run any backend service, cloud storage, or third-party infrastructure. Nothing is uploaded anywhere unless the user explicitly configures it.</p>
+<p><strong>Anonymization</strong>
+<code>sync.py</code> anonymizes raw training data before it is used by the coaching protocol. Identifying information is stripped; only aggregated and derived metrics (CTL, ATL, TSB, zone distributions, power/HR summaries) are used by the AI coach.</p>
+<p><strong>Network behavior</strong>
+The skill performs simple HTTP GET requests to fetch:</p>
+<ul>
+<li>The coaching protocol (<code>SECTION_11.md</code>) from this repository</li>
+<li>Report templates from this repository</li>
+<li>Athlete training data (<code>latest.json</code>, <code>history.json</code>) from user-configured URLs</li>
+</ul>
+<p>It does <strong>not</strong> send API keys, LLM chat histories, or any user data to external URLs. All fetched content comes from sources the user has explicitly configured.</p>
+<p><strong>Recommended setup: local files or private repos</strong>
+The safest and simplest setup is fully local: export your data as JSON and point the skill at files on your device (see <code>examples/json-manual/</code>). If you use GitHub, use a <strong>private repository</strong>. See <code>examples/json-auto-sync/SETUP.md</code> for automated sync setup including private repo usage with agents.</p>
+<p><strong>Protocol and template URLs</strong>
+The default protocol and template URLs point to this repository. The risk model is standard open-source supply-chain.</p>
+<p><strong>Heartbeat / automation</strong>
+The heartbeat mechanism is fully opt-in. It is not enabled by default and nothing runs automatically unless the user explicitly configures it. When enabled, it performs a narrow set of actions: read training data, run analysis, write updated summaries/plans to the user&#39;s chosen location.</p>
+<p><strong>Private repositories &amp; agent access</strong>
+Section 11 does not implement GitHub authentication. It reads files from whatever locations the runtime environment can already access:</p>
+<ul>
+<li>Running locally: reads from your filesystem</li>
+<li>Running in an agent (OpenClaw, Claude Cowork, etc.) with GitHub access configured: can read/write repos that the agent&#39;s token/SSH key allows</li>
+</ul>
+<p>Access is entirely governed by credentials the user has already configured in their environment.</p>
 
                 </div>
               </div>
@@ -148,7 +177,7 @@
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/crankaddict/section11/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/blob/main/skills/crankaddict/section11/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
@@ -156,9 +185,9 @@
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/crankaddict/section11/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/crankaddict/section11/SKILL.md" download class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  Download SKILL.md
+                  Download Source
                 </a>
                 <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>

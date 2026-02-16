@@ -72,6 +72,11 @@
                 <div class="markdown-content">
                   <h1>ElevenLabs TTS (Text-to-Speech)</h1>
 <p>Generate expressive voice messages using ElevenLabs v3 with audio tags.</p>
+<h2>Prerequisites</h2>
+<ul>
+<li><strong>ElevenLabs API Key</strong> (<code>ELEVENLABS_API_KEY</code>): Required. Get one at <a href="https://elevenlabs.io">elevenlabs.io</a> → Profile → API Keys. Configure in <code>openclaw.json</code> under <code>messages.tts.elevenlabs.apiKey</code>.</li>
+<li><strong>ffmpeg</strong>: Required for audio format conversion (MP3 → Opus for WhatsApp compatibility). Must be installed and available on PATH.</li>
+</ul>
 <h2>Quick Start Examples</h2>
 <p><strong>Storytelling (emotional journey):</strong></p>
 <pre><code>[soft] It started like any other day... [pause] But something felt different. [nervous] My hands were shaking as I opened the envelope. [gasps] I got in! [excited] I actually got in! [laughs] [happy] This changes everything!
@@ -82,8 +87,8 @@
 <p><strong>Conversation with reactions:</strong></p>
 <pre><code>[curious] So what happened at the meeting? [pause] [surprised] Wait, they fired him?! [gasps] [sad] That&#39;s terrible... [sighs] He had a family. [thoughtful] I wonder what he&#39;ll do now.
 </code></pre>
-<p><strong>Hebrew (romantic moment - selective nikud only where needed):</strong></p>
-<pre><code>[soft] היא עמדה שם, מול השקיעה... [pause] הלב שלי פעם כל כך חזק. [nervous] לא ידעתי מה להגיד. [hesitates] אני... [breathes] [tender] אַתְּ יודעת שאני אוהב אותָךְ, נכון?
+<p><strong>Hebrew (romantic moment):</strong></p>
+<pre><code>[soft] היא עמדה שם, מול השקיעה... [pause] הלב שלי פעם כל כך חזק. [nervous] לא ידעתי מה להגיד. [hesitates] אני... [breathes] [tender] את יודעת שאני אוהב אותך, נכון?
 </code></pre>
 <p><strong>Spanish (celebration to reflection):</strong></p>
 <pre><code>[excited] ¡Lo logramos! [laughs] [happy] No puedo creerlo... [pause] [thoughtful] Fueron tantos años de trabajo. [emotional] [soft] Gracias a todos los que creyeron en mí. [sighs] [content] Valió la pena cada momento.
@@ -96,7 +101,7 @@
       &quot;provider&quot;: &quot;elevenlabs&quot;,
       &quot;elevenlabs&quot;: {
         &quot;apiKey&quot;: &quot;sk_your_api_key_here&quot;,
-        &quot;voiceId&quot;: &quot;YOUR_VOICE_ID&quot;,
+        &quot;voiceId&quot;: &quot;pNInz6obpgDQGcFmaJgB&quot;,
         &quot;modelId&quot;: &quot;eleven_v3&quot;,
         &quot;languageCode&quot;: &quot;en&quot;,
         &quot;voiceSettings&quot;: {
@@ -184,68 +189,34 @@
 <li><strong>Languages</strong>: 70+ supported with full audio tag control</li>
 </ul>
 <h3>Stability Modes</h3>
-<p>v3 only accepts three values: 0.0, 0.5, 1.0</p>
 <table>
 <thead>
 <tr>
 <th>Mode</th>
-<th>Value</th>
+<th>Stability</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody><tr>
 <td><strong>Creative</strong></td>
-<td>0.0</td>
-<td>Most emotional/expressive, best for singing, may hallucinate</td>
+<td>0.3-0.5</td>
+<td>More emotional/expressive, may hallucinate</td>
 </tr>
 <tr>
 <td><strong>Natural</strong></td>
-<td>0.5</td>
+<td>0.5-0.7</td>
 <td>Balanced, closest to original voice</td>
 </tr>
 <tr>
 <td><strong>Robust</strong></td>
-<td>1.0</td>
+<td>0.7-1.0</td>
 <td>Highly stable, less responsive to tags</td>
 </tr>
 </tbody></table>
-<p>For audio tags, use <strong>Creative</strong> (0.0) or <strong>Natural</strong> (0.5). Robust reduces tag responsiveness.</p>
+<p>For audio tags, use <strong>Creative</strong> (0.5) or <strong>Natural</strong>. Higher stability reduces tag responsiveness.</p>
 <h3>Speed Control</h3>
 <p>Range: 0.7 (slow) to 1.2 (fast), default 1.0</p>
 <p>Extreme values affect quality. For pacing, prefer audio tags like <code>[rushed]</code> or <code>[drawn out]</code>.</p>
-<h2>Hebrew Nikud (Vowel Points)</h2>
-<p>Use nikud <strong>selectively</strong> - only on words where pronunciation is ambiguous. Full nikud on every word can degrade quality.</p>
-<p><strong>The rule: only add nikud where the model might guess wrong.</strong></p>
-<p>Common cases where nikud helps:</p>
-<ol>
-<li><strong>Gender suffixes</strong> - שלומֵךְ (f) vs שלומְךָ (m), לָךְ (f) vs לְךָ (m), אותָךְ (f) vs אותְךָ (m)</li>
-<li><strong>Dagesh (hard/soft consonants)</strong> - letters בכפ change sound with dagesh:<ul>
-<li>פּ = P, פ = F: פִּיצה (pizza), פִּייר (Pierre)</li>
-<li>בּ = B, ב = V: בְּרָכָה (brakha), בְּדִיוּק (bediyuk)</li>
-<li>כּ = K, כ = Kh: כּוֹס (kos), כַּמָּה (kama)</li>
-</ul>
-</li>
-<li><strong>Homographs</strong> - same spelling, different meaning/pronunciation:<ul>
-<li>בּוֹקֶר (morning) vs בּוֹקֵר (cowboy)</li>
-<li>עוֹלָם (world) vs עוֹלֵם (concealing)</li>
-<li>סֵפֶר (book) vs סָפַר (counted)</li>
-</ul>
-</li>
-<li><strong>Foreign names and loanwords</strong> - the model often guesses wrong</li>
-<li><strong>Stress placement</strong> - when it changes meaning or sounds unnatural</li>
-</ol>
-<p><strong>When NOT to add nikud:</strong></p>
-<ul>
-<li>Common words with only one pronunciation (מה, יש, הרבה, שלום, אני, הוא, etc.)</li>
-<li>Context makes pronunciation obvious</li>
-<li>Most of the sentence - keep it clean</li>
-</ul>
-<p><strong>Example:</strong></p>
-<pre><code>❌ Full nikud: מַה שְׁלוֹמְךָ? יֵשׁ לְךָ הַרְבֵּה כֶּסֶף.
-✅ Selective: מה שלומְךָ? יש לְךָ הרבה כסף.
-✅ Dagesh: ז&#39;אן-פִּייר אפה פִּיצה מושלמת.
-</code></pre>
-<p><strong>Principle:</strong> If you read the word and there&#39;s only one way to say it - skip the nikud. If there&#39;s ambiguity - add it.</p>
 <h2>Critical Rules</h2>
 <h3>Length Limits</h3>
 <ul>
@@ -316,10 +287,15 @@
 <pre><code>tts text=&quot;[excited] This is amazing! [pause]&quot; channel=whatsapp
 </code></pre>
 <p>Returns: <code>MEDIA:/tmp/tts-xxx/voice-123.mp3</code></p>
-<p><strong>2. Convert MP3 → Opus using the included converter:</strong></p>
-<pre><code>python3 lib/audio_convert.py convert /tmp/tts-xxx/voice-123.mp3 /tmp/tts-xxx/voice-123.ogg
+<p><strong>2. Convert MP3 → Opus:</strong></p>
+<pre><code class="language-bash">ffmpeg -i /tmp/tts-xxx/voice-123.mp3 -c:a libopus -b:a 64k -vbr on -application voip /tmp/tts-xxx/voice-123.ogg
 </code></pre>
 <p><strong>3. Send the Opus file:</strong></p>
+<blockquote>
+<p><strong>Note:</strong> The <code>message</code> field below contains a Unicode Left-to-Right Mark (U+200E) between the quotes.
+This is intentional — WhatsApp requires a non-empty message body to send voice notes.
+The LTR mark is invisible but satisfies this requirement without displaying any text.</p>
+</blockquote>
 <pre><code>message action=send channel=whatsapp target=&quot;+972...&quot; filePath=&quot;/tmp/tts-xxx/voice-123.ogg&quot; asVoice=true message=&quot;‎&quot;
 </code></pre>
 <h3>Why Opus?</h3>
@@ -359,12 +335,14 @@
 <ol>
 <li>Split into short segments (&lt;800 chars each)</li>
 <li>Generate each with <code>tts</code> tool</li>
-<li>Concatenate using the included converter:<pre><code>python3 lib/audio_convert.py concat /tmp/final.mp3 /tmp/part1.mp3 /tmp/part2.mp3
+<li>Concatenate with ffmpeg:<pre><code class="language-bash">cat &gt; list.txt &lt;&lt; EOF
+file &#39;/path/file1.mp3&#39;
+file &#39;/path/file2.mp3&#39;
+EOF
+ffmpeg -f concat -safe 0 -i list.txt -c copy final.mp3
 </code></pre>
 </li>
-<li>Convert to Opus for WhatsApp:<pre><code>python3 lib/audio_convert.py convert /tmp/final.mp3 /tmp/final.ogg
-</code></pre>
-</li>
+<li>Convert to Opus for WhatsApp</li>
 <li>Send as single voice message</li>
 </ol>
 <p><strong>Important</strong>: Don&#39;t mention &quot;part 2&quot; or &quot;chapter&quot; - keep it seamless.</p>
@@ -448,7 +426,7 @@ Jessica: [panicking] We need to hide!
 <p><strong>No emotion despite tags?</strong></p>
 <ul>
 <li>Voice may not match tag style</li>
-<li>Try Creative stability mode (0.0)</li>
+<li>Try Creative stability mode (0.5)</li>
 <li>Add more context around the tag</li>
 </ul>
 
@@ -458,7 +436,7 @@ Jessica: [panicking] We need to hide!
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/shaharsha/elevenlabs-tts/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/blob/main/skills/shaharsha/elevenlabs-tts/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
@@ -466,9 +444,9 @@ Jessica: [panicking] We need to hide!
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/shaharsha/elevenlabs-tts/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/shaharsha/elevenlabs-tts/SKILL.md" download class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  Download SKILL.md
+                  Download Source
                 </a>
                 <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>

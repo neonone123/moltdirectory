@@ -48,6 +48,7 @@
               <a href="/devops-cloud/" class="back-link">← Back to DevOps & Cloud</a>
               <div class="skill-page-meta">
                 <a href="/devops-cloud/" class="skill-page-category">DevOps & Cloud</a>
+                <span class="skill-page-author">by @abtdomain</span>
               </div>
               <h1 class="skill-page-title">nameserver-reverse</h1>
               <p class="skill-page-desc">Domain intelligence tools through MCP-compatible</p>
@@ -60,15 +61,197 @@
           </section>
           <div class="skill-page-body">
             <article class="skill-page-content">
-              <div class="markdown-content">
-                <p>Skill documentation is available on GitHub.</p>
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>DomainKits MCP Server</h1>
+<p>Domain intelligence tools through MCP-compatible clients.</p>
+<h2>Endpoints</h2>
+<table>
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>https://mcp.domainkits.com/mcp/nrds</code></td>
+<td>Newly Registered Domains Search</td>
+</tr>
+<tr>
+<td><code>https://mcp.domainkits.com/mcp/ns-reverse</code></td>
+<td>NS Reverse Lookup</td>
+</tr>
+</tbody></table>
+<h2>Configuration</h2>
+<h3>Claude Desktop</h3>
+<p>Edit config file:</p>
+<ul>
+<li><strong>macOS</strong>: <code>~/Library/Application Support/Claude/claude_desktop_config.json</code></li>
+<li><strong>Windows</strong>: <code>%APPDATA%\Claude\claude_desktop_config.json</code></li>
+</ul>
+<pre><code class="language-json">{
+  &quot;mcpServers&quot;: {
+    &quot;domainkits-nrds&quot;: {
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [
+        &quot;mcp-remote&quot;,
+        &quot;https://mcp.domainkits.com/mcp/nrds&quot;,
+        &quot;--transport&quot;,
+        &quot;http-first&quot;
+      ]
+    },
+    &quot;domainkits-ns-reverse&quot;: {
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [
+        &quot;mcp-remote&quot;,
+        &quot;https://mcp.domainkits.com/mcp/ns-reverse&quot;,
+        &quot;--transport&quot;,
+        &quot;http-first&quot;
+      ]
+    }
+  }
+}
+</code></pre>
+<h3>Cursor</h3>
+<p>Edit <code>~/.cursor/mcp.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;mcpServers&quot;: {
+    &quot;domainkits-nrds&quot;: {
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [&quot;mcp-remote&quot;, &quot;https://mcp.domainkits.com/mcp/nrds&quot;]
+    },
+    &quot;domainkits-ns-reverse&quot;: {
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [&quot;mcp-remote&quot;, &quot;https://mcp.domainkits.com/mcp/ns-reverse&quot;]
+    }
+  }
+}
+</code></pre>
+<p>---|------|----------|---------|-------------|
+| keyword | string | Yes | - | Search term (a-z, 0-9, hyphen only, max 20 chars) |
+| days | integer | Yes | - | 1-7 |
+| position | string | No | any | <code>start</code>, <code>end</code>, or <code>any</code> |
+| tld | string | No | all | Filter by TLD (e.g., <code>com</code>, <code>net</code>, <code>org</code>) |</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-bash">curl -X POST https://mcp.domainkits.com/mcp/nrds \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;id&quot;:1,&quot;method&quot;:&quot;tools/call&quot;,&quot;params&quot;:{&quot;name&quot;:&quot;search_nrds&quot;,&quot;arguments&quot;:{&quot;keyword&quot;:&quot;ai&quot;,&quot;days&quot;:7,&quot;position&quot;:&quot;start&quot;,&quot;tld&quot;:&quot;com&quot;}}}&#39;
+</code></pre>
+<hr>
+<h3>search_ns_reverse</h3>
+<p>Look up gTLD domains hosted on a specific nameserver.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ns</td>
+<td>string</td>
+<td>Yes</td>
+<td>-</td>
+<td>Nameserver hostname (e.g., <code>ns1.google.com</code>)</td>
+</tr>
+<tr>
+<td>tld</td>
+<td>string</td>
+<td>No</td>
+<td>all</td>
+<td>Filter by TLD (e.g., <code>com</code>, <code>net</code>, <code>org</code>)</td>
+</tr>
+<tr>
+<td>min_len</td>
+<td>integer</td>
+<td>No</td>
+<td>-</td>
+<td>Minimum domain prefix length</td>
+</tr>
+<tr>
+<td>max_len</td>
+<td>integer</td>
+<td>No</td>
+<td>-</td>
+<td>Maximum domain prefix length</td>
+</tr>
+</tbody></table>
+<p><strong>Example:</strong></p>
+<pre><code class="language-bash">curl -X POST https://mcp.domainkits.com/mcp/ns-reverse \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;id&quot;:1,&quot;method&quot;:&quot;tools/call&quot;,&quot;params&quot;:{&quot;name&quot;:&quot;search_ns_reverse&quot;,&quot;arguments&quot;:{&quot;ns&quot;:&quot;ns1.google.com&quot;,&quot;tld&quot;:&quot;com&quot;,&quot;min_len&quot;:4,&quot;max_len&quot;:8}}}&#39;
+</code></pre>
+<hr>
+<h2>Limits</h2>
+<ul>
+<li>10 requests per minute per IP</li>
+<li>5 domains per response</li>
+<li>NRDS data may have 24-48 hour delay</li>
+</ul>
+<h2>Full Access</h2>
+<p>For complete results with advanced filters and export:</p>
+<ul>
+<li><strong>NRDS</strong>: <a href="https://domainkits.com/search/new">domainkits.com/search/new</a></li>
+<li><strong>NS Reverse</strong>: <a href="https://domainkits.com/tools/ns-reverse">domainkits.com/tools/ns-reverse</a></li>
+</ul>
+<h2>About</h2>
+<p><a href="https://domainkits.com">DomainKits</a> - Domain intelligence tools for investors, brand managers, and researchers.</p>
+<h2>Privacy</h2>
+<ul>
+<li>IP addresses anonymized</li>
+<li>Search queries anonymized</li>
+<li>Logs retained 7 days</li>
+<li>No personal data collected</li>
+</ul>
+<h2>License</h2>
+<p>MIT</p>
+
+                </div>
               </div>
             </article>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/abtdomain/nameserver-reverse/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">View on GitHub</a>
-                <a href="https://clawdhub.com/abtdomain/nameserver-reverse" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">View on ClawdHub</a>
+                <a href="https://github.com/openclaw/skills/blob/main/skills/abtdomain/nameserver-reverse/Skill.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/abtdomain/nameserver-reverse" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/abtdomain/nameserver-reverse/Skill.md" download class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download Source
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@abtdomain</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">DevOps & Cloud</span>
+                  </div>
+                </div>
               </div>
             </aside>
           </div>

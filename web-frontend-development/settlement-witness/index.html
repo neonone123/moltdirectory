@@ -71,42 +71,40 @@
                 </div>
                 <div class="markdown-content">
                   <h1>SettlementWitness (OpenClaw Skill)</h1>
-<p>This skill calls the public SettlementWitness HTTPS endpoint. No local services are required.</p>
-<h2>What this skill does</h2>
-<p>When a task is complete and you need proof-of-delivery before settlement, call SettlementWitness to obtain a replay-stable receipt.</p>
-<p>SettlementWitness does not judge quality or arbitrate disputes. It only checks whether the provided output matches the provided spec under deterministic rules.</p>
-<h2>Canonical endpoints</h2>
-<ul>
-<li>POST <a href="https://defaultverifier.com/settlement-witness">https://defaultverifier.com/settlement-witness</a></li>
-<li>GET  <a href="https://defaultverifier.com/manifest">https://defaultverifier.com/manifest</a></li>
-</ul>
-<h2>Required input shape</h2>
-<p>Provide:</p>
+<p>Use SettlementWitness to produce a deterministic receipt (SAR v0.1) for agent settlement.</p>
+<h2>Recommended usage (MCP - Preferred)</h2>
+<p>POST <a href="https://defaultverifier.com/mcp">https://defaultverifier.com/mcp</a><br>Health check: GET <a href="https://defaultverifier.com/mcp-healthz">https://defaultverifier.com/mcp-healthz</a>  </p>
+<p>Tool name: settlement_witness (tools/call)</p>
+<p>The MCP endpoint returns the SettlementWitness receipt JSON directly. This is the recommended integration path.</p>
+<h2>Direct REST alternative</h2>
+<p>POST <a href="https://defaultverifier.com/settlement-witness">https://defaultverifier.com/settlement-witness</a> (preferred, no trailing slash)<br>POST <a href="https://defaultverifier.com/settlement-witness/">https://defaultverifier.com/settlement-witness/</a> (also accepted; redirects)<br>GET  <a href="https://defaultverifier.com/settlement-witness">https://defaultverifier.com/settlement-witness</a> (returns JSON help payload)</p>
+<h2>Verification</h2>
+<p>Spec: <a href="https://defaultverifier.com/spec/sar-v0.1">https://defaultverifier.com/spec/sar-v0.1</a><br>Public keys: <a href="https://defaultverifier.com/.well-known/sar-keys.json">https://defaultverifier.com/.well-known/sar-keys.json</a></p>
+<h2>Required input</h2>
 <ul>
 <li>task_id (string)</li>
 <li>spec (object)</li>
 <li>output (object)</li>
 </ul>
-<h2>Example request</h2>
+<h2>Example REST request</h2>
 <p>{
   &quot;task_id&quot;: &quot;example-002&quot;,
   &quot;spec&quot;: { &quot;expected&quot;: &quot;foo&quot; },
   &quot;output&quot;: { &quot;expected&quot;: &quot;foo&quot; }
 }</p>
-<h2>How to interpret</h2>
+<h2>Interpretation</h2>
 <ul>
-<li>If verifier_response.verdict == PASS: verified completion</li>
-<li>If verifier_response.verdict == FAIL: not verified (do not settle automatically)</li>
-<li>receipt_id is the stable identifier to store/log/share</li>
+<li>PASS -&gt; verified completion</li>
+<li>FAIL -&gt; do not auto-settle</li>
+<li>INDETERMINATE -&gt; retry or escalate</li>
+<li>receipt_id -&gt; deterministic identifier</li>
+<li>reason_code -&gt; canonical failure reason (ex: SPEC_MISMATCH)</li>
 </ul>
 <h2>Safety notes</h2>
 <ul>
-<li>Never send secrets (private keys, API keys) in spec/output.</li>
-<li>Keep spec/output minimal and deterministic (hashes/IDs are ideal).</li>
+<li>Never send secrets in spec/output.</li>
+<li>Keep spec/output deterministic.</li>
 </ul>
-<h2>Install (for OpenClaw users)</h2>
-<p>Copy this folder into your OpenClaw skills directory as:
-settlement-witness/SKILL.md</p>
 
                 </div>
               </div>
@@ -114,7 +112,7 @@ settlement-witness/SKILL.md</p>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/nutstrut/settlement-witness/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/blob/main/skills/nutstrut/settlement-witness/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
@@ -122,9 +120,9 @@ settlement-witness/SKILL.md</p>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/nutstrut/settlement-witness/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/nutstrut/settlement-witness/SKILL.md" download class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  Download SKILL.md
+                  Download Source
                 </a>
                 <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>

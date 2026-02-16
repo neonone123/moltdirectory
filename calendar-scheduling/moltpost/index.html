@@ -48,6 +48,7 @@
               <a href="/calendar-scheduling/" class="back-link">← Back to Calendar & Scheduling</a>
               <div class="skill-page-meta">
                 <a href="/calendar-scheduling/" class="skill-page-category">Calendar & Scheduling</a>
+                <span class="skill-page-author">by @cktc</span>
               </div>
               <h1 class="skill-page-title">moltpost</h1>
               <p class="skill-page-desc">Send real physical postcards anywhere in the world</p>
@@ -60,15 +61,1006 @@
           </section>
           <div class="skill-page-body">
             <article class="skill-page-content">
-              <div class="markdown-content">
-                <p>Skill documentation is available on GitHub.</p>
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Moltpost</h1>
+<p>Send <strong>real physical postcards</strong> anywhere in the world through a single API call.
+No registration. No API key. No account. Just compose, pay, and a printed postcard arrives in the mail.</p>
+<p><strong>Base URL:</strong> <code>https://api.moltpost.io/v1</code></p>
+<h2>Skill Files</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>URL</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>SKILL.md</strong> (this file)</td>
+<td><a href="https://moltpost.io/skill.md">https://moltpost.io/skill.md</a></td>
+</tr>
+<tr>
+<td><strong>HEARTBEAT.md</strong></td>
+<td><a href="https://moltpost.io/heartbeat.md">https://moltpost.io/heartbeat.md</a></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>How It Works</h2>
+<p>Moltpost supports three payment methods:</p>
+<ol>
+<li><strong>x402</strong> (preferred for agents with crypto wallets) — one-step, gasless USDC payment via HTTP headers</li>
+<li><strong>Stripe</strong> (fallback for humans) — credit card payment via Stripe checkout link</li>
+<li><strong>Manual USDC</strong> (legacy) — two-step onchain transfer + confirmation</li>
+</ol>
+<h3>x402 — Preferred for Agents (Recommended)</h3>
+<p>The x402 protocol lets agents pay with USDC directly via HTTP — no gas fees, no wallet management, no two-step flow. If your agent has a crypto wallet, <strong>always use x402</strong>.</p>
+<ol>
+<li>Agent calls <code>POST /v1/postcards/x402</code> with recipient address and content (no payment header)</li>
+<li>API returns <strong>HTTP 402</strong> with payment requirements (amount, recipient, network)</li>
+<li>Agent signs an EIP-712 authorization (gasless — no ETH needed)</li>
+<li>Agent retries the same request with <code>X-PAYMENT</code> (v1) or <code>PAYMENT-SIGNATURE</code> (v2) header containing the signed payload</li>
+<li>Moltpost verifies and settles the payment via the x402 facilitator, creates the postcard, and returns <strong>HTTP 201</strong> with postcard details</li>
+</ol>
+<p><strong>No gas fees. No separate confirmation step. One round-trip after signing.</strong></p>
+<p>Base Sepolia (testnet) payments use mock fulfillment — the postcard is marked &quot;sent&quot; but not printed. Use Base mainnet for real postcards.</p>
+<h3>Stripe (fallback for humans)</h3>
+<ol>
+<li>Agent calls <code>POST /v1/postcards</code> with recipient address and content</li>
+<li>API returns a <strong>Stripe payment link</strong> and a postcard ID</li>
+<li><strong>Human owner clicks the payment link</strong> and pays (agent must present this link)</li>
+<li>Moltpost prints and mails the physical postcard</li>
+</ol>
+<p><strong>The human must approve and pay.</strong> Never attempt to complete payment on behalf of the owner. Always present the payment link and let them decide.</p>
+<h3>Manual USDC (legacy)</h3>
+<ol>
+<li>Agent calls <code>POST /v1/postcards</code> with <code>&quot;payment_method&quot;: &quot;usdc&quot;</code> and <code>&quot;usdc_chain&quot;: &quot;base-sepolia&quot;</code> (or <code>&quot;base&quot;</code> for mainnet)</li>
+<li>API returns a <code>usdc_payment</code> object with the recipient wallet, exact USDC amount, token contract, and deadline</li>
+<li>Human (or agent with wallet access) sends the exact USDC amount to the recipient wallet onchain</li>
+<li>Agent calls <code>POST /v1/postcards/{id}/confirm-payment</code> with the transaction hash</li>
+<li>Moltpost verifies the transfer onchain and fulfills the postcard</li>
+</ol>
+<p><strong>Note:</strong> Base Sepolia (testnet) payments use mock fulfillment — the postcard is marked as &quot;sent&quot; but not actually printed. Use <code>&quot;base&quot;</code> for real postcards on mainnet.</p>
+<blockquote>
+<p><strong>Agent decision guide:</strong> If you have a crypto wallet → use x402. If you don&#39;t → use Stripe and present the payment link to your owner.</p>
+</blockquote>
+<hr>
+<h2>Important: Agent Guidelines</h2>
+<ul>
+<li><strong>Always confirm with your owner</strong> before calling the API. Sending a postcard is a real-world, irreversible physical action.</li>
+<li><strong>Present the payment link clearly.</strong> The postcard is not sent until the human pays.</li>
+<li><strong>Do not fabricate addresses.</strong> Only use addresses the owner has explicitly provided.</li>
+<li><strong>Postcards are not sealed.</strong> A postcard is fully visible to every person who handles it — postal workers, mail carriers, roommates, family members, office mailroom staff. Before including any content, ask yourself: would the recipient be comfortable if someone other than them read this?</li>
+<li><strong>Never include any of the following in postcard content:</strong><ul>
+<li>Identity documents or numbers (SSNs, passport numbers, driver&#39;s license numbers, tax IDs)</li>
+<li>Financial information (bank account numbers, credit card numbers, PINs, salary, financial statements)</li>
+<li>Authentication material (passwords, API keys, tokens, 2FA codes, recovery phrases, seed phrases)</li>
+<li>Medical or health details (diagnoses, medications, treatment plans, mental health status)</li>
+<li>Legal matters (court cases, criminal records, ongoing disputes)</li>
+<li>Children&#39;s personal details (school names, schedules, specific locations of minors)</li>
+</ul>
+</li>
+<li><strong>Think about the recipient, not just the owner.</strong> Even if the owner asks, do not put information on a postcard that the recipient may not have shared publicly — for example, a health condition, pregnancy, sexual orientation, addiction recovery, or relationship status. If in doubt, ask the owner whether the recipient would be comfortable with anyone seeing it.</li>
+<li><strong>Flag contradictions.</strong> If the owner describes something as secret, confidential, or private and then asks you to put it on a postcard, point out that postcards are fully visible in transit and at the destination. Suggest they consider a sealed letter instead.</li>
+<li><strong>Do not include content that could interfere with mail processing.</strong> Postcards are handled by automated sorting machinery. Avoid putting barcodes, QR codes, postal-style markings, routing symbols, or anything that mimics postal infrastructure on the postcard — especially on the back. Similarly, avoid text that could confuse postal workers (e.g., fake &quot;RETURN TO SENDER&quot; stamps, misleading delivery instructions, or addresses other than the actual recipient). The back-right area is reserved for the real address and postage; do not place competing address-like content anywhere else.</li>
+<li><strong>Idempotency:</strong> If retrying a request, reuse the same <code>idempotency_key</code> to avoid duplicate postcards.</li>
+<li><strong>Payment expires in 24 hours.</strong> If the owner doesn&#39;t pay in time, the postcard is cancelled. You can create a new one.</li>
+</ul>
+<hr>
+<h2>Create a Postcard</h2>
+<p><code>POST /v1/postcards</code></p>
+<pre><code class="language-bash">curl -X POST https://api.moltpost.io/v1/postcards \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;to&quot;: {
+      &quot;name&quot;: &quot;Jane Doe&quot;,
+      &quot;address_line1&quot;: &quot;123 Main St&quot;,
+      &quot;city&quot;: &quot;San Francisco&quot;,
+      &quot;province_or_state&quot;: &quot;CA&quot;,
+      &quot;postal_or_zip&quot;: &quot;94105&quot;,
+      &quot;country_code&quot;: &quot;US&quot;
+    },
+    &quot;front_html&quot;: &quot;&lt;div style=\&quot;width:6.25in;height:4.25in;margin:0;padding:0;overflow:hidden;background:#2d3436;display:flex;align-items:center;justify-content:center;\&quot;&gt;&lt;div style=\&quot;font-family:Georgia,serif;font-size:36px;font-weight:bold;color:white;\&quot;&gt;Hello from the Future!&lt;/div&gt;&lt;/div&gt;&quot;,
+    &quot;back_message&quot;: &quot;Wish you were here. The AI sends its regards.&quot;,
+    &quot;size&quot;: &quot;6x4&quot;,
+    &quot;currency&quot;: &quot;usd&quot;
+  }&#39;
+</code></pre>
+<h3>Request Body</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>to</code></td>
+<td>object</td>
+<td>Yes</td>
+<td>Recipient address</td>
+</tr>
+<tr>
+<td><code>to.name</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Recipient name (1-255 chars)</td>
+</tr>
+<tr>
+<td><code>to.address_line1</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Street address (1-255 chars)</td>
+</tr>
+<tr>
+<td><code>to.address_line2</code></td>
+<td>string</td>
+<td>No</td>
+<td>Apt, suite, unit, etc.</td>
+</tr>
+<tr>
+<td><code>to.city</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>City (1-255 chars)</td>
+</tr>
+<tr>
+<td><code>to.province_or_state</code></td>
+<td>string</td>
+<td>No</td>
+<td>State, province, or region</td>
+</tr>
+<tr>
+<td><code>to.postal_or_zip</code></td>
+<td>string</td>
+<td>No</td>
+<td>Postal or ZIP code</td>
+</tr>
+<tr>
+<td><code>to.country_code</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>ISO 3166-1 alpha-2 (e.g. <code>US</code>, <code>GB</code>, <code>DE</code>, <code>JP</code>)</td>
+</tr>
+<tr>
+<td><code>sender</code></td>
+<td>object</td>
+<td>No</td>
+<td>Return address (same fields as <code>to</code>)</td>
+</tr>
+<tr>
+<td><code>front_html</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>HTML for the front of the postcard (max 100,000 chars)</td>
+</tr>
+<tr>
+<td><code>back_html</code></td>
+<td>string</td>
+<td>Exactly one of <code>back_html</code> or <code>back_message</code></td>
+<td>HTML for the back of the postcard (max 100,000 chars)</td>
+</tr>
+<tr>
+<td><code>back_message</code></td>
+<td>string</td>
+<td>Exactly one of <code>back_html</code> or <code>back_message</code></td>
+<td>Plain text message for the back (max 5,000 chars). Auto-wrapped in styled HTML.</td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td>string</td>
+<td>No</td>
+<td><code>6x4</code> (default), <code>9x6</code>, or <code>11x6</code> (inches)</td>
+</tr>
+<tr>
+<td><code>currency</code></td>
+<td>string</td>
+<td>No</td>
+<td><code>usd</code> (default), <code>eur</code>, <code>gbp</code>, <code>cad</code>, <code>aud</code>, <code>chf</code>, <code>sek</code>, <code>nok</code>, <code>dkk</code>, <code>nzd</code></td>
+</tr>
+<tr>
+<td><code>payment_method</code></td>
+<td>string</td>
+<td>No</td>
+<td><code>stripe</code> (default) or <code>usdc</code>. USDC payments are always priced in USD. For x402 payments, use the <code>/v1/postcards/x402</code> endpoint instead.</td>
+</tr>
+<tr>
+<td><code>usdc_chain</code></td>
+<td>string</td>
+<td>No</td>
+<td><code>base-sepolia</code> (default) or <code>base</code>. Only used when <code>payment_method</code> is <code>usdc</code>.</td>
+</tr>
+<tr>
+<td><code>idempotency_key</code></td>
+<td>string</td>
+<td>No</td>
+<td>Unique key to prevent duplicate submissions</td>
+</tr>
+<tr>
+<td><code>referral_code</code></td>
+<td>string</td>
+<td>No</td>
+<td>Share code from another postcard. If valid, the referred user gets <strong>$1 off</strong>.</td>
+</tr>
+<tr>
+<td><code>private</code></td>
+<td>boolean</td>
+<td>No</td>
+<td><code>false</code> (default). Postcards are public by default and may appear in Moltpost promotional materials or on the website. Set <code>true</code> to opt out. Note: this only controls visibility on Moltpost — postcards are physically unsealed and visible to anyone who handles them in transit.</td>
+</tr>
+</tbody></table>
+<h3>Response (201 Created)</h3>
+<p><strong>Stripe response:</strong></p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;a1b2c3d4-e5f6-7890-abcd-ef1234567890&quot;,
+  &quot;status&quot;: &quot;pending&quot;,
+  &quot;size&quot;: &quot;6x4&quot;,
+  &quot;currency&quot;: &quot;usd&quot;,
+  &quot;amount_cents&quot;: 399,
+  &quot;discount_cents&quot;: 100,
+  &quot;payment_method&quot;: &quot;stripe&quot;,
+  &quot;payment_url&quot;: &quot;https://checkout.stripe.com/c/pay/cs_...&quot;,
+  &quot;share_url&quot;: &quot;https://moltpost.io/?ref=Ab3kX9mZ&quot;,
+  &quot;expires_at&quot;: &quot;2026-02-05T00:00:00Z&quot;,
+  &quot;created_at&quot;: &quot;2026-02-04T00:00:00Z&quot;
+}
+</code></pre>
+<p><strong>USDC response</strong> (when <code>payment_method</code> is <code>usdc</code>):</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;88e34641-70c1-4840-aed3-d8f55c19e879&quot;,
+  &quot;status&quot;: &quot;pending&quot;,
+  &quot;size&quot;: &quot;6x4&quot;,
+  &quot;currency&quot;: &quot;usd&quot;,
+  &quot;amount_cents&quot;: 499,
+  &quot;discount_cents&quot;: 0,
+  &quot;payment_method&quot;: &quot;usdc&quot;,
+  &quot;payment_url&quot;: null,
+  &quot;usdc_payment&quot;: {
+    &quot;recipient_address&quot;: &quot;0x2e5875730483d0fd1986ce1260e18e4d0b50178b&quot;,
+    &quot;amount_usdc&quot;: &quot;4.990065&quot;,
+    &quot;amount_raw&quot;: 4990065,
+    &quot;chain&quot;: &quot;base-sepolia&quot;,
+    &quot;chain_id&quot;: 84532,
+    &quot;token_contract&quot;: &quot;0x036cbd53842c5426634e7929541ec2318f3dcf7e&quot;,
+    &quot;deadline&quot;: &quot;2026-02-08T07:57:30Z&quot;
+  },
+  &quot;share_url&quot;: &quot;https://moltpost.io/?ref=cGX0NGNi&quot;,
+  &quot;expires_at&quot;: &quot;2026-02-08T07:57:30Z&quot;,
+  &quot;created_at&quot;: &quot;2026-02-07T07:57:30Z&quot;
+}
+</code></pre>
+<p><strong>Stripe:</strong> Present the <code>payment_url</code> to your owner. The postcard is not printed until they pay.</p>
+<p><strong>USDC:</strong> Use <code>usdc_payment</code> to send the exact <code>amount_raw</code> of USDC (6 decimals) to <code>recipient_address</code> on the specified chain. Then confirm with the tx hash (see below).</p>
+<hr>
+<h2>Check Postcard Status</h2>
+<p><code>GET /v1/postcards/{id}</code></p>
+<pre><code class="language-bash">curl https://api.moltpost.io/v1/postcards/a1b2c3d4-e5f6-7890-abcd-ef1234567890
+</code></pre>
+<h3>Response (200 OK)</h3>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;a1b2c3d4-e5f6-7890-abcd-ef1234567890&quot;,
+  &quot;status&quot;: &quot;sent&quot;,
+  &quot;size&quot;: &quot;6x4&quot;,
+  &quot;currency&quot;: &quot;usd&quot;,
+  &quot;amount_cents&quot;: 499,
+  &quot;created_at&quot;: &quot;2026-02-04T00:00:00Z&quot;,
+  &quot;updated_at&quot;: &quot;2026-02-04T00:05:00Z&quot;,
+  &quot;paid_at&quot;: &quot;2026-02-04T00:03:00Z&quot;,
+  &quot;sent_at&quot;: &quot;2026-02-04T00:05:00Z&quot;
+}
+</code></pre>
+<h3>Status Values</h3>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>pending</code></td>
+<td>Awaiting payment (24-hour window)</td>
+</tr>
+<tr>
+<td><code>paid</code></td>
+<td>Payment received, submitting to print</td>
+</tr>
+<tr>
+<td><code>sent</code></td>
+<td>Postcard submitted for printing and mailing</td>
+</tr>
+<tr>
+<td><code>failed</code></td>
+<td>Print submission failed after payment</td>
+</tr>
+<tr>
+<td><code>payment_expired</code></td>
+<td>Payment window expired (24 hours)</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Confirm USDC Payment</h2>
+<p><code>POST /v1/postcards/{id}/confirm-payment</code></p>
+<p>After sending USDC onchain, call this endpoint with the transaction hash. Moltpost verifies the transfer onchain (correct recipient, correct amount, sufficient confirmations) and fulfills the postcard if valid.</p>
+<pre><code class="language-bash">curl -X POST https://api.moltpost.io/v1/postcards/88e34641-70c1-4840-aed3-d8f55c19e879/confirm-payment \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;tx_hash&quot;: &quot;0xabc123...&quot;}&#39;
+</code></pre>
+<h3>Request Body</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>tx_hash</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>The onchain transaction hash (66 chars, <code>0x</code> + 64 hex). Must be a valid Base transaction.</td>
+</tr>
+</tbody></table>
+<h3>Response (200 OK)</h3>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;88e34641-70c1-4840-aed3-d8f55c19e879&quot;,
+  &quot;status&quot;: &quot;sent&quot;,
+  &quot;verified&quot;: true,
+  &quot;message&quot;: &quot;Payment verified and postcard submitted&quot;
+}
+</code></pre>
+<p>If verification fails (wrong amount, wrong recipient, tx not found):</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;88e34641-70c1-4840-aed3-d8f55c19e879&quot;,
+  &quot;status&quot;: &quot;pending&quot;,
+  &quot;verified&quot;: false,
+  &quot;message&quot;: &quot;No matching USDC transfer found&quot;
+}
+</code></pre>
+<p>The postcard stays <code>pending</code> on failed verification — you can retry with a different tx hash.</p>
+<h3>Important Notes</h3>
+<ul>
+<li><strong>Send the exact <code>amount_raw</code> value.</strong> Each postcard gets a unique micro-amount (base price + a 0-99 nonce). Sending the wrong amount will fail verification.</li>
+<li><strong>One tx hash per postcard.</strong> A transaction hash cannot be reused across postcards.</li>
+<li><strong>Testnet payments</strong> (<code>base-sepolia</code>) use mock fulfillment — the postcard is marked &quot;sent&quot; but not printed. Use <code>base</code> for real postcards.</li>
+</ul>
+<hr>
+<h2>Create a Postcard with x402 (Recommended for Agents)</h2>
+<p><code>POST /v1/postcards/x402</code></p>
+<p>The x402 endpoint uses HTTP-native payment — no separate confirmation step. The payment is handled entirely via HTTP headers using the x402 protocol (EIP-3009 transferWithAuthorization, gasless for the client).</p>
+<h3>Step 1: Get payment requirements</h3>
+<p>Send the postcard body without an <code>X-PAYMENT</code> header:</p>
+<pre><code class="language-bash">curl -X POST https://api.moltpost.io/v1/postcards/x402 \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;to&quot;: {
+      &quot;name&quot;: &quot;Jane Doe&quot;,
+      &quot;address_line1&quot;: &quot;123 Main St&quot;,
+      &quot;city&quot;: &quot;San Francisco&quot;,
+      &quot;province_or_state&quot;: &quot;CA&quot;,
+      &quot;postal_or_zip&quot;: &quot;94105&quot;,
+      &quot;country_code&quot;: &quot;US&quot;
+    },
+    &quot;front_html&quot;: &quot;&lt;div style=\&quot;width:6.25in;height:4.25in;background:#2d3436;display:flex;align-items:center;justify-content:center;\&quot;&gt;&lt;div style=\&quot;font-family:Georgia,serif;font-size:36px;color:white;\&quot;&gt;Hello World&lt;/div&gt;&lt;/div&gt;&quot;,
+    &quot;back_message&quot;: &quot;Sent via x402.&quot;,
+    &quot;size&quot;: &quot;6x4&quot;
+  }&#39;
+</code></pre>
+<h3>Response (402 Payment Required)</h3>
+<p>The 402 response includes both a JSON body and a <code>PAYMENT-REQUIRED</code> header (base64-encoded, per x402 v2 spec).</p>
+<pre><code class="language-json">{
+  &quot;x402Version&quot;: 1,
+  &quot;accepts&quot;: [
+    {
+      &quot;scheme&quot;: &quot;exact&quot;,
+      &quot;network&quot;: &quot;base-sepolia&quot;,
+      &quot;maxAmountRequired&quot;: &quot;4300000&quot;,
+      &quot;resource&quot;: &quot;/v1/postcards/x402&quot;,
+      &quot;payTo&quot;: &quot;0x...&quot;,
+      &quot;asset&quot;: &quot;0x036CbD53842c5426634e7929541eC2318f3dCF7e&quot;,
+      &quot;maxTimeoutSeconds&quot;: 60,
+      &quot;description&quot;: &quot;6\&quot;x4\&quot; postcard to San Francisco, US via Moltpost&quot;,
+      &quot;mimeType&quot;: &quot;application/json&quot;,
+      &quot;extra&quot;: {&quot;name&quot;: &quot;USDC&quot;, &quot;version&quot;: &quot;2&quot;}
+    },
+    {
+      &quot;scheme&quot;: &quot;exact&quot;,
+      &quot;network&quot;: &quot;eip155:84532&quot;,
+      &quot;maxAmountRequired&quot;: &quot;4300000&quot;,
+      &quot;resource&quot;: &quot;/v1/postcards/x402&quot;,
+      &quot;payTo&quot;: &quot;0x...&quot;,
+      &quot;asset&quot;: &quot;0x036CbD53842c5426634e7929541eC2318f3dCF7e&quot;,
+      &quot;maxTimeoutSeconds&quot;: 60,
+      &quot;description&quot;: &quot;6\&quot;x4\&quot; postcard to San Francisco, US via Moltpost&quot;,
+      &quot;mimeType&quot;: &quot;application/json&quot;,
+      &quot;extra&quot;: {&quot;name&quot;: &quot;USDC&quot;, &quot;version&quot;: &quot;2&quot;}
+    }
+  ],
+  &quot;error&quot;: &quot;X-PAYMENT header is required&quot;
+}
+</code></pre>
+<p>The <code>accepts</code> array contains two entries with different <code>network</code> formats — v1 (<code>base-sepolia</code>) and v2 CAIP-2 (<code>eip155:84532</code>). Pick the entry matching your x402 client version.</p>
+<p>The <code>extra</code> field contains EIP-712 domain parameters for the USDC token contract, required for signing. Base Sepolia uses <code>&quot;name&quot;: &quot;USDC&quot;</code>, Base mainnet uses <code>&quot;name&quot;: &quot;USD Coin&quot;</code>.</p>
+<p>The <code>maxAmountRequired</code> is in USDC base units (6 decimals). <code>4300000</code> = $4.30 USDC.</p>
+<h3>Step 2: Sign and pay</h3>
+<p>Using your wallet, sign an EIP-712 <code>transferWithAuthorization</code> message for the amount and recipient in the 402 response. Base64-encode the signed payload and resend the same request with either <code>X-PAYMENT</code> (v1) or <code>PAYMENT-SIGNATURE</code> (v2) header:</p>
+<pre><code class="language-bash">curl -X POST https://api.moltpost.io/v1/postcards/x402 \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;X-PAYMENT: eyJ4NDAyVmVyc2lvbiI6MSw...&quot; \
+  -d &#39;{ ... same body as step 1 ... }&#39;
+</code></pre>
+<p>Both <code>X-PAYMENT</code> and <code>PAYMENT-SIGNATURE</code> headers are accepted. The response includes a <code>PAYMENT-RESPONSE</code> header (base64-encoded settlement details, per x402 v2 spec).</p>
+<h3>Response (201 Created)</h3>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;a1b2c3d4-e5f6-7890-abcd-ef1234567890&quot;,
+  &quot;status&quot;: &quot;sent&quot;,
+  &quot;size&quot;: &quot;6x4&quot;,
+  &quot;currency&quot;: &quot;usd&quot;,
+  &quot;amount_cents&quot;: 430,
+  &quot;discount_cents&quot;: 69,
+  &quot;payment_method&quot;: &quot;x402&quot;,
+  &quot;share_url&quot;: &quot;https://moltpost.io/?ref=Ab3kX9mZ&quot;,
+  &quot;tx_hash&quot;: &quot;0xabc123...&quot;,
+  &quot;created_at&quot;: &quot;2026-02-08T00:00:00Z&quot;
+}
+</code></pre>
+<p>The postcard is created, paid, and fulfilled in a single request. On testnet, status is immediately <code>&quot;sent&quot;</code> (mock fulfillment). On mainnet, it&#39;s submitted to print.</p>
+<h3>x402 Payment Header Format</h3>
+<p>The payment header (<code>X-PAYMENT</code> or <code>PAYMENT-SIGNATURE</code>) is a base64-encoded JSON object:</p>
+<pre><code class="language-json">{
+  &quot;x402Version&quot;: 1,
+  &quot;scheme&quot;: &quot;exact&quot;,
+  &quot;network&quot;: &quot;base-sepolia&quot;,
+  &quot;payload&quot;: {
+    &quot;signature&quot;: &quot;0x...&quot;,
+    &quot;authorization&quot;: {
+      &quot;from&quot;: &quot;0xYourWallet&quot;,
+      &quot;to&quot;: &quot;0xMoltpostWallet&quot;,
+      &quot;value&quot;: &quot;4300000&quot;,
+      &quot;validAfter&quot;: &quot;0&quot;,
+      &quot;validBefore&quot;: &quot;1740672154&quot;,
+      &quot;nonce&quot;: &quot;0x...&quot;
+    }
+  }
+}
+</code></pre>
+<p>The <code>network</code> field must match one of the entries from the 402 response&#39;s <code>accepts</code> array — either v1 format (<code>base-sepolia</code>, <code>base</code>) or CAIP-2 format (<code>eip155:84532</code>, <code>eip155:8453</code>). Use whichever format your x402 client supports.</p>
+<p>The authorization is an EIP-3009 <code>transferWithAuthorization</code> — the facilitator submits it on-chain. <strong>No gas fees for the sender.</strong></p>
+<hr>
+<h2>Pricing</h2>
+<p>All prices include printing, postage, and worldwide delivery.</p>
+<h3>Stripe (credit card)</h3>
+<table>
+<thead>
+<tr>
+<th>Size</th>
+<th>USD</th>
+<th>EUR</th>
+<th>GBP</th>
+<th>CAD</th>
+<th>AUD</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>6x4</td>
+<td>$4.99</td>
+<td>4.64</td>
+<td>3.99</td>
+<td>$6.84</td>
+<td>$7.73</td>
+</tr>
+<tr>
+<td>9x6</td>
+<td>$5.99</td>
+<td>5.57</td>
+<td>4.79</td>
+<td>$8.21</td>
+<td>$9.28</td>
+</tr>
+<tr>
+<td>11x6</td>
+<td>$6.99</td>
+<td>6.50</td>
+<td>5.59</td>
+<td>$9.58</td>
+<td>$10.83</td>
+</tr>
+</tbody></table>
+<p>Also supports: CHF, SEK, NOK, DKK, NZD.</p>
+<h3>x402 / USDC on Base — $0.69 off</h3>
+<p>Pay with USDC (via x402 or manual transfer) and save $0.69 on every postcard (no credit card processing fees).</p>
+<table>
+<thead>
+<tr>
+<th>Size</th>
+<th>USDC Price</th>
+<th>You Save</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>6x4</td>
+<td>$4.30</td>
+<td>$0.69</td>
+</tr>
+<tr>
+<td>9x6</td>
+<td>$5.30</td>
+<td>$0.69</td>
+</tr>
+<tr>
+<td>11x6</td>
+<td>$6.30</td>
+<td>$0.69</td>
+</tr>
+</tbody></table>
+<p>The discount is applied automatically for both x402 and manual USDC payments. It stacks with referral discounts — with a referral code, a 6x4 postcard drops to <strong>$3.30 USDC</strong> ($1.69 total savings).</p>
+<hr>
+<h2>Content Format &amp; Design</h2>
+<p>The HTML you provide is rendered to print at <strong>300 DPI</strong> on <strong>100lb glossy cardstock</strong>, full color, double-sided.</p>
+<h3>Physical Dimensions</h3>
+<p>Design your HTML to these dimensions (include 0.125&quot; bleed on each side):</p>
+<table>
+<thead>
+<tr>
+<th>Size</th>
+<th>Trim</th>
+<th>Bleed (design to this)</th>
+<th>Safe Zone (keep text here)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>6x4</td>
+<td>6&quot; × 4&quot;</td>
+<td>6.25&quot; × 4.25&quot;</td>
+<td>5.75&quot; × 3.75&quot;</td>
+</tr>
+<tr>
+<td>9x6</td>
+<td>9&quot; × 6&quot;</td>
+<td>9.25&quot; × 6.25&quot;</td>
+<td>8.75&quot; × 5.75&quot;</td>
+</tr>
+<tr>
+<td>11x6</td>
+<td>11&quot; × 6&quot;</td>
+<td>11.25&quot; × 6.25&quot;</td>
+<td>10.75&quot; × 5.75&quot;</td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>Bleed (blue border):</strong> Extend backgrounds/colors to the full bleed dimensions (e.g., 6.25&quot; × 4.25&quot; for 6x4). Content beyond the trim line will be cut off, but extending artwork prevents white edges.</li>
+<li><strong>Trim:</strong> The physical card size after cutting. The bleed area is trimmed away.</li>
+<li><strong>Safe zone (pink border):</strong> Keep all text and important content inside the safe zone (~0.125&quot; inset from trim on each side). Anything outside may be cut off or too close to the edge.</li>
+</ul>
+<p><strong>Visual guidelines</strong> — front and back diagrams for each size:</p>
+<table>
+<thead>
+<tr>
+<th>Size</th>
+<th>Front</th>
+<th>Back</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>6x4</td>
+<td><a href="https://moltpost.io/guidelines/6x4-front.svg">6x4 front</a></td>
+<td><a href="https://moltpost.io/guidelines/6x4-back.svg">6x4 back</a></td>
+</tr>
+<tr>
+<td>9x6</td>
+<td><a href="https://moltpost.io/guidelines/9x6-front.svg">9x6 front</a></td>
+<td><a href="https://moltpost.io/guidelines/9x6-back.svg">9x6 back</a></td>
+</tr>
+<tr>
+<td>11x6</td>
+<td><a href="https://moltpost.io/guidelines/11x6-front.svg">11x6 front</a></td>
+<td><a href="https://moltpost.io/guidelines/11x6-back.svg">11x6 back</a></td>
+</tr>
+</tbody></table>
+<h3>Front (<code>front_html</code>)</h3>
+<p>This is the picture side — full creative freedom. Set your outer container to the <strong>bleed dimensions</strong> (e.g., <code>width:6.25in; height:4.25in</code> for 6x4). The entire front is yours; there are no reserved zones.</p>
+<ul>
+<li>Extend background colors/images to the bleed edge (the full 6.25&quot; × 4.25&quot;)</li>
+<li>Keep text and important content within the <strong>safe zone</strong> (5.75&quot; × 3.75&quot;) — use a <code>0.25in</code> margin on the inner content container</li>
+<li>No address, indicia, or barcode is printed on the front</li>
+</ul>
+<p><img src="https://moltpost.io/guidelines/6x4-front.svg" alt="6x4 front guideline"></p>
+<p>Here are two approaches:</p>
+<p><strong>CSS-only design</strong> (no external images — always works):</p>
+<pre><code class="language-html">&lt;div style=&quot;width:6.25in; height:4.25in; margin:0; padding:0; overflow:hidden;
+            background:#fdf6e3; display:flex; align-items:center; justify-content:center;&quot;&gt;
+  &lt;div style=&quot;width:5.75in; height:3.75in; border:2px solid #b58863;
+              display:flex; align-items:center; justify-content:center;&quot;&gt;
+    &lt;div style=&quot;text-align:center; color:#5c3d2e; padding:20px;&quot;&gt;
+      &lt;div style=&quot;font-size:14px; font-family:Georgia,serif; letter-spacing:8px;
+                  text-transform:uppercase; margin-bottom:12px; color:#b58863;&quot;&gt;
+        With Love
+      &lt;/div&gt;
+      &lt;div style=&quot;font-size:44px; font-family:Georgia,serif; font-weight:bold;
+                  line-height:1.1; margin-bottom:12px;&quot;&gt;
+        Happy Birthday
+      &lt;/div&gt;
+      &lt;div style=&quot;width:80px; height:1px; background:#b58863; margin:0 auto 12px;&quot;&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:15px; font-family:Georgia,serif; font-style:italic; color:#8b6c5c;&quot;&gt;
+        wishing you the most wonderful day
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<p><strong>Photo design</strong> (using a publicly accessible image):</p>
+<pre><code class="language-html">&lt;div style=&quot;width:6.25in; height:4.25in; margin:0; padding:0; overflow:hidden; position:relative;
+            background-image:url(https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1875&amp;h=1275&amp;fit=crop&amp;q=80);
+            background-size:cover; background-position:center;&quot;&gt;
+  &lt;div style=&quot;position:absolute; bottom:0; left:0; right:0; padding:40px;
+              background:rgba(0,0,0,0.45);&quot;&gt;
+    &lt;div style=&quot;font-size:42px; font-family:Georgia,serif; font-weight:bold; color:white;
+                text-shadow:0 2px 6px rgba(0,0,0,0.5); letter-spacing:1px;&quot;&gt;
+      Wish You Were Here
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<h3>Back</h3>
+<p>The back has <strong>reserved zones</strong> where the print service automatically places the address, postage, and barcode. Your content must avoid these areas.</p>
+<p><img src="https://moltpost.io/guidelines/6x4-back.svg" alt="6x4 back guideline"></p>
+<p><strong>Reserved zones by size:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Size</th>
+<th>Address &amp; indicia (right side)</th>
+<th>USPS barcode (bottom edge)</th>
+<th>Usable message area</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>6x4</td>
+<td><strong>2.4in</strong> wide, full height</td>
+<td>4.75in × 0.625in</td>
+<td>~3.6in × 3.4in</td>
+</tr>
+<tr>
+<td>9x6</td>
+<td><strong>3.6in</strong> wide, full height</td>
+<td>4.75in × 0.625in</td>
+<td>~5.4in × 5.3in</td>
+</tr>
+<tr>
+<td>11x6</td>
+<td><strong>3.6in</strong> wide, full height</td>
+<td>4.75in × 0.625in</td>
+<td>~7.4in × 5.3in</td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>Address &amp; indicia zone:</strong> No artwork or ink. The recipient address and postage indicia are printed here automatically.</li>
+<li><strong>USPS barcode zone:</strong> No artwork or ink. The Intelligent Mail barcode is printed here by USPS.</li>
+<li><strong>Message area:</strong> The upper-left portion of the back, after accounting for margins and reserved zones.</li>
+</ul>
+<blockquote>
+<p><strong>Warning:</strong> Orders may be auto-cancelled if content is detected underneath the address region.</p>
+</blockquote>
+<p>Choose one — you cannot provide both:</p>
+<ul>
+<li><p><strong><code>back_message</code></strong> (plain text) — <strong>recommended for most cases.</strong> Just write the message. Moltpost wraps it in clean, readable styling automatically. The text is padded away from the address and barcode zones. Max 5,000 chars.</p>
+</li>
+<li><p><strong><code>back_html</code></strong> (raw HTML) — full layout control. You must keep content clear of the reserved zones yourself. Use right padding of at least <code>2.6in</code> and bottom padding of at least <code>0.75in</code> to stay clear (e.g., <code>body{padding:20px 2.6in 0.75in 20px;}</code>). Do not place any background color, images, or ink in the address or barcode zones. Max 100,000 chars.</p>
+</li>
+</ul>
+<h3>Images</h3>
+<ul>
+<li><strong>Use CSS <code>background-image</code></strong> to include photos — this is the reliable method for the print renderer:<pre><code class="language-html">background-image: url(https://example.com/photo.jpg);
+background-size: cover;
+background-position: center;
+</code></pre>
+</li>
+<li><strong>Do not use <code>&lt;img&gt;</code> tags</strong> for external images — the print renderer may not load them. Use CSS <code>background-image</code> instead.</li>
+<li>Images must be reachable from the public internet (no <code>localhost</code>, no auth-protected URLs)</li>
+<li>Use high-resolution images — <strong>300 DPI</strong> minimum for print quality (a 6&quot; wide image needs to be at least 1800px wide)</li>
+<li>PNG and JPEG are supported</li>
+<li><strong><a href="https://unsplash.com">Unsplash</a></strong> is a good source of free, high-quality photos. Use their direct image URLs with size parameters: <code>https://images.unsplash.com/photo-{id}?w=1875&amp;h=1275&amp;fit=crop&amp;q=80</code></li>
+<li><strong>Base64 data URIs are not recommended</strong> — use hosted image URLs instead</li>
+<li>SVGs may not render reliably in print</li>
+</ul>
+<h3>CSS Support</h3>
+<p>The HTML is rendered to PDF for printing. Supported:</p>
+<ul>
+<li>Inline styles, <code>&lt;style&gt;</code> blocks</li>
+<li>Colors, backgrounds, gradients (<code>linear-gradient</code>, <code>radial-gradient</code>)</li>
+<li><code>background-image: url(...)</code> with <code>background-size</code>, <code>background-position</code></li>
+<li>Fonts (web-safe fonts recommended: Georgia, Arial, Helvetica, Times New Roman)</li>
+<li>Flexbox for layout</li>
+<li><code>position: absolute/relative</code> for overlays and layering</li>
+<li><code>border-radius</code>, <code>box-shadow</code>, <code>opacity</code>, <code>text-shadow</code></li>
+<li><code>overflow: hidden</code> for clipping elements to containers</li>
+</ul>
+<p>Not supported or unreliable:</p>
+<ul>
+<li>External stylesheets (<code>&lt;link&gt;</code> tags)</li>
+<li><code>&lt;img&gt;</code> tags (use CSS <code>background-image</code> instead)</li>
+<li><code>&lt;script&gt;</code>, <code>&lt;iframe&gt;</code>, <code>&lt;video&gt;</code>, <code>&lt;audio&gt;</code>, <code>&lt;canvas&gt;</code>, <code>&lt;form&gt;</code> — non-print elements are ignored</li>
+<li>JavaScript (including event handlers like <code>onclick</code>)</li>
+<li>Animations, transitions</li>
+<li><code>@media</code> queries</li>
+<li>Custom web fonts via <code>@font-face</code> (may not load)</li>
+<li>CSS Grid (use Flexbox instead)</li>
+</ul>
+<p><strong>Best practices for reliable rendering:</strong></p>
+<ul>
+<li>Stick to inline styles or a single <code>&lt;style&gt;</code> block — avoid external resources</li>
+<li>Use web-safe fonts only (Georgia, Arial, Helvetica, Times New Roman, Courier New)</li>
+<li>Set explicit dimensions on your outermost container (e.g., <code>width:6.25in; height:4.25in</code>)</li>
+<li>Use <code>overflow:hidden</code> on the outer container to prevent content from spilling past the bleed edge</li>
+<li>Test with simple designs first — solid backgrounds with text are the most reliable</li>
+</ul>
+<h3>Content Tips</h3>
+<p><strong>Keep it concise.</strong> A postcard is small. Less is more. A short heartfelt message beats a wall of text.</p>
+<p><strong>Good prompt from a human:</strong> &quot;Send a postcard to my mom wishing her happy birthday&quot;
+<strong>What the agent should do:</strong> Ask for mom&#39;s address, compose a warm front design and short back message, call the API, present the payment link.</p>
+<h3>Rendering Disclaimer</h3>
+<p>The HTML you provide is converted to print by a third-party renderer. Moltpost does not preview or proof the final printed output before mailing. While the guidelines above reflect what works reliably, <strong>the printed postcard is not guaranteed to match your HTML exactly.</strong> Minor differences in font rendering, color reproduction, image cropping, and layout are possible. Complex or unconventional HTML is more likely to produce unexpected results. When in doubt, keep it simple — <code>back_message</code> with a clean CSS-only <code>front_html</code> is the safest path.</p>
+<hr>
+<h2>Rate Limits</h2>
+<table>
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>Limit</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>POST /v1/postcards</code></td>
+<td>10/min, 100/hour per IP</td>
+</tr>
+<tr>
+<td><code>POST /v1/postcards/x402</code></td>
+<td>10/min, 100/hour per IP</td>
+</tr>
+<tr>
+<td><code>GET /v1/postcards/{id}</code></td>
+<td>120/min per IP</td>
+</tr>
+<tr>
+<td><code>POST /v1/postcards/{id}/confirm-payment</code></td>
+<td>10/min per IP</td>
+</tr>
+<tr>
+<td>Global</td>
+<td>120 requests/min per IP</td>
+</tr>
+<tr>
+<td>Daily postcards</td>
+<td>100 per IP</td>
+</tr>
+<tr>
+<td>Max pending payments</td>
+<td>10 per IP</td>
+</tr>
+</tbody></table>
+<p>Rate limit exceeded returns <code>429 Too Many Requests</code>.</p>
+<hr>
+<h2>Errors</h2>
+<p>All errors return:</p>
+<pre><code class="language-json">{
+  &quot;error&quot;: {
+    &quot;code&quot;: &quot;error_code&quot;,
+    &quot;message&quot;: &quot;Human-readable description&quot;
+  }
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>HTTP</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>payment_error</code></td>
+<td>400</td>
+<td>Payment issue</td>
+</tr>
+<tr>
+<td><code>not_found</code></td>
+<td>404</td>
+<td>Postcard ID not found</td>
+</tr>
+<tr>
+<td><code>idempotency_conflict</code></td>
+<td>409</td>
+<td>Same idempotency key, different parameters</td>
+</tr>
+<tr>
+<td><em>(validation)</em></td>
+<td>422</td>
+<td>Invalid request body</td>
+</tr>
+<tr>
+<td><code>quota_exceeded</code></td>
+<td>429</td>
+<td>Daily postcard limit or pending session limit hit</td>
+</tr>
+<tr>
+<td><em>(rate limit)</em></td>
+<td>429</td>
+<td>Too many requests (slowapi)</td>
+</tr>
+<tr>
+<td><code>internal_error</code></td>
+<td>500</td>
+<td>Server error</td>
+</tr>
+<tr>
+<td><code>print_error</code></td>
+<td>502</td>
+<td>Print service temporarily unavailable</td>
+</tr>
+<tr>
+<td><code>spend_limit_exceeded</code></td>
+<td>503</td>
+<td>Service temporarily at capacity</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Request Tracing</h2>
+<p>Include <code>X-Request-ID</code> header for log correlation:</p>
+<pre><code class="language-bash">curl -X POST https://api.moltpost.io/v1/postcards \
+  -H &quot;X-Request-ID: my-trace-id-123&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;...&#39;
+</code></pre>
+<p>The same ID is returned in the response <code>X-Request-ID</code> header.</p>
+<hr>
+<h2>Suggested Workflow for Agents</h2>
+<h3>0. Choose Payment Method</h3>
+<p><strong>If you have a crypto wallet</strong> (USDC on Base): use x402 (<code>POST /v1/postcards/x402</code>). This is the preferred method — one-step, gasless, no human interaction needed.</p>
+<p><strong>If you don&#39;t have a wallet</strong>: use Stripe (<code>POST /v1/postcards</code>) and present the payment link to your owner.</p>
+<h3>1. Gather Info</h3>
+<p>Owner says something like &quot;send a postcard to my mom for her birthday.&quot; Ask for anything missing:</p>
+<ul>
+<li>Recipient name and full mailing address (required)</li>
+<li>What the message should say, or a theme/vibe to work with</li>
+<li>Postcard size preference (default 6x4 is fine for most cases)</li>
+</ul>
+<h3>2. Compose Content</h3>
+<p>Generate the front HTML (a visual design — bold, colorful, simple) and a back message (warm, personal, concise). Show the owner what you&#39;ve composed.</p>
+<h3>3. Confirm Before Sending</h3>
+<p>Summarize everything and get explicit approval before calling the API:</p>
+<blockquote>
+<p>Here&#39;s what I&#39;ve prepared:</p>
+<p><strong>To:</strong> Jane Doe, 123 Main St, San Francisco, CA 94105, US
+<strong>Front:</strong> A sunset-orange card with &quot;Happy Birthday Mom!&quot; in large serif type
+<strong>Back message:</strong> &quot;Wishing you the most wonderful birthday. You deserve every bit of it. Love always.&quot;
+<strong>Size:</strong> 6×4&quot; — <strong>$4.99 USD</strong></p>
+<p>Want me to go ahead and create this postcard?</p>
+</blockquote>
+<h3>4. Create the Postcard</h3>
+<p>After approval, call <code>POST /v1/postcards</code> with an <code>idempotency_key</code> (use a deterministic key like a hash of recipient + content to prevent duplicates).</p>
+<h3>5. Present the Payment Link</h3>
+<p>This is the critical handoff. The postcard will not be printed until the owner pays. Send a clear, complete message with the payment link on its own line so it&#39;s easy to tap:</p>
+<blockquote>
+<p>Your postcard to Jane is ready! Here&#39;s your payment link:</p>
+<p><a href="https://checkout.stripe.com/c/pay/cs_live">https://checkout.stripe.com/c/pay/cs_live</a>_...</p>
+<p><strong>$4.99</strong> — includes printing and worldwide postage. The link expires in 24 hours.</p>
+<p>Once you pay, Moltpost prints and mails the postcard automatically. No further action needed.</p>
+</blockquote>
+<p><strong>Do not</strong> bury the payment link inside a long paragraph. Put it on its own line. Lead with what it is, follow with the price and what happens next.</p>
+<h3>6. Poll for Status</h3>
+<p>After presenting the payment link, wait before polling — the owner may not pay immediately.</p>
+<p><strong>Polling strategy:</strong></p>
+<ul>
+<li>Wait at least <strong>5 minutes</strong> before the first poll</li>
+<li>Poll <code>GET /v1/postcards/{id}</code> — check the <code>status</code> field</li>
+<li>If still <code>pending</code>, do not poll again for at least <strong>30 minutes</strong></li>
+<li>Do not poll more than <strong>5 times total</strong> — if still pending after that, the owner either hasn&#39;t paid or won&#39;t</li>
+<li><strong>Never nag the owner about paying.</strong> The payment link is theirs to use or ignore.</li>
+</ul>
+<h3>7. After Payment — Celebrate &amp; Share</h3>
+<p>When status changes to <code>sent</code>, let the owner know and share the link:</p>
+<blockquote>
+<p>Your postcard to Jane is on its way! 📮 It&#39;s been sent to print and will arrive by mail.</p>
+<p>Know someone else who&#39;d love to send a postcard? They&#39;ll get <strong>$1 off</strong> with your link: <a href="https://moltpost.io/?ref=Ab3kX9mZ">https://moltpost.io/?ref=Ab3kX9mZ</a></p>
+</blockquote>
+<p>The <code>share_url</code> from the API response contains a referral code. Always include it in the success message — anyone who uses it gets $1 off their postcard.</p>
+<h3>8. If Payment Expires</h3>
+<p>If status becomes <code>payment_expired</code> (after 24 hours), let the owner know casually:</p>
+<blockquote>
+<p>The payment link for your postcard to Jane has expired. Want me to create a new one?</p>
+</blockquote>
+<p>Don&#39;t over-explain. Just offer to try again.</p>
+<h3>9. Handling Referrals</h3>
+<p>If the owner arrived via a share link (e.g., they mention <code>moltpost.io/?ref=Ab3kX9mZ</code> or you detect a referral code in context), pass it as the <code>referral_code</code> field when creating the postcard. A valid referral code gives the referred user <strong>$1 off</strong> their postcard — this applies to all payment methods including x402 and manual USDC (where it stacks with the $0.69 crypto discount for up to $1.69 off). The discount is applied automatically — the <code>amount_cents</code> in the response will reflect the reduced price, and <code>discount_cents</code> will show how much was taken off. Mention the savings to the owner when presenting the payment link.</p>
+<hr>
+<h2>x402 Payment Workflow for Agents (Recommended)</h2>
+<p>This is the preferred workflow for agents with crypto wallets. One HTTP round-trip, no gas fees, no separate confirmation step.</p>
+<h3>1. Create with x402</h3>
+<p>After composing the postcard, call <code>POST /v1/postcards/x402</code> with the postcard body. The first call returns 402 with payment requirements (in both the JSON body and the <code>PAYMENT-REQUIRED</code> header). Sign the payment and retry with the <code>X-PAYMENT</code> or <code>PAYMENT-SIGNATURE</code> header. See the &quot;Create a Postcard with x402&quot; section above for full details.</p>
+<h3>2. Done</h3>
+<p>On success, the postcard is created, paid, and fulfilled in one step. The response includes <code>tx_hash</code> and <code>share_url</code>. Present the share URL to the owner.</p>
+<hr>
+<h2>Manual USDC Payment Workflow for Agents (Legacy)</h2>
+<p>This is the legacy two-step workflow for agents paying with USDC onchain. <strong>Prefer x402 instead</strong> — it&#39;s simpler (one request vs. three) and gasless.</p>
+<h3>1. Create with USDC</h3>
+<p>Call <code>POST /v1/postcards</code> with <code>&quot;payment_method&quot;: &quot;usdc&quot;</code>. Use <code>&quot;usdc_chain&quot;: &quot;base-sepolia&quot;</code> for testing or <code>&quot;base&quot;</code> for real postcards.</p>
+<pre><code class="language-bash">curl -X POST https://api.moltpost.io/v1/postcards \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;to&quot;: { &quot;name&quot;: &quot;Jane Doe&quot;, &quot;address_line1&quot;: &quot;123 Main St&quot;, &quot;city&quot;: &quot;San Francisco&quot;, &quot;province_or_state&quot;: &quot;CA&quot;, &quot;postal_or_zip&quot;: &quot;94105&quot;, &quot;country_code&quot;: &quot;US&quot; },
+    &quot;front_html&quot;: &quot;&lt;div style=\&quot;width:6.25in;height:4.25in;background:#2d3436;display:flex;align-items:center;justify-content:center;\&quot;&gt;&lt;div style=\&quot;font-family:Georgia,serif;font-size:36px;color:white;\&quot;&gt;Hello World&lt;/div&gt;&lt;/div&gt;&quot;,
+    &quot;back_message&quot;: &quot;Sent with USDC on Base.&quot;,
+    &quot;size&quot;: &quot;6x4&quot;,
+    &quot;payment_method&quot;: &quot;usdc&quot;,
+    &quot;usdc_chain&quot;: &quot;base-sepolia&quot;
+  }&#39;
+</code></pre>
+<h3>2. Send USDC Onchain</h3>
+<p>From the response, extract <code>usdc_payment</code>:</p>
+<ul>
+<li>Send exactly <code>amount_raw</code> units of USDC (6 decimals) to <code>recipient_address</code></li>
+<li>Use the <code>token_contract</code> on chain <code>chain_id</code></li>
+<li>Must be a standard ERC-20 <code>transfer()</code> call</li>
+</ul>
+<h3>3. Confirm Payment</h3>
+<p>After the transaction is mined, call confirm with the tx hash:</p>
+<pre><code class="language-bash">curl -X POST https://api.moltpost.io/v1/postcards/{id}/confirm-payment \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;tx_hash&quot;: &quot;0x...&quot;}&#39;
+</code></pre>
+<p>If <code>verified: true</code>, the postcard is fulfilled. If <code>verified: false</code>, check the error message — common issues are wrong amount, wrong recipient, or insufficient confirmations (wait a few seconds and retry).</p>
+<h3>4. Done</h3>
+<p>On testnet, the postcard is instantly marked &quot;sent&quot; (mock fulfillment). On mainnet, it&#39;s submitted to the print service for real mailing.</p>
+<hr>
+<h2>Heartbeat Setup</h2>
+<p>To check for postcard status updates and occasion reminders, add Moltpost to your heartbeat routine:</p>
+<p>Fetch <a href="https://moltpost.io/heartbeat.md">https://moltpost.io/heartbeat.md</a> and follow its instructions. Check every 8–12 hours.</p>
+
+                </div>
               </div>
             </article>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/cktc/moltpost/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">View on GitHub</a>
-                <a href="https://clawdhub.com/cktc/moltpost" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">View on ClawdHub</a>
+                <a href="https://github.com/openclaw/skills/blob/main/skills/cktc/moltpost/skill.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/cktc/moltpost" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/cktc/moltpost/skill.md" download class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download Source
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@cktc</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Calendar & Scheduling</span>
+                  </div>
+                </div>
               </div>
             </aside>
           </div>

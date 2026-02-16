@@ -48,6 +48,7 @@
               <a href="/speech-transcription/" class="back-link">← Back to Speech & Transcription</a>
               <div class="skill-page-meta">
                 <a href="/speech-transcription/" class="skill-page-category">Speech & Transcription</a>
+                <span class="skill-page-author">by @niczy</span>
               </div>
               <h1 class="skill-page-title">claw-voice</h1>
               <p class="skill-page-desc">You are connected to a live user session via voice</p>
@@ -60,15 +61,148 @@
           </section>
           <div class="skill-page-body">
             <article class="skill-page-content">
-              <div class="markdown-content">
-                <p>Skill documentation is available on GitHub.</p>
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Claw Voice</h1>
+<p>You are connected to a live user session via voice. The user is speaking to you through a voice interface. Use the bundled <code>client.py</code> script to communicate with them in real time.</p>
+<p>The script is located at <code>$skill_dir/client.py</code>.</p>
+<h2>Sending a message to the user</h2>
+<p>To say something to the user, run:</p>
+<pre><code class="language-bash">uv run python $skill_dir/client.py send &quot;Hello! How can I help you today?&quot;
+</code></pre>
+<p>The server echoes back a confirmation as JSON:</p>
+<pre><code class="language-json">{&quot;type&quot;: &quot;echo&quot;, &quot;content&quot;: &quot;Hello! How can I help you today?&quot;}
+</code></pre>
+<h2>Receiving the next message from the user</h2>
+<p>To wait for the user to say something:</p>
+<pre><code class="language-bash">uv run python $skill_dir/client.py recv
+</code></pre>
+<p>This blocks until the user speaks, then prints their message as JSON and exits:</p>
+<pre><code class="language-json">{&quot;type&quot;: &quot;message&quot;, &quot;content&quot;: &quot;What&#39;s the weather like?&quot;}
+</code></pre>
+<p>Use <code>--timeout</code> to control how long to wait (default 30s):</p>
+<pre><code class="language-bash">uv run python $skill_dir/client.py recv --timeout 60
+</code></pre>
+<p>If the timeout expires with no message, it prints an error and exits with code 1.</p>
+<h2>Listening for multiple messages</h2>
+<p>To receive a stream of messages over a period of time:</p>
+<pre><code class="language-bash">uv run python $skill_dir/client.py listen --timeout 60
+</code></pre>
+<p>This prints each incoming message as a JSON line until the timeout expires:</p>
+<pre><code>{&quot;type&quot;: &quot;message&quot;, &quot;content&quot;: &quot;Tell me a joke&quot;}
+{&quot;type&quot;: &quot;message&quot;, &quot;content&quot;: &quot;Actually, make it about cats&quot;}
+</code></pre>
+<h2>Running as an agent bridge</h2>
+<p>The <code>agent</code> command creates a loop: it listens for user messages, forwards each one to <code>openclaw agent --agent main --message &#39;&lt;message&gt;&#39;</code>, captures the stdout, and sends it back to the user over the WebSocket.</p>
+<pre><code class="language-bash">uv run python $skill_dir/client.py agent
+</code></pre>
+<p>This runs indefinitely by default. Use <code>--timeout</code> to limit the session:</p>
+<pre><code class="language-bash">uv run python $skill_dir/client.py agent --timeout 300
+</code></pre>
+<p>The flow for each message:</p>
+<ol>
+<li>User speaks -&gt; server sends <code>{&quot;type&quot;: &quot;message&quot;, &quot;content&quot;: &quot;...&quot;}</code> to the client</li>
+<li>Client runs <code>openclaw agent --agent main --message &#39;...&#39;</code> and captures stdout</li>
+<li>Client sends the agent&#39;s response back: <code>{&quot;type&quot;: &quot;message&quot;, &quot;content&quot;: &quot;&lt;stdout&gt;&quot;}</code></li>
+</ol>
+<p>Logs are printed to stderr-style output as <code>[user]</code> and <code>[agent]</code> prefixed lines.</p>
+<h2>Connection options</h2>
+<p>All commands accept <code>--url</code> to override the default WebSocket address:</p>
+<pre><code class="language-bash">uv run python $skill_dir/client.py --url ws://$host:$port/connect send &quot;Hi&quot;
+</code></pre>
+<p>Default URL: <code>ws://localhost:3111/connect</code></p>
+<h2>Message types reference</h2>
+<h3>Messages you send (agent -&gt; user)</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Fields</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>message</code></td>
+<td><code>content</code> (string)</td>
+<td>Text to speak/display to the user</td>
+</tr>
+</tbody></table>
+<h3>Messages you receive (user -&gt; agent)</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Fields</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>message</code></td>
+<td><code>content</code> (string)</td>
+<td>What the user said (transcribed text)</td>
+</tr>
+<tr>
+<td><code>echo</code></td>
+<td><code>content</code> (string)</td>
+<td>Server confirmation of your sent message — ignore these</td>
+</tr>
+<tr>
+<td><code>pong</code></td>
+<td></td>
+<td>Connection health check response — ignore these</td>
+</tr>
+</tbody></table>
+<h2>Behavior guidelines</h2>
+<ul>
+<li>Respond promptly to every <code>message</code> you receive from the user.</li>
+<li>Keep responses conversational and concise — the user is speaking, not reading.</li>
+<li>Send one message at a time. Do not batch multiple sends.</li>
+<li>Ignore <code>echo</code> messages — they are confirmations, not user input.</li>
+<li>Use <code>recv</code> for turn-based conversation. Use <code>listen</code> when you expect the user to say multiple things.</li>
+</ul>
+
+                </div>
               </div>
             </article>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/niczy/claw-voice/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">View on GitHub</a>
-                <a href="https://clawdhub.com/niczy/claw-voice" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">View on ClawdHub</a>
+                <a href="https://github.com/openclaw/skills/blob/main/skills/niczy/claw-voice/skill.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/niczy/claw-voice" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/niczy/claw-voice/skill.md" download class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download Source
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@niczy</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Speech & Transcription</span>
+                  </div>
+                </div>
               </div>
             </aside>
           </div>

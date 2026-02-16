@@ -76,10 +76,10 @@
 <ul>
 <li><strong>Join/Leave Voice Channels</strong>: Via slash commands, CLI, or agent tool</li>
 <li><strong>Voice Activity Detection (VAD)</strong>: Automatically detects when users are speaking</li>
-<li><strong>Speech-to-Text</strong>: Whisper API (OpenAI) or Deepgram</li>
+<li><strong>Speech-to-Text</strong>: Whisper API (OpenAI), Deepgram, or Local Whisper (Offline)</li>
 <li><strong>Streaming STT</strong>: Real-time transcription with Deepgram WebSocket (~1s latency reduction)</li>
 <li><strong>Agent Integration</strong>: Transcribed speech is routed through the Clawdbot agent</li>
-<li><strong>Text-to-Speech</strong>: OpenAI TTS or ElevenLabs</li>
+<li><strong>Text-to-Speech</strong>: OpenAI TTS, ElevenLabs, or Kokoro (Local/Offline)</li>
 <li><strong>Audio Playback</strong>: Responses are spoken back in the voice channel</li>
 <li><strong>Barge-in Support</strong>: Stops speaking immediately when user starts talking</li>
 <li><strong>Auto-reconnect</strong>: Automatic heartbeat monitoring and reconnection on disconnect</li>
@@ -116,25 +116,25 @@ npm install
 </code></pre>
 <h3>3. Configure in clawdbot.json</h3>
 <pre><code class="language-json5">{
-  &quot;plugins&quot;: {
-    &quot;entries&quot;: {
+  plugins: {
+    entries: {
       &quot;discord-voice&quot;: {
-        &quot;enabled&quot;: true,
-        &quot;config&quot;: {
-          &quot;sttProvider&quot;: &quot;whisper&quot;,
-          &quot;ttsProvider&quot;: &quot;openai&quot;,
-          &quot;ttsVoice&quot;: &quot;nova&quot;,
-          &quot;vadSensitivity&quot;: &quot;medium&quot;,
-          &quot;allowedUsers&quot;: [],  // Empty = allow all users
-          &quot;silenceThresholdMs&quot;: 1500,
-          &quot;maxRecordingMs&quot;: 30000,
-          &quot;openai&quot;: {
-            &quot;apiKey&quot;: &quot;sk-...&quot;  // Or use OPENAI_API_KEY env var
-          }
-        }
-      }
-    }
-  }
+        enabled: true,
+        config: {
+          sttProvider: &quot;local-whisper&quot;,
+          ttsProvider: &quot;openai&quot;,
+          ttsVoice: &quot;nova&quot;,
+          vadSensitivity: &quot;medium&quot;,
+          allowedUsers: [], // Empty = allow all users
+          silenceThresholdMs: 1500,
+          maxRecordingMs: 30000,
+          openai: {
+            apiKey: &quot;sk-...&quot;, // Or use OPENAI_API_KEY env var
+          },
+        },
+      },
+    },
+  },
 }
 </code></pre>
 <h3>4. Discord Bot Setup</h3>
@@ -164,8 +164,8 @@ npm install
 <tr>
 <td><code>sttProvider</code></td>
 <td>string</td>
-<td><code>&quot;whisper&quot;</code></td>
-<td><code>&quot;whisper&quot;</code> or <code>&quot;deepgram&quot;</code></td>
+<td><code>&quot;local-whisper&quot;</code></td>
+<td><code>&quot;whisper&quot;</code>, <code>&quot;deepgram&quot;</code>, or <code>&quot;local-whisper&quot;</code></td>
 </tr>
 <tr>
 <td><code>streamingSTT</code></td>
@@ -231,28 +231,28 @@ npm install
 <h3>Provider Configuration</h3>
 <h4>OpenAI (Whisper + TTS)</h4>
 <pre><code class="language-json5">{
-  &quot;openai&quot;: {
-    &quot;apiKey&quot;: &quot;sk-...&quot;,
-    &quot;whisperModel&quot;: &quot;whisper-1&quot;,
-    &quot;ttsModel&quot;: &quot;tts-1&quot;
-  }
+  openai: {
+    apiKey: &quot;sk-...&quot;,
+    whisperModel: &quot;whisper-1&quot;,
+    ttsModel: &quot;tts-1&quot;,
+  },
 }
 </code></pre>
 <h4>ElevenLabs (TTS only)</h4>
 <pre><code class="language-json5">{
-  &quot;elevenlabs&quot;: {
-    &quot;apiKey&quot;: &quot;...&quot;,
-    &quot;voiceId&quot;: &quot;21m00Tcm4TlvDq8ikWAM&quot;,  // Rachel
-    &quot;modelId&quot;: &quot;eleven_multilingual_v2&quot;
-  }
+  elevenlabs: {
+    apiKey: &quot;...&quot;,
+    voiceId: &quot;21m00Tcm4TlvDq8ikWAM&quot;, // Rachel
+    modelId: &quot;eleven_multilingual_v2&quot;,
+  },
 }
 </code></pre>
 <h4>Deepgram (STT only)</h4>
 <pre><code class="language-json5">{
-  &quot;deepgram&quot;: {
-    &quot;apiKey&quot;: &quot;...&quot;,
-    &quot;model&quot;: &quot;nova-2&quot;
-  }
+  deepgram: {
+    apiKey: &quot;...&quot;,
+    model: &quot;nova-2&quot;,
+  },
 }
 </code></pre>
 <h2>Usage</h2>
@@ -304,19 +304,19 @@ clawdbot voice status
 </ul>
 <p>To use streaming STT:</p>
 <pre><code class="language-json5">{
-  &quot;sttProvider&quot;: &quot;deepgram&quot;,
-  &quot;streamingSTT&quot;: true,  // default
-  &quot;deepgram&quot;: {
-    &quot;apiKey&quot;: &quot;...&quot;,
-    &quot;model&quot;: &quot;nova-2&quot;
-  }
+  sttProvider: &quot;deepgram&quot;,
+  streamingSTT: true, // default
+  deepgram: {
+    apiKey: &quot;...&quot;,
+    model: &quot;nova-2&quot;,
+  },
 }
 </code></pre>
 <h2>Barge-in Support</h2>
 <p>When enabled (default), the bot will immediately stop speaking if a user starts talking. This creates a more natural conversational flow where you can interrupt the bot.</p>
 <p>To disable (let the bot finish speaking):</p>
 <pre><code class="language-json5">{
-  &quot;bargeIn&quot;: false
+  bargeIn: false,
 }
 </code></pre>
 <h2>Auto-reconnect</h2>
@@ -401,7 +401,7 @@ npm rebuild @discordjs/opus sodium-native
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/avatarneil/discord-voice/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                <a href="https://github.com/openclaw/skills/blob/main/skills/avatarneil/discord-voice/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   View on GitHub
                 </a>
@@ -409,9 +409,9 @@ npm rebuild @discordjs/opus sodium-native
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
                   View on ClawdHub
                 </a>
-                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/avatarneil/discord-voice/SKILL.md" download="SKILL.md" class="sidebar-btn sidebar-btn-secondary">
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/avatarneil/discord-voice/SKILL.md" download class="sidebar-btn sidebar-btn-secondary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  Download SKILL.md
+                  Download Source
                 </a>
                 <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>

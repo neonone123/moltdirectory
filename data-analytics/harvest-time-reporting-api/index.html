@@ -48,6 +48,7 @@
               <a href="/data-analytics/" class="back-link">← Back to Data & Analytics</a>
               <div class="skill-page-meta">
                 <a href="/data-analytics/" class="skill-page-category">Data & Analytics</a>
+                <span class="skill-page-author">by @zachgodsell93</span>
               </div>
               <h1 class="skill-page-title">harvest-time-reporting-api</h1>
               <p class="skill-page-desc">Integration with Harvest time</p>
@@ -60,15 +61,734 @@
           </section>
           <div class="skill-page-body">
             <article class="skill-page-content">
-              <div class="markdown-content">
-                <p>Skill documentation is available on GitHub.</p>
+              <div class="skill-source-wrapper">
+                <div class="skill-source-header">
+                  <div class="skill-source-title">Source Code</div>
+                  <button class="copy-btn" onclick="copySkillContent(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy
+                  </button>
+                </div>
+                <div class="markdown-content">
+                  <h1>Harvest API</h1>
+<h2>Description</h2>
+<p>Integration with Harvest time tracking software (API v2).</p>
+<h2>Setup</h2>
+<h3>Environment Variables</h3>
+<ul>
+<li><code>HARVEST_ACCESS_TOKEN</code> - Get from <a href="https://id.getharvest.com/developers">https://id.getharvest.com/developers</a></li>
+<li><code>HARVEST_ACCOUNT_ID</code> - Your Harvest account ID</li>
+</ul>
+<h3>Authentication</h3>
+<p>All requests require these headers:</p>
+<pre><code>Authorization: Bearer $HARVEST_ACCESS_TOKEN
+Harvest-Account-Id: $HARVEST_ACCOUNT_ID
+User-Agent: YourApp (your@email.com)
+</code></pre>
+<h2>API Reference</h2>
+<p>Base URL: <code>https://api.harvestapp.com/v2</code></p>
+<h3>Time Entries</h3>
+<h4>List Time Entries</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/time_entries&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<p>Query parameters: <code>user_id</code>, <code>client_id</code>, <code>project_id</code>, <code>task_id</code>, <code>external_reference_id</code>, <code>is_billed</code>, <code>is_running</code>, <code>updated_since</code>, <code>from</code>, <code>to</code>, <code>page</code>, <code>per_page</code></p>
+<h4>Create Time Entry (duration)</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/time_entries&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;project_id&quot;:12345,&quot;task_id&quot;:67890,&quot;spent_date&quot;:&quot;2024-01-15&quot;,&quot;hours&quot;:2.5}&#39;
+</code></pre>
+<h4>Create Time Entry (start/end time)</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/time_entries&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;project_id&quot;:12345,&quot;task_id&quot;:67890,&quot;spent_date&quot;:&quot;2024-01-15&quot;,&quot;started_time&quot;:&quot;9:00am&quot;,&quot;ended_time&quot;:&quot;11:30am&quot;}&#39;
+</code></pre>
+<h4>Get Time Entry</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/time_entries/{TIME_ENTRY_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<h4>Update Time Entry</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/time_entries/{TIME_ENTRY_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X PATCH \
+  -d &#39;{&quot;hours&quot;:3.0,&quot;notes&quot;:&quot;Updated notes&quot;}&#39;
+</code></pre>
+<h4>Delete Time Entry</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/time_entries/{TIME_ENTRY_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -X DELETE
+</code></pre>
+<h4>Restart a Stopped Timer</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/time_entries/{TIME_ENTRY_ID}/restart&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -X PATCH
+</code></pre>
+<h4>Stop a Running Timer</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/time_entries/{TIME_ENTRY_ID}/stop&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -X PATCH
+</code></pre>
+<h3>Projects</h3>
+<h4>List Projects</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/projects&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<p>Query parameters: <code>is_active</code>, <code>client_id</code>, <code>updated_since</code>, <code>page</code>, <code>per_page</code></p>
+<h4>Get Project</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/projects/{PROJECT_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<h4>Create Project</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/projects&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;client_id&quot;:12345,&quot;name&quot;:&quot;New Project&quot;,&quot;is_billable&quot;:true,&quot;bill_by&quot;:&quot;Project&quot;,&quot;budget_by&quot;:&quot;project&quot;}&#39;
+</code></pre>
+<h4>Update Project</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/projects/{PROJECT_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X PATCH \
+  -d &#39;{&quot;name&quot;:&quot;Updated Project Name&quot;}&#39;
+</code></pre>
+<h4>Delete Project</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/projects/{PROJECT_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -X DELETE
+</code></pre>
+<h3>Project User Assignments</h3>
+<h4>List User Assignments for Project</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/projects/{PROJECT_ID}/user_assignments&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<h4>Create User Assignment</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/projects/{PROJECT_ID}/user_assignments&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;user_id&quot;:12345}&#39;
+</code></pre>
+<h3>Project Task Assignments</h3>
+<h4>List Task Assignments for Project</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/projects/{PROJECT_ID}/task_assignments&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<h4>Create Task Assignment</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/projects/{PROJECT_ID}/task_assignments&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;task_id&quot;:12345}&#39;
+</code></pre>
+<h3>Tasks</h3>
+<h4>List Tasks</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/tasks&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<p>Query parameters: <code>is_active</code>, <code>updated_since</code>, <code>page</code>, <code>per_page</code></p>
+<h4>Get Task</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/tasks/{TASK_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<h4>Create Task</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/tasks&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;name&quot;:&quot;New Task&quot;,&quot;default_hourly_rate&quot;:100.0}&#39;
+</code></pre>
+<h4>Update Task</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/tasks/{TASK_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X PATCH \
+  -d &#39;{&quot;name&quot;:&quot;Updated Task Name&quot;}&#39;
+</code></pre>
+<h4>Delete Task</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/tasks/{TASK_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -X DELETE
+</code></pre>
+<h3>Clients</h3>
+<h4>List Clients</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/clients&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<p>Query parameters: <code>is_active</code>, <code>updated_since</code>, <code>page</code>, <code>per_page</code></p>
+<h4>Get Client</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/clients/{CLIENT_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<h4>Create Client</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/clients&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;name&quot;:&quot;New Client&quot;,&quot;currency&quot;:&quot;USD&quot;}&#39;
+</code></pre>
+<h4>Update Client</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/clients/{CLIENT_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X PATCH \
+  -d &#39;{&quot;name&quot;:&quot;Updated Client Name&quot;}&#39;
+</code></pre>
+<h4>Delete Client</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/clients/{CLIENT_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -X DELETE
+</code></pre>
+<h3>Contacts</h3>
+<h4>List Contacts</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/contacts&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<p>Query parameters: <code>client_id</code>, <code>updated_since</code>, <code>page</code>, <code>per_page</code></p>
+<h4>Get Contact</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/contacts/{CONTACT_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<h4>Create Contact</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/contacts&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;client_id&quot;:12345,&quot;first_name&quot;:&quot;John&quot;,&quot;last_name&quot;:&quot;Doe&quot;,&quot;email&quot;:&quot;john@example.com&quot;}&#39;
+</code></pre>
+<h4>Update Contact</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/contacts/{CONTACT_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X PATCH \
+  -d &#39;{&quot;email&quot;:&quot;newemail@example.com&quot;}&#39;
+</code></pre>
+<h4>Delete Contact</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/contacts/{CONTACT_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -X DELETE
+</code></pre>
+<h3>Users</h3>
+<h4>List Users</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/users&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<p>Query parameters: <code>is_active</code>, <code>updated_since</code>, <code>page</code>, <code>per_page</code></p>
+<h4>Get Current User</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/users/me&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<h4>Get User</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/users/{USER_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<h4>Create User</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/users&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;first_name&quot;:&quot;Jane&quot;,&quot;last_name&quot;:&quot;Doe&quot;,&quot;email&quot;:&quot;jane@example.com&quot;}&#39;
+</code></pre>
+<h4>Update User</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/users/{USER_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X PATCH \
+  -d &#39;{&quot;first_name&quot;:&quot;Janet&quot;}&#39;
+</code></pre>
+<h4>Delete User</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/users/{USER_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -X DELETE
+</code></pre>
+<h3>User Project Assignments</h3>
+<h4>List Project Assignments for Current User</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/users/me/project_assignments&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<h4>List Project Assignments for User</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/users/{USER_ID}/project_assignments&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<h3>Billable Rates</h3>
+<h4>List Billable Rates for User</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/users/{USER_ID}/billable_rates&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<h4>Create Billable Rate</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/users/{USER_ID}/billable_rates&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;amount&quot;:150.0,&quot;start_date&quot;:&quot;2024-01-01&quot;}&#39;
+</code></pre>
+<h3>Cost Rates</h3>
+<h4>List Cost Rates for User</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/users/{USER_ID}/cost_rates&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<h4>Create Cost Rate</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/users/{USER_ID}/cost_rates&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;amount&quot;:75.0,&quot;start_date&quot;:&quot;2024-01-01&quot;}&#39;
+</code></pre>
+<h3>Invoices</h3>
+<h4>List Invoices</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/invoices&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<p>Query parameters: <code>client_id</code>, <code>project_id</code>, <code>updated_since</code>, <code>from</code>, <code>to</code>, <code>state</code>, <code>page</code>, <code>per_page</code></p>
+<h4>Get Invoice</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/invoices/{INVOICE_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<h4>Create Invoice</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/invoices&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;client_id&quot;:12345,&quot;subject&quot;:&quot;Invoice for January&quot;,&quot;due_date&quot;:&quot;2024-02-15&quot;,&quot;line_items&quot;:[{&quot;kind&quot;:&quot;Service&quot;,&quot;description&quot;:&quot;Consulting&quot;,&quot;unit_price&quot;:150,&quot;quantity&quot;:10}]}&#39;
+</code></pre>
+<h4>Update Invoice</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/invoices/{INVOICE_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X PATCH \
+  -d &#39;{&quot;subject&quot;:&quot;Updated Invoice Subject&quot;}&#39;
+</code></pre>
+<h4>Delete Invoice</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/invoices/{INVOICE_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -X DELETE
+</code></pre>
+<h3>Invoice Line Items</h3>
+<h4>Create Invoice Line Item</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/invoices/{INVOICE_ID}/line_items&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X PATCH \
+  -d &#39;{&quot;line_items&quot;:[{&quot;kind&quot;:&quot;Service&quot;,&quot;description&quot;:&quot;Additional work&quot;,&quot;unit_price&quot;:100,&quot;quantity&quot;:5}]}&#39;
+</code></pre>
+<h3>Invoice Payments</h3>
+<h4>List Payments for Invoice</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/invoices/{INVOICE_ID}/payments&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<h4>Create Payment</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/invoices/{INVOICE_ID}/payments&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;amount&quot;:500.0,&quot;paid_at&quot;:&quot;2024-01-20T00:00:00Z&quot;}&#39;
+</code></pre>
+<h3>Invoice Messages</h3>
+<h4>List Messages for Invoice</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/invoices/{INVOICE_ID}/messages&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<h4>Send Invoice</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/invoices/{INVOICE_ID}/messages&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;recipients&quot;:[{&quot;email&quot;:&quot;client@example.com&quot;}],&quot;subject&quot;:&quot;Invoice #123&quot;,&quot;body&quot;:&quot;Please find attached invoice.&quot;}&#39;
+</code></pre>
+<h3>Invoice Item Categories</h3>
+<h4>List Invoice Item Categories</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/invoice_item_categories&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<h3>Estimates</h3>
+<h4>List Estimates</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/estimates&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<p>Query parameters: <code>client_id</code>, <code>updated_since</code>, <code>from</code>, <code>to</code>, <code>state</code>, <code>page</code>, <code>per_page</code></p>
+<h4>Get Estimate</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/estimates/{ESTIMATE_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<h4>Create Estimate</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/estimates&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;client_id&quot;:12345,&quot;subject&quot;:&quot;Project Estimate&quot;,&quot;line_items&quot;:[{&quot;kind&quot;:&quot;Service&quot;,&quot;description&quot;:&quot;Development&quot;,&quot;unit_price&quot;:150,&quot;quantity&quot;:40}]}&#39;
+</code></pre>
+<h3>Expenses</h3>
+<h4>List Expenses</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/expenses&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<p>Query parameters: <code>user_id</code>, <code>client_id</code>, <code>project_id</code>, <code>is_billed</code>, <code>updated_since</code>, <code>from</code>, <code>to</code>, <code>page</code>, <code>per_page</code></p>
+<h4>Get Expense</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/expenses/{EXPENSE_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<h4>Create Expense</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/expenses&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;project_id&quot;:12345,&quot;expense_category_id&quot;:67890,&quot;spent_date&quot;:&quot;2024-01-15&quot;,&quot;total_cost&quot;:50.00,&quot;notes&quot;:&quot;Office supplies&quot;}&#39;
+</code></pre>
+<h4>Update Expense</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/expenses/{EXPENSE_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X PATCH \
+  -d &#39;{&quot;notes&quot;:&quot;Updated expense notes&quot;}&#39;
+</code></pre>
+<h4>Delete Expense</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/expenses/{EXPENSE_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -X DELETE
+</code></pre>
+<h3>Expense Categories</h3>
+<h4>List Expense Categories</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/expense_categories&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<p>Query parameters: <code>is_active</code>, <code>updated_since</code>, <code>page</code>, <code>per_page</code></p>
+<h4>Get Expense Category</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/expense_categories/{EXPENSE_CATEGORY_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<h4>Create Expense Category</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/expense_categories&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;name&quot;:&quot;Travel&quot;}&#39;
+</code></pre>
+<h3>Reports</h3>
+<h4>Time Reports - Clients</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/reports/time/clients&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -G \
+  -d &quot;from=2024-01-01&quot; \
+  -d &quot;to=2024-01-31&quot;
+</code></pre>
+<h4>Time Reports - Projects</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/reports/time/projects&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -G \
+  -d &quot;from=2024-01-01&quot; \
+  -d &quot;to=2024-01-31&quot;
+</code></pre>
+<h4>Time Reports - Tasks</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/reports/time/tasks&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -G \
+  -d &quot;from=2024-01-01&quot; \
+  -d &quot;to=2024-01-31&quot;
+</code></pre>
+<h4>Time Reports - Team</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/reports/time/team&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -G \
+  -d &quot;from=2024-01-01&quot; \
+  -d &quot;to=2024-01-31&quot;
+</code></pre>
+<h4>Uninvoiced Report</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/reports/uninvoiced&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -G \
+  -d &quot;from=2024-01-01&quot; \
+  -d &quot;to=2024-01-31&quot;
+</code></pre>
+<h4>Expense Reports - Clients</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/reports/expenses/clients&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -G \
+  -d &quot;from=2024-01-01&quot; \
+  -d &quot;to=2024-01-31&quot;
+</code></pre>
+<h4>Expense Reports - Projects</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/reports/expenses/projects&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -G \
+  -d &quot;from=2024-01-01&quot; \
+  -d &quot;to=2024-01-31&quot;
+</code></pre>
+<h4>Expense Reports - Categories</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/reports/expenses/categories&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -G \
+  -d &quot;from=2024-01-01&quot; \
+  -d &quot;to=2024-01-31&quot;
+</code></pre>
+<h4>Expense Reports - Team</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/reports/expenses/team&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -G \
+  -d &quot;from=2024-01-01&quot; \
+  -d &quot;to=2024-01-31&quot;
+</code></pre>
+<h4>Project Budget Report</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/reports/project_budget&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<h3>Company</h3>
+<h4>Get Company</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/company&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<h4>Update Company</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/company&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X PATCH \
+  -d &#39;{&quot;wants_timestamp_timers&quot;:true}&#39;
+</code></pre>
+<h3>Roles</h3>
+<h4>List Roles</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/roles&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<h4>Get Role</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/roles/{ROLE_ID}&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot;
+</code></pre>
+<h4>Create Role</h4>
+<pre><code class="language-bash">curl &quot;https://api.harvestapp.com/v2/roles&quot; \
+  -H &quot;Authorization: Bearer $HARVEST_ACCESS_TOKEN&quot; \
+  -H &quot;Harvest-Account-Id: $HARVEST_ACCOUNT_ID&quot; \
+  -H &quot;User-Agent: MyApp (me@example.com)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -X POST \
+  -d &#39;{&quot;name&quot;:&quot;Developer&quot;,&quot;user_ids&quot;:[12345,67890]}&#39;
+</code></pre>
+<h2>Pagination</h2>
+<p>All list endpoints support pagination with <code>page</code> and <code>per_page</code> parameters. Responses include:</p>
+<ul>
+<li><code>page</code>: Current page number</li>
+<li><code>total_pages</code>: Total number of pages</li>
+<li><code>total_entries</code>: Total number of records</li>
+<li><code>next_page</code>: Next page number (null if last page)</li>
+<li><code>previous_page</code>: Previous page number (null if first page)</li>
+</ul>
+<h2>Rate Limiting</h2>
+<p>Harvest API has a rate limit of 100 requests per 15 seconds. Response headers include:</p>
+<ul>
+<li><code>X-Rate-Limit-Limit</code>: Request limit</li>
+<li><code>X-Rate-Limit-Remaining</code>: Remaining requests</li>
+<li><code>X-Rate-Limit-Reset</code>: Seconds until limit resets</li>
+</ul>
+<h2>Changelog</h2>
+<h3>v1.0.0</h3>
+<ul>
+<li>Initial release with full API v2 coverage</li>
+<li>Time entries, projects, tasks, clients, contacts</li>
+<li>Users, billable rates, cost rates</li>
+<li>Invoices, estimates, payments, messages</li>
+<li>Expenses and expense categories</li>
+<li>Reports (time, expense, project budget)</li>
+<li>Company and roles management</li>
+</ul>
+
+                </div>
               </div>
             </article>
             <aside class="skill-page-sidebar">
               <div class="sidebar-card">
                 <div class="sidebar-title">Actions</div>
-                <a href="https://github.com/openclaw/skills/tree/main/skills/zachgodsell93/harvest-time-reporting-api/SKILL.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">View on GitHub</a>
-                <a href="https://clawdhub.com/zachgodsell93/harvest-time-reporting-api" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">View on ClawdHub</a>
+                <a href="https://github.com/openclaw/skills/blob/main/skills/zachgodsell93/harvest-time-reporting-api/skill.md" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </a>
+                <a href="https://clawdhub.com/zachgodsell93/harvest-time-reporting-api" target="_blank" rel="noopener" class="sidebar-btn sidebar-btn-clawdhub">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  View on ClawdHub
+                </a>
+                <a href="https://raw.githubusercontent.com/openclaw/skills/main/skills/zachgodsell93/harvest-time-reporting-api/skill.md" download class="sidebar-btn sidebar-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download Source
+                </a>
+                <button onclick="sendToSecurityAuditor()" class="sidebar-btn sidebar-btn-security">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Security Check
+                </button>
+              </div>
+              <div class="sidebar-card">
+                <div class="sidebar-title">Details</div>
+                <div class="sidebar-info">
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Author</span>
+                    <span class="sidebar-info-value">@zachgodsell93</span>
+                  </div>
+                  <div class="sidebar-info-item">
+                    <span class="sidebar-info-label">Category</span>
+                    <span class="sidebar-info-value">Data & Analytics</span>
+                  </div>
+                </div>
               </div>
             </aside>
           </div>
